@@ -1,63 +1,92 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Mail\CustomerBroadcastMail;
 use App\Models\Customer;
+use Exception;
 use Illuminate\Http\Request;
-use Mail;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class EmailController extends Controller
 {
     public function send(Request $request)
     {
         // 1. Validate request
-        $request->validate([
-            'emailTitle' => 'required|string|max:255',
-            'emailBody' => 'required|string',
+        $validated = $request->validate([
+            'email_subject' => 'required|string|max:255',
+            'email_message' => 'required|string',
             'customers' => 'nullable|array',
-            'emailAttachment' => 'nullable|file|max:5120', 
+            'customers.*' => 'exists:customers,id',
+            'send_to_all' => 'nullable|boolean',
+            'emailAttachment' => 'nullable|file|max:5120|mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png,txt,zip',
+        ], [
+            'email_subject.required' => 'Email subject is required',
+            'email_message.required' => 'Email message is required',
+            'emailAttachment.max' => 'Attachment size must not exceed 5MB',
+            'emailAttachment.mimes' => 'Invalid file type. Allowed: PDF, DOC, DOCX, XLS, XLSX, JPG, PNG, TXT, ZIP',
         ]);
 
-        // 2. Resolve recipients
-        if ($request->has('send_to_all')) {
-            $customers = Customer::select('email')->get();
-        } else {
-            if (!$request->customers || count($request->customers) === 0) {
-                return back()->withErrors(['customers' => 'Please select at least one customer']);
-            }
+        if ($request->boolean('send_to_all')) {
+            $excluded = $request->excluded_customers ?? [];
 
-            $customers = Customer::whereIn('id', $request->customers)
-                ->select('email')
-                ->get();
+            $recipients = Customer::query()
+                ->when(count($excluded) > 0, fn($q) => $q->whereNotIn('id', $excluded))
+                ->pluck('email')
+                ->toArray();
+            $recipientsEmail = [];
+            foreach ($recipients as $r) {
+                if ($r != null && $r != '') {
+                    $recipientsEmail[] = $r;
+                }
+            }
+        } else {
+            $recipients = Customer::whereIn('id', $request->customers ?? [])
+                ->pluck('email')
+                ->toArray();
+            $recipientsEmail = [];
+            foreach ($recipients as $r) {
+                if ($r != null && $r != '') {
+                    $recipientsEmail[] = $r;
+                }
+            }
         }
 
-        // 3. Handle attachment (store once)
+        // Check if we have any valid recipients
+        if (empty($recipientsEmail)) {
+            return back()->withErrors(['customers' => 'No customers found with valid email addresses'])->withInput();
+        }
+
+        // 3. Handle attachment
         $attachmentPath = null;
 
         if ($request->hasFile('emailAttachment')) {
-            $attachmentPath = $request->file('emailAttachment')
-                ->store('email_attachments');
+            try {
+                $file = $request->file('emailAttachment');
+                $attachmentPath = $file->store('email_attachments', 'public');
+            } catch (Exception $e) {
+                Log::error('Failed to store attachment: ' . $e->getMessage());
+                return back()->withErrors(['emailAttachment' => 'Failed to upload attachment. Please try again.'])->withInput();
+            }
         }
 
-        // 4. Send emails (NO QUEUE)
-        // foreach ($customers as $customer) {
-        //     Mail::to($customer->email)->send(
-        //         new CustomerBroadcastMail(
-        //             $request->emailTitle,
-        //             $request->emailBody,
-        //             $attachmentPath
-        //         )
-        //     );
-        // }
-        Mail::to("coding.ata@gmail.com")->send(
-            new CustomerBroadcastMail(
-                $request->emailTitle,
-                $request->emailBody,
-                $attachmentPath
-            )
-            );
+        try {
+            // 4. Send emails (NO QUEUE)
+            foreach ($recipientsEmail as $email) {
+                Mail::to($email)->send(
+                    new CustomerBroadcastMail(
+                        $request->email_subject,
+                        $request->email_message,
+                        $attachmentPath
+                    )
+                );
+            }
 
-        return back()->with('success', 'Email sent successfully to ' . $customers->count() . ' customers.');
+            return back()->with('success', 'Email sent successfully to customers.');
+        } catch (Exception $e) {
+            Log::error('Email sending failed: ' . $e->getMessage());
+            return back()->with('error', 'Failed to send email. Please check your mail configuration.');
+        }
     }
+
 }
