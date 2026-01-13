@@ -167,7 +167,6 @@ class CustomerController extends Controller
 
     public function customer()
     {
-
         $user = Auth::user();
         if ($user->role == 'customer') {
             $customers = Customer::where('customers_name', $user->customer_name)
@@ -175,10 +174,7 @@ class CustomerController extends Controller
                 ->get();
         } else {
             $customers = Customer::where('customers_id', 'NOT LIKE', '%.%')->get();
-
         }
-
-
         return view('customers.customer', compact('customers'));
     }
 
