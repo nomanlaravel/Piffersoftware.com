@@ -22,8 +22,8 @@ class SendMeetingReminders extends Command
         $this->info("📅 Today's Date: " . $today->format('Y-m-d'));
 
         $customers = Customer::whereNotNull('meeting_date')
-                            ->whereNotNull('meeting_freq')
-                            ->get();
+            ->whereNotNull('meeting_freq')
+            ->get();
 
         if ($customers->isEmpty()) {
             $this->warn("❌ No customers with meeting date and frequency.");
@@ -49,12 +49,12 @@ class SendMeetingReminders extends Command
                 Mail::to('Erp.piffers@gmail.com')->send(new MeetingReminderMail($customer));
                 // Save in ReminderNotification table
                 ReminderNotification::create([
-                    'user_id'     => $customer->id,
+                    'user_id' => $customer->id,
                     'entity_type' => 'customer',
-                    'entity_id'   => $customer->id,
-                    'title'       => 'Meeting Reminder',
-                    'message'     => "Dear {$customer->customers_name}, your next meeting is scheduled on {$nextMeeting->format('d M Y')}. Please be prepared.",
-                    'is_read'     => false,
+                    'entity_id' => $customer->id,
+                    'title' => 'Meeting Reminder',
+                    'message' => "Dear {$customer->customers_name}, your next meeting is scheduled on {$nextMeeting->format('d M Y')}. Please be prepared.",
+                    'is_read' => false,
                 ]);
 
                 $this->info("✅ Reminder sent & saved for {$customer->customers_name} ({$customer->email})");

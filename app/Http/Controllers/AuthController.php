@@ -38,7 +38,7 @@ class AuthController extends Controller
     
     public function dashboard()
     {
-$customers = Customer::select('id','email')->get();
+$customers = Customer::select('id','email', 'customers_name')->get();
 return view('auth.dashboard', compact('customers'));
     }
 }

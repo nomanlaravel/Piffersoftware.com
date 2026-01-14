@@ -39,17 +39,6 @@
 
 <!-- Notification Alerts -->
 <div class="container" style="max-width: 1200px; margin: 0 auto;">
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert"
-            style="border-radius: 8px; border-left: 4px solid #28a745; box-shadow: 0 2px 8px rgba(40, 167, 69, 0.2);">
-            <i class="bi bi-check-circle-fill mr-2"></i>
-            <strong>Success!</strong> {{ session('success') }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    @endif
-
     @if(session('warning'))
         <div class="alert alert-warning alert-dismissible fade show" role="alert"
             style="border-radius: 8px; border-left: 4px solid #ffc107; box-shadow: 0 2px 8px rgba(255, 193, 7, 0.2); white-space: pre-line;">
@@ -156,7 +145,7 @@
                                                         class="customer-checkbox"
                                                         style="width: 18px; height: 18px; margin-right: 12px; accent-color: #667eea;">
                                                     <span style="color: #333; font-size: 0.9rem;">
-                                                        {{ $customer->email }}
+                                                       {{$customer->customers_name}} - {{ $customer->email }}
                                                     </span>
                                                 </label>
                                             </div>
@@ -174,7 +163,7 @@
                         <!-- IMPORTANT hidden flag -->
                         <input type="hidden" name="send_to_all" id="sendToAllInput" value="0">
                         <!-- Excluded customers container (dynamic hidden inputs) -->
-<div id="excludedCustomersContainer"></div>
+                        <div id="excludedCustomersContainer"></div>
 
                     </div>
 
