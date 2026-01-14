@@ -2878,4 +2878,21 @@ class CustomerController extends Controller
 
         return response()->json(['success' => false, 'message' => 'Attachment not found or already deleted.']);
     }
+
+    public function notification_status($id)
+    {
+        $customer = Customer::find($id);
+
+        if (!$customer) {
+            return redirect()->back()->with('error', 'Customer not found.');
+        }
+
+        // Toggle notification status
+        $customer->notification_status = !$customer->notification_status;
+        $customer->save();
+
+        $status = $customer->notification_status ? 'enabled' : 'disabled';
+
+        return redirect()->back()->with('success', 'Notifications have been ' . $status . ' for this customer.');
+    }
 }

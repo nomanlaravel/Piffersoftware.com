@@ -310,6 +310,7 @@ Route::post('/send-pdf-email', [CustomerController::class, 'sendPDFViaEmail']);
 Route::get('/customers/{id}/notifications', [CustomerController::class, 'customer_notifications'])
     ->name('allnotifications');
 Route::get('/notification/read/{id}', [CustomerController::class, 'markAsRead'])->name('notification.read');
+Route::get('/notification-status/{id}', [CustomerController::class, 'notification_status'])->name('notification.status');
 
 
 

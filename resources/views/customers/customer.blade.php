@@ -253,9 +253,6 @@
                                 <td>{{ $customer->customers_name }}</td>
                                 <td>{{ $customer->phone }}</td>
                                 <td>{{ $customer->customers_region }}</td>
-
-
-
                                 <td class="d-flex gap-2">
                                         <div style="position: relative; display: inline-block;">
                                     <a href="{{ route('allnotifications', $customer->id) }}" style="color: inherit;">
@@ -270,6 +267,9 @@
                                         @endif
                                     </a>
                                 </div>
+                                    <a href="{{ route('notification.status', $customer->id) }}" class="btn btn-primary btn-sm">
+                                        Notification ON/OFF
+                                    </a>
                                     <a href="{{ route('viewcustomer', ['id' => $customer->id]) }}" class="btn btn-primary btn-sm">
                                         <i class="fa-solid fa-eye"></i>
                                     </a>
