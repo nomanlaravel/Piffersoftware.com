@@ -30,6 +30,9 @@ class SendArmourerReminders extends Command
         // Fetch customers with issue date exactly 3 months ago
         $armourers = CustomerArmourer::with('customer')
             ->whereDate('arm_auth_issue', $targetDate)
+            ->whereHas('customer', function ($query) {
+                $query->where('notification_status', 1);
+            })
             ->get();
 
         if ($armourers->isEmpty()) {
@@ -58,12 +61,12 @@ class SendArmourerReminders extends Command
         // 🔔 Save notification for customer
 
         ReminderNotification::create([
-            'user_id'     => $customer->id,
+            'user_id' => $customer->id,
             'entity_type' => 'customer',
-            'entity_id'   => $customer->id,
-            'title'       => 'Armourer Authorization Reminder',
-            'message'     => "Dear {$customer->customers_name}, your armourer authorization was issued on {$issueDate}, please schedule your visit.",
-            'is_read'     => false,
+            'entity_id' => $customer->id,
+            'title' => 'Armourer Authorization Reminder',
+            'message' => "Dear {$customer->customers_name}, your armourer authorization was issued on {$issueDate}, please schedule your visit.",
+            'is_read' => false,
         ]);
         $this->info("Reminder saved for: {$email} and Admin.");
 

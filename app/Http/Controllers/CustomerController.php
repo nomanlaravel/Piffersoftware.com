@@ -77,11 +77,11 @@ class CustomerController extends Controller
         if ($request->filled('customers_id')) {
             $query->where('customers_id', $request->customers_id);
         }
-         if ($request->filled('customers_activation_check')) {
-        $query->where('customers_activation_check', $request->customers_activation_check);
-    }
+        if ($request->filled('customers_activation_check')) {
+            $query->where('customers_activation_check', $request->customers_activation_check);
+        }
 
-           $customers = $query->orderByRaw('CAST(customers_id AS DECIMAL(10,2)) ASC')->get();
+        $customers = $query->orderByRaw('CAST(customers_id AS DECIMAL(10,2)) ASC')->get();
 
         return view('searchresults.customers', [
             'customers' => $customers,
@@ -147,23 +147,23 @@ class CustomerController extends Controller
         ]);
     }
 
-        public function getallCustomerData()
-        {
-            // Fetch only specific columns
-            $customers = Customer::select('id', 'customers_id', 'customers_name')
-                ->where('customers_activation_check', 1)
-                ->get();
+    public function getallCustomerData()
+    {
+        // Fetch only specific columns
+        $customers = Customer::select('id', 'customers_id', 'customers_name')
+            ->where('customers_activation_check', 1)
+            ->get();
 
-            if ($customers->isEmpty()) {
-                return response()->json(['message' => 'Customer not found'], 404);
-            }
-
-            return response()->json([
-                'status' => 200,
-                'message' => 'Customer retrieved successfully',
-                'data' => $customers
-            ]);
+        if ($customers->isEmpty()) {
+            return response()->json(['message' => 'Customer not found'], 404);
         }
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Customer retrieved successfully',
+            'data' => $customers
+        ]);
+    }
 
     public function customer()
     {
@@ -182,7 +182,7 @@ class CustomerController extends Controller
     {
         $customer = Customer::findOrFail($id);
 
-        $notifications = ReminderNotification::where('user_id', $customer->id)->where('entity_type','customer')
+        $notifications = ReminderNotification::where('user_id', $customer->id)->where('entity_type', 'customer')
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -190,16 +190,16 @@ class CustomerController extends Controller
     }
 
     public function markAsRead($id)
-        {
-            $notification = ReminderNotification::findOrFail($id);
+    {
+        $notification = ReminderNotification::findOrFail($id);
 
-            if (!$notification->is_read) {
-                $notification->is_read = 1;
-                $notification->save();
-            }
-
-            return redirect()->back()->with('success', 'Notification marked as read.');
+        if (!$notification->is_read) {
+            $notification->is_read = 1;
+            $notification->save();
         }
+
+        return redirect()->back()->with('success', 'Notification marked as read.');
+    }
 
 
     public function search(Request $request)
@@ -340,1127 +340,1135 @@ class CustomerController extends Controller
     }
 
 
- public function submit_customer(Request $request)
-{
-    DB::beginTransaction();
+    public function submit_customer(Request $request)
+    {
+        DB::beginTransaction();
 
-    try {
-        $customerData = $request->except('_token');
+        try {
+            $customerData = $request->except('_token');
 
-        $customerData['admin_id'] = $request->input('branch_name');
+            $customerData['admin_id'] = $request->input('branch_name');
 
-        $checkboxFields = [
-            'approved_com',
-            'quick_box',
-            'eobi',
-            'social_security',
-            'grp_life_ins',
-            'approv_q_s',
-            'approv_q_c',
-            'approv_q_cfo',
-            'sales_dept',
-            'cmd',
-            'ops_dept',
-            'finance_dept',
-            'directors',
-            'signed_ser',
-            'com_ins',
-            'testimonials',
-            'sales_inc',
-            'fbr',
-            'pra',
-            'kpra',
-            'srb',
-            'bra',
-            'ajk',
-            'gb'
-        ];
+            $checkboxFields = [
+                'approved_com',
+                'quick_box',
+                'eobi',
+                'social_security',
+                'grp_life_ins',
+                'approv_q_s',
+                'approv_q_c',
+                'approv_q_cfo',
+                'sales_dept',
+                'cmd',
+                'ops_dept',
+                'finance_dept',
+                'directors',
+                'signed_ser',
+                'com_ins',
+                'testimonials',
+                'sales_inc',
+                'fbr',
+                'pra',
+                'kpra',
+                'srb',
+                'bra',
+                'ajk',
+                'gb'
+            ];
 
-        foreach ($checkboxFields as $field) {
-            $customerData[$field] = $request->has($field) ? true : false;
-        }
-
-        $customerImageFields = [
-            'approved_attach',
-            'quickbooks_attach',
-            'sum_apr',
-            'apr_kpi',
-            'approv_q_s_attach',
-            'approv_q_c_attach',
-            'approv_q_cfo_attach',
-            'signed_ser_attach',
-            'com_ins_attach',
-            'testimonials_attach',
-            'sales_inc_attach',
-            'perfom_attach',
-            'ntn_fbr',
-            'poc_photo',
-            'poc_attach',
-            'cf_photo',
-            'cf_attach',
-            'currency_attach',
-            'meeting_attach',
-            'meeting_freq_attach',
-            'meeting_alert_attach',
-            'pat_super_photo',
-        ];
-
-        foreach ($customerImageFields as $field) {
-            if ($request->hasFile($field)) {
-                $file = $request->file($field);
-                $extension = $file->getClientOriginalExtension();
-                $file_name = time() . '_' . $file->getClientOriginalName();
-                $file->move(public_path('uploads/images'), $file_name);
-                $customerData[$field] = 'uploads/images/' . $file_name;
+            foreach ($checkboxFields as $field) {
+                $customerData[$field] = $request->has($field) ? true : false;
             }
-        }
 
-        $customerVideoFields = [
-            'pat_super_video',
-        ];
+            $customerImageFields = [
+                'approved_attach',
+                'quickbooks_attach',
+                'sum_apr',
+                'apr_kpi',
+                'approv_q_s_attach',
+                'approv_q_c_attach',
+                'approv_q_cfo_attach',
+                'signed_ser_attach',
+                'com_ins_attach',
+                'testimonials_attach',
+                'sales_inc_attach',
+                'perfom_attach',
+                'ntn_fbr',
+                'poc_photo',
+                'poc_attach',
+                'cf_photo',
+                'cf_attach',
+                'currency_attach',
+                'meeting_attach',
+                'meeting_freq_attach',
+                'meeting_alert_attach',
+                'pat_super_photo',
+            ];
 
-        foreach ($customerVideoFields as $field) {
-            if ($request->hasFile($field)) {
-                $file = $request->file($field);
-                $extension = $file->getClientOriginalExtension();
-                $file_name = time() . '_' . $file->getClientOriginalName();
-                $file->move(public_path('uploads/videos'), $file_name);
-                $customerData[$field] = 'uploads/videos/' . $file_name;
-            }
-        }
-
-        $customerData['provinces'] = json_encode($request->input('provinces', []));
-
-        $customer = Customer::create($customerData);
-
-        // Signatory Details
-        $customerSignatureData = $request->only([
-            'sign_name',
-            'sign_desig',
-            'sign_cell',
-            'sign_email',
-        ]);
-
-        $customerSignatureDataArray = [];
-        if (isset($customerSignatureData['sign_name']) && is_array($customerSignatureData['sign_name'])) {
-            foreach ($customerSignatureData['sign_name'] as $index => $signName) {
-                $customerSignatureDataRow = [
-                    'sign_name' => $signName,
-                    'sign_desig' => $customerSignatureData['sign_desig'][$index] ?? null,
-                    'sign_cell' => $customerSignatureData['sign_cell'][$index] ?? null,
-                    'sign_email' => $customerSignatureData['sign_email'][$index] ?? null,
-                ];
-
-                $customerSignatureDataArray[] = $customerSignatureDataRow;
-            }
-        }
-
-        $customer->customersignatories()->createMany($customerSignatureDataArray);
-
-        // Salary And Benefits
-        $customerSalaryAndBenefitsData = $request->only([
-            'cat_name',
-            'sal_cat',
-            'sal_days',
-            'leaves_a',
-            'other_ben',
-            'sal_note',
-        ]);
-
-        $customerSalaryAndBenefitsDataArray = [];
-        if (isset($customerSalaryAndBenefitsData['cat_name']) && is_array($customerSalaryAndBenefitsData['cat_name'])) {
-            foreach ($customerSalaryAndBenefitsData['cat_name'] as $index => $catName) {
-                $customerSalaryAndBenefitsDataRow = [
-                    'cat_name' => $catName,
-                    'sal_cat' => $customerSalaryAndBenefitsData['sal_cat'][$index] ?? null,
-                    'sal_days' => $customerSalaryAndBenefitsData['sal_days'][$index] ?? null,
-                    'leaves_a' => $customerSalaryAndBenefitsData['leaves_a'][$index] ?? null,
-                    'other_ben' => $customerSalaryAndBenefitsData['other_ben'][$index] ?? null,
-                    'sal_note' => $customerSalaryAndBenefitsData['sal_note'][$index] ?? null,
-                ];
-
-                $customerSalaryAndBenefitsFields = [
-                    'sal_attach',
-                ];
-
-                foreach ($customerSalaryAndBenefitsFields as $field) {
-                    if ($request->hasFile($field) && isset($request->$field[$index])) {
-                        $file = $request->$field[$index];
-                        $extension = $file->getClientOriginalExtension();
-                        $file_name = time() . '_' . $file->getClientOriginalName();
-                        $file->move(public_path('uploads/images'), $file_name);
-                        $customerSalaryAndBenefitsDataRow[$field] = 'uploads/images/' . $file_name;
-                    }
+            foreach ($customerImageFields as $field) {
+                if ($request->hasFile($field)) {
+                    $file = $request->file($field);
+                    $extension = $file->getClientOriginalExtension();
+                    $file_name = time() . '_' . $file->getClientOriginalName();
+                    $file->move(public_path('uploads/images'), $file_name);
+                    $customerData[$field] = 'uploads/images/' . $file_name;
                 }
-
-                $customerSalaryAndBenefitsDataArray[] = $customerSalaryAndBenefitsDataRow;
             }
-        }
 
-        $customer->customersalary()->createMany($customerSalaryAndBenefitsDataArray);
+            $customerVideoFields = [
+                'pat_super_video',
+            ];
 
-        // Man Power Module
-        $customerManpowerData = $request->only([
-            'man_post',
-            'man_cat',
-            'man_uni',
-            'man_uni_no',
-            'man_weapon',
-            'man_ammu',
-            'man_equip',
-            's_start_date',
-            's_end_date',
-            's_start_time',
-            's_end_time',
-            'man_start_date',
-            'man_end_date',
-            'man_start_time',
-            'man_end_time',
-            'man_quan',
-            'man_hours',
-            'man_any_sp',
-            'man_apr_l',
-            'man_salary',
-        ]);
-
-        $customerManpowerDataArray = [];
-        if (isset($customerManpowerData['man_post']) && is_array($customerManpowerData['man_post'])) {
-            foreach ($customerManpowerData['man_post'] as $index => $manPost) {
-                $customerManpowerDataRow = [
-                    'man_post' => $manPost,
-                    'man_cat' => $customerManpowerData['man_cat'][$index] ?? null,
-                    'man_uni' => $customerManpowerData['man_uni'][$index] ?? null,
-                    'man_uni_no' => $customerManpowerData['man_uni_no'][$index] ?? null,
-                    'man_weapon' => $customerManpowerData['man_weapon'][$index] ?? null,
-                    'man_ammu' => $customerManpowerData['man_ammu'][$index] ?? null,
-                    'man_equip' => $customerManpowerData['man_equip'][$index] ?? null,
-                    's_start_date' => $customerManpowerData['s_start_date'][$index] ?? null,
-                    's_end_date' => $customerManpowerData['s_end_date'][$index] ?? null,
-                    's_start_time' => $customerManpowerData['s_start_time'][$index] ?? null,
-                    's_end_time' => $customerManpowerData['s_end_time'][$index] ?? null,
-                    'man_start_date' => $customerManpowerData['man_start_date'][$index] ?? null,
-                    'man_end_date' => $customerManpowerData['man_end_date'][$index] ?? null,
-                    'man_start_time' => $customerManpowerData['man_start_time'][$index] ?? null,
-                    'man_end_time' => $customerManpowerData['man_end_time'][$index] ?? null,
-                    'man_quan' => $customerManpowerData['man_quan'][$index] ?? null,
-                    'man_hours' => $customerManpowerData['man_hours'][$index] ?? null,
-                    'man_any_sp' => $customerManpowerData['man_any_sp'][$index] ?? null,
-                    'man_apr_l' => $customerManpowerData['man_apr_l'][$index] ?? null,
-                    'man_salary' => $customerManpowerData['man_salary'][$index] ?? null,
-                ];
-
-                $customerManpowerFields = [
-                    'man_equip_attach',
-                    'man_jd_attach',
-                ];
-
-                foreach ($customerManpowerFields as $field) {
-                    if ($request->hasFile($field) && isset($request->$field[$index])) {
-                        $file = $request->$field[$index];
-                        $extension = $file->getClientOriginalExtension();
-                        $file_name = time() . '_' . $file->getClientOriginalName();
-                        $file->move(public_path('uploads/images'), $file_name);
-                        $customerManpowerDataRow[$field] = 'uploads/images/' . $file_name;
-                    }
+            foreach ($customerVideoFields as $field) {
+                if ($request->hasFile($field)) {
+                    $file = $request->file($field);
+                    $extension = $file->getClientOriginalExtension();
+                    $file_name = time() . '_' . $file->getClientOriginalName();
+                    $file->move(public_path('uploads/videos'), $file_name);
+                    $customerData[$field] = 'uploads/videos/' . $file_name;
                 }
-
-                $customerManpowerDataArray[] = $customerManpowerDataRow;
             }
-        }
 
-        $customer->customermanpowers()->createMany($customerManpowerDataArray);
+            $customerData['provinces'] = json_encode($request->input('provinces', []));
 
-        // Emergency Module
-        $customerEmergencyData = $request->only([
-            'emer_ser',
-            'emer_poc_name',
-            'emer_poc_desig',
-            'emer_poc_cell',
-            'emer_poc_email',
-            'emer_poc_notes',
-            'emer_office',
-            'emer_floor',
-            'emer_building',
-            'emer_block',
-            'emer_area',
-            'emer_city',
-            'emer_email',
-            'emer_web',
-            'emer_pin',
-            'longitude2',
-            'latitude2',
-            'emer_app_rental',
-            'emer_note',
-        ]);
+            $customer = Customer::create($customerData);
 
-        $customerEmergencyDataArray = [];
-        if (isset($customerEmergencyData['emer_ser']) && is_array($customerEmergencyData['emer_ser'])) {
-            foreach ($customerEmergencyData['emer_ser'] as $index => $emerSer) {
-                $customerEmergencyDataRow = [
-                    'emer_ser' => $emerSer,
-                    'emer_poc_name' => $customerEmergencyData['emer_poc_name'][$index] ?? null,
-                    'emer_poc_desig' => $customerEmergencyData['emer_poc_desig'][$index] ?? null,
-                    'emer_poc_cell' => $customerEmergencyData['emer_poc_cell'][$index] ?? null,
-                    'emer_poc_email' => $customerEmergencyData['emer_poc_email'][$index] ?? null,
-                    'emer_poc_notes' => $customerEmergencyData['emer_poc_notes'][$index] ?? null,
-                    'emer_office' => $customerEmergencyData['emer_office'][$index] ?? null,
-                    'emer_floor' => $customerEmergencyData['emer_floor'][$index] ?? null,
-                    'emer_building' => $customerEmergencyData['emer_building'][$index] ?? null,
-                    'emer_block' => $customerEmergencyData['emer_block'][$index] ?? null,
-                    'emer_area' => $customerEmergencyData['emer_area'][$index] ?? null,
-                    'emer_city' => $customerEmergencyData['emer_city'][$index] ?? null,
-                    'emer_email' => $customerEmergencyData['emer_email'][$index] ?? null,
-                    'emer_web' => $customerEmergencyData['emer_web'][$index] ?? null,
-                    'emer_pin' => $customerEmergencyData['emer_pin'][$index] ?? null,
-                    'longitude2' => $customerEmergencyData['longitude2'][$index] ?? null,
-                    'latitude2' => $customerEmergencyData['latitude2'][$index] ?? null,
-                    'emer_app_rental' => $customerEmergencyData['emer_app_rental'][$index] ?? null,
-                    'emer_note' => $customerEmergencyData['emer_note'][$index] ?? null,
-                ];
+            // Signatory Details
+            $customerSignatureData = $request->only([
+                'sign_name',
+                'sign_desig',
+                'sign_cell',
+                'sign_email',
+            ]);
 
-                $customerEmergencyFields = [
-                    'emer_pic',
-                    'emer_poc_attach',
-                    'emer_loc',
-                    'emer_attach',
-                ];
+            $customerSignatureDataArray = [];
+            if (isset($customerSignatureData['sign_name']) && is_array($customerSignatureData['sign_name'])) {
+                foreach ($customerSignatureData['sign_name'] as $index => $signName) {
+                    $customerSignatureDataRow = [
+                        'sign_name' => $signName,
+                        'sign_desig' => $customerSignatureData['sign_desig'][$index] ?? null,
+                        'sign_cell' => $customerSignatureData['sign_cell'][$index] ?? null,
+                        'sign_email' => $customerSignatureData['sign_email'][$index] ?? null,
+                    ];
 
-                foreach ($customerEmergencyFields as $field) {
-                    if ($request->hasFile($field) && isset($request->$field[$index])) {
-                        $file = $request->$field[$index];
-                        $extension = $file->getClientOriginalExtension();
-                        $file_name = time() . '_' . $file->getClientOriginalName();
-                        $file->move(public_path('uploads/images'), $file_name);
-                        $customerEmergencyDataRow[$field] = 'uploads/images/' . $file_name;
-                    }
+                    $customerSignatureDataArray[] = $customerSignatureDataRow;
                 }
-
-                $customerEmergencyDataArray[] = $customerEmergencyDataRow;
             }
-        }
 
-        $customer->customeremergencies()->createMany($customerEmergencyDataArray);
+            $customer->customersignatories()->createMany($customerSignatureDataArray);
 
-        // Department Module
-        $customerDepartmentData = $request->only([
-            'dept_type',
-            'dept_name',
-            'dept_email',
-            'dept_cell',
-            'dept_address',
-            'dept_desig',
-            'dept_notes',
-            'dept_office',
-            'dept_floor',
-            'dept_build',
-            'dept_block',
-            'dept_area',
-            'dept_city',
-            'dept_pin',
-            'longitude3',
-            'latitude3',
-            'dept_ex_notes',
-        ]);
+            // Salary And Benefits
+            $customerSalaryAndBenefitsData = $request->only([
+                'cat_name',
+                'sal_cat',
+                'sal_days',
+                'leaves_a',
+                'other_ben',
+                'sal_note',
+            ]);
 
-        $customerDepartmentDataArray = [];
-        if (isset($customerDepartmentData['dept_type']) && is_array($customerDepartmentData['dept_type'])) {
-            foreach ($customerDepartmentData['dept_type'] as $index => $deptType) {
-                $customerDepartmentDataRow = [
-                    'dept_type' => $deptType,
-                    'dept_name' => $customerDepartmentData['dept_name'][$index] ?? null,
-                    'dept_email' => $customerDepartmentData['dept_email'][$index] ?? null,
-                    'dept_cell' => $customerDepartmentData['dept_cell'][$index] ?? null,
-                    'dept_address' => $customerDepartmentData['dept_address'][$index] ?? null,
-                    'dept_desig' => $customerDepartmentData['dept_desig'][$index] ?? null,
-                    'dept_notes' => $customerDepartmentData['dept_notes'][$index] ?? null,
-                    'dept_office' => $customerDepartmentData['dept_office'][$index] ?? null,
-                    'dept_floor' => $customerDepartmentData['dept_floor'][$index] ?? null,
-                    'dept_build' => $customerDepartmentData['dept_build'][$index] ?? null,
-                    'dept_block' => $customerDepartmentData['dept_block'][$index] ?? null,
-                    'dept_area' => $customerDepartmentData['dept_area'][$index] ?? null,
-                    'dept_city' => $customerDepartmentData['dept_city'][$index] ?? null,
-                    'dept_pin' => $customerDepartmentData['dept_pin'][$index] ?? null,
-                    'longitude3' => $customerDepartmentData['longitude3'][$index] ?? null,
-                    'latitude3' => $customerDepartmentData['latitude3'][$index] ?? null,
-                    'dept_ex_notes' => $customerDepartmentData['dept_ex_notes'][$index] ?? null,
-                ];
+            $customerSalaryAndBenefitsDataArray = [];
+            if (isset($customerSalaryAndBenefitsData['cat_name']) && is_array($customerSalaryAndBenefitsData['cat_name'])) {
+                foreach ($customerSalaryAndBenefitsData['cat_name'] as $index => $catName) {
+                    $customerSalaryAndBenefitsDataRow = [
+                        'cat_name' => $catName,
+                        'sal_cat' => $customerSalaryAndBenefitsData['sal_cat'][$index] ?? null,
+                        'sal_days' => $customerSalaryAndBenefitsData['sal_days'][$index] ?? null,
+                        'leaves_a' => $customerSalaryAndBenefitsData['leaves_a'][$index] ?? null,
+                        'other_ben' => $customerSalaryAndBenefitsData['other_ben'][$index] ?? null,
+                        'sal_note' => $customerSalaryAndBenefitsData['sal_note'][$index] ?? null,
+                    ];
 
-                $customerDepartmentFields = [
-                    'dept_front',
-                    'dept_back',
-                    'dept_attach',
-                    'dept_photo',
-                    'dept_ex_attach',
-                ];
+                    $customerSalaryAndBenefitsFields = [
+                        'sal_attach',
+                    ];
 
-                foreach ($customerDepartmentFields as $field) {
-                    if ($request->hasFile($field) && isset($request->$field[$index])) {
-                        $file = $request->$field[$index];
-                        $extension = $file->getClientOriginalExtension();
-                        $file_name = time() . '_' . $file->getClientOriginalName();
-                        $file->move(public_path('uploads/images'), $file_name);
-                        $customerDepartmentDataRow[$field] = 'uploads/images/' . $file_name;
+                    foreach ($customerSalaryAndBenefitsFields as $field) {
+                        if ($request->hasFile($field) && isset($request->$field[$index])) {
+                            $file = $request->$field[$index];
+                            $extension = $file->getClientOriginalExtension();
+                            $file_name = time() . '_' . $file->getClientOriginalName();
+                            $file->move(public_path('uploads/images'), $file_name);
+                            $customerSalaryAndBenefitsDataRow[$field] = 'uploads/images/' . $file_name;
+                        }
                     }
+
+                    $customerSalaryAndBenefitsDataArray[] = $customerSalaryAndBenefitsDataRow;
                 }
-
-                $customerDepartmentDataArray[] = $customerDepartmentDataRow;
             }
-        }
 
-        $customer->customerdepartments()->createMany($customerDepartmentDataArray);
+            $customer->customersalary()->createMany($customerSalaryAndBenefitsDataArray);
 
-        // Inspection Module
-        $customerInspectionData = $request->only([
-            'inspection_no',
-            'inspection_emp_id',
-            'inspection_emp_name',
-            'inspection_emp_cell',
-            'inspection_emp_dept',
-            'inspection_date',
-            'inspection_rem_petr',
-            'inspection_note',
-        ]);
+            // Man Power Module
+            $customerManpowerData = $request->only([
+                'man_post',
+                'man_cat',
+                'man_uni',
+                'man_uni_no',
+                'man_weapon',
+                'man_ammu',
+                'man_equip',
+                's_start_date',
+                's_end_date',
+                's_start_time',
+                's_end_time',
+                'man_start_date',
+                'man_end_date',
+                'man_start_time',
+                'man_end_time',
+                'man_quan',
+                'man_hours',
+                'man_any_sp',
+                'man_apr_l',
+                'man_salary',
+            ]);
 
-        $customerInspectionDataArray = [];
-        if (isset($customerInspectionData['inspection_no']) && is_array($customerInspectionData['inspection_no'])) {
-            foreach ($customerInspectionData['inspection_no'] as $index => $inspectionNo) {
-                $customerInspectionDataRow = [
-                    'inspection_no' => $inspectionNo,
-                    'inspection_emp_id' => $customerInspectionData['inspection_emp_id'][$index] ?? null,
-                    'inspection_emp_name' => $customerInspectionData['inspection_emp_name'][$index] ?? null,
-                    'inspection_emp_cell' => $customerInspectionData['inspection_emp_cell'][$index] ?? null,
-                    'inspection_emp_dept' => $customerInspectionData['inspection_emp_dept'][$index] ?? null,
-                    'inspection_date' => $customerInspectionData['inspection_date'][$index] ?? null,
-                    'inspection_rem_petr' => $customerInspectionData['inspection_rem_petr'][$index] ?? null,
-                    'inspection_note' => $customerInspectionData['inspection_note'][$index] ?? null,
-                ];
+            $customerManpowerDataArray = [];
+            if (isset($customerManpowerData['man_post']) && is_array($customerManpowerData['man_post'])) {
+                foreach ($customerManpowerData['man_post'] as $index => $manPost) {
+                    $customerManpowerDataRow = [
+                        'man_post' => $manPost,
+                        'man_cat' => $customerManpowerData['man_cat'][$index] ?? null,
+                        'man_uni' => $customerManpowerData['man_uni'][$index] ?? null,
+                        'man_uni_no' => $customerManpowerData['man_uni_no'][$index] ?? null,
+                        'man_weapon' => $customerManpowerData['man_weapon'][$index] ?? null,
+                        'man_ammu' => $customerManpowerData['man_ammu'][$index] ?? null,
+                        'man_equip' => $customerManpowerData['man_equip'][$index] ?? null,
+                        's_start_date' => $customerManpowerData['s_start_date'][$index] ?? null,
+                        's_end_date' => $customerManpowerData['s_end_date'][$index] ?? null,
+                        's_start_time' => $customerManpowerData['s_start_time'][$index] ?? null,
+                        's_end_time' => $customerManpowerData['s_end_time'][$index] ?? null,
+                        'man_start_date' => $customerManpowerData['man_start_date'][$index] ?? null,
+                        'man_end_date' => $customerManpowerData['man_end_date'][$index] ?? null,
+                        'man_start_time' => $customerManpowerData['man_start_time'][$index] ?? null,
+                        'man_end_time' => $customerManpowerData['man_end_time'][$index] ?? null,
+                        'man_quan' => $customerManpowerData['man_quan'][$index] ?? null,
+                        'man_hours' => $customerManpowerData['man_hours'][$index] ?? null,
+                        'man_any_sp' => $customerManpowerData['man_any_sp'][$index] ?? null,
+                        'man_apr_l' => $customerManpowerData['man_apr_l'][$index] ?? null,
+                        'man_salary' => $customerManpowerData['man_salary'][$index] ?? null,
+                    ];
 
-                $customerInspectionFields = [
-                    'inspection_pic',
-                    'inspection_attach',
-                ];
+                    $customerManpowerFields = [
+                        'man_equip_attach',
+                        'man_jd_attach',
+                    ];
 
-                foreach ($customerInspectionFields as $field) {
-                    if ($request->hasFile($field) && isset($request->$field[$index])) {
-                        $file = $request->$field[$index];
-                        $extension = $file->getClientOriginalExtension();
-                        $file_name = time() . '_' . $file->getClientOriginalName();
-                        $file->move(public_path('uploads/images'), $file_name);
-                        $customerInspectionDataRow[$field] = 'uploads/images/' . $file_name;
+                    foreach ($customerManpowerFields as $field) {
+                        if ($request->hasFile($field) && isset($request->$field[$index])) {
+                            $file = $request->$field[$index];
+                            $extension = $file->getClientOriginalExtension();
+                            $file_name = time() . '_' . $file->getClientOriginalName();
+                            $file->move(public_path('uploads/images'), $file_name);
+                            $customerManpowerDataRow[$field] = 'uploads/images/' . $file_name;
+                        }
                     }
+
+                    $customerManpowerDataArray[] = $customerManpowerDataRow;
                 }
-
-                $customerInspectionDataArray[] = $customerInspectionDataRow;
             }
-        }
 
-        $customer->customerinspections()->createMany($customerInspectionDataArray);
+            $customer->customermanpowers()->createMany($customerManpowerDataArray);
 
-        // Armourer Module
-        $customerArmourerData = $request->only([
-            'arm_branch_name',
-            'arm_branch_id',
-            'arm_site_id',
-            'arm_client_name',
-            'arm_weapon_no',
-            'arm_weapon_bore',
-            'arm_weapon_type',
-            'arm_work_detail',
-            'arm_sign_cus',
-            'arm_auth',
-            'arm_auth_no',
-            'arm_auth_date',
-            'arm_auth_issue',
-            'type_weapon_cleaned',
-            'arm_weapon_cleaned',
-            'arm_cost_day',
-            'arm_next_clean',
-            'arm_auth_notes',
-        ]);
+            // Emergency Module
+            $customerEmergencyData = $request->only([
+                'emer_ser',
+                'emer_poc_name',
+                'emer_poc_desig',
+                'emer_poc_cell',
+                'emer_poc_email',
+                'emer_poc_notes',
+                'emer_office',
+                'emer_floor',
+                'emer_building',
+                'emer_block',
+                'emer_area',
+                'emer_city',
+                'emer_email',
+                'emer_web',
+                'emer_pin',
+                'longitude2',
+                'latitude2',
+                'emer_app_rental',
+                'emer_note',
+            ]);
 
-        $customerArmourerDataArray = [];
-        if (isset($customerArmourerData['arm_branch_name']) && is_array($customerArmourerData['arm_branch_name'])) {
-            foreach ($customerArmourerData['arm_branch_name'] as $index => $armbranchName) {
-                $customerArmourerDataRow = [
-                    'arm_branch_name' => $armbranchName,
-                    'arm_branch_id' => $customerArmourerData['arm_branch_id'][$index] ?? null,
-                    'arm_site_id' => $customerArmourerData['arm_site_id'][$index] ?? null,
-                    'arm_client_name' => $customerArmourerData['arm_client_name'][$index] ?? null,
-                    'arm_weapon_no' => $customerArmourerData['arm_weapon_no'][$index] ?? null,
-                    'arm_weapon_bore' => $customerArmourerData['arm_weapon_bore'][$index] ?? null,
-                    'arm_weapon_type' => $customerArmourerData['arm_weapon_type'][$index] ?? null,
-                    'arm_work_detail' => $customerArmourerData['arm_work_detail'][$index] ?? null,
-                    'arm_sign_cus' => $customerArmourerData['arm_sign_cus'][$index] ?? null,
-                    'arm_auth' => $customerArmourerData['arm_auth'][$index] ?? null,
-                    'arm_auth_no' => $customerArmourerData['arm_auth_no'][$index] ?? null,
-                    'arm_auth_date' => $customerArmourerData['arm_auth_date'][$index] ?? null,
-                    'arm_auth_issue' => $customerArmourerData['arm_auth_issue'][$index] ?? null,
-                    'arm_weapon_cleaned' => $customerArmourerData['arm_weapon_cleaned'][$index] ?? null,
-                    'type_weapon_cleaned' => $customerArmourerData['type_weapon_cleaned'][$index] ?? null,
-                    'arm_cost_day' => $customerArmourerData['arm_cost_day'][$index] ?? null,
-                    'arm_next_clean' => $customerArmourerData['arm_next_clean'][$index] ?? null,
-                    'arm_auth_notes' => $customerArmourerData['arm_auth_notes'][$index] ?? null,
-                ];
+            $customerEmergencyDataArray = [];
+            if (isset($customerEmergencyData['emer_ser']) && is_array($customerEmergencyData['emer_ser'])) {
+                foreach ($customerEmergencyData['emer_ser'] as $index => $emerSer) {
+                    $customerEmergencyDataRow = [
+                        'emer_ser' => $emerSer,
+                        'emer_poc_name' => $customerEmergencyData['emer_poc_name'][$index] ?? null,
+                        'emer_poc_desig' => $customerEmergencyData['emer_poc_desig'][$index] ?? null,
+                        'emer_poc_cell' => $customerEmergencyData['emer_poc_cell'][$index] ?? null,
+                        'emer_poc_email' => $customerEmergencyData['emer_poc_email'][$index] ?? null,
+                        'emer_poc_notes' => $customerEmergencyData['emer_poc_notes'][$index] ?? null,
+                        'emer_office' => $customerEmergencyData['emer_office'][$index] ?? null,
+                        'emer_floor' => $customerEmergencyData['emer_floor'][$index] ?? null,
+                        'emer_building' => $customerEmergencyData['emer_building'][$index] ?? null,
+                        'emer_block' => $customerEmergencyData['emer_block'][$index] ?? null,
+                        'emer_area' => $customerEmergencyData['emer_area'][$index] ?? null,
+                        'emer_city' => $customerEmergencyData['emer_city'][$index] ?? null,
+                        'emer_email' => $customerEmergencyData['emer_email'][$index] ?? null,
+                        'emer_web' => $customerEmergencyData['emer_web'][$index] ?? null,
+                        'emer_pin' => $customerEmergencyData['emer_pin'][$index] ?? null,
+                        'longitude2' => $customerEmergencyData['longitude2'][$index] ?? null,
+                        'latitude2' => $customerEmergencyData['latitude2'][$index] ?? null,
+                        'emer_app_rental' => $customerEmergencyData['emer_app_rental'][$index] ?? null,
+                        'emer_note' => $customerEmergencyData['emer_note'][$index] ?? null,
+                    ];
 
-                $customerArmourerFields = [
-                    'arm_pic_b',
-                    'arm_pic_a',
-                    'arm_cost_bill',
-                    'arm_auth_attach',
-                ];
+                    $customerEmergencyFields = [
+                        'emer_pic',
+                        'emer_poc_attach',
+                        'emer_loc',
+                        'emer_attach',
+                    ];
 
-                foreach ($customerArmourerFields as $field) {
-                    if ($request->hasFile($field) && isset($request->$field[$index])) {
-                        $file = $request->$field[$index];
-                        $extension = $file->getClientOriginalExtension();
-                        $file_name = time() . '_' . $file->getClientOriginalName();
-                        $file->move(public_path('uploads/images'), $file_name);
-                        $customerArmourerDataRow[$field] = 'uploads/images/' . $file_name;
+                    foreach ($customerEmergencyFields as $field) {
+                        if ($request->hasFile($field) && isset($request->$field[$index])) {
+                            $file = $request->$field[$index];
+                            $extension = $file->getClientOriginalExtension();
+                            $file_name = time() . '_' . $file->getClientOriginalName();
+                            $file->move(public_path('uploads/images'), $file_name);
+                            $customerEmergencyDataRow[$field] = 'uploads/images/' . $file_name;
+                        }
                     }
+
+                    $customerEmergencyDataArray[] = $customerEmergencyDataRow;
                 }
-
-                $customerArmourerDataArray[] = $customerArmourerDataRow;
             }
-        }
 
-        $customer->customerarmourers()->createMany($customerArmourerDataArray);
+            $customer->customeremergencies()->createMany($customerEmergencyDataArray);
 
-        // Incident Module
-        $customerIncidentData = $request->only([
-            'client_name',
-            'client_id',
-            'client_site_id',
-            'client_poc',
-            'client_cell',
-            'client_email',
-            'client_site_address',
-            'client_office',
-            'client_build',
-            'client_street',
-            'client_area',
-            'client_city',
-            'client_fir',
-            'arrest',
-            'casual',
-            'injuired',
-            'incident_rep',
-            'police_officer_name',
-            'station',
-            'rank',
-            'report_made_by',
-            'report_date',
-            'report_time',
-            'report_apr_by',
-            'report_shared',
-            'incident_type',
-            'weapon_used',
-            'detail_of_attacker',
-            'attacker_desc',
-            'attacker_shoe',
-            'attacker_beard',
-            'attacker_lang',
-            'focused',
-            'opening_phrase',
-            'any_usual',
-            'estimated_loss',
-            'desc_loss',
-            'officer_response',
-            'incident_note',
-        ]);
+            // Department Module
+            $customerDepartmentData = $request->only([
+                'dept_type',
+                'dept_name',
+                'dept_email',
+                'dept_cell',
+                'dept_address',
+                'dept_desig',
+                'dept_notes',
+                'dept_office',
+                'dept_floor',
+                'dept_build',
+                'dept_block',
+                'dept_area',
+                'dept_city',
+                'dept_pin',
+                'longitude3',
+                'latitude3',
+                'dept_ex_notes',
+            ]);
 
-        $customerIncidentDataArray = [];
-        if (isset($customerIncidentData['client_name']) && is_array($customerIncidentData['client_name'])) {
-            foreach ($customerIncidentData['client_name'] as $index => $clientName) {
-                $customerIncidentDataRow = [
-                    'client_name' => $clientName,
-                    'client_id' => $customerIncidentData['client_id'][$index] ?? null,
-                    'client_site_id' => $customerIncidentData['client_site_id'][$index] ?? null,
-                    'client_poc' => $customerIncidentData['client_poc'][$index] ?? null,
-                    'client_cell' => $customerIncidentData['client_cell'][$index] ?? null,
-                    'client_email' => $customerIncidentData['client_email'][$index] ?? null,
-                    'client_site_address' => $customerIncidentData['client_site_address'][$index] ?? null,
-                    'client_office' => $customerIncidentData['client_office'][$index] ?? null,
-                    'client_build' => $customerIncidentData['client_build'][$index] ?? null,
-                    'client_street' => $customerIncidentData['client_street'][$index] ?? null,
-                    'client_area' => $customerIncidentData['client_area'][$index] ?? null,
-                    'client_city' => $customerIncidentData['client_city'][$index] ?? null,
-                    'client_fir' => $customerIncidentData['client_fir'][$index] ?? null,
-                    'arrest' => $customerIncidentData['arrest'][$index] ?? null,
-                    'casual' => $customerIncidentData['casual'][$index] ?? null,
-                    'injuired' => $customerIncidentData['injuired'][$index] ?? null,
-                    'incident_rep' => $customerIncidentData['incident_rep'][$index] ?? null,
-                    'police_officer_name' => $customerIncidentData['police_officer_name'][$index] ?? null,
-                    'station' => $customerIncidentData['station'][$index] ?? null,
-                    'rank' => $customerIncidentData['rank'][$index] ?? null,
-                    'report_made_by' => $customerIncidentData['report_made_by'][$index] ?? null,
-                    'report_date' => $customerIncidentData['report_date'][$index] ?? null,
-                    'report_time' => $customerIncidentData['report_time'][$index] ?? null,
-                    'report_apr_by' => $customerIncidentData['report_apr_by'][$index] ?? null,
-                    'report_shared' => $customerIncidentData['report_shared'][$index] ?? null,
-                    'incident_type' => $customerIncidentData['incident_type'][$index] ?? null,
-                    'weapon_used' => $customerIncidentData['weapon_used'][$index] ?? null,
-                    'detail_of_attacker' => $customerIncidentData['detail_of_attacker'][$index] ?? null,
-                    'attacker_desc' => $customerIncidentData['attacker_desc'][$index] ?? null,
-                    'attacker_shoe' => $customerIncidentData['attacker_shoe'][$index] ?? null,
-                    'attacker_beard' => $customerIncidentData['attacker_beard'][$index] ?? null,
-                    'attacker_lang' => $customerIncidentData['attacker_lang'][$index] ?? null,
-                    'focused' => $customerIncidentData['focused'][$index] ?? null,
-                    'opening_phrase' => $customerIncidentData['opening_phrase'][$index] ?? null,
-                    'any_usual' => $customerIncidentData['any_usual'][$index] ?? null,
-                    'estimated_loss' => $customerIncidentData['estimated_loss'][$index] ?? null,
-                    'desc_loss' => $customerIncidentData['desc_loss'][$index] ?? null,
-                    'officer_response' => $customerIncidentData['officer_response'][$index] ?? null,
-                    'incident_note' => $customerIncidentData['incident_note'][$index] ?? null,
-                ];
+            $customerDepartmentDataArray = [];
+            if (isset($customerDepartmentData['dept_type']) && is_array($customerDepartmentData['dept_type'])) {
+                foreach ($customerDepartmentData['dept_type'] as $index => $deptType) {
+                    $customerDepartmentDataRow = [
+                        'dept_type' => $deptType,
+                        'dept_name' => $customerDepartmentData['dept_name'][$index] ?? null,
+                        'dept_email' => $customerDepartmentData['dept_email'][$index] ?? null,
+                        'dept_cell' => $customerDepartmentData['dept_cell'][$index] ?? null,
+                        'dept_address' => $customerDepartmentData['dept_address'][$index] ?? null,
+                        'dept_desig' => $customerDepartmentData['dept_desig'][$index] ?? null,
+                        'dept_notes' => $customerDepartmentData['dept_notes'][$index] ?? null,
+                        'dept_office' => $customerDepartmentData['dept_office'][$index] ?? null,
+                        'dept_floor' => $customerDepartmentData['dept_floor'][$index] ?? null,
+                        'dept_build' => $customerDepartmentData['dept_build'][$index] ?? null,
+                        'dept_block' => $customerDepartmentData['dept_block'][$index] ?? null,
+                        'dept_area' => $customerDepartmentData['dept_area'][$index] ?? null,
+                        'dept_city' => $customerDepartmentData['dept_city'][$index] ?? null,
+                        'dept_pin' => $customerDepartmentData['dept_pin'][$index] ?? null,
+                        'longitude3' => $customerDepartmentData['longitude3'][$index] ?? null,
+                        'latitude3' => $customerDepartmentData['latitude3'][$index] ?? null,
+                        'dept_ex_notes' => $customerDepartmentData['dept_ex_notes'][$index] ?? null,
+                    ];
 
-                $customerIncidentFields = [
-                    'incident_attach',
-                ];
+                    $customerDepartmentFields = [
+                        'dept_front',
+                        'dept_back',
+                        'dept_attach',
+                        'dept_photo',
+                        'dept_ex_attach',
+                    ];
 
-                foreach ($customerIncidentFields as $field) {
-                    if ($request->hasFile($field) && isset($request->$field[$index])) {
-                        $file = $request->$field[$index];
-                        $extension = $file->getClientOriginalExtension();
-                        $file_name = time() . '_' . $file->getClientOriginalName();
-                        $file->move(public_path('uploads/images'), $file_name);
-                        $customerIncidentDataRow[$field] = 'uploads/images/' . $file_name;
+                    foreach ($customerDepartmentFields as $field) {
+                        if ($request->hasFile($field) && isset($request->$field[$index])) {
+                            $file = $request->$field[$index];
+                            $extension = $file->getClientOriginalExtension();
+                            $file_name = time() . '_' . $file->getClientOriginalName();
+                            $file->move(public_path('uploads/images'), $file_name);
+                            $customerDepartmentDataRow[$field] = 'uploads/images/' . $file_name;
+                        }
                     }
+
+                    $customerDepartmentDataArray[] = $customerDepartmentDataRow;
                 }
-
-                $customerIncidentDataArray[] = $customerIncidentDataRow;
             }
-        }
 
-        $customer->customerincidents()->createMany($customerIncidentDataArray);
+            $customer->customerdepartments()->createMany($customerDepartmentDataArray);
 
-        // Assignment Module
-        $customerAssigmentData = $request->only([
-            'asig_customer_name',
-            'task_assigning',
-            'asig_desig',
-            'asig_office',
-            'asig_building',
-            'asig_road',
-            'asig_area',
-            'asig_city',
-            'asig_country',
-            'asig_security',
-            'asig_contact',
-            'incharge_name',
-            'incharge_desig',
-            'incharge_contact',
-            'incharge_help',
-            'incharge_desc',
-            'incharge_risk',
-            'incharge_asig',
-            'incharge_signed_by',
-            'incharge_date',
-            'incharge_offc',
-            'incharge_floor',
-            'incharge_build',
-            'incharge_block',
-            'incharge_area',
-            'incharge_city',
-            'incharge_pin',
-            'longitude4',
-            'latitude4',
-            'incharge_country',
-            'incharge_site',
-            'incharge_a_g',
-            'incharge_a_ung',
-            'incharge_t_g',
-            'rec_inc_rel',
-            'feq_occ',
-            'exp_piff',
-            'any_spec',
-            'petr_instruc',
-            'asig_ex_notes',
-        ]);
+            // Inspection Module
+            $customerInspectionData = $request->only([
+                'inspection_no',
+                'inspection_emp_id',
+                'inspection_emp_name',
+                'inspection_emp_cell',
+                'inspection_emp_dept',
+                'inspection_date',
+                'inspection_rem_petr',
+                'inspection_note',
+            ]);
 
-        $customerAssigmentDataArray = [];
-        if (isset($customerAssigmentData['asig_customer_name']) && is_array($customerAssigmentData['asig_customer_name'])) {
-            foreach ($customerAssigmentData['asig_customer_name'] as $index => $asigcustomerName) {
-                $customerAssigmentDataRow = [
-                    'asig_customer_name' => $asigcustomerName,
-                    'task_assigning' => $customerAssigmentData['task_assigning'][$index] ?? null,
-                    'asig_desig' => $customerAssigmentData['asig_desig'][$index] ?? null,
-                    'asig_office' => $customerAssigmentData['asig_office'][$index] ?? null,
-                    'asig_building' => $customerAssigmentData['asig_building'][$index] ?? null,
-                    'asig_road' => $customerAssigmentData['asig_road'][$index] ?? null,
-                    'asig_area' => $customerAssigmentData['asig_area'][$index] ?? null,
-                    'asig_city' => $customerAssigmentData['asig_city'][$index] ?? null,
-                    'asig_country' => $customerAssigmentData['asig_country'][$index] ?? null,
-                    'asig_security' => $customerAssigmentData['asig_security'][$index] ?? null,
-                    'asig_contact' => $customerAssigmentData['asig_contact'][$index] ?? null,
-                    'incharge_name' => $customerAssigmentData['incharge_name'][$index] ?? null,
-                    'incharge_desig' => $customerAssigmentData['incharge_desig'][$index] ?? null,
-                    'incharge_contact' => $customerAssigmentData['incharge_contact'][$index] ?? null,
-                    'incharge_help' => $customerAssigmentData['incharge_help'][$index] ?? null,
-                    'incharge_desc' => $customerAssigmentData['incharge_desc'][$index] ?? null,
-                    'incharge_risk' => $customerAssigmentData['incharge_risk'][$index] ?? null,
-                    'incharge_asig' => $customerAssigmentData['incharge_asig'][$index] ?? null,
-                    'incharge_signed_by' => $customerAssigmentData['incharge_signed_by'][$index] ?? null,
-                    'incharge_date' => $customerAssigmentData['incharge_date'][$index] ?? null,
-                    'incharge_offc' => $customerAssigmentData['incharge_offc'][$index] ?? null,
-                    'incharge_floor' => $customerAssigmentData['incharge_floor'][$index] ?? null,
-                    'incharge_build' => $customerAssigmentData['incharge_build'][$index] ?? null,
-                    'incharge_block' => $customerAssigmentData['incharge_block'][$index] ?? null,
-                    'incharge_area' => $customerAssigmentData['incharge_area'][$index] ?? null,
-                    'incharge_city' => $customerAssigmentData['incharge_city'][$index] ?? null,
-                    'incharge_pin' => $customerAssigmentData['incharge_pin'][$index] ?? null,
-                    'longitude4' => $customerAssigmentData['longitude4'][$index] ?? null,
-                    'latitude4' => $customerAssigmentData['latitude4'][$index] ?? null,
-                    'incharge_country' => $customerAssigmentData['incharge_country'][$index] ?? null,
-                    'incharge_site' => $customerAssigmentData['incharge_site'][$index] ?? null,
-                    'incharge_a_g' => $customerAssigmentData['incharge_a_g'][$index] ?? null,
-                    'incharge_t_g' => $customerAssigmentData['incharge_t_g'][$index] ?? null,
-                    'rec_inc_rel' => $customerAssigmentData['rec_inc_rel'][$index] ?? null,
-                    'feq_occ' => $customerAssigmentData['feq_occ'][$index] ?? null,
-                    'exp_piff' => $customerAssigmentData['exp_piff'][$index] ?? null,
-                    'any_spec' => $customerAssigmentData['any_spec'][$index] ?? null,
-                    'petr_instruc' => $customerAssigmentData['petr_instruc'][$index] ?? null,
-                    'asig_ex_notes' => $customerAssigmentData['asig_ex_notes'][$index] ?? null,
-                ];
+            $customerInspectionDataArray = [];
+            if (isset($customerInspectionData['inspection_no']) && is_array($customerInspectionData['inspection_no'])) {
+                foreach ($customerInspectionData['inspection_no'] as $index => $inspectionNo) {
+                    $customerInspectionDataRow = [
+                        'inspection_no' => $inspectionNo,
+                        'inspection_emp_id' => $customerInspectionData['inspection_emp_id'][$index] ?? null,
+                        'inspection_emp_name' => $customerInspectionData['inspection_emp_name'][$index] ?? null,
+                        'inspection_emp_cell' => $customerInspectionData['inspection_emp_cell'][$index] ?? null,
+                        'inspection_emp_dept' => $customerInspectionData['inspection_emp_dept'][$index] ?? null,
+                        'inspection_date' => $customerInspectionData['inspection_date'][$index] ?? null,
+                        'inspection_rem_petr' => $customerInspectionData['inspection_rem_petr'][$index] ?? null,
+                        'inspection_note' => $customerInspectionData['inspection_note'][$index] ?? null,
+                    ];
 
-                $customerAssigmentFields = [
-                    'asig_ex_attach',
-                ];
+                    $customerInspectionFields = [
+                        'inspection_pic',
+                        'inspection_attach',
+                    ];
 
-                foreach ($customerAssigmentFields as $field) {
-                    if ($request->hasFile($field) && isset($request->$field[$index])) {
-                        $file = $request->$field[$index];
-                        $extension = $file->getClientOriginalExtension();
-                        $file_name = time() . '_' . $file->getClientOriginalName();
-                        $file->move(public_path('uploads/images'), $file_name);
-                        $customerAssigmentDataRow[$field] = 'uploads/images/' . $file_name;
+                    foreach ($customerInspectionFields as $field) {
+                        if ($request->hasFile($field) && isset($request->$field[$index])) {
+                            $file = $request->$field[$index];
+                            $extension = $file->getClientOriginalExtension();
+                            $file_name = time() . '_' . $file->getClientOriginalName();
+                            $file->move(public_path('uploads/images'), $file_name);
+                            $customerInspectionDataRow[$field] = 'uploads/images/' . $file_name;
+                        }
                     }
+
+                    $customerInspectionDataArray[] = $customerInspectionDataRow;
                 }
-
-                $customerAssigmentDataArray[] = $customerAssigmentDataRow;
             }
-        }
 
-        $customer->customerassigments()->createMany($customerAssigmentDataArray);
+            $customer->customerinspections()->createMany($customerInspectionDataArray);
 
-        // Audits Module
-        $customerAuditData = $request->only([
-            'audit_file',
-            'audit_sign',
-            'audit_date',
-            'audit_checked_by',
-            'audit_note',
-        ]);
+            // Armourer Module
+            $customerArmourerData = $request->only([
+                'arm_branch_name',
+                'arm_branch_id',
+                'arm_site_id',
+                'arm_client_name',
+                'arm_weapon_no',
+                'arm_weapon_bore',
+                'arm_weapon_type',
+                'arm_work_detail',
+                'arm_sign_cus',
+                'arm_auth',
+                'arm_auth_no',
+                'arm_auth_date',
+                'arm_auth_issue',
+                'type_weapon_cleaned',
+                'arm_weapon_cleaned',
+                'arm_cost_day',
+                'arm_next_clean',
+                'arm_auth_notes',
+            ]);
 
-        $customerAuditDataArray = [];
-        if (isset($customerAuditData['audit_file']) && is_array($customerAuditData['audit_file'])) {
-            foreach ($customerAuditData['audit_file'] as $index => $auditFile) {
-                $customerAuditDataRow = [
-                    'audit_file' => $auditFile,
-                    'audit_sign' => $customerAuditData['audit_sign'][$index] ?? null,
-                    'audit_date' => $customerAuditData['audit_date'][$index] ?? null,
-                    'audit_checked_by' => $customerAuditData['audit_checked_by'][$index] ?? null,
-                    'audit_note' => $customerAuditData['audit_note'][$index] ?? null,
-                ];
+            $customerArmourerDataArray = [];
+            if (isset($customerArmourerData['arm_branch_name']) && is_array($customerArmourerData['arm_branch_name'])) {
+                foreach ($customerArmourerData['arm_branch_name'] as $index => $armbranchName) {
+                    $customerArmourerDataRow = [
+                        'arm_branch_name' => $armbranchName,
+                        'arm_branch_id' => $customerArmourerData['arm_branch_id'][$index] ?? null,
+                        'arm_site_id' => $customerArmourerData['arm_site_id'][$index] ?? null,
+                        'arm_client_name' => $customerArmourerData['arm_client_name'][$index] ?? null,
+                        'arm_weapon_no' => $customerArmourerData['arm_weapon_no'][$index] ?? null,
+                        'arm_weapon_bore' => $customerArmourerData['arm_weapon_bore'][$index] ?? null,
+                        'arm_weapon_type' => $customerArmourerData['arm_weapon_type'][$index] ?? null,
+                        'arm_work_detail' => $customerArmourerData['arm_work_detail'][$index] ?? null,
+                        'arm_sign_cus' => $customerArmourerData['arm_sign_cus'][$index] ?? null,
+                        'arm_auth' => $customerArmourerData['arm_auth'][$index] ?? null,
+                        'arm_auth_no' => $customerArmourerData['arm_auth_no'][$index] ?? null,
+                        'arm_auth_date' => $customerArmourerData['arm_auth_date'][$index] ?? null,
+                        'arm_auth_issue' => $customerArmourerData['arm_auth_issue'][$index] ?? null,
+                        'arm_weapon_cleaned' => $customerArmourerData['arm_weapon_cleaned'][$index] ?? null,
+                        'type_weapon_cleaned' => $customerArmourerData['type_weapon_cleaned'][$index] ?? null,
+                        'arm_cost_day' => $customerArmourerData['arm_cost_day'][$index] ?? null,
+                        'arm_next_clean' => $customerArmourerData['arm_next_clean'][$index] ?? null,
+                        'arm_auth_notes' => $customerArmourerData['arm_auth_notes'][$index] ?? null,
+                    ];
 
-                $customerAuditFields = [
-                    'audit_attach',
-                    'audit_ex_attach',
-                ];
+                    $customerArmourerFields = [
+                        'arm_pic_b',
+                        'arm_pic_a',
+                        'arm_cost_bill',
+                        'arm_auth_attach',
+                    ];
 
-                foreach ($customerAuditFields as $field) {
-                    if ($request->hasFile($field) && isset($request->$field[$index])) {
-                        $file = $request->$field[$index];
-                        $extension = $file->getClientOriginalExtension();
-                        $file_name = time() . '_' . $file->getClientOriginalName();
-                        $file->move(public_path('uploads/images'), $file_name);
-                        $customerAuditDataRow[$field] = 'uploads/images/' . $file_name;
+                    foreach ($customerArmourerFields as $field) {
+                        if ($request->hasFile($field) && isset($request->$field[$index])) {
+                            $file = $request->$field[$index];
+                            $extension = $file->getClientOriginalExtension();
+                            $file_name = time() . '_' . $file->getClientOriginalName();
+                            $file->move(public_path('uploads/images'), $file_name);
+                            $customerArmourerDataRow[$field] = 'uploads/images/' . $file_name;
+                        }
                     }
+
+                    $customerArmourerDataArray[] = $customerArmourerDataRow;
                 }
-
-                $customerAuditDataArray[] = $customerAuditDataRow;
             }
-        }
 
-        $customer->customeraudits()->createMany($customerAuditDataArray);
+            $customer->customerarmourers()->createMany($customerArmourerDataArray);
 
-        // Business Module
-        $customerBussinessData = $request->only([
-            'cb_name',
-            'cb_desig',
-            'cb_comp_name',
-            'cb_email',
-            'cb_cno',
-            'bussiness_name',
-            'bussiness_nature',
-            'bussiness_office_no',
-            'bussiness_floor',
-            'bussiness_building',
-            'bussiness_block',
-            'bussiness_area',
-            'bussiness_city',
-            'bussiness_email',
-            'bussiness_web',
-            'bussiness_pin',
-            'longitude5',
-            'latitude5',
-            'bussiness_notes',
-        ]);
+            // Incident Module
+            $customerIncidentData = $request->only([
+                'client_name',
+                'client_id',
+                'client_site_id',
+                'client_poc',
+                'client_cell',
+                'client_email',
+                'client_site_address',
+                'client_office',
+                'client_build',
+                'client_street',
+                'client_area',
+                'client_city',
+                'client_fir',
+                'arrest',
+                'casual',
+                'injuired',
+                'incident_rep',
+                'police_officer_name',
+                'station',
+                'rank',
+                'report_made_by',
+                'report_date',
+                'report_time',
+                'report_apr_by',
+                'report_shared',
+                'incident_type',
+                'weapon_used',
+                'detail_of_attacker',
+                'attacker_desc',
+                'attacker_shoe',
+                'attacker_beard',
+                'attacker_lang',
+                'focused',
+                'opening_phrase',
+                'any_usual',
+                'estimated_loss',
+                'desc_loss',
+                'officer_response',
+                'incident_note',
+            ]);
 
-        $customerBussinessDataArray = [];
-        if (isset($customerBussinessData['bussiness_name']) && is_array($customerBussinessData['bussiness_name'])) {
-            foreach ($customerBussinessData['bussiness_name'] as $index => $bussinessName) {
-                $customerBussinessDataRow = [
-                    'bussiness_name' => $bussinessName,
-                    'bussiness_nature' => $customerBussinessData['bussiness_nature'][$index] ?? null,
-                    'cb_name' => $customerBussinessData['cb_name'][$index] ?? null,
-                    'cb_desig' => $customerBussinessData['cb_desig'][$index] ?? null,
-                    'cb_comp_name' => $customerBussinessData['cb_comp_name'][$index] ?? null,
-                    'cb_email' => $customerBussinessData['cb_email'][$index] ?? null,
-                    'cb_cno' => $customerBussinessData['cb_cno'][$index] ?? null,
-                    'bussiness_office_no' => $customerBussinessData['bussiness_office_no'][$index] ?? null,
-                    'bussiness_floor' => $customerBussinessData['bussiness_floor'][$index] ?? null,
-                    'bussiness_building' => $customerBussinessData['bussiness_building'][$index] ?? null,
-                    'bussiness_block' => $customerBussinessData['bussiness_block'][$index] ?? null,
-                    'bussiness_area' => $customerBussinessData['bussiness_area'][$index] ?? null,
-                    'bussiness_city' => $customerBussinessData['bussiness_city'][$index] ?? null,
-                    'bussiness_email' => $customerBussinessData['bussiness_email'][$index] ?? null,
-                    'bussiness_web' => $customerBussinessData['bussiness_web'][$index] ?? null,
-                    'bussiness_pin' => $customerBussinessData['bussiness_pin'][$index] ?? null,
-                    'longitude5' => $customerBussinessData['longitude5'][$index] ?? null,
-                    'latitude5' => $customerBussinessData['latitude5'][$index] ?? null,
-                    'bussiness_notes' => $customerBussinessData['bussiness_notes'][$index] ?? null,
-                ];
+            $customerIncidentDataArray = [];
+            if (isset($customerIncidentData['client_name']) && is_array($customerIncidentData['client_name'])) {
+                foreach ($customerIncidentData['client_name'] as $index => $clientName) {
+                    $customerIncidentDataRow = [
+                        'client_name' => $clientName,
+                        'client_id' => $customerIncidentData['client_id'][$index] ?? null,
+                        'client_site_id' => $customerIncidentData['client_site_id'][$index] ?? null,
+                        'client_poc' => $customerIncidentData['client_poc'][$index] ?? null,
+                        'client_cell' => $customerIncidentData['client_cell'][$index] ?? null,
+                        'client_email' => $customerIncidentData['client_email'][$index] ?? null,
+                        'client_site_address' => $customerIncidentData['client_site_address'][$index] ?? null,
+                        'client_office' => $customerIncidentData['client_office'][$index] ?? null,
+                        'client_build' => $customerIncidentData['client_build'][$index] ?? null,
+                        'client_street' => $customerIncidentData['client_street'][$index] ?? null,
+                        'client_area' => $customerIncidentData['client_area'][$index] ?? null,
+                        'client_city' => $customerIncidentData['client_city'][$index] ?? null,
+                        'client_fir' => $customerIncidentData['client_fir'][$index] ?? null,
+                        'arrest' => $customerIncidentData['arrest'][$index] ?? null,
+                        'casual' => $customerIncidentData['casual'][$index] ?? null,
+                        'injuired' => $customerIncidentData['injuired'][$index] ?? null,
+                        'incident_rep' => $customerIncidentData['incident_rep'][$index] ?? null,
+                        'police_officer_name' => $customerIncidentData['police_officer_name'][$index] ?? null,
+                        'station' => $customerIncidentData['station'][$index] ?? null,
+                        'rank' => $customerIncidentData['rank'][$index] ?? null,
+                        'report_made_by' => $customerIncidentData['report_made_by'][$index] ?? null,
+                        'report_date' => $customerIncidentData['report_date'][$index] ?? null,
+                        'report_time' => $customerIncidentData['report_time'][$index] ?? null,
+                        'report_apr_by' => $customerIncidentData['report_apr_by'][$index] ?? null,
+                        'report_shared' => $customerIncidentData['report_shared'][$index] ?? null,
+                        'incident_type' => $customerIncidentData['incident_type'][$index] ?? null,
+                        'weapon_used' => $customerIncidentData['weapon_used'][$index] ?? null,
+                        'detail_of_attacker' => $customerIncidentData['detail_of_attacker'][$index] ?? null,
+                        'attacker_desc' => $customerIncidentData['attacker_desc'][$index] ?? null,
+                        'attacker_shoe' => $customerIncidentData['attacker_shoe'][$index] ?? null,
+                        'attacker_beard' => $customerIncidentData['attacker_beard'][$index] ?? null,
+                        'attacker_lang' => $customerIncidentData['attacker_lang'][$index] ?? null,
+                        'focused' => $customerIncidentData['focused'][$index] ?? null,
+                        'opening_phrase' => $customerIncidentData['opening_phrase'][$index] ?? null,
+                        'any_usual' => $customerIncidentData['any_usual'][$index] ?? null,
+                        'estimated_loss' => $customerIncidentData['estimated_loss'][$index] ?? null,
+                        'desc_loss' => $customerIncidentData['desc_loss'][$index] ?? null,
+                        'officer_response' => $customerIncidentData['officer_response'][$index] ?? null,
+                        'incident_note' => $customerIncidentData['incident_note'][$index] ?? null,
+                    ];
 
-                $customerBussinessFields = [
-                    'bussiness_photo',
-                    'bussiness_attach',
-                ];
+                    $customerIncidentFields = [
+                        'incident_attach',
+                    ];
 
-                foreach ($customerBussinessFields as $field) {
-                    if ($request->hasFile($field) && isset($request->$field[$index])) {
-                        $file = $request->$field[$index];
-                        $extension = $file->getClientOriginalExtension();
-                        $file_name = time() . '_' . $file->getClientOriginalName();
-                        $file->move(public_path('uploads/images'), $file_name);
-                        $customerBussinessDataRow[$field] = 'uploads/images/' . $file_name;
+                    foreach ($customerIncidentFields as $field) {
+                        if ($request->hasFile($field) && isset($request->$field[$index])) {
+                            $file = $request->$field[$index];
+                            $extension = $file->getClientOriginalExtension();
+                            $file_name = time() . '_' . $file->getClientOriginalName();
+                            $file->move(public_path('uploads/images'), $file_name);
+                            $customerIncidentDataRow[$field] = 'uploads/images/' . $file_name;
+                        }
                     }
+
+                    $customerIncidentDataArray[] = $customerIncidentDataRow;
                 }
-
-                $customerBussinessDataArray[] = $customerBussinessDataRow;
             }
-        }
 
-        $customer->customerbussinesses()->createMany($customerBussinessDataArray);
+            $customer->customerincidents()->createMany($customerIncidentDataArray);
 
-        // Promotional Activities Module
-        $customerActivitiesData = $request->only([
-            'promotional_act',
-            'promotional_quantity',
-            'prom_price',
-            'prom_date',
-            'promotional_notes',
-        ]);
+            // Assignment Module
+            $customerAssigmentData = $request->only([
+                'asig_customer_name',
+                'task_assigning',
+                'asig_desig',
+                'asig_office',
+                'asig_building',
+                'asig_road',
+                'asig_area',
+                'asig_city',
+                'asig_country',
+                'asig_security',
+                'asig_contact',
+                'incharge_name',
+                'incharge_desig',
+                'incharge_contact',
+                'incharge_help',
+                'incharge_desc',
+                'incharge_risk',
+                'incharge_asig',
+                'incharge_signed_by',
+                'incharge_date',
+                'incharge_offc',
+                'incharge_floor',
+                'incharge_build',
+                'incharge_block',
+                'incharge_area',
+                'incharge_city',
+                'incharge_pin',
+                'longitude4',
+                'latitude4',
+                'incharge_country',
+                'incharge_site',
+                'incharge_a_g',
+                'incharge_a_ung',
+                'incharge_t_g',
+                'rec_inc_rel',
+                'feq_occ',
+                'exp_piff',
+                'any_spec',
+                'petr_instruc',
+                'asig_ex_notes',
+            ]);
 
-        $customerActivitiesDataArray = [];
-        if (isset($customerActivitiesData['promotional_act']) && is_array($customerActivitiesData['promotional_act'])) {
-            foreach ($customerActivitiesData['promotional_act'] as $index => $promotionalAct) {
-                $customerActivitiesDataRow = [
-                    'promotional_act' => $promotionalAct,
-                    'promotional_quantity' => $customerActivitiesData['promotional_quantity'][$index] ?? null,
-                    'prom_price' => $customerActivitiesData['prom_price'][$index] ?? null,
-                    'prom_date' => $customerActivitiesData['prom_date'][$index] ?? null,
-                    'promotional_notes' => $customerActivitiesData['promotional_notes'][$index] ?? null,
-                ];
+            $customerAssigmentDataArray = [];
+            if (isset($customerAssigmentData['asig_customer_name']) && is_array($customerAssigmentData['asig_customer_name'])) {
+                foreach ($customerAssigmentData['asig_customer_name'] as $index => $asigcustomerName) {
+                    $customerAssigmentDataRow = [
+                        'asig_customer_name' => $asigcustomerName,
+                        'task_assigning' => $customerAssigmentData['task_assigning'][$index] ?? null,
+                        'asig_desig' => $customerAssigmentData['asig_desig'][$index] ?? null,
+                        'asig_office' => $customerAssigmentData['asig_office'][$index] ?? null,
+                        'asig_building' => $customerAssigmentData['asig_building'][$index] ?? null,
+                        'asig_road' => $customerAssigmentData['asig_road'][$index] ?? null,
+                        'asig_area' => $customerAssigmentData['asig_area'][$index] ?? null,
+                        'asig_city' => $customerAssigmentData['asig_city'][$index] ?? null,
+                        'asig_country' => $customerAssigmentData['asig_country'][$index] ?? null,
+                        'asig_security' => $customerAssigmentData['asig_security'][$index] ?? null,
+                        'asig_contact' => $customerAssigmentData['asig_contact'][$index] ?? null,
+                        'incharge_name' => $customerAssigmentData['incharge_name'][$index] ?? null,
+                        'incharge_desig' => $customerAssigmentData['incharge_desig'][$index] ?? null,
+                        'incharge_contact' => $customerAssigmentData['incharge_contact'][$index] ?? null,
+                        'incharge_help' => $customerAssigmentData['incharge_help'][$index] ?? null,
+                        'incharge_desc' => $customerAssigmentData['incharge_desc'][$index] ?? null,
+                        'incharge_risk' => $customerAssigmentData['incharge_risk'][$index] ?? null,
+                        'incharge_asig' => $customerAssigmentData['incharge_asig'][$index] ?? null,
+                        'incharge_signed_by' => $customerAssigmentData['incharge_signed_by'][$index] ?? null,
+                        'incharge_date' => $customerAssigmentData['incharge_date'][$index] ?? null,
+                        'incharge_offc' => $customerAssigmentData['incharge_offc'][$index] ?? null,
+                        'incharge_floor' => $customerAssigmentData['incharge_floor'][$index] ?? null,
+                        'incharge_build' => $customerAssigmentData['incharge_build'][$index] ?? null,
+                        'incharge_block' => $customerAssigmentData['incharge_block'][$index] ?? null,
+                        'incharge_area' => $customerAssigmentData['incharge_area'][$index] ?? null,
+                        'incharge_city' => $customerAssigmentData['incharge_city'][$index] ?? null,
+                        'incharge_pin' => $customerAssigmentData['incharge_pin'][$index] ?? null,
+                        'longitude4' => $customerAssigmentData['longitude4'][$index] ?? null,
+                        'latitude4' => $customerAssigmentData['latitude4'][$index] ?? null,
+                        'incharge_country' => $customerAssigmentData['incharge_country'][$index] ?? null,
+                        'incharge_site' => $customerAssigmentData['incharge_site'][$index] ?? null,
+                        'incharge_a_g' => $customerAssigmentData['incharge_a_g'][$index] ?? null,
+                        'incharge_t_g' => $customerAssigmentData['incharge_t_g'][$index] ?? null,
+                        'rec_inc_rel' => $customerAssigmentData['rec_inc_rel'][$index] ?? null,
+                        'feq_occ' => $customerAssigmentData['feq_occ'][$index] ?? null,
+                        'exp_piff' => $customerAssigmentData['exp_piff'][$index] ?? null,
+                        'any_spec' => $customerAssigmentData['any_spec'][$index] ?? null,
+                        'petr_instruc' => $customerAssigmentData['petr_instruc'][$index] ?? null,
+                        'asig_ex_notes' => $customerAssigmentData['asig_ex_notes'][$index] ?? null,
+                    ];
 
-                $customerActivitiesFields = [
-                    'promotional_attach',
-                ];
+                    $customerAssigmentFields = [
+                        'asig_ex_attach',
+                    ];
 
-                foreach ($customerActivitiesFields as $field) {
-                    if ($request->hasFile($field) && isset($request->$field[$index])) {
-                        $file = $request->$field[$index];
-                        $extension = $file->getClientOriginalExtension();
-                        $file_name = time() . '_' . $file->getClientOriginalName();
-                        $file->move(public_path('uploads/images'), $file_name);
-                        $customerActivitiesDataRow[$field] = 'uploads/images/' . $file_name;
+                    foreach ($customerAssigmentFields as $field) {
+                        if ($request->hasFile($field) && isset($request->$field[$index])) {
+                            $file = $request->$field[$index];
+                            $extension = $file->getClientOriginalExtension();
+                            $file_name = time() . '_' . $file->getClientOriginalName();
+                            $file->move(public_path('uploads/images'), $file_name);
+                            $customerAssigmentDataRow[$field] = 'uploads/images/' . $file_name;
+                        }
                     }
+
+                    $customerAssigmentDataArray[] = $customerAssigmentDataRow;
                 }
-
-                $customerActivitiesDataArray[] = $customerActivitiesDataRow;
             }
-        }
 
-        $customer->customeractivities()->createMany($customerActivitiesDataArray);
+            $customer->customerassigments()->createMany($customerAssigmentDataArray);
 
-        // Feedback Module
-        $customerFeedbackData = $request->only([
-            'feed_client_name',
-            'feed_client_poc_name',
-            'feed_client_email',
-            'feed_client_id',
-            'feed_client_site_id',
-            'feed_desig',
-            'feed_cell',
-            'feed_month',
-            'q1',
-            'q2',
-            'q3',
-            'q4',
-            'q5',
-            'q6',
-            'q7',
-            'q8',
-            'q9',
-            'q10',
-            'total_score',
-            'feed_company_name',
-            'feed_poc_name',
-            'feed_comment',
-            'feedback_form',
-            'feed_email',
-            'feed_telephone',
-            'feed_signature',
-            'feed_received',
-            'feed_remarks',
-        ]);
+            // Audits Module
+            $customerAuditData = $request->only([
+                'audit_file',
+                'audit_sign',
+                'audit_date',
+                'audit_checked_by',
+                'audit_note',
+            ]);
 
-        $customerFeedbackDataArray = [];
-        if (isset($customerFeedbackData['feed_client_name']) && is_array($customerFeedbackData['feed_client_name'])) {
-            foreach ($customerFeedbackData['feed_client_name'] as $index => $feedClientname) {
-                $customerFeedbackDataRow = [
-                    'feed_client_name' => $feedClientname,
-                    'feed_client_poc_name' => $customerFeedbackData['feed_client_poc_name'][$index] ?? null,
-                    'feed_client_email' => $customerFeedbackData['feed_client_email'][$index] ?? null,
-                    'feed_client_id' => $customerFeedbackData['feed_client_id'][$index] ?? null,
-                    'feed_client_site_id' => $customerFeedbackData['feed_client_site_id'][$index] ?? null,
-                    'feed_desig' => $customerFeedbackData['feed_desig'][$index] ?? null,
-                    'feed_cell' => $customerFeedbackData['feed_cell'][$index] ?? null,
-                    'feed_month' => $customerFeedbackData['feed_month'][$index] ?? null,
-                    'q1' => $customerFeedbackData['q1'][$index] ?? null,
-                    'q2' => $customerFeedbackData['q2'][$index] ?? null,
-                    'q3' => $customerFeedbackData['q3'][$index] ?? null,
-                    'q4' => $customerFeedbackData['q4'][$index] ?? null,
-                    'q5' => $customerFeedbackData['q5'][$index] ?? null,
-                    'q6' => $customerFeedbackData['q6'][$index] ?? null,
-                    'q7' => $customerFeedbackData['q7'][$index] ?? null,
-                    'q8' => $customerFeedbackData['q8'][$index] ?? null,
-                    'q9' => $customerFeedbackData['q9'][$index] ?? null,
-                    'q10' => $customerFeedbackData['q10'][$index] ?? null,
-                    'total_score' => $customerFeedbackData['total_score'][$index] ?? null,
-                    'feed_company_name' => $customerFeedbackData['feed_company_name'][$index] ?? null,
-                    'feed_poc_name' => $customerFeedbackData['feed_poc_name'][$index] ?? null,
-                    'feed_comment' => $customerFeedbackData['feed_comment'][$index] ?? null,
-                    'feedback_form' => $customerFeedbackData['feedback_form'][$index] ?? null,
-                    'feed_email' => $customerFeedbackData['feed_email'][$index] ?? null,
-                    'feed_telephone' => $customerFeedbackData['feed_telephone'][$index] ?? null,
-                    'feed_signature' => $customerFeedbackData['feed_signature'][$index] ?? null,
-                    'feed_received' => $customerFeedbackData['feed_received'][$index] ?? null,
-                    'feed_remarks' => $customerFeedbackData['feed_remarks'][$index] ?? null,
-                ];
+            $customerAuditDataArray = [];
+            if (isset($customerAuditData['audit_file']) && is_array($customerAuditData['audit_file'])) {
+                foreach ($customerAuditData['audit_file'] as $index => $auditFile) {
+                    $customerAuditDataRow = [
+                        'audit_file' => $auditFile,
+                        'audit_sign' => $customerAuditData['audit_sign'][$index] ?? null,
+                        'audit_date' => $customerAuditData['audit_date'][$index] ?? null,
+                        'audit_checked_by' => $customerAuditData['audit_checked_by'][$index] ?? null,
+                        'audit_note' => $customerAuditData['audit_note'][$index] ?? null,
+                    ];
 
-                $customerFeedbackFields = [
-                    'feed_attach',
-                ];
+                    $customerAuditFields = [
+                        'audit_attach',
+                        'audit_ex_attach',
+                    ];
 
-                foreach ($customerFeedbackFields as $field) {
-                    if ($request->hasFile($field) && isset($request->$field[$index])) {
-                        $file = $request->$field[$index];
-                        $extension = $file->getClientOriginalExtension();
-                        $file_name = time() . '_' . $file->getClientOriginalName();
-                        $file->move(public_path('uploads/images'), $file_name);
-                        $customerFeedbackDataRow[$field] = 'uploads/images/' . $file_name;
+                    foreach ($customerAuditFields as $field) {
+                        if ($request->hasFile($field) && isset($request->$field[$index])) {
+                            $file = $request->$field[$index];
+                            $extension = $file->getClientOriginalExtension();
+                            $file_name = time() . '_' . $file->getClientOriginalName();
+                            $file->move(public_path('uploads/images'), $file_name);
+                            $customerAuditDataRow[$field] = 'uploads/images/' . $file_name;
+                        }
                     }
+
+                    $customerAuditDataArray[] = $customerAuditDataRow;
                 }
-
-                $customerFeedbackDataArray[] = $customerFeedbackDataRow;
             }
-        }
 
-        $customer->customerfeedbacks()->createMany($customerFeedbackDataArray);
+            $customer->customeraudits()->createMany($customerAuditDataArray);
 
-        // Complaint Module (FIXED HERE)
-        $customerComplaintData = $request->only([
-            'complaint_no',
-            'complaint_guards_duty',
-            'complaint_gaurd_note',
-            'wea_uni_equip',
-            'wue_note',
-            'finance_dept',
-            'fd_note',
-            'src_complaint',
-            'complain_month',
-            'src_note',
-            'mng_feed',
-            'mng_note',
-            'complaint_poc_name',
-            'complaint_poc_desig',
-            'complaint_poc_dept',
-            'complaint_poc_email',
-            'complaint_poc_contact',
-            'details_complaint',
-            'complaint_tagged',
-            'complaint_arressed',
-            'complaint_addressed_note',
-        ]);
+            // Business Module
+            $customerBussinessData = $request->only([
+                'cb_name',
+                'cb_desig',
+                'cb_comp_name',
+                'cb_email',
+                'cb_cno',
+                'bussiness_name',
+                'bussiness_nature',
+                'bussiness_office_no',
+                'bussiness_floor',
+                'bussiness_building',
+                'bussiness_block',
+                'bussiness_area',
+                'bussiness_city',
+                'bussiness_email',
+                'bussiness_web',
+                'bussiness_pin',
+                'longitude5',
+                'latitude5',
+                'bussiness_notes',
+            ]);
 
-        $customerComplaintDataArray = [];
-        if (isset($customerComplaintData['complaint_no']) && is_array($customerComplaintData['complaint_no'])) {
-            foreach ($customerComplaintData['complaint_no'] as $index => $complaintNo) {
-                $customerComplaintDataRow = [
-                    'complaint_no' => $complaintNo,
-                    'complaint_guards_duty' => $customerComplaintData['complaint_guards_duty'][$index] ?? null,
-                    'complaint_gaurd_note' => $customerComplaintData['complaint_gaurd_note'][$index] ?? null,
-                    'wea_uni_equip' => $customerComplaintData['wea_uni_equip'][$index] ?? null,
-                    'wue_note' => $customerComplaintData['wue_note'][$index] ?? null,
-                    'finance_dept' => $customerComplaintData['finance_dept'][$index] ?? null,
-                    'fd_note' => $customerComplaintData['fd_note'][$index] ?? null,
-                    'src_complaint' => $customerComplaintData['src_complaint'][$index] ?? null,
-                    'complain_month' => $customerComplaintData['complain_month'][$index] ?? null,  // FIXED: Null coalescing here
-                    'src_note' => $customerComplaintData['src_note'][$index] ?? null,
-                    'mng_feed' => $customerComplaintData['mng_feed'][$index] ?? null,
-                    'mng_note' => $customerComplaintData['mng_note'][$index] ?? null,
-                    'complaint_poc_name' => $customerComplaintData['complaint_poc_name'][$index] ?? null,
-                    'complaint_poc_desig' => $customerComplaintData['complaint_poc_desig'][$index] ?? null,
-                    'complaint_poc_dept' => $customerComplaintData['complaint_poc_dept'][$index] ?? null,
-                    'complaint_poc_email' => $customerComplaintData['complaint_poc_email'][$index] ?? null,
-                    'complaint_poc_contact' => $customerComplaintData['complaint_poc_contact'][$index] ?? null,
-                    'details_complaint' => $customerComplaintData['details_complaint'][$index] ?? null,
-                    'complaint_tagged' => $customerComplaintData['complaint_tagged'][$index] ?? null,
-                    'complaint_arressed' => $customerComplaintData['complaint_arressed'][$index] ?? null,
-                    'complaint_addressed_note' => $customerComplaintData['complaint_addressed_note'][$index] ?? null,
-                ];
+            $customerBussinessDataArray = [];
+            if (isset($customerBussinessData['bussiness_name']) && is_array($customerBussinessData['bussiness_name'])) {
+                foreach ($customerBussinessData['bussiness_name'] as $index => $bussinessName) {
+                    $customerBussinessDataRow = [
+                        'bussiness_name' => $bussinessName,
+                        'bussiness_nature' => $customerBussinessData['bussiness_nature'][$index] ?? null,
+                        'cb_name' => $customerBussinessData['cb_name'][$index] ?? null,
+                        'cb_desig' => $customerBussinessData['cb_desig'][$index] ?? null,
+                        'cb_comp_name' => $customerBussinessData['cb_comp_name'][$index] ?? null,
+                        'cb_email' => $customerBussinessData['cb_email'][$index] ?? null,
+                        'cb_cno' => $customerBussinessData['cb_cno'][$index] ?? null,
+                        'bussiness_office_no' => $customerBussinessData['bussiness_office_no'][$index] ?? null,
+                        'bussiness_floor' => $customerBussinessData['bussiness_floor'][$index] ?? null,
+                        'bussiness_building' => $customerBussinessData['bussiness_building'][$index] ?? null,
+                        'bussiness_block' => $customerBussinessData['bussiness_block'][$index] ?? null,
+                        'bussiness_area' => $customerBussinessData['bussiness_area'][$index] ?? null,
+                        'bussiness_city' => $customerBussinessData['bussiness_city'][$index] ?? null,
+                        'bussiness_email' => $customerBussinessData['bussiness_email'][$index] ?? null,
+                        'bussiness_web' => $customerBussinessData['bussiness_web'][$index] ?? null,
+                        'bussiness_pin' => $customerBussinessData['bussiness_pin'][$index] ?? null,
+                        'longitude5' => $customerBussinessData['longitude5'][$index] ?? null,
+                        'latitude5' => $customerBussinessData['latitude5'][$index] ?? null,
+                        'bussiness_notes' => $customerBussinessData['bussiness_notes'][$index] ?? null,
+                    ];
 
-                $customerComplaintFields = [
-                    'complaint_guard_attach',
-                    'fd_attach',
-                    'src_attach',
-                    'mng_attach',
-                    'complaint_picture',
-                    'details_attach',
-                    'complaint_addressed_attach',
-                ];
+                    $customerBussinessFields = [
+                        'bussiness_photo',
+                        'bussiness_attach',
+                    ];
 
-                foreach ($customerComplaintFields as $field) {
-                    if ($request->hasFile($field) && isset($request->$field[$index])) {
-                        $file = $request->$field[$index];
-                        $extension = $file->getClientOriginalExtension();
-                        $file_name = time() . '_' . $file->getClientOriginalName();
-                        $file->move(public_path('uploads/images'), $file_name);
-                        $customerComplaintDataRow[$field] = 'uploads/images/' . $file_name;
+                    foreach ($customerBussinessFields as $field) {
+                        if ($request->hasFile($field) && isset($request->$field[$index])) {
+                            $file = $request->$field[$index];
+                            $extension = $file->getClientOriginalExtension();
+                            $file_name = time() . '_' . $file->getClientOriginalName();
+                            $file->move(public_path('uploads/images'), $file_name);
+                            $customerBussinessDataRow[$field] = 'uploads/images/' . $file_name;
+                        }
                     }
+
+                    $customerBussinessDataArray[] = $customerBussinessDataRow;
                 }
-
-                $customerComplaintDataArray[] = $customerComplaintDataRow;
             }
-        }
 
-        $customer->customercomplaints()->createMany($customerComplaintDataArray);
+            $customer->customerbussinesses()->createMany($customerBussinessDataArray);
 
-        // Notification Module
-        $customerNotificationData = $request->only([
-            'notification_no',
-            'notification_related',
-            'notification_of_month',
-            'notification_note',
-            'notification_shared',
-            'notification_ex_note',
-        ]);
+            // Promotional Activities Module
+            $customerActivitiesData = $request->only([
+                'promotional_act',
+                'promotional_quantity',
+                'prom_price',
+                'prom_date',
+                'promotional_notes',
+            ]);
 
-        $customerNotificationDataArray = [];
-        if (isset($customerNotificationData['notification_no']) && is_array($customerNotificationData['notification_no'])) {
-            foreach ($customerNotificationData['notification_no'] as $index => $notificationNo) {
-                $customerNotificationDataRow = [
-                    'notification_no' => $notificationNo,
-                    'notification_related' => $customerNotificationData['notification_related'][$index] ?? null,
-                    'notification_note' => $customerNotificationData['notification_note'][$index] ?? null,
-                    'notification_of_month' => $customerNotificationData['notification_of_month'][$index] ?? null,
-                    'notification_shared' => $customerNotificationData['notification_shared'][$index] ?? null,
-                    'notification_ex_note' => $customerNotificationData['notification_ex_note'][$index] ?? null,
-                ];
+            $customerActivitiesDataArray = [];
+            if (isset($customerActivitiesData['promotional_act']) && is_array($customerActivitiesData['promotional_act'])) {
+                foreach ($customerActivitiesData['promotional_act'] as $index => $promotionalAct) {
+                    $customerActivitiesDataRow = [
+                        'promotional_act' => $promotionalAct,
+                        'promotional_quantity' => $customerActivitiesData['promotional_quantity'][$index] ?? null,
+                        'prom_price' => $customerActivitiesData['prom_price'][$index] ?? null,
+                        'prom_date' => $customerActivitiesData['prom_date'][$index] ?? null,
+                        'promotional_notes' => $customerActivitiesData['promotional_notes'][$index] ?? null,
+                    ];
 
-                $customerNotificationFields = [
-                    'notification_attach',
-                    'notification_ex_attach',
-                ];
+                    $customerActivitiesFields = [
+                        'promotional_attach',
+                    ];
 
-                foreach ($customerNotificationFields as $field) {
-                    if ($request->hasFile($field) && isset($request->$field[$index])) {
-                        $file = $request->$field[$index];
-                        $extension = $file->getClientOriginalExtension();
-                        $file_name = time() . '_' . $file->getClientOriginalName();
-                        $file->move(public_path('uploads/images'), $file_name);
-                        $customerNotificationDataRow[$field] = 'uploads/images/' . $file_name;
+                    foreach ($customerActivitiesFields as $field) {
+                        if ($request->hasFile($field) && isset($request->$field[$index])) {
+                            $file = $request->$field[$index];
+                            $extension = $file->getClientOriginalExtension();
+                            $file_name = time() . '_' . $file->getClientOriginalName();
+                            $file->move(public_path('uploads/images'), $file_name);
+                            $customerActivitiesDataRow[$field] = 'uploads/images/' . $file_name;
+                        }
                     }
+
+                    $customerActivitiesDataArray[] = $customerActivitiesDataRow;
                 }
-
-                $customerNotificationDataArray[] = $customerNotificationDataRow;
             }
-        }
 
-        $customer->customernotifications()->createMany($customerNotificationDataArray);
+            $customer->customeractivities()->createMany($customerActivitiesDataArray);
 
-        $qrCodePath = 'uploads/qrcodes/';
-        $fullQrCodePath = public_path($qrCodePath);
+            // Feedback Module
+            $customerFeedbackData = $request->only([
+                'feed_client_name',
+                'feed_client_poc_name',
+                'feed_client_email',
+                'feed_client_id',
+                'feed_client_site_id',
+                'feed_desig',
+                'feed_cell',
+                'feed_month',
+                'q1',
+                'q2',
+                'q3',
+                'q4',
+                'q5',
+                'q6',
+                'q7',
+                'q8',
+                'q9',
+                'q10',
+                'total_score',
+                'feed_company_name',
+                'feed_poc_name',
+                'feed_comment',
+                'feedback_form',
+                'feed_email',
+                'feed_telephone',
+                'feed_signature',
+                'feed_received',
+                'feed_remarks',
+            ]);
 
-        if (!file_exists($fullQrCodePath)) {
-            mkdir($fullQrCodePath, 0777, true);
-            chmod($fullQrCodePath, 0777);
-        }
+            $customerFeedbackDataArray = [];
+            if (isset($customerFeedbackData['feed_client_name']) && is_array($customerFeedbackData['feed_client_name'])) {
+                foreach ($customerFeedbackData['feed_client_name'] as $index => $feedClientname) {
+                    $customerFeedbackDataRow = [
+                        'feed_client_name' => $feedClientname,
+                        'feed_client_poc_name' => $customerFeedbackData['feed_client_poc_name'][$index] ?? null,
+                        'feed_client_email' => $customerFeedbackData['feed_client_email'][$index] ?? null,
+                        'feed_client_id' => $customerFeedbackData['feed_client_id'][$index] ?? null,
+                        'feed_client_site_id' => $customerFeedbackData['feed_client_site_id'][$index] ?? null,
+                        'feed_desig' => $customerFeedbackData['feed_desig'][$index] ?? null,
+                        'feed_cell' => $customerFeedbackData['feed_cell'][$index] ?? null,
+                        'feed_month' => $customerFeedbackData['feed_month'][$index] ?? null,
+                        'q1' => $customerFeedbackData['q1'][$index] ?? null,
+                        'q2' => $customerFeedbackData['q2'][$index] ?? null,
+                        'q3' => $customerFeedbackData['q3'][$index] ?? null,
+                        'q4' => $customerFeedbackData['q4'][$index] ?? null,
+                        'q5' => $customerFeedbackData['q5'][$index] ?? null,
+                        'q6' => $customerFeedbackData['q6'][$index] ?? null,
+                        'q7' => $customerFeedbackData['q7'][$index] ?? null,
+                        'q8' => $customerFeedbackData['q8'][$index] ?? null,
+                        'q9' => $customerFeedbackData['q9'][$index] ?? null,
+                        'q10' => $customerFeedbackData['q10'][$index] ?? null,
+                        'total_score' => $customerFeedbackData['total_score'][$index] ?? null,
+                        'feed_company_name' => $customerFeedbackData['feed_company_name'][$index] ?? null,
+                        'feed_poc_name' => $customerFeedbackData['feed_poc_name'][$index] ?? null,
+                        'feed_comment' => $customerFeedbackData['feed_comment'][$index] ?? null,
+                        'feedback_form' => $customerFeedbackData['feedback_form'][$index] ?? null,
+                        'feed_email' => $customerFeedbackData['feed_email'][$index] ?? null,
+                        'feed_telephone' => $customerFeedbackData['feed_telephone'][$index] ?? null,
+                        'feed_signature' => $customerFeedbackData['feed_signature'][$index] ?? null,
+                        'feed_received' => $customerFeedbackData['feed_received'][$index] ?? null,
+                        'feed_remarks' => $customerFeedbackData['feed_remarks'][$index] ?? null,
+                    ];
 
-        if (!empty($customer->display_name_as)) {
-            try {
-                $qrCode = new QrCode($customer->display_name_as);
+                    $customerFeedbackFields = [
+                        'feed_attach',
+                    ];
 
-                $writer = new PngWriter();
+                    foreach ($customerFeedbackFields as $field) {
+                        if ($request->hasFile($field) && isset($request->$field[$index])) {
+                            $file = $request->$field[$index];
+                            $extension = $file->getClientOriginalExtension();
+                            $file_name = time() . '_' . $file->getClientOriginalName();
+                            $file->move(public_path('uploads/images'), $file_name);
+                            $customerFeedbackDataRow[$field] = 'uploads/images/' . $file_name;
+                        }
+                    }
 
-                $qrCodeString = $writer->write($qrCode)->getString();
-
-                $customerData['qrcode_path'] = $qrCodePath . 'customer_' . $customer->id . '.png';
-
-                file_put_contents(public_path($customerData['qrcode_path']), $qrCodeString);
-
-                $customer->update(['qrcode_path' => $customerData['qrcode_path']]);
-
-                $qrCodeUrl = asset($customerData['qrcode_path']);
-
-                Log::info('QR Code Path: ' . $customerData['qrcode_path']);
-                Log::info('QR Code Base Path: ' . $qrCodePath);
-                Log::info('QR Code URL: ' . $qrCodeUrl);
-            } catch (\Exception $e) {
-                Log::error('Error generating QR code for customer ' . $customer->id . ': ' . $e->getMessage());
+                    $customerFeedbackDataArray[] = $customerFeedbackDataRow;
+                }
             }
-        } else {
-            Log::error('Error generating QR code for customer ' . $customer->id . ': Display name is null or empty.');
-        }
-        DB::commit();
 
-        $customerId = $customer->id;
-        Log::info('Customer data successfully stored. Customer ID: ' . $customerId);
-        // Send email if save_and_email is clicked
-        if ($request->has('save_and_email') && !empty($customerData['email'])) {
-            try {
-                Mail::to($customerData['email'])->send(new CustomerConfirmation($customer));
-                Log::info('Confirmation email sent to: ' . $customerData['email']);
-            } catch (\Exception $e) {
-                Log::error('Error sending email to ' . $customerData['email'] . ': ' . $e->getMessage());
+            $customer->customerfeedbacks()->createMany($customerFeedbackDataArray);
+
+            // Complaint Module (FIXED HERE)
+            $customerComplaintData = $request->only([
+                'complaint_no',
+                'complaint_guards_duty',
+                'complaint_gaurd_note',
+                'wea_uni_equip',
+                'wue_note',
+                'finance_dept',
+                'fd_note',
+                'src_complaint',
+                'complain_month',
+                'src_note',
+                'mng_feed',
+                'mng_note',
+                'complaint_poc_name',
+                'complaint_poc_desig',
+                'complaint_poc_dept',
+                'complaint_poc_email',
+                'complaint_poc_contact',
+                'details_complaint',
+                'complaint_tagged',
+                'complaint_arressed',
+                'complaint_addressed_note',
+            ]);
+
+            $customerComplaintDataArray = [];
+            if (isset($customerComplaintData['complaint_no']) && is_array($customerComplaintData['complaint_no'])) {
+                foreach ($customerComplaintData['complaint_no'] as $index => $complaintNo) {
+                    $customerComplaintDataRow = [
+                        'complaint_no' => $complaintNo,
+                        'complaint_guards_duty' => $customerComplaintData['complaint_guards_duty'][$index] ?? null,
+                        'complaint_gaurd_note' => $customerComplaintData['complaint_gaurd_note'][$index] ?? null,
+                        'wea_uni_equip' => $customerComplaintData['wea_uni_equip'][$index] ?? null,
+                        'wue_note' => $customerComplaintData['wue_note'][$index] ?? null,
+                        'finance_dept' => $customerComplaintData['finance_dept'][$index] ?? null,
+                        'fd_note' => $customerComplaintData['fd_note'][$index] ?? null,
+                        'src_complaint' => $customerComplaintData['src_complaint'][$index] ?? null,
+                        'complain_month' => $customerComplaintData['complain_month'][$index] ?? null,  // FIXED: Null coalescing here
+                        'src_note' => $customerComplaintData['src_note'][$index] ?? null,
+                        'mng_feed' => $customerComplaintData['mng_feed'][$index] ?? null,
+                        'mng_note' => $customerComplaintData['mng_note'][$index] ?? null,
+                        'complaint_poc_name' => $customerComplaintData['complaint_poc_name'][$index] ?? null,
+                        'complaint_poc_desig' => $customerComplaintData['complaint_poc_desig'][$index] ?? null,
+                        'complaint_poc_dept' => $customerComplaintData['complaint_poc_dept'][$index] ?? null,
+                        'complaint_poc_email' => $customerComplaintData['complaint_poc_email'][$index] ?? null,
+                        'complaint_poc_contact' => $customerComplaintData['complaint_poc_contact'][$index] ?? null,
+                        'details_complaint' => $customerComplaintData['details_complaint'][$index] ?? null,
+                        'complaint_tagged' => $customerComplaintData['complaint_tagged'][$index] ?? null,
+                        'complaint_arressed' => $customerComplaintData['complaint_arressed'][$index] ?? null,
+                        'complaint_addressed_note' => $customerComplaintData['complaint_addressed_note'][$index] ?? null,
+                    ];
+
+                    $customerComplaintFields = [
+                        'complaint_guard_attach',
+                        'fd_attach',
+                        'src_attach',
+                        'mng_attach',
+                        'complaint_picture',
+                        'details_attach',
+                        'complaint_addressed_attach',
+                    ];
+
+                    foreach ($customerComplaintFields as $field) {
+                        if ($request->hasFile($field) && isset($request->$field[$index])) {
+                            $file = $request->$field[$index];
+                            $extension = $file->getClientOriginalExtension();
+                            $file_name = time() . '_' . $file->getClientOriginalName();
+                            $file->move(public_path('uploads/images'), $file_name);
+                            $customerComplaintDataRow[$field] = 'uploads/images/' . $file_name;
+                        }
+                    }
+
+                    $customerComplaintDataArray[] = $customerComplaintDataRow;
+                }
             }
-            $url = route('viewcustomer', ['id' => $customerId]);
-            return redirect()->to($url)->with('success', 'Customer data successfully stored and email sent.');
-        } elseif ($request->has('save_and_share')) {
-            return redirect()->route('postcustomer')->with('success', 'Customer data successfully stored.')->with('customerId', $customerId);
-        } elseif ($request->has('save_and_new')) {
-            return redirect()->route('postcustomer')->with('success', 'Customer data successfully stored.');
-        } else {
-            return redirect()->route('customer')->with('success', 'Customer data successfully stored.');
+
+            $customer->customercomplaints()->createMany($customerComplaintDataArray);
+
+            // Notification Module
+            $customerNotificationData = $request->only([
+                'notification_no',
+                'notification_related',
+                'notification_of_month',
+                'notification_note',
+                'notification_shared',
+                'notification_ex_note',
+            ]);
+
+            $customerNotificationDataArray = [];
+            if (isset($customerNotificationData['notification_no']) && is_array($customerNotificationData['notification_no'])) {
+                foreach ($customerNotificationData['notification_no'] as $index => $notificationNo) {
+                    $customerNotificationDataRow = [
+                        'notification_no' => $notificationNo,
+                        'notification_related' => $customerNotificationData['notification_related'][$index] ?? null,
+                        'notification_note' => $customerNotificationData['notification_note'][$index] ?? null,
+                        'notification_of_month' => $customerNotificationData['notification_of_month'][$index] ?? null,
+                        'notification_shared' => $customerNotificationData['notification_shared'][$index] ?? null,
+                        'notification_ex_note' => $customerNotificationData['notification_ex_note'][$index] ?? null,
+                    ];
+
+                    $customerNotificationFields = [
+                        'notification_attach',
+                        'notification_ex_attach',
+                    ];
+
+                    foreach ($customerNotificationFields as $field) {
+                        if ($request->hasFile($field) && isset($request->$field[$index])) {
+                            $file = $request->$field[$index];
+                            $extension = $file->getClientOriginalExtension();
+                            $file_name = time() . '_' . $file->getClientOriginalName();
+                            $file->move(public_path('uploads/images'), $file_name);
+                            $customerNotificationDataRow[$field] = 'uploads/images/' . $file_name;
+                        }
+                    }
+
+                    $customerNotificationDataArray[] = $customerNotificationDataRow;
+                }
+            }
+
+            $customer->customernotifications()->createMany($customerNotificationDataArray);
+
+            $qrCodePath = 'uploads/qrcodes/';
+            $fullQrCodePath = public_path($qrCodePath);
+
+            if (!file_exists($fullQrCodePath)) {
+                mkdir($fullQrCodePath, 0777, true);
+                chmod($fullQrCodePath, 0777);
+            }
+
+            if (!empty($customer->display_name_as)) {
+                try {
+                    $qrCode = new QrCode($customer->display_name_as);
+
+                    $writer = new PngWriter();
+
+                    $qrCodeString = $writer->write($qrCode)->getString();
+
+                    $customerData['qrcode_path'] = $qrCodePath . 'customer_' . $customer->id . '.png';
+
+                    file_put_contents(public_path($customerData['qrcode_path']), $qrCodeString);
+
+                    $customer->update(['qrcode_path' => $customerData['qrcode_path']]);
+
+                    $qrCodeUrl = asset($customerData['qrcode_path']);
+
+                    Log::info('QR Code Path: ' . $customerData['qrcode_path']);
+                    Log::info('QR Code Base Path: ' . $qrCodePath);
+                    Log::info('QR Code URL: ' . $qrCodeUrl);
+                } catch (\Exception $e) {
+                    Log::error('Error generating QR code for customer ' . $customer->id . ': ' . $e->getMessage());
+                }
+            } else {
+                Log::error('Error generating QR code for customer ' . $customer->id . ': Display name is null or empty.');
+            }
+            DB::commit();
+
+            $customerId = $customer->id;
+            Log::info('Customer data successfully stored. Customer ID: ' . $customerId);
+            // Send email if save_and_email is clicked
+            if ($request->has('save_and_email') && !empty($customerData['email'])) {
+                if ($customer->notification_status == 1) {
+                    try {
+                        Mail::to($customerData['email'])->send(new CustomerConfirmation($customer));
+                        Log::info('Confirmation email sent to: ' . $customerData['email']);
+                    } catch (\Exception $e) {
+                        Log::error('Error sending email to ' . $customerData['email'] . ': ' . $e->getMessage());
+                    }
+                } else {
+                    Log::info('Confirmation email skipped. Customer notification status is OFF.');
+                }
+                $url = route('viewcustomer', ['id' => $customerId]);
+                if ($customer->notification_status == 1) {
+                    return redirect()->to($url)->with('success', 'Customer data successfully stored and email sent.');
+                } else {
+                    return redirect()->to($url)->with('success', 'Customer data successfully stored. Email skipped: Notification status is OFF.');
+                }
+            } elseif ($request->has('save_and_share')) {
+                return redirect()->route('postcustomer')->with('success', 'Customer data successfully stored.')->with('customerId', $customerId);
+            } elseif ($request->has('save_and_new')) {
+                return redirect()->route('postcustomer')->with('success', 'Customer data successfully stored.');
+            } else {
+                return redirect()->route('customer')->with('success', 'Customer data successfully stored.');
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            Log::error('An error occurred while saving Customer data: ' . $e->getMessage());
+
+            return redirect()->back()->with('error', 'An error occurred while saving data.');
         }
-    } catch (\Exception $e) {
-        DB::rollback();
-
-        Log::error('An error occurred while saving Customer data: ' . $e->getMessage());
-
-        return redirect()->back()->with('error', 'An error occurred while saving data.');
     }
-}
 
 
     public function sendReportEmail(Request $request)
@@ -1483,6 +1491,14 @@ class CustomerController extends Controller
             $attachments = $request->file('attachments');
 
             Log::info('Sending email to ' . $recipientEmail . ' with subject: ' . $emailSubject);
+
+            Log::info('Sending email to ' . $recipientEmail . ' with subject: ' . $emailSubject);
+
+            $customerRecipient = Customer::where('email', $recipientEmail)->first();
+            if ($customerRecipient && $customerRecipient->notification_status != 1) {
+                Log::info('Email skipped for ' . $recipientEmail . ' due to notification status OFF.');
+                return response()->json(['status' => 'success', 'message' => 'Customer notification_status is OFF.']);
+            }
 
             Mail::raw($emailBody, function ($message) use ($recipientEmail, $ccEmail, $bccEmail, $emailSubject, $attachments) {
                 if ($attachments) {
@@ -1536,6 +1552,14 @@ class CustomerController extends Controller
 
             Log::info('Sending email to ' . $recipientEmail . ' with subject: ' . $emailSubject);
 
+            Log::info('Sending email to ' . $recipientEmail . ' with subject: ' . $emailSubject);
+
+            $customerRecipient = Customer::where('email', $recipientEmail)->first();
+            if ($customerRecipient && $customerRecipient->notification_status != 1) {
+                Log::info('Email skipped for ' . $recipientEmail . ' due to notification status OFF.');
+                return response()->json(['status' => 'success', 'message' => 'Customer notification_status is OFF.']);
+            }
+
             Mail::raw($emailBody, function ($message) use ($recipientEmail, $ccEmail, $bccEmail, $emailSubject, $attachments) {
                 if ($attachments) {
                     foreach ($attachments as $attachment) {
@@ -1576,6 +1600,13 @@ class CustomerController extends Controller
             $subject = $request->input('subject');
             $body = $request->input('body');
             $pdf = $request->file('pdf');
+
+            $pdf = $request->file('pdf');
+
+            $customerRecipient = Customer::where('email', $email)->first();
+            if ($customerRecipient && $customerRecipient->notification_status != 1) {
+                return response()->json(['message' => 'Customer notification_status is OFF.'], 200);
+            }
 
             Mail::send([], [], function ($message) use ($email, $cc, $bcc, $subject, $body, $pdf) {
                 $message->to($email)
@@ -1721,6 +1752,13 @@ class CustomerController extends Controller
             }
 
             // Send email with PDF attachment
+            // Send email with PDF attachment
+            $customerRecipient = Customer::where('email', $email)->first();
+            if ($customerRecipient && $customerRecipient->notification_status != 1) {
+                Log::info('Email skipped for ' . $email . ' due to notification status OFF.');
+                return response()->json(['message' => 'Customer notification_status is OFF.'], 200);
+            }
+
             Mail::send([], [], function ($message) use ($pdf, $email) {
                 $message->to($email)
                     ->subject('Customer Information PDF')
@@ -2281,21 +2319,29 @@ class CustomerController extends Controller
             $customerId = $customer->id;
             // Send email to all POCs (sign_email and dept_email) if save_and_email is clicked
             if ($request->has('save_and_email')) {
-                foreach ($customerdepartmentsData as $department) {
-                    if (!empty($department['dept_email'])) {
-                        try {
-                            Mail::to($department['dept_email'])->send(
-                                        new DepartmentConfirmationMail($customer, $department)
-                                    );
+                if ($customer->notification_status == 1) {
+                    foreach ($customerdepartmentsData as $department) {
+                        if (!empty($department['dept_email'])) {
+                            try {
+                                Mail::to($department['dept_email'])->send(
+                                    new DepartmentConfirmationMail($customer, $department)
+                                );
 
-                            Log::info('Update confirmation email sent to dept_email: ' . $department['dept_email']);
-                        } catch (\Exception $e) {
-                            Log::error('Error sending email to dept_email ' . $department['dept_email'] . ': ' . $e->getMessage());
+                                Log::info('Update confirmation email sent to dept_email: ' . $department['dept_email']);
+                            } catch (\Exception $e) {
+                                Log::error('Error sending email to dept_email ' . $department['dept_email'] . ': ' . $e->getMessage());
+                            }
                         }
                     }
+                } else {
+                    Log::info('Update confirmation email skipped. Customer notification status is OFF.');
                 }
                 $url = route('viewcustomer', ['id' => $customerId]);
-                return redirect()->to($url)->with('success', 'Customer data updated and emails sent to POCs and department contacts.');
+                if ($customer->notification_status == 1) {
+                    return redirect()->to($url)->with('success', 'Customer data updated and emails sent to POCs and department contacts.');
+                } else {
+                    return redirect()->to($url)->with('success', 'Customer data updated. Emails skipped: Notification status is OFF.');
+                }
             } elseif ($request->has('save_and_share')) {
                 return redirect()->route('postcustomer')->with('success', 'Customer data updated successfully.')->with('customerId', $customerId);
             } elseif ($request->has('save_and_new')) {

@@ -24,13 +24,14 @@ class SendContractExpiryReminders extends Command
         $targetDate = now()->addMonth()->toDateString();
 
         // Find customers whose contract end date is exactly one month from now
-        $customers = Customer::whereDate('c_end_date', $targetDate)
-                     ->take(2) // For testing: only 2 customers
-                     ->get();
+        $customers = Customer::where('notification_status', 1)
+            ->whereDate('c_end_date', $targetDate)
+            ->take(2) // For testing: only 2 customers
+            ->get();
 
         $count = 0;
 
-     foreach ($customers as $customer) {
+        foreach ($customers as $customer) {
             if ($customer->email) {
                 // Send Email
                 Log::info("Sending email to: " . $customer->email);
@@ -38,12 +39,12 @@ class SendContractExpiryReminders extends Command
                 Mail::to('Erp.piffers@gmail.com')->send(new ContractExpiryReminder($customer));
                 // Save Notification in DB
                 ReminderNotification::create([
-                  'user_id'     => $customer->id,
+                    'user_id' => $customer->id,
                     'entity_type' => 'customer',
-                    'entity_id'   => $customer->id,
-                    'title'       => 'Contract Expiry Reminder',
-                    'message'     => "Dear {$customer->customer_name}, your contract will expire on {$customer->c_end_date}.",
-                    'is_read'     => false,
+                    'entity_id' => $customer->id,
+                    'title' => 'Contract Expiry Reminder',
+                    'message' => "Dear {$customer->customer_name}, your contract will expire on {$customer->c_end_date}.",
+                    'is_read' => false,
                 ]);
                 $count++;
             } else {

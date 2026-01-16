@@ -30,30 +30,33 @@ class EmailController extends Controller
         if ($request->boolean('send_to_all')) {
             $excluded = $request->excluded_customers ?? [];
 
+            // Check if ANY applicable customers exist regardless of notification status
+            $totalApplicable = Customer::query()
+                ->when(count($excluded) > 0, fn($q) => $q->whereNotIn('id', $excluded))
+                ->count();
+
             $recipients = Customer::query()
+                ->where('notification_status', 1)
                 ->when(count($excluded) > 0, fn($q) => $q->whereNotIn('id', $excluded))
                 ->pluck('email')
                 ->toArray();
-            $recipientsEmail = [];
-            foreach ($recipients as $r) {
-                if ($r != null && $r != '') {
-                    $recipientsEmail[] = $r;
-                }
-            }
         } else {
-            $recipients = Customer::whereIn('id', $request->customers ?? [])
+            $selectedIds = $request->customers ?? [];
+            $totalApplicable = count($selectedIds);
+
+            $recipients = Customer::whereIn('id', $selectedIds)
+                ->where('notification_status', 1)
                 ->pluck('email')
                 ->toArray();
-            $recipientsEmail = [];
-            foreach ($recipients as $r) {
-                if ($r != null && $r != '') {
-                    $recipientsEmail[] = $r;
-                }
-            }
         }
+
+        $recipientsEmail = array_filter($recipients, fn($r) => !empty($r));
 
         // Check if we have any valid recipients
         if (empty($recipientsEmail)) {
+            if ($totalApplicable > 0) {
+                return back()->with('error', 'Email sending failed: Selected customer(s) have notifications turned OFF.');
+            }
             return back()->withErrors(['customers' => 'No customers found with valid email addresses'])->withInput();
         }
 

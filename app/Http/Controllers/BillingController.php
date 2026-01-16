@@ -9,14 +9,18 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
+use App\Models\Customer;
+
 class BillingController extends Controller
 {
-    public function billing(){
+    public function billing()
+    {
         $billings = Billing::all();
-        return view('billing.billing' , compact('billings'));
+        return view('billing.billing', compact('billings'));
     }
 
-    public function billingSubmission(){
+    public function billingSubmission()
+    {
         return view('billing.billing-submission');
     }
 
@@ -29,7 +33,14 @@ class BillingController extends Controller
             $billing = Billing::create($billingData);
 
             $billingProductData = $request->only([
-                'serial_no', 'types', 'sizes', 'quantity', 'unit_price', 'tax', 'total', 'remarks'
+                'serial_no',
+                'types',
+                'sizes',
+                'quantity',
+                'unit_price',
+                'tax',
+                'total',
+                'remarks'
             ]);
 
             $billingProductDataArray = [];
@@ -69,9 +80,10 @@ class BillingController extends Controller
         }
     }
 
-    public function editBilling($id){
+    public function editBilling($id)
+    {
         $billing = Billing::findOrFail($id);
-        return view('billing.edit-billing' , compact('billing'));
+        return view('billing.edit-billing', compact('billing'));
     }
 
     public function updateBilling(Request $request, $id)
@@ -116,7 +128,7 @@ class BillingController extends Controller
             } else {
                 return redirect()->route('billing')->with('success', 'Billing data updated successfully.');
             }
-;
+            ;
 
         } catch (\Exception $e) {
             DB::rollback();
@@ -125,12 +137,13 @@ class BillingController extends Controller
         }
     }
 
-    public function viewBilling($id){
+    public function viewBilling($id)
+    {
         $billing = Billing::findOrFail($id);
-        return view('billing.view-billing' , compact('billing'));
+        return view('billing.view-billing', compact('billing'));
     }
-    
-       public function sendPDFViaEmail(Request $request)
+
+    public function sendPDFViaEmail(Request $request)
     {
         try {
             $email = $request->input('email');
@@ -139,6 +152,11 @@ class BillingController extends Controller
             $subject = $request->input('subject');
             $body = $request->input('body');
             $pdf = $request->file('pdf');
+
+            $customerRecipient = Customer::where('email', $email)->first();
+            if ($customerRecipient && $customerRecipient->notification_status != 1) {
+                return response()->json(['message' => 'Customer notification_status is OFF.'], 200);
+            }
 
             Mail::send([], [], function ($message) use ($email, $cc, $bcc, $subject, $body, $pdf) {
                 $message->to($email)

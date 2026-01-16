@@ -29,21 +29,21 @@ use App\Mail\TrainingNotificationMail;
 class TrainingController extends Controller
 {
 
-public function trainingbulkDelete(Request $request)
-{
-    $ids = $request->ids; // array of selected IDs
-    if (!empty($ids)) {
-        // Optional: log before deletion
-        Log::info('Soft deleting training records with IDs:', $ids);
+    public function trainingbulkDelete(Request $request)
+    {
+        $ids = $request->ids; // array of selected IDs
+        if (!empty($ids)) {
+            // Optional: log before deletion
+            Log::info('Soft deleting training records with IDs:', $ids);
 
-        // Perform soft delete
-        Training::whereIn('id', $ids)->delete();
+            // Perform soft delete
+            Training::whereIn('id', $ids)->delete();
 
-        return response()->json(['success' => 'Trainings soft deleted successfully.']);
+            return response()->json(['success' => 'Trainings soft deleted successfully.']);
+        }
+
+        return response()->json(['error' => 'No IDs provided.'], 400);
     }
-
-    return response()->json(['error' => 'No IDs provided.'], 400);
-}
     public function train()
     {
         $trainingData = Training::all();
@@ -51,11 +51,11 @@ public function trainingbulkDelete(Request $request)
         return view('training.train', compact('trainingData'));
     }
     public function checkTrainingNumber($number)
-{
-    $decoded = urldecode($number);
-    $exists = \App\Models\Training::where('training_no', $decoded)->exists();
-    return response()->json(['exists' => $exists]);
-}
+    {
+        $decoded = urldecode($number);
+        $exists = \App\Models\Training::where('training_no', $decoded)->exists();
+        return response()->json(['exists' => $exists]);
+    }
 
     public function posttrain()
     {
@@ -64,16 +64,21 @@ public function trainingbulkDelete(Request $request)
         $guardRecords = Hrm::where('category', 'guard')->get();
         $activeCustomerRecords = Customer::where('customers_activation_check', '1')->get();
         $inactiveCustomerRecords = Customer::where('customers_activation_check', '0')->get();
-        return view('training.posttrain' , compact('types','trainemerser', 'guardRecords' , 'activeCustomerRecords' , 'inactiveCustomerRecords'));
+        return view('training.posttrain', compact('types', 'trainemerser', 'guardRecords', 'activeCustomerRecords', 'inactiveCustomerRecords'));
     }
 
-   public function getAllGuards()
-   {
-    $guards = Hrm::where('category', 'guard')->select('name', 'fname', 'employee_no', 'hrm_region',
-    'hrm_location')->get();
+    public function getAllGuards()
+    {
+        $guards = Hrm::where('category', 'guard')->select(
+            'name',
+            'fname',
+            'employee_no',
+            'hrm_region',
+            'hrm_location'
+        )->get();
 
-    return response()->json($guards);
-   }
+        return response()->json($guards);
+    }
 
     public function import(Request $request)
     {
@@ -105,16 +110,54 @@ public function trainingbulkDelete(Request $request)
             $trainData = $request->except('_token');
             Log::info('Request data:', $request->all());
 
-            $checkboxFields = ['email_active_check', 'email_inactive_check', 'email_all_check', 'guards_respective',
-                'general_check', 'weapon_check', 'frisking_check', 'gatehouse_check', 'optimum_check', 'radio_check',
-                'aid_check', 'fire_check', 'self_check', 'close_check','crime_check','first_aid_check', 'umbrella_check',
-                'wireless_check', 'mega_check', 'sofa_check', 'water_check', 'point_one_check', 'point_two_check',
-                'point_three_check', 'point_four_check', 'point_five_check', 'point_six_check', 'point_seven_check',
-                'point_eight_check', 'point_nine_check', 'point_ten_check', 'point_eleven_check', 'point_twelve_check',
-                'point_thirteen_check', 'point_forteen_check', 'point_fifteen_check', 'point_sixteen_check',
-                'point_seventeen_check', 'point_eighteen_check', 'point_ninteen_check', 'point_twenty_check',
-                'point_twentyone_check', 'point_twentytwo_check', 'point_twentythree_check', 'point_twentyfour_check',
-                'point_twentyfive_check', 'point_twentysix_check',
+            $checkboxFields = [
+                'email_active_check',
+                'email_inactive_check',
+                'email_all_check',
+                'guards_respective',
+                'general_check',
+                'weapon_check',
+                'frisking_check',
+                'gatehouse_check',
+                'optimum_check',
+                'radio_check',
+                'aid_check',
+                'fire_check',
+                'self_check',
+                'close_check',
+                'crime_check',
+                'first_aid_check',
+                'umbrella_check',
+                'wireless_check',
+                'mega_check',
+                'sofa_check',
+                'water_check',
+                'point_one_check',
+                'point_two_check',
+                'point_three_check',
+                'point_four_check',
+                'point_five_check',
+                'point_six_check',
+                'point_seven_check',
+                'point_eight_check',
+                'point_nine_check',
+                'point_ten_check',
+                'point_eleven_check',
+                'point_twelve_check',
+                'point_thirteen_check',
+                'point_forteen_check',
+                'point_fifteen_check',
+                'point_sixteen_check',
+                'point_seventeen_check',
+                'point_eighteen_check',
+                'point_ninteen_check',
+                'point_twenty_check',
+                'point_twentyone_check',
+                'point_twentytwo_check',
+                'point_twentythree_check',
+                'point_twentyfour_check',
+                'point_twentyfive_check',
+                'point_twentysix_check',
             ];
 
             foreach ($checkboxFields as $field) {
@@ -122,8 +165,18 @@ public function trainingbulkDelete(Request $request)
             }
 
             $trainVideoFields = [
-                'demo', 'general_video', 'weapon_video', 'frisking_video', 'gatehouse_video', 'optimum_video', 'radio_video',
-                'firstaid_video', 'fire_video', 'self_video', 'close_video','crime_video',
+                'demo',
+                'general_video',
+                'weapon_video',
+                'frisking_video',
+                'gatehouse_video',
+                'optimum_video',
+                'radio_video',
+                'firstaid_video',
+                'fire_video',
+                'self_video',
+                'close_video',
+                'crime_video',
             ];
 
             foreach ($trainVideoFields as $field) {
@@ -137,11 +190,34 @@ public function trainingbulkDelete(Request $request)
             }
 
             $trainImageFields = [
-                'photo', 'booking_attach', 'range_allocation_attach', 'copy_booking_attach', 'media_attach','media_attach_2',
-                'hospital_pic', 'incident_attach', 'suggestion_attach', 'observation_attach', 'remarks_attach',
-                't_range_front', 't_range_back', 't_range_photo','guard_resp_attach','list_guard_attach','general_literature',
-                'weapon_literature','frisking_literature','gatehouse_literature','optimum_literature','radio_literature','firstaid_literature',
-                'fire_literature','self_literature','close_literature','crime_literature','expenses_proof_attach',
+                'photo',
+                'booking_attach',
+                'range_allocation_attach',
+                'copy_booking_attach',
+                'media_attach',
+                'media_attach_2',
+                'hospital_pic',
+                'incident_attach',
+                'suggestion_attach',
+                'observation_attach',
+                'remarks_attach',
+                't_range_front',
+                't_range_back',
+                't_range_photo',
+                'guard_resp_attach',
+                'list_guard_attach',
+                'general_literature',
+                'weapon_literature',
+                'frisking_literature',
+                'gatehouse_literature',
+                'optimum_literature',
+                'radio_literature',
+                'firstaid_literature',
+                'fire_literature',
+                'self_literature',
+                'close_literature',
+                'crime_literature',
+                'expenses_proof_attach',
             ];
 
             foreach ($trainImageFields as $field) {
@@ -165,8 +241,14 @@ public function trainingbulkDelete(Request $request)
 
 
             $trainingBudgetData = $request->only([
-                'budget_category', 'mode_of_payment', 'budget_ins_no', 'name_of_bank',
-                'date_of_payment', 'amount_per_unit','quantity','total_amount',
+                'budget_category',
+                'mode_of_payment',
+                'budget_ins_no',
+                'name_of_bank',
+                'date_of_payment',
+                'amount_per_unit',
+                'quantity',
+                'total_amount',
             ]);
 
             $trainingBudgetDataArray = [];
@@ -191,7 +273,8 @@ public function trainingbulkDelete(Request $request)
                 }
 
                 $trainingBudgetFields = [
-                    'cheque_attach', 'voucher_attach',
+                    'cheque_attach',
+                    'voucher_attach',
                 ];
 
                 foreach ($trainingBudgetFields as $field) {
@@ -212,8 +295,14 @@ public function trainingbulkDelete(Request $request)
             //Training Weapon Data
 
             $trainingWeaponData = $request->only([
-                'type_of_weapon', 'weapon_no', 'caliber', 'bore', 'weapon_price_pu','weapon_total_price',
-                'weapon_quantity', 'person_responsible_weapon',
+                'type_of_weapon',
+                'weapon_no',
+                'caliber',
+                'bore',
+                'weapon_price_pu',
+                'weapon_total_price',
+                'weapon_quantity',
+                'person_responsible_weapon',
                 'weapon_notes',
             ]);
 
@@ -252,9 +341,17 @@ public function trainingbulkDelete(Request $request)
 
             //Training Poc Add more data
             $trainingPocData = $request->only([
-                'poc_name', 'poc_desig', 'poc_fax', 'poc_phone', 'poc_mobile','poc_web',
-                'poc_email', 'poc_loc',
-                'poc_document', 'system_id','other_info'
+                'poc_name',
+                'poc_desig',
+                'poc_fax',
+                'poc_phone',
+                'poc_mobile',
+                'poc_web',
+                'poc_email',
+                'poc_loc',
+                'poc_document',
+                'system_id',
+                'other_info'
             ]);
 
             $trainingPocDataArray = [];
@@ -282,8 +379,12 @@ public function trainingbulkDelete(Request $request)
             //Training Ammunition Data
 
             $trainingAmmunitionData = $request->only([
-                'ammu_quantity', 'ammu_type', 'person_responsible_ammu',
-                'price_per_unit_ammu', 'total_price_ammu', 'ammu_notes',
+                'ammu_quantity',
+                'ammu_type',
+                'person_responsible_ammu',
+                'price_per_unit_ammu',
+                'total_price_ammu',
+                'ammu_notes',
             ]);
 
             $trainingAmmunitionDataArray = [];
@@ -317,7 +418,9 @@ public function trainingbulkDelete(Request $request)
             $training->trainingammunitions()->createMany($trainingAmmunitionDataArray);
 
             $trainingArmourerData = $request->only([
-                'armourer_name', 'armourer_cell', 'armourer_notes',
+                'armourer_name',
+                'armourer_cell',
+                'armourer_notes',
             ]);
 
             $trainingArmourerDataArray = [];
@@ -350,8 +453,14 @@ public function trainingbulkDelete(Request $request)
             //Training Equipments Data
 
             $trainingEquipmentData = $request->only([
-                'sec_equip_category', 'sec_equip_type','sec_equip_pricepu', 'sec_equip_quantity','sec_equip_totalprice',
-                'person_responsible_sec_equip', 'sec_equip_notes', 'red_flag_quantity',
+                'sec_equip_category',
+                'sec_equip_type',
+                'sec_equip_pricepu',
+                'sec_equip_quantity',
+                'sec_equip_totalprice',
+                'person_responsible_sec_equip',
+                'sec_equip_notes',
+                'red_flag_quantity',
                 'target_quantity',
             ]);
 
@@ -391,11 +500,25 @@ public function trainingbulkDelete(Request $request)
             //Training Items List Data
 
             $trainingItemsData = $request->only([
-                'list_items_category', 'item_category', 'item_type', 'item_supplier',
-                'item_quantity', 'item_price', 'item_total_price',
-                'item_notes', 'item_vendor', 'vendor_cell','vendor_floor','vendor_building',
-                'vendor_block', 'vendor_area', 'vendor_city', 'vendor_email', 'vendor_website',
-                'vendor_gps', 'vendor_notes',
+                'list_items_category',
+                'item_category',
+                'item_type',
+                'item_supplier',
+                'item_quantity',
+                'item_price',
+                'item_total_price',
+                'item_notes',
+                'item_vendor',
+                'vendor_cell',
+                'vendor_floor',
+                'vendor_building',
+                'vendor_block',
+                'vendor_area',
+                'vendor_city',
+                'vendor_email',
+                'vendor_website',
+                'vendor_gps',
+                'vendor_notes',
             ]);
 
             $trainingItemsDataArray = [];
@@ -423,7 +546,8 @@ public function trainingbulkDelete(Request $request)
                 ];
 
                 $trainingItemsFields = [
-                    'item_attach', 'vendor_attach',
+                    'item_attach',
+                    'vendor_attach',
                 ];
 
                 foreach ($trainingItemsFields as $field) {
@@ -444,9 +568,21 @@ public function trainingbulkDelete(Request $request)
             //Training Emergency  Data
 
             $trainingEmergencyData = $request->only([
-                'train_emer_ser', 'train_emer_poc_name', 'train_emer_poc_desig', 'train_emer_poc_cell', 'train_emer_poc_email', 'train_emer_poc_notes',
-                'train_emer_office', 'train_emer_building', 'train_emer_block', 'train_emer_area', 'train_emer_city',
-                'train_emer_email', 'train_emer_web', 'train_emer_pin', 'train_emer_app_rental',
+                'train_emer_ser',
+                'train_emer_poc_name',
+                'train_emer_poc_desig',
+                'train_emer_poc_cell',
+                'train_emer_poc_email',
+                'train_emer_poc_notes',
+                'train_emer_office',
+                'train_emer_building',
+                'train_emer_block',
+                'train_emer_area',
+                'train_emer_city',
+                'train_emer_email',
+                'train_emer_web',
+                'train_emer_pin',
+                'train_emer_app_rental',
                 'train_emer_note',
             ]);
 
@@ -473,7 +609,10 @@ public function trainingbulkDelete(Request $request)
                 ];
 
                 $trainingEmergencyFields = [
-                    'train_emer_pic', 'train_emer_poc_attach', 'train_emer_buildphoto', 'train_emer_attach',
+                    'train_emer_pic',
+                    'train_emer_poc_attach',
+                    'train_emer_buildphoto',
+                    'train_emer_attach',
                 ];
 
                 foreach ($trainingEmergencyFields as $field) {
@@ -493,33 +632,35 @@ public function trainingbulkDelete(Request $request)
 
 
 
-                $guard_ids = $request->input('guards', []); // default to empty array if not provided
+            $guard_ids = $request->input('guards', []); // default to empty array if not provided
 
-                    $guards = Hrm::whereIn('id', $guard_ids)->get();
+            $guards = Hrm::whereIn('id', $guard_ids)->get();
 
-                    foreach ($guards as $guard) {
-                        if (empty($guard->email)) {
-                            Log::warning('Guard has no email', ['guard_id' => $guard->id]);
-                        } else {
-                            Mail::to($guard->email)->send(new TrainingNotificationMail($training, $guard));
-                        }
+            foreach ($guards as $guard) {
+                if (empty($guard->email)) {
+                    Log::warning('Guard has no email', ['guard_id' => $guard->id]);
+                } else {
+                    Mail::to($guard->email)->send(new TrainingNotificationMail($training, $guard));
+                }
 
-                        if (!$guard->customer) {
-                            Log::warning('Guard has no associated customer', ['guard_id' => $guard->id]);
-                        } elseif (empty($guard->customer->email)) {
-                            Log::warning('Customer has no email', [
-                                'guard_id'    => $guard->id,
-                                'customer_id' => $guard->customer->id
-                            ]);
-                        } else {
-                            Mail::to($guard->customer->email)->send(new TrainingNotificationMail($training, $guard));
-                        }
+                if (!$guard->customer) {
+                    Log::warning('Guard has no associated customer', ['guard_id' => $guard->id]);
+                } elseif (empty($guard->customer->email)) {
+                    Log::warning('Customer has no email', [
+                        'guard_id' => $guard->id,
+                        'customer_id' => $guard->customer->id
+                    ]);
+                } else {
+                    if ($guard->customer->notification_status == 1) {
+                        Mail::to($guard->customer->email)->send(new TrainingNotificationMail($training, $guard));
                     }
+                }
+            }
 
 
-                DB::commit();
+            DB::commit();
 
-                $trainingId = $training->id;
+            $trainingId = $training->id;
             session()->flash('success', 'Training data successfully stored.');
             session()->flash('trainingId', $trainingId);
 
@@ -527,13 +668,11 @@ public function trainingbulkDelete(Request $request)
             if ($request->has('save_and_email')) {
                 $url = route('viewtrain', ['id' => $trainingId]);
                 return redirect()->to($url)->with('success', 'Training data successfully stored.');
-            }
-            elseif ($request->has('save_and_new')) {
+            } elseif ($request->has('save_and_new')) {
                 return redirect()->route('posttrain')->with('success', 'Training data successfully stored.');
-            }elseif ($request->has('save_and_share')) {
+            } elseif ($request->has('save_and_share')) {
                 return redirect()->route('posttrain')->with('success', 'Training data successfully stored.')->with('trainingId', $trainingId);
-            }
-            else {
+            } else {
                 return redirect()->route('train')->with('success', 'Training data successfully stored.');
             }
 
@@ -553,7 +692,7 @@ public function trainingbulkDelete(Request $request)
         $types = Type::all();
         $trainemerser = TrainEmerser::all();
         $associatedGuards = $trainings->guards()->get();
-        return view('training.viewtrain' , compact('trainings','types','trainemerser' , 'associatedGuards'));
+        return view('training.viewtrain', compact('trainings', 'types', 'trainemerser', 'associatedGuards'));
     }
 
 
@@ -583,12 +722,15 @@ public function trainingbulkDelete(Request $request)
 
                 if (!$customer) {
                     Log::error('Customer not found for ID ' . $customerId);
-                    continue; // Skip to the next customer if not found
+                }
+
+                if ($customer->notification_status != 1) {
+                    continue;
                 }
 
                 Mail::raw($emailBody, function ($message) use ($customerEmail, $emailSubject, $attachment, $emailCC, $emailBCC) {
                     $message->to($customerEmail)
-                            ->subject($emailSubject);
+                        ->subject($emailSubject);
 
                     if ($emailCC) {
                         $message->cc($emailCC);
@@ -645,9 +787,13 @@ public function trainingbulkDelete(Request $request)
                     continue; // Skip to the next customer if not found
                 }
 
+                if ($customer->notification_status != 1) {
+                    continue;
+                }
+
                 Mail::raw($emailBody, function ($message) use ($customerEmail, $emailSubject, $attachment, $emailCC, $emailBCC) {
                     $message->to($customerEmail)
-                            ->subject($emailSubject);
+                        ->subject($emailSubject);
 
                     if ($emailCC) {
                         $message->cc($emailCC);
@@ -688,6 +834,10 @@ public function trainingbulkDelete(Request $request)
 
         try {
             $customer = Customer::find($customerId);
+
+            if ($customer->notification_status != 1) {
+                return response()->json(['status' => 'error', 'message' => 'Failed to send inactive email. Customer notification disabled.']);
+            }
 
             if (!$customer) {
                 throw new \Exception('Customer not found');
@@ -735,8 +885,12 @@ public function trainingbulkDelete(Request $request)
                     continue; // Skip to the next customer if not found
                 }
 
+                if ($customer->notification_status != 1) {
+                    continue;
+                }
+
                 // Send email directly
-                Mail::raw($emailBody, function ($message) use ($customerEmail, $emailSubject, $attachment , $inactiveemailCC , $inactiveemailBCC) {
+                Mail::raw($emailBody, function ($message) use ($customerEmail, $emailSubject, $attachment, $inactiveemailCC, $inactiveemailBCC) {
                     $message->to($customerEmail)
                         ->subject($emailSubject);
 
@@ -769,7 +923,7 @@ public function trainingbulkDelete(Request $request)
         }
     }
 
-     public function sendEditInactiveMultipleEmail(Request $request)
+    public function sendEditInactiveMultipleEmail(Request $request)
     {
         $request->validate([
             'customers' => 'required|array',
@@ -797,8 +951,12 @@ public function trainingbulkDelete(Request $request)
                     continue; // Skip to the next customer if not found
                 }
 
+                if ($customer->notification_status != 1) {
+                    continue;
+                }
+
                 // Send email directly
-                Mail::raw($emailBody, function ($message) use ($customerEmail, $emailSubject, $attachment , $inactiveemailCC , $inactiveemailBCC) {
+                Mail::raw($emailBody, function ($message) use ($customerEmail, $emailSubject, $attachment, $inactiveemailCC, $inactiveemailBCC) {
                     $message->to($customerEmail)
                         ->subject($emailSubject);
 
@@ -842,197 +1000,267 @@ public function trainingbulkDelete(Request $request)
         $activeCustomerRecords = Customer::where('customers_activation_check', '1')->get();
         $inactiveCustomerRecords = Customer::where('customers_activation_check', '0')->get();
         $hrmData = Hrm::all();
-         $checklistItems = ChecklistItem::all();
-        return view('training.edit', compact('trainings','types','trainemerser' , 'associatedGuards', 'activeCustomerRecords' , 'inactiveCustomerRecords','hrmData','checklistItems'));
+        $checklistItems = ChecklistItem::all();
+        return view('training.edit', compact('trainings', 'types', 'trainemerser', 'associatedGuards', 'activeCustomerRecords', 'inactiveCustomerRecords', 'hrmData', 'checklistItems'));
     }
 
- public function update_train(Request $request, $id)
-{
-    Log::info('Request data:', $request->all());
-    Log::info('Files:', $request->allFiles());
+    public function update_train(Request $request, $id)
+    {
+        Log::info('Request data:', $request->all());
+        Log::info('Files:', $request->allFiles());
 
-    DB::beginTransaction();
-    try {
-        $trainData = $request->except('_token', '_method');
+        DB::beginTransaction();
+        try {
+            $trainData = $request->except('_token', '_method');
 
-        // Handle checkbox fields (convert present to true, absent to false)
-        $checkboxFields = [
-            'email_active_check', 'email_inactive_check', 'email_all_check', 'guards_respective',
-            'general_check', 'weapon_check', 'frisking_check', 'gatehouse_check', 'optimum_check', 'radio_check',
-            'aid_check', 'fire_check', 'self_check', 'close_check','crime_check','first_aid_check', 'umbrella_check',
-            'wireless_check', 'mega_check', 'sofa_check', 'water_check', 'point_one_check', 'point_two_check',
-            'point_three_check', 'point_four_check', 'point_five_check', 'point_six_check', 'point_seven_check',
-            'point_eight_check', 'point_nine_check', 'point_ten_check', 'point_eleven_check', 'point_twelve_check',
-            'point_thirteen_check', 'point_forteen_check', 'point_fifteen_check', 'point_sixteen_check',
-            'point_seventeen_check', 'point_eighteen_check', 'point_ninteen_check', 'point_twenty_check',
-            'point_twentyone_check', 'point_twentytwo_check', 'point_twentythree_check', 'point_twentyfour_check',
-            'point_twentyfive_check', 'point_twentysix_check',
-        ];
+            // Handle checkbox fields (convert present to true, absent to false)
+            $checkboxFields = [
+                'email_active_check',
+                'email_inactive_check',
+                'email_all_check',
+                'guards_respective',
+                'general_check',
+                'weapon_check',
+                'frisking_check',
+                'gatehouse_check',
+                'optimum_check',
+                'radio_check',
+                'aid_check',
+                'fire_check',
+                'self_check',
+                'close_check',
+                'crime_check',
+                'first_aid_check',
+                'umbrella_check',
+                'wireless_check',
+                'mega_check',
+                'sofa_check',
+                'water_check',
+                'point_one_check',
+                'point_two_check',
+                'point_three_check',
+                'point_four_check',
+                'point_five_check',
+                'point_six_check',
+                'point_seven_check',
+                'point_eight_check',
+                'point_nine_check',
+                'point_ten_check',
+                'point_eleven_check',
+                'point_twelve_check',
+                'point_thirteen_check',
+                'point_forteen_check',
+                'point_fifteen_check',
+                'point_sixteen_check',
+                'point_seventeen_check',
+                'point_eighteen_check',
+                'point_ninteen_check',
+                'point_twenty_check',
+                'point_twentyone_check',
+                'point_twentytwo_check',
+                'point_twentythree_check',
+                'point_twentyfour_check',
+                'point_twentyfive_check',
+                'point_twentysix_check',
+            ];
 
-        foreach ($checkboxFields as $field) {
-            $trainData[$field] = $request->has($field);
-        }
-
-        // Handle video uploads
-        $trainVideoFields = [
-            'demo', 'general_video', 'weapon_video', 'frisking_video', 'gatehouse_video', 'optimum_video', 'radio_video',
-            'firstaid_video', 'fire_video', 'self_video', 'close_video','crime_video',
-        ];
-
-        foreach ($trainVideoFields as $field) {
-            if ($request->hasFile($field)) {
-                $file = $request->file($field);
-                $file_name = time() . '_' . $file->getClientOriginalName();
-                $file->move(public_path('trains/videos'), $file_name);
-                $trainData[$field] = 'trains/videos/' . $file_name;
-            }
-        }
-
-        // Handle image uploads
-        $trainImageFields = [
-            'photo', 'booking_attach', 'range_allocation_attach', 'copy_booking_attach', 'media_attach','media_attach_2',
-            'hospital_pic', 'incident_attach', 'suggestion_attach', 'observation_attach', 'remarks_attach',
-            't_range_front', 't_range_back', 't_range_photo','guard_resp_attach','list_guard_attach','general_literature',
-            'weapon_literature','frisking_literature','gatehouse_literature','optimum_literature','radio_literature','firstaid_literature',
-            'fire_literature','self_literature','close_literature','crime_literature','expenses_proof_attach',
-        ];
-
-        foreach ($trainImageFields as $field) {
-            if ($request->hasFile($field)) {
-                $file = $request->file($field);
-                $file_name = time() . '_' . $file->getClientOriginalName();
-                $file->move(public_path('trains/images'), $file_name);
-                $trainData[$field] = 'trains/images/' . $file_name;
-            }
-        }
-
-        if ($request->has('training_activation')) {
-            $trainData['training_activation'] = $request->input('training_activation');
-        }
-
-        $train = Training::findOrFail($id);
-        $train->update($trainData);
-
-        // === Training Budgets ===
-        $trainingbudgetsData = $request->input('trainingbudgets', []);
-        foreach ($trainingbudgetsData as $index => $trainingbudgetData) {
-            $trainingbudgetId = $trainingbudgetData['b_id'] ?? null;
-
-            // Handle nested file uploads
-            if ($request->hasFile("trainingbudgets.{$index}.cheque_attach")) {
-                $file = $request->file("trainingbudgets.{$index}.cheque_attach");
-                $file_name = time() . '_' . $file->getClientOriginalName();
-                $file->move(public_path('trains/images'), $file_name);
-                $trainingbudgetData['cheque_attach'] = 'trains/images/' . $file_name;
+            foreach ($checkboxFields as $field) {
+                $trainData[$field] = $request->has($field);
             }
 
-            if ($request->hasFile("trainingbudgets.{$index}.voucher_attach")) {
-                $file = $request->file("trainingbudgets.{$index}.voucher_attach");
-                $file_name = time() . '_' . $file->getClientOriginalName();
-                $file->move(public_path('trains/images'), $file_name);
-                $trainingbudgetData['voucher_attach'] = 'trains/images/' . $file_name;
+            // Handle video uploads
+            $trainVideoFields = [
+                'demo',
+                'general_video',
+                'weapon_video',
+                'frisking_video',
+                'gatehouse_video',
+                'optimum_video',
+                'radio_video',
+                'firstaid_video',
+                'fire_video',
+                'self_video',
+                'close_video',
+                'crime_video',
+            ];
+
+            foreach ($trainVideoFields as $field) {
+                if ($request->hasFile($field)) {
+                    $file = $request->file($field);
+                    $file_name = time() . '_' . $file->getClientOriginalName();
+                    $file->move(public_path('trains/videos'), $file_name);
+                    $trainData[$field] = 'trains/videos/' . $file_name;
+                }
             }
 
-            if (empty($trainingbudgetId)) {
-                $train->trainingbudgets()->create($trainingbudgetData);
+            // Handle image uploads
+            $trainImageFields = [
+                'photo',
+                'booking_attach',
+                'range_allocation_attach',
+                'copy_booking_attach',
+                'media_attach',
+                'media_attach_2',
+                'hospital_pic',
+                'incident_attach',
+                'suggestion_attach',
+                'observation_attach',
+                'remarks_attach',
+                't_range_front',
+                't_range_back',
+                't_range_photo',
+                'guard_resp_attach',
+                'list_guard_attach',
+                'general_literature',
+                'weapon_literature',
+                'frisking_literature',
+                'gatehouse_literature',
+                'optimum_literature',
+                'radio_literature',
+                'firstaid_literature',
+                'fire_literature',
+                'self_literature',
+                'close_literature',
+                'crime_literature',
+                'expenses_proof_attach',
+            ];
+
+            foreach ($trainImageFields as $field) {
+                if ($request->hasFile($field)) {
+                    $file = $request->file($field);
+                    $file_name = time() . '_' . $file->getClientOriginalName();
+                    $file->move(public_path('trains/images'), $file_name);
+                    $trainData[$field] = 'trains/images/' . $file_name;
+                }
+            }
+
+            if ($request->has('training_activation')) {
+                $trainData['training_activation'] = $request->input('training_activation');
+            }
+
+            $train = Training::findOrFail($id);
+            $train->update($trainData);
+
+            // === Training Budgets ===
+            $trainingbudgetsData = $request->input('trainingbudgets', []);
+            foreach ($trainingbudgetsData as $index => $trainingbudgetData) {
+                $trainingbudgetId = $trainingbudgetData['b_id'] ?? null;
+
+                // Handle nested file uploads
+                if ($request->hasFile("trainingbudgets.{$index}.cheque_attach")) {
+                    $file = $request->file("trainingbudgets.{$index}.cheque_attach");
+                    $file_name = time() . '_' . $file->getClientOriginalName();
+                    $file->move(public_path('trains/images'), $file_name);
+                    $trainingbudgetData['cheque_attach'] = 'trains/images/' . $file_name;
+                }
+
+                if ($request->hasFile("trainingbudgets.{$index}.voucher_attach")) {
+                    $file = $request->file("trainingbudgets.{$index}.voucher_attach");
+                    $file_name = time() . '_' . $file->getClientOriginalName();
+                    $file->move(public_path('trains/images'), $file_name);
+                    $trainingbudgetData['voucher_attach'] = 'trains/images/' . $file_name;
+                }
+
+                if (empty($trainingbudgetId)) {
+                    $train->trainingbudgets()->create($trainingbudgetData);
+                } else {
+                    $budget = TrainingBudget::find($trainingbudgetId);
+                    if ($budget) {
+                        $budget->update($trainingbudgetData);
+                    }
+                }
+            }
+
+            // === Helper function to process nested related data with file uploads ===
+            $this->syncRelatedWithFiles($request, $train, 'trainingpocs', 'poc_id', []);
+            $this->syncRelatedWithFiles($request, $train, 'trainingweapons', 'w_id', ['weapon_attach']);
+            $this->syncRelatedWithFiles($request, $train, 'trainingammunitions', 'am_id', ['ammu_attach']);
+            $this->syncRelatedWithFiles($request, $train, 'trainingarmourers', 'arm_id', ['armourer_attach']);
+            $this->syncRelatedWithFiles($request, $train, 'trainingequipments', 'e_id', ['sec_equip_attach']);
+            $this->syncRelatedWithFiles($request, $train, 'trainingitems', 'item_id', ['item_attach', 'vendor_attach']);
+            $this->syncRelatedWithFiles($request, $train, 'trainingemergencies', 'te_id', ['train_emer_pic', 'train_emer_poc_attach', 'train_emer_buildphoto', 'train_emer_attach']);
+
+            DB::commit();
+
+            $trainingId = $train->id;
+            session()->flash('success', 'Training data successfully updated.');
+            session()->flash('trainingId', $trainingId);
+            Log::info('Training data successfully updated.', ['id' => $trainingId]);
+
+            if ($request->has('save_and_email')) {
+                $url = route('viewtrain', ['id' => $trainingId]);
+                return redirect()->to($url)->with('success', 'Training data successfully updated.');
+            } elseif ($request->has('save_and_new')) {
+                return redirect()->route('posttrain')->with('success', 'Training data successfully updated.');
+            } elseif ($request->has('save_and_share')) {
+                return redirect()->route('posttrain')
+                    ->with('success', 'Training data successfully updated.')
+                    ->with('trainingId', $trainingId);
             } else {
-                $budget = TrainingBudget::find($trainingbudgetId);
-                if ($budget) {
-                    $budget->update($trainingbudgetData);
+                return redirect()->route('train')->with('success', 'Training data successfully updated.');
+            }
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            Log::error('Training update error: ' . $e->getMessage(), [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return redirect()->back()->with('error', 'An error occurred while updating data: ' . $e->getMessage());
+        }
+    }
+
+    // Helper method to avoid code duplication
+    private function syncRelatedWithFiles($request, $train, $relation, $idField, $fileFields)
+    {
+        $data = $request->input($relation, []);
+
+        foreach ($data as $index => $itemData) {
+            $itemId = $itemData[$idField] ?? null;
+
+            // Handle file uploads for this row
+            foreach ($fileFields as $field) {
+                $fileKey = "{$relation}.{$index}.{$field}";
+                if ($request->hasFile($fileKey)) {
+                    $file = $request->file($fileKey);
+                    $file_name = time() . '_' . $file->getClientOriginalName();
+                    $file->move(public_path('trains/images'), $file_name);
+                    $itemData[$field] = 'trains/images/' . $file_name;
+                }
+            }
+
+            if (empty($itemId)) {
+                $train->{$relation}()->create($itemData);
+            } else {
+                $record = $train->{$relation}()->find($itemId);
+                if ($record) {
+                    $record->update($itemData);
                 }
             }
         }
-
-        // === Helper function to process nested related data with file uploads ===
-        $this->syncRelatedWithFiles($request, $train, 'trainingpocs', 'poc_id', []);
-        $this->syncRelatedWithFiles($request, $train, 'trainingweapons', 'w_id', ['weapon_attach']);
-        $this->syncRelatedWithFiles($request, $train, 'trainingammunitions', 'am_id', ['ammu_attach']);
-        $this->syncRelatedWithFiles($request, $train, 'trainingarmourers', 'arm_id', ['armourer_attach']);
-        $this->syncRelatedWithFiles($request, $train, 'trainingequipments', 'e_id', ['sec_equip_attach']);
-        $this->syncRelatedWithFiles($request, $train, 'trainingitems', 'item_id', ['item_attach', 'vendor_attach']);
-        $this->syncRelatedWithFiles($request, $train, 'trainingemergencies', 'te_id', ['train_emer_pic', 'train_emer_poc_attach', 'train_emer_buildphoto', 'train_emer_attach']);
-
-        DB::commit();
-
-        $trainingId = $train->id;
-        session()->flash('success', 'Training data successfully updated.');
-        session()->flash('trainingId', $trainingId);
-        Log::info('Training data successfully updated.', ['id' => $trainingId]);
-
-        if ($request->has('save_and_email')) {
-            $url = route('viewtrain', ['id' => $trainingId]);
-            return redirect()->to($url)->with('success', 'Training data successfully updated.');
-        } elseif ($request->has('save_and_new')) {
-            return redirect()->route('posttrain')->with('success', 'Training data successfully updated.');
-        } elseif ($request->has('save_and_share')) {
-            return redirect()->route('posttrain')
-                ->with('success', 'Training data successfully updated.')
-                ->with('trainingId', $trainingId);
-        } else {
-            return redirect()->route('train')->with('success', 'Training data successfully updated.');
-        }
-
-    } catch (\Exception $e) {
-        DB::rollback();
-        Log::error('Training update error: ' . $e->getMessage(), [
-            'file' => $e->getFile(),
-            'line' => $e->getLine(),
-            'trace' => $e->getTraceAsString()
-        ]);
-        return redirect()->back()->with('error', 'An error occurred while updating data: ' . $e->getMessage());
     }
-}
 
-// Helper method to avoid code duplication
-private function syncRelatedWithFiles($request, $train, $relation, $idField, $fileFields)
-{
-    $data = $request->input($relation, []);
-    
-    foreach ($data as $index => $itemData) {
-        $itemId = $itemData[$idField] ?? null;
-
-        // Handle file uploads for this row
-        foreach ($fileFields as $field) {
-            $fileKey = "{$relation}.{$index}.{$field}";
-            if ($request->hasFile($fileKey)) {
-                $file = $request->file($fileKey);
-                $file_name = time() . '_' . $file->getClientOriginalName();
-                $file->move(public_path('trains/images'), $file_name);
-                $itemData[$field] = 'trains/images/' . $file_name;
-            }
-        }
-
-        if (empty($itemId)) {
-            $train->{$relation}()->create($itemData);
-        } else {
-            $record = $train->{$relation}()->find($itemId);
-            if ($record) {
-                $record->update($itemData);
-            }
-        }
-    }
-}
-    
-     public function storechecklist(Request $request)
+    public function storechecklist(Request $request)
     {
         ChecklistItem::create([
-        'checklist' => $request->input('checklist'),
-    ]);
+            'checklist' => $request->input('checklist'),
+        ]);
 
-    return redirect()->back()->with('success', 'Checklist item saved!');
+        return redirect()->back()->with('success', 'Checklist item saved!');
 
     }
-public function deleteChecklistItem($id)
-{
-    $item = ChecklistItem::find($id);
+    public function deleteChecklistItem($id)
+    {
+        $item = ChecklistItem::find($id);
 
-    if ($item) {
-        $item->delete();
-        return response()->json(['success' => true, 'message' => 'Checklist item deleted.']);
+        if ($item) {
+            $item->delete();
+            return response()->json(['success' => true, 'message' => 'Checklist item deleted.']);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Item not found.'], 404);
     }
-
-    return response()->json(['success' => false, 'message' => 'Item not found.'], 404);
-}
 
 
     public function sendPDFViaEmail(Request $request)
@@ -1059,11 +1287,11 @@ public function deleteChecklistItem($id)
             }
 
             // Log input data for debugging
-            Log::info('Received email: '.$email);
-            Log::info('CC: '.$cc);
-            Log::info('BCC: '.$bcc);
-            Log::info('Subject: '.$subject);
-            Log::info('Body: '.$body);
+            Log::info('Received email: ' . $email);
+            Log::info('CC: ' . $cc);
+            Log::info('BCC: ' . $bcc);
+            Log::info('Subject: ' . $subject);
+            Log::info('Body: ' . $body);
 
             // Construct and send the email
             Mail::send([], [], function ($message) use ($email, $cc, $bcc, $subject, $body, $pdf) {
@@ -1072,16 +1300,16 @@ public function deleteChecklistItem($id)
                     ->cc($cc)
                     ->bcc($bcc)
                     ->attach($pdf->getRealPath(), [
-                        'as' => 'training_information.pdf',
-                        'mime' => 'application/pdf'
-                    ])
+                            'as' => 'training_information.pdf',
+                            'mime' => 'application/pdf'
+                        ])
                     ->text($body);
             });
 
             return response()->json(['message' => 'Email sent successfully!'], 200);
         } catch (\Exception $e) {
             // Log the error for debugging
-            Log::error('Error sending email: '.$e->getMessage());
+            Log::error('Error sending email: ' . $e->getMessage());
             return response()->json(['error' => 'Failed to send email.'], 500);
         }
     }
@@ -1171,11 +1399,12 @@ public function deleteChecklistItem($id)
         }
     }
 
-    public function active(){
+    public function active()
+    {
         return view('emails.active');
     }
 
-   public function trashedTrainings()
+    public function trashedTrainings()
     {
         $trashed = Training::onlyTrashed()->latest()->get();
         return view('trainings.trashed', compact('trashed'));
@@ -1190,12 +1419,12 @@ public function deleteChecklistItem($id)
     }
 
     public function forceDeleteTraining($id)
-        {
-            $training = Training::onlyTrashed()->findOrFail($id);
-            $training->forceDelete();
+    {
+        $training = Training::onlyTrashed()->findOrFail($id);
+        $training->forceDelete();
 
-            return redirect()->back()->with('success', 'Training permanently deleted.');
-        }
+        return redirect()->back()->with('success', 'Training permanently deleted.');
+    }
 
 
 

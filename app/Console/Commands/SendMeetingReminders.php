@@ -21,7 +21,8 @@ class SendMeetingReminders extends Command
 
         $this->info("📅 Today's Date: " . $today->format('Y-m-d'));
 
-        $customers = Customer::whereNotNull('meeting_date')
+        $customers = Customer::where('notification_status', 1)
+            ->whereNotNull('meeting_date')
             ->whereNotNull('meeting_freq')
             ->get();
 

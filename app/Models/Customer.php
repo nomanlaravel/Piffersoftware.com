@@ -186,6 +186,7 @@ class Customer extends Model
         'pat_super_photo',
         'pat_super_video',
         'pat_super_inform_email',
+        'notification_status'
     ];
 
 
