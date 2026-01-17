@@ -80,8 +80,17 @@
                                 <div class="col-lg-5 spacing-right">
                                     Customer ID <br>  <input class="form-control" id="customers_id" name="customers_id" oninput="updateClientID(this.value)" type="text" placeholder="..." style="width: 100%;">
                                 </div>
-                                <div class="col-lg-6 spacing-left">
+                                <div class="col-lg-5 spacing-right">
+                                    WhatsApp number <br>  <input class="form-control vldphone"  type="text" id="whatsapp_number" name="whatsapp_number" placeholder="e.g: 0340-2233444" style="width: 100%;" autocomplete="off">
+                                    <div id="phoneError" class="phoneError" style="color: red"></div>
+                                </div>
+                            </div>
+                            <div class="row mb-2 mt-3">
+                                <div class="col-lg-5 spacing-left">
                                     Customer Legal Name (As per NTN) <br>  <input class="form-control" id="customers_name" oninput="updateClientName(this.value)" type="text" name="customers_name" placeholder="" style="width: 100%;">
+                                </div>
+                                <div class="col-lg-5 spacing-right input-group">
+                                    Display Name as <br>  <input class="form-control" id="d_name" value="" name="display_name_as" type="text" placeholder="..." style="width: 100%;">
                                 </div>
                             </div>
                             <div class="row mb-2 mt-3">
@@ -105,11 +114,6 @@
                                             <option value="{{ $branch->id }}">{{ $branch->branch_office_name }}</option>
                                         @endforeach
                                     </select>
-                                </div>
-                            </div>
-                            <div class="row mb-2 mt-3">
-                                <div class="col-lg-10 spacing-right input-group">
-                                    Display Name as <br>  <input class="form-control" id="d_name" value="" name="display_name_as" type="text" placeholder="..." style="width: 100%;">
                                 </div>
                             </div>
                             </div>

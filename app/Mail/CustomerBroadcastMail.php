@@ -2,20 +2,14 @@
 
 namespace App\Mail;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Content;
-use Illuminate\Mail\Mailables\Envelope;
-use Illuminate\Queue\SerializesModels;
-
 
 class CustomerBroadcastMail extends Mailable
 {
     public function __construct(
         public string $subjectText,
         public string $bodyText,
-        public ?string $attachmentPath
+        public ?string $attachmentPath = null // can be null
     ) {}
 
     public function build()
@@ -26,12 +20,11 @@ class CustomerBroadcastMail extends Mailable
                 'body' => $this->bodyText,
             ]);
 
-        if ($this->attachmentPath) {
-            $mail->attach(storage_path('app/' . $this->attachmentPath));
+        // ✅ attach directly because it's already a full absolute path
+        if (!empty($this->attachmentPath) && file_exists($this->attachmentPath)) {
+            $mail->attach($this->attachmentPath);
         }
 
         return $mail;
     }
 }
-
-

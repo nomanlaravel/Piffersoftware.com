@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\EmailController;
+use App\Http\Controllers\WhatsappController;
+use App\Http\Controllers\WhatsAppTestController;
 use App\Models\Customer;
 use App\Models\CustomerArmourer;
 use App\Mail\ArmourerVisitReminder;
@@ -60,6 +62,12 @@ Route::get('/home', [AuthController::class, 'dashboard'])
 Route::post('send-customer-email', [EmailController::class, 'send'])
     ->name('customer.email.send')
     ->middleware(['auth']);
+
+Route::post('/admin/messages/send', [WhatsappController::class, 'send'])->name('admin.messages.send');
+
+
+Route::get('/admin/whatsapp-test', [WhatsAppTestController::class, 'index'])->name('admin.whatsapp.test');
+Route::post('/admin/whatsapp-test/send', [WhatsAppTestController::class, 'send'])->name('admin.whatsapp.test.send');
 
 
 // Authentication

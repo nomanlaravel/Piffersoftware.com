@@ -9,13 +9,15 @@
 <div id="mySidebar" class="sidebar admin-setting">
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
     <a href="#"> <i class="bi bi-person-check-fill mr-2"></i> Update Profile</a>
-    <a href="administration-setting-page.html"> <i class="bi bi-gear mr-2"></i> Piffers Administration Setting</a>
+    <a href="administration-setting-page.html"> <i class="bi bi-gear mr-2"></i> Piffers Administration
+        Setting</a>
     <a href="#"> <i class="bi bi-people mr-2"></i> Manage Users</a>
     <hr>
     <a href="{{ url('logout') }}"> <i class="bi bi-box-arrow-right mr-2"></i> Logout</a>
 </div>
 
 <h3 style="font-weight: 700; margin-left: 205px;">PIFFERS SECURITY SERVICES PVT.LTD</h3>
+
 
 <div class="row head-heading" style="margin-top: 5%; margin-bottom: 5%; color: rgb(112, 0, 193);">
     <div class="col-lg-3">
@@ -37,17 +39,6 @@
 
 <!-- Notification Alerts -->
 <div class="container" style="max-width: 1200px; margin: 0 auto;">
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert"
-            style="border-radius: 8px; border-left: 4px solid #28a745; box-shadow: 0 2px 8px rgba(40, 167, 69, 0.2);">
-            <i class="bi bi-check-circle-fill mr-2"></i>
-            <strong>Success!</strong> {{ session('success') }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    @endif
-
     @if(session('warning'))
         <div class="alert alert-warning alert-dismissible fade show" role="alert"
             style="border-radius: 8px; border-left: 4px solid #ffc107; box-shadow: 0 2px 8px rgba(255, 193, 7, 0.2); white-space: pre-line;">
@@ -154,7 +145,7 @@
                                                         class="customer-checkbox"
                                                         style="width: 18px; height: 18px; margin-right: 12px; accent-color: #667eea;">
                                                     <span style="color: #333; font-size: 0.9rem;">
-                                                        {{ $customer->email }}
+                                                       {{$customer->customers_name}} - {{ $customer->email }}
                                                     </span>
                                                 </label>
                                             </div>
@@ -172,7 +163,7 @@
                         <!-- IMPORTANT hidden flag -->
                         <input type="hidden" name="send_to_all" id="sendToAllInput" value="0">
                         <!-- Excluded customers container (dynamic hidden inputs) -->
-<div id="excludedCustomersContainer"></div>
+                        <div id="excludedCustomersContainer"></div>
 
                     </div>
 
@@ -222,6 +213,39 @@
         </div>
     </div>
 </div>
+
+<h4>Tasks</h4>
+<h6 style="color: grey; margin-left: 255px;">We found email for sales transactions</h6>
+<h5 style="color: grey; font-weight: 700; margin-top: 5%;">
+    Shorts
+</h5>
+<div class="row">
+    <div class="col-lg-2">
+        <img src="dashboard/pic1.png" style="width:100%; height:70%;" alt=""> <br>
+        <p>Report a Non Account holder</p>
+    </div>
+    <div class="col-lg-2">
+        <img src="dashboard/pic2.png" style="width:100%; height:70%;" alt=""> <br>
+        <p>Guard without Nadra verification</p>
+    </div>
+    <div class="col-lg-2">
+        <img src="dashboard/pic3.png" style="width:100%; height:70%;" alt=""> <br>
+        <p>Guard without Police verification</p>
+    </div>
+    <div class="col-lg-2">
+        <img src="dashboard/pic4.png" style="width:100%; height:70%;" alt=""> <br>
+        <p>Guard without accounts</p>
+    </div>
+    <div class="col-lg-2">
+        <img src="dashboard/pic5.png" style="width:100%; height:70%;" alt=""> <br>
+        <p>Report a non account holders</p>
+    </div>
+</div>
+
+</div>
+<!--Customer form ends here-->
+</div>
+
 
 <style>
 .custom-dropdown-menu {
