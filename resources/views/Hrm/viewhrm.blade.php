@@ -2912,6 +2912,16 @@
                     </div>
 
                 </div>
+
+                <hr>
+                 <div class="tab-pane fade m-3" style="opacity: 90%;" id="hrm-certificates" role="tabpanel" aria-labelledby="">
+    <h4>HRM Certificates</h4>
+    <div class="row" id="hrm-certificates-list">
+        <!-- Data will be loaded here dynamically -->
+    </div>
+</div>
+
+
                 {{-- <button type="submit" class="btn btn-primary">Submit</button> --}}
             </form>
         </div>
@@ -2949,6 +2959,72 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
     integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+
+<!-- HRM Certificates -->
+<script>
+    // Fetch hrm_email (you can replace this based on your actual logic)
+    var hrm_email = "farhanqasim854@gmail.com";
+
+    document.addEventListener('DOMContentLoaded', function() {
+        axios.get('http://localhost:8001/api/hrm-activity', {
+            params: { hrm_email: hrm_email }
+        })
+        .then(function (response) {
+            if (response.status === 200) {
+                const data = response.data;
+
+                // User Data
+                const user = data.user;
+                console.log("User:", user);
+
+                // Courses Data
+                const courses = data.courses;
+                const userQuizes = data.userQuizes;
+
+                let htmlContent = '';
+
+                if (courses.length > 0) {
+                    courses.forEach(course => {
+                        htmlContent += `
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <img src="http://localhost:8001/${course.course_image}" class="card-img-top" alt="Course Image">
+                                    <div class="card-body">
+                                        <h5 class="card-title">${course.title}</h5>
+                                        <p class="card-text">${course.description || 'No description available.'}</p>
+                                        <a href="http://localhost:8001/${course.content}" class="btn btn-primary" target="_blank">View Course Content</a>
+                                        <a href="http://localhost:8001/${course.certificate_image}" class="btn btn-secondary mt-2" target="_blank">Download Certificate</a>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    htmlContent += '<p>No courses available.</p>';
+                }
+
+                // Inserting dynamic content into the HTML row
+                document.getElementById('hrm-certificates-list').innerHTML = htmlContent;
+
+                // Displaying user quiz information if available
+                if (userQuizes.length > 0) {
+                    userQuizes.forEach(quiz => {
+                        console.log("User Quiz:", quiz);
+                        // You can display quiz results here, e.g., score, pass/fail, etc.
+                    });
+                }
+            }
+        })
+        .catch(function (error) {
+            console.log('Error fetching data from LMS API:', error);
+        });
+    });
+</script>
+
+
 
 <script>
 function openFileModal(element, fileIndex = 0) {

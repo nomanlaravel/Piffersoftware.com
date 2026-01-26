@@ -30,6 +30,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
+use Validator;
 
 class HrmController extends Controller
 {
@@ -266,6 +267,7 @@ public function staff_details_search(Request $request)
 
     public function showhrm( $id){
         $hrms = Hrm::find($id);
+        
         return view('Hrm.viewhrm', compact('hrms'));
     }
     public function showguarantors( $id){
@@ -1389,6 +1391,26 @@ public function posthrm()
      $delete = Hrm::find($id);
      $delete->delete();
      return redirect()->back()->with('success',' Deleted successfully');
+   }
+
+   public function IsHrm(Request $request){
+    $validator = Validator::make($request->all(), [
+        'hrm_email' => 'required|email'
+    ]);
+    
+    if($validator->fails()){
+        return response()->json([
+            'status' => false,
+            'data' => $validator->errors()->first()
+        ], 403);
+    }
+
+    $hrm = HRM::where('email', $request->hrm_email)->first();
+
+    return response()->json([
+        'status' => true,
+        'data' => $hrm
+    ]);
    }
 
 }

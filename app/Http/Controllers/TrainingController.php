@@ -1426,6 +1426,4 @@ class TrainingController extends Controller
         return redirect()->back()->with('success', 'Training permanently deleted.');
     }
 
-
-
 }

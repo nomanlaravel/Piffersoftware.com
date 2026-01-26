@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\HrmController;
 use App\Http\Controllers\TrainingController;
 use App\Models\Training;
 use Illuminate\Http\Request;
@@ -17,6 +18,10 @@ use App\Http\Controllers\CustomerController;
 */
 
 // routes/api.php
+Route::get('is-hrm', [HrmController::class, 'IsHrm']);
+
+
+
 Route::get('/customer-data/{id}', [CustomerController::class, 'getCustomerData']);
 Route::get('all/customer-data', [CustomerController::class, 'getallCustomerData']);
 
