@@ -57,7 +57,7 @@ class User extends Authenticatable
     public static function getpermissionGroups()
     {
         $permission_groups = DB::table('permissions')
-            ->orderBy('id','asc')
+            ->orderBy('id', 'asc')
             ->select('group_name as name')
             ->groupBy('group_name')
             ->get();
@@ -82,14 +82,14 @@ class User extends Authenticatable
         }
         return $hasPermission;
     }
-    public function hasPermissionThroughRole($permission) : bool
+    public function hasPermissionThroughRole($permission): bool
     {
-        if(auth()->check()){
+        if (auth()->check()) {
 
             $roles = auth()->user()->getRoleNames();
             if (!empty($roles)) {
 
-                $role = Role::where('name',$roles[0])->first();
+                $role = Role::where('name', $roles[0])->first();
                 if ($role->hasPermissionTo($permission)) {
                     return true;
                 }
@@ -100,4 +100,8 @@ class User extends Authenticatable
         return false;
     }
 
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class);
+    }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\WhatsappController;
 use App\Http\Controllers\WhatsAppTestController;
@@ -782,3 +783,26 @@ Route::get('/search/weekly/sales/record', [UniformRecordController::class, 'sear
 
 
 Route::get('admin/reports', [ReportController::class, 'admin_reports'])->name('admin_reports');
+
+
+Route::prefix('attendance')->name('attendance.')->group(function () {
+
+    // guest admin
+    Route::middleware('auth')->controller(AttendanceController::class)->group(function () {
+        Route::get('attendance-view', 'attendance_view')->name('attendance_view');
+        Route::post('update-att', 'update_att')->name('dashboard.update-att');
+        Route::post('delete-punch', 'delete_punch')->name('dashboard.delete-punch');
+    });
+
+});
+
+Route::prefix('api')->name('api.')->group(function () {
+    Route::prefix('employee')->name('employee.')->group(function () {
+        Route::prefix('attendance')->name('attendance.')->group(function () {
+            Route::controller(AttendanceController::class)->group(function () {
+                Route::post('get-attendance', 'get_attendance')->name('get-attendance');
+                Route::post('save-attendance', 'update_att')->name('save-attendance');
+            });
+        });
+    });
+});

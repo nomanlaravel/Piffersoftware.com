@@ -592,7 +592,13 @@
                       <ul class="nav flex-column sub-menu">
                         @can('view_payroll')
                           <li class="nav-item"><a class="nav-link" href="{{ url('payroll') }}">Payroll</a></li>
-                        @endcan
+                          @endcan
+                        <li class="nav-item"><a class="nav-link" data-toggle="collapse" href="#attendanceSubMenu" aria-expanded="false" aria-controls="attendanceSubMenu">Attendance</a></li>
+                        <div class="collapse" id="attendanceSubMenu">
+                          <ul class="nav flex-column sub-menu">
+                            <li class="nav-item"><a class="nav-link" href="{{route('attendance.attendance_view')}}">View Attendance</a></li>
+                          </ul>
+                        </div>
                         @can('view_training')
                           <li class="nav-item"><a class="nav-link" href="{{ url('train') }}">Training</a></li>
                         @endcan
