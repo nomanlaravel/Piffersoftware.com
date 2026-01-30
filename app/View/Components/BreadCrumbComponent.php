@@ -8,12 +8,20 @@ use Illuminate\View\Component;
 
 class BreadCrumbComponent extends Component
 {
+    public $modal;
+    public $modalId;
+    public $modalType;
+    public $showClock;
+
     /**
      * Create a new component instance.
      */
-    public function __construct()
+    public function __construct($modal = false, $modalId = '', $modalType = '', $showClock = 'false')
     {
-        //
+        $this->modal = $modal;
+        $this->modalId = $modalId;
+        $this->modalType = $modalType;
+        $this->showClock = $showClock;
     }
 
     /**

@@ -56,7 +56,7 @@ class AttendanceController extends Controller
         }
         $workingDays = count($monthDays) - ($satSuns['saturdays'] + $satSuns['sundays']);
 
-        return view('attendance.attendance-update', compact('employeesT', 'years', 'monthDays', 'result', 'workingDays', 'satSuns'));
+        return view('attendance_management.attendance.attendance-update', compact('employeesT', 'years', 'monthDays', 'result', 'workingDays', 'satSuns'));
     }
 
     public function get_attendance(Request $request)
@@ -93,6 +93,11 @@ class AttendanceController extends Controller
 
     public function update_att(Request $request)
     {
+        $request->validate([
+            'employee_id' => 'required',
+            'day_attendance' => 'required',
+        ]);
+
         $attendance = Attendance::updateOrCreate(
             [
                 'user_id' => $request->employee_id,

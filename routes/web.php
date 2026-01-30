@@ -1,48 +1,44 @@
 <?php
 
-use App\Http\Controllers\AttendanceController;
-use App\Http\Controllers\EmailController;
-use App\Http\Controllers\WhatsappController;
-use App\Http\Controllers\WhatsAppTestController;
-use App\Models\Customer;
-use App\Models\CustomerArmourer;
-use App\Mail\ArmourerVisitReminder;
-use App\Models\ReminderNotification;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HrmController;
-use App\Http\Controllers\PdfController;
-use Illuminate\Support\Facades\Artisan;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\RoleController;
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\ImageController;
-use App\Http\Controllers\SalesController;
 use App\Http\Controllers\AccessController;
-use App\Http\Controllers\RegionController;
-use App\Http\Controllers\VendorController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BillingController;
 use App\Http\Controllers\ChamberController;
+use App\Http\Controllers\CorporateController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DropdownController;
-use App\Http\Controllers\PurchaseController;
-use App\Http\Controllers\TrainingController;
-use App\Http\Controllers\CorporateController;
+use App\Http\Controllers\EmailController;
+use App\Http\Controllers\HrmController;
+use App\Http\Controllers\ImageController;
+use App\Http\Controllers\InternalDispatchController;
 use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\LeaveTypeController;
+use App\Http\Controllers\PdfController;
+use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\PurchaseOrderController;
+use App\Http\Controllers\RegionController;
 use App\Http\Controllers\RegulatoryController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RequirementController;
 use App\Http\Controllers\RequisitionController;
-use App\Http\Controllers\WeaponRecordControler;
-use App\Http\Controllers\PurchaseOrderController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SalesController;
 use App\Http\Controllers\SalesPlanningController;
+use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\UniformRecordController;
-use App\Http\Controllers\InternalDispatchController;
-use App\Http\Controllers\ReportController;
-
-
-
-
-
+use App\Http\Controllers\VendorController;
+use App\Http\Controllers\WeaponRecordControler;
+use App\Http\Controllers\WhatsappController;
+use App\Http\Controllers\WhatsAppTestController;
+use App\Mail\ArmourerVisitReminder;
+use App\Models\Customer;
+use App\Models\CustomerArmourer;
+use App\Models\ReminderNotification;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -66,17 +62,15 @@ Route::post('send-customer-email', [EmailController::class, 'send'])
 
 Route::post('/admin/messages/send', [WhatsappController::class, 'send'])->name('admin.messages.send');
 
-
 Route::get('/admin/whatsapp-test', [WhatsAppTestController::class, 'index'])->name('admin.whatsapp.test');
 Route::post('/admin/whatsapp-test/send', [WhatsAppTestController::class, 'send'])->name('admin.whatsapp.test.send');
-
 
 // Authentication
 Route::get('/login', [AuthController::class, 'loadLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
-//Admin
+// Admin
 Route::post('/update-likes', [AdminController::class, 'updateLikes'])->name('update.likes');
 Route::get('/admin/social', [AdminController::class, 'showSocials'])->name('admin.socials');
 
@@ -95,14 +89,12 @@ Route::get('/admin/search_baranceshes', [AdminController::class, 'search_barance
 Route::post('/upload-sales-register-report', [AdminController::class, 'upload_sales_register_report'])->name('sales.register.report');
 Route::get('/admin/moveable/assets', [AdminController::class, 'admin_moveable_assets'])->name('admin.moveable.assets');
 
-
-
-//Admin Office Equipments
+// Admin Office Equipments
 Route::get('adminequipments', [AdminController::class, 'adminequipments'])->name('adminequipments');
 Route::post('postadminequipment', [AdminController::class, 'postadminequipment'])->name('postadminequipment');
 Route::delete('/adminequipment/{id}', [AdminController::class, 'deleteadminequipment'])->name('deleteadminequipment');
 
-//Reporting To branch
+// Reporting To branch
 Route::get('reporting', [AdminController::class, 'reporting'])->name('reporting');
 Route::post('postreporting', [AdminController::class, 'postreporting'])->name('postreporting');
 Route::delete('/reporting/{id}', [AdminController::class, 'deletereporting'])->name('deleteReporting');
@@ -118,22 +110,17 @@ Route::post('posttask_group', [AdminController::class, 'posttask_group'])->name(
 Route::delete('/task_group/{id}', [AdminController::class, 'deletetask_group'])->name('deletetask_group');
 Route::put('/taskgroups/{id}', [AdminController::class, 'update_taskgroup'])->name('updatetask_group');
 
-
 Route::get('cro/tasks', [AdminController::class, 'all_cros_tasks'])->name('all_cros_tasks');
 Route::post('postcro/tasks', [AdminController::class, 'postcro_tasks'])->name('postcro_tasks');
 Route::get('/get-next-task-number/{section_number}', [AdminController::class, 'getNextTaskNumber']);
 Route::delete('/delete/cro/task/{id}', [AdminController::class, 'deletecro_task'])->name('deletecro_tasks');
 Route::put('/cro_tasks/update/{id}', [AdminController::class, 'update_crotask'])->name('updatecro_tasks');
 
-
-
-
 // Route::get('/register', [AdminController::class, 'showRegister'])->name('register.index');
 Route::post('/crotask/{id}/save', [AdminController::class, 'storeTaskAssignments'])->name('store.task.assignments');
 Route::get('/search/crotask', [AdminController::class, 'search_crotask'])->name('searchcrotask');
 
-
-//Rental Property Details
+// Rental Property Details
 Route::get('/rental', [AdminController::class, 'rental']);
 Route::get('/rental/details/search', [AdminController::class, 'rental_details_search'])->name('rental.details.search');
 Route::get('/viewrental/{id}', [AdminController::class, 'showrental'])->name('viewrental');
@@ -148,11 +135,10 @@ Route::post('/updaterental/{id}', [AdminController::class, 'updaterental'])->nam
 
 Route::post('/task-record-dairy', [AdminController::class, 'task_record_dairy'])->name('admin.task_record_dairy');
 Route::get('/search-task-record-dairy', [AdminController::class, 'search_task_record_dairy'])->name('search_task_record_dairy');
-//Hrm
+// Hrm
 Route::post('/notices/store', [AdminController::class, 'notices_store'])->name('notice.store');
 Route::get('/notices/delete/{id}', [AdminController::class, 'notices_destroy'])->name('notice.delete');
 Route::get('/search-notice-log-sheet', [AdminController::class, 'search_notice_log_sheet'])->name('search_notice_log_sheet');
-
 
 Route::get('hrm', [HrmController::class, 'hrm'])->name('hrm');
 Route::get('hrm/delete/{id}', [HrmController::class, 'delete_hrm'])->name('delete_hrm');
@@ -173,7 +159,7 @@ Route::get('edithrm/{id}', [HrmController::class, 'edithrm'])->name('edithrm');
 Route::delete('/deletehrm/{id}', [HrmController::class, 'deletehrm'])->name('deletehrm');
 Route::put('/update_hrm/{id}', [HrmController::class, 'update_hrm'])->name('update_hrm');
 
-//Hrm Categories
+// Hrm Categories
 Route::get('hrmcategory', [HrmController::class, 'hrmcategory'])->name('hrmcategory');
 Route::post('posthrmcategory', [HrmController::class, 'posthrmcategory'])->name('posthrmcategory');
 Route::get('/categories/{id}/edit', [HrmController::class, 'edit'])->name('editCategory');
@@ -184,30 +170,30 @@ Route::get('/observation/type/add', [HrmController::class, 'addObservation'])->n
 Route::post('/observation/type/store', [HrmController::class, 'storeobservation'])->name('observation.store');
 Route::delete('/observation/type/delete/{id}', [HrmController::class, 'deleteeobservation'])->name('observation.delete');
 
-//Hrm Hired At
+// Hrm Hired At
 Route::get('hiredat', [HrmController::class, 'hiredat'])->name('hiredat');
 Route::post('posthiredat', [HrmController::class, 'posthiredat'])->name('posthiredat');
 Route::delete('/hiredat/{id}', [HrmController::class, 'deletehiredat'])->name('deletehiredat');
 
-//Designations ..
+// Designations ..
 Route::get('designation', [HrmController::class, 'designation'])->name('designation');
 Route::post('postdesignation', [HrmController::class, 'postdesignation'])->name('postdesignation');
 Route::delete('designation/{id}', [HrmController::class, 'destroydesignation'])->name('deleteDesignation');
 Route::get('designation/{id}/edit', [HrmController::class, 'editdesignation'])->name('editDesignation');
 Route::put('designation/{id}', [HrmController::class, 'updatedesignation'])->name('updateDesignation');
-//Hrm Fall In EOBI Cities :
+// Hrm Fall In EOBI Cities :
 Route::get('eobi', [HrmController::class, 'eobi'])->name('eobi');
 Route::post('posteobi', [HrmController::class, 'posteobi'])->name('posteobi');
 Route::get('/eobi/{id}/edit', [HrmController::class, 'editeobi'])->name('editEobi');
 Route::put('/eobi/{id}', [HrmController::class, 'updateeobi'])->name('updateEobi');
 Route::delete('/eobi/{id}', [HrmController::class, 'destroyeobi'])->name('deleteEobi');
-//Hrm Fall In EOBI Cities (Social Security) :
+// Hrm Fall In EOBI Cities (Social Security) :
 Route::get('social', [HrmController::class, 'social'])->name('social');
 Route::post('postsocial', [HrmController::class, 'postsocial'])->name('postsocial');
 Route::get('social/{id}/edit', [HrmController::class, 'editsocial'])->name('editSocial');
 Route::put('social/{id}', [HrmController::class, 'updatesocial'])->name('updateSocial');
 Route::delete('social/{id}', [HrmController::class, 'destroysocial'])->name('deleteSocial');
-//Hrm Diseases :
+// Hrm Diseases :
 Route::get('disease', [HrmController::class, 'disease'])->name('disease');
 Route::post('postdisease', [HrmController::class, 'postdisease'])->name('postdisease');
 Route::get('diseases/{id}/edit', [HrmController::class, 'editdisease'])->name('editDisease');
@@ -217,8 +203,8 @@ Route::post('/send-pdf-email', [HrmController::class, 'sendPDFViaEmail']);
 
 Route::post('/hrm/import', [HrmController::class, 'import'])->name('hrm.import');
 
-//Regulatory Affairs :-
-//Regulator
+// Regulatory Affairs :-
+// Regulator
 Route::get('regulator', [RegulatoryController::class, 'regulator'])->name('regulator');
 Route::get('postregulator', [RegulatoryController::class, 'postregulator'])->name('postregulator');
 Route::post('submit_regulator', [RegulatoryController::class, 'submit_regulator'])->name('submit_regulator');
@@ -230,7 +216,7 @@ Route::get('regulator/delete/{id}', [RegulatoryController::class, 'regulator_del
 
 Route::post('/send-pdf-email', [RegulatoryController::class, 'sendPDFViaEmail']);
 
-//Corporate
+// Corporate
 Route::get('corporate', [CorporateController::class, 'corporate'])->name('corporate');
 Route::get('postcorporate', [CorporateController::class, 'postcorporate'])->name('postcorporate');
 Route::post('submit_corporate', [CorporateController::class, 'submit_corporate'])->name('submit_corporate');
@@ -241,7 +227,7 @@ Route::get('viewcorporate/{id}', [CorporateController::class, 'viewcorporate'])-
 Route::get('corporate/delete/{id}', [CorporateController::class, 'corporate_delete'])->name('corporate_delete');
 Route::post('/send-pdf-email', [CorporateController::class, 'sendPDFViaEmail']);
 
-//Chamber
+// Chamber
 Route::get('chamber', [ChamberController::class, 'chamber'])->name('chamber');
 Route::get('postchamber', [ChamberController::class, 'postchamber'])->name('postchamber');
 Route::post('submitchamber', [ChamberController::class, 'submitchamber'])->name('submitchamber');
@@ -251,7 +237,7 @@ Route::put('/update_chamber/{id}', [ChamberController::class, 'update_chamber'])
 Route::get('viewchamber/{id}', [ChamberController::class, 'viewchamber'])->name('viewchamber');
 Route::post('/send-pdf-email', [ChamberController::class, 'sendPDFViaEmail']);
 
-//Training
+// Training
 Route::get('train', [TrainingController::class, 'train'])->name('train');
 Route::get('posttrain', [TrainingController::class, 'posttrain'])->name('posttrain');
 Route::post('submit_train', [TrainingController::class, 'submit_train'])->name('submit_train');
@@ -271,7 +257,6 @@ Route::prefix('trainings')->group(function () {
     Route::delete('/force-delete/{id}', [TrainingController::class, 'forceDeleteTraining'])->name('trainings.forceDelete');
 });
 
-
 Route::get('/viewtrain/{id}', [TrainingController::class, 'viewtrain'])->name('viewtrain');
 Route::get('/search/trainings', [TrainingController::class, 'search'])->name('search.trainings');
 
@@ -280,15 +265,15 @@ Route::get('print/payroll/{id}', [HrmController::class, 'print_payroll'])->name(
 Route::get('payroll/delete/{id}', [HrmController::class, 'delete_payroll'])->name('delete.payroll');
 Route::get('/search', [HrmController::class, 'payrollsearch']);
 
-//Get all the guards in pdf
+// Get all the guards in pdf
 Route::get('/get-all-guards', [TrainingController::class, 'getAllGuards'])->name('get.all.guards');
 
-//Categories :-
+// Categories :-
 Route::get('type', [TrainingController::class, 'type'])->name('type');
 Route::post('posttype', [TrainingController::class, 'posttype'])->name('posttype');
 Route::delete('type/{id}', [TrainingController::class, 'destroytype'])->name('deleteType');
 
-//Sending Email to Active Customers
+// Sending Email to Active Customers
 Route::post('/send-email', [TrainingController::class, 'sendEmail']);
 Route::post('/send-inactive-email', [TrainingController::class, 'sendInactiveEmail'])->name('send.inactive.email');
 Route::post('/send-multiple-emails', [TrainingController::class, 'sendMultipleEmails']);
@@ -298,7 +283,7 @@ Route::post('/send-edit-multiple-inactive-email', [TrainingController::class, 's
 Route::post('/send-pdf-email', [TrainingController::class, 'sendPDFViaEmail']);
 Route::post('trainings/import', [TrainingController::class, 'import'])->name('trainings.import');
 
-//Customer
+// Customer
 Route::get('customer', [CustomerController::class, 'customer'])->name('customer');
 Route::get('/search-customers', [CustomerController::class, 'search'])->name('search.customers');
 Route::get('postcustomer', [CustomerController::class, 'postcustomer'])->name('postcustomer');
@@ -321,9 +306,6 @@ Route::get('/customers/{id}/notifications', [CustomerController::class, 'custome
 Route::get('/notification/read/{id}', [CustomerController::class, 'markAsRead'])->name('notification.read');
 Route::get('/notification-status/{id}', [CustomerController::class, 'notification_status'])->name('notification.status');
 
-
-
-
 Route::post('/import-customers', [CustomerController::class, 'import'])->name('import.customers');
 Route::get('/admin/search_customer', [CustomerController::class, 'search_customers'])->name('search_customer');
 Route::get('/admin/search_customer_id', [CustomerController::class, 'search_customers_id'])->name('search_customer_id');
@@ -333,24 +315,24 @@ Route::get('webservilancecategory', [DropdownController::class, 'webservilanceca
 Route::post('webservilancecategory/store', [DropdownController::class, 'webservilancecategorystore'])->name('webservilancecategory.store');
 Route::delete('webservilancecategory/{id}', [DropdownController::class, 'webservilancecategorydelete'])->name('webservilancecategory.delete');
 
-//Further Customer Requirements :-
+// Further Customer Requirements :-
 Route::get('currency', [CustomerController::class, 'currency'])->name('currency');
 Route::post('postcurrency', [CustomerController::class, 'postcurrency'])->name('postcurrency');
 Route::delete('currency/{id}', [CustomerController::class, 'destroycurrency'])->name('deleteCurrency');
-//Appicable Compliances :-
+// Appicable Compliances :-
 Route::get('compliance', [CustomerController::class, 'compliance'])->name('compliance');
 Route::post('postcompliance', [CustomerController::class, 'postcompliance'])->name('postcompliance');
 Route::delete('compliance/{id}', [CustomerController::class, 'destroycompliance'])->name('deleteCompliance');
 
-//Departments :-
+// Departments :-
 Route::get('department', [CustomerController::class, 'department'])->name('department');
 Route::post('postdepartment', [CustomerController::class, 'postdepartment'])->name('postdepartment');
 Route::delete('department/{id}', [CustomerController::class, 'destroydepartment'])->name('deleteDepartment');
-//Guard Posts :-
+// Guard Posts :-
 Route::get('guardpost', [CustomerController::class, 'guardpost'])->name('guardpost');
 Route::post('postguard', [CustomerController::class, 'postguard'])->name('postguard');
 Route::delete('guardpost/{id}', [CustomerController::class, 'destroyguardpost'])->name('deleteGuardpost');
-//Categories :-
+// Categories :-
 Route::get('category', [CustomerController::class, 'category'])->name('category');
 Route::post('postcategory', [CustomerController::class, 'postcategory'])->name('postcategory');
 Route::delete('category/{id}', [CustomerController::class, 'destroycustomercategory'])->name('customerdeleteCategory');
@@ -380,56 +362,56 @@ Route::get('mpoc', [CustomerController::class, 'mpoc'])->name('mpoc');
 Route::post('postmpoc', [CustomerController::class, 'postmpoc'])->name('postmpoc');
 Route::delete('mpoc/{id}', [CustomerController::class, 'destroycustomermpoc'])->name('customerdeletempoc');
 
-//Promotional Activities :-
+// Promotional Activities :-
 Route::get('activities', [CustomerController::class, 'activities'])->name('activities');
 Route::post('postactivity', [CustomerController::class, 'postactivity'])->name('postactivity');
 Route::delete('activity/{id}', [CustomerController::class, 'destroyactivity'])->name('deleteActivitys');
 
-//Guard Duties :-
+// Guard Duties :-
 Route::get('duties', [CustomerController::class, 'duties'])->name('duties');
 Route::post('postduty', [CustomerController::class, 'postduty'])->name('postduty');
 Route::delete('duty/{id}', [CustomerController::class, 'destroyduty'])->name('deleteDuty');
 
-//Finance :-
+// Finance :-
 Route::get('finances', [CustomerController::class, 'finances'])->name('finances');
 Route::post('postfinance', [CustomerController::class, 'postfinance'])->name('postfinance');
 Route::delete('finance/{id}', [CustomerController::class, 'destroyfinance'])->name('deleteFinance');
 
-//Equipment :-
+// Equipment :-
 Route::get('equipments', [CustomerController::class, 'equipments'])->name('equipments');
 Route::post('postequipment', [CustomerController::class, 'postequipment'])->name('postequipment');
 Route::delete('equipment/{id}', [CustomerController::class, 'destroyequipment'])->name('deleteEquipment');
 
-//Sources :-
+// Sources :-
 Route::get('sources', [CustomerController::class, 'sources'])->name('sources');
 Route::post('postsource', [CustomerController::class, 'postsource'])->name('postsource');
 Route::delete('source/{id}', [CustomerController::class, 'destroysource'])->name('deleteSource');
 
-//Complaints Tagged To  :-
+// Complaints Tagged To  :-
 Route::get('complaintto', [CustomerController::class, 'complaintto'])->name('complaintto');
 Route::post('postcomplaintto', [CustomerController::class, 'postcomplaintto'])->name('postcomplaintto');
 Route::delete('complaintto/{id}', [CustomerController::class, 'destroycomplaintto'])->name('deleteComplaintTo');
 
-//Complaints Addressed By  :-
+// Complaints Addressed By  :-
 Route::get('complaintby', [CustomerController::class, 'complaintby'])->name('complaintby');
 Route::post('postcomplaintby', [CustomerController::class, 'postcomplaintby'])->name('postcomplaintby');
 Route::delete('complaintby/{id}', [CustomerController::class, 'destroycomplaintby'])->name('deleteAddressedBy');
 
-//Notifications Related To :-
+// Notifications Related To :-
 Route::get('notifications', [CustomerController::class, 'notifications'])->name('notifications');
 Route::post('postnotification', [CustomerController::class, 'postnotification'])->name('postnotification');
 Route::delete('notification/{id}', [CustomerController::class, 'destroynotification'])->name('deleteNotification');
 
-//Notifications Shared With :-
+// Notifications Shared With :-
 Route::get('notificationshared', [CustomerController::class, 'notificationshared'])->name('notificationshared');
 Route::post('postnotificationshared', [CustomerController::class, 'postnotificationshared'])->name('postnotificationshared');
 Route::delete('notificationshared/{id}', [CustomerController::class, 'destroynotificationshared'])->name('deleteNotificationShared');
 
-//Sales :-
+// Sales :-
 Route::get('sales', [SalesController::class, 'sales'])->name('sales');
 Route::get('planning', [SalesController::class, 'planning'])->name('planning');
 
-//Sales Promotional Activities
+// Sales Promotional Activities
 Route::get('activities', [SalesController::class, 'activities'])->name('activities');
 Route::post('postactivity', [SalesController::class, 'postactivity'])->name('postactivity');
 Route::delete('activities/{id}', [SalesController::class, 'destroyactivity'])->name('deleteActivity');
@@ -438,37 +420,25 @@ Route::get('/sourceLead/add', [SalesController::class, 'addSourceLead'])->name('
 Route::post('/sourceLead/store', [SalesController::class, 'storeSourceLead'])->name('sourceLead.store');
 Route::delete('/sourceLead/delete/{id}', [SalesController::class, 'deleteeSourceLead'])->name('sourceLead.delete');
 
-
-
-
 Route::get('/vehical/type/add', [SalesController::class, 'addvehicaltype'])->name('vehicaltype.add');
 Route::post('/vehical/type/store', [SalesController::class, 'storevehicaltype'])->name('vehicaltype.store');
 Route::delete('/vehical/type/delete/{id}', [SalesController::class, 'deleteevehicaltype'])->name('vehicaltype.delete');
-
-
 
 Route::get('/vehical/category/add', [SalesController::class, 'addvehicalcategory'])->name('vehicalcategory.add');
 Route::post('/vehical/category/store', [SalesController::class, 'storevehicalcategory'])->name('vehicalcategory.store');
 Route::delete('/vehical/category/delete/{id}', [SalesController::class, 'deleteevehicalcategory'])->name('vehicalcategory.delete');
 
-
 Route::get('/security/equ/category/add', [SalesController::class, 'addsecurityequcategory'])->name('securityequcategory.add');
 Route::post('/security/equ/category/store', [SalesController::class, 'storesecurityequcategory'])->name('securityequcategory.store');
 Route::delete('/security/equ/category/delete/{id}', [SalesController::class, 'deleteesecurityequcategory'])->name('securityequcategory.delete');
-
-
-
 
 Route::get('/barrier/ownership/add', [SalesController::class, 'addbarrierownership'])->name('barrierownership.add');
 Route::post('/barrier/ownership/store', [SalesController::class, 'storebarrierownership'])->name('barrierownership.store');
 Route::delete('/barrier/ownership/delete/{id}', [SalesController::class, 'deletebarrierownership'])->name('barrierownership.delete');
 
-
-
 Route::get('/barrier/rental/add', [SalesController::class, 'addbarrierrental'])->name('barrierrental.add');
 Route::post('/barrier/rental/store', [SalesController::class, 'storebarrierrental'])->name('barrierrental.store');
 Route::delete('/barrier/rental/delete/{id}', [SalesController::class, 'deletebarrierrental'])->name('barrierrental.delete');
-
 
 // cctv category
 Route::get('/cctv/category/add', [SalesController::class, 'addcctvcategory'])->name('cctvcategory.add');
@@ -479,7 +449,6 @@ Route::delete('/cctv/category/delete/{id}', [SalesController::class, 'deletecctv
 Route::get('/cctv/brand/add', [SalesController::class, 'addcctvbrand'])->name('cctvbrand.add');
 Route::post('/cctv/brand/store', [SalesController::class, 'storecctvbrand'])->name('cctvbrand.store');
 Route::delete('/cctv/brand/delete/{id}', [SalesController::class, 'deletecctvbrand'])->name('cctvbrand.delete');
-
 
 // cctv model
 Route::get('/cctv/model/add', [SalesController::class, 'addcctvmodel'])->name('cctvmodel.add');
@@ -492,24 +461,20 @@ Route::get('/cctv/pixels/add', [SalesController::class, 'addcctvpixels'])->name(
 Route::post('/cctv/pixels/store', [SalesController::class, 'storecctvpixels'])->name('cctvpixels.store');
 Route::delete('/cctv/pixels/delete/{id}', [SalesController::class, 'deletecctvpixels'])->name('cctvpixels.delete');
 
-
 // cctv type
 Route::get('/cctv/type/add', [DropdownController::class, 'addcctvtype'])->name('cctvtype.add');
 Route::post('/cctv/type/store', [DropdownController::class, 'storecctvtype'])->name('cctvtype.store');
 Route::delete('/cctv/type/delete/{id}', [DropdownController::class, 'deletecctvtype'])->name('cctvtype.delete');
-
 
 // Cctv Backup Storage
 Route::get('/cctv/backup/storage/add', [DropdownController::class, 'addcctvbackupstorage'])->name('backupstorage.add');
 Route::post('/cctv/backup/storage/store', [DropdownController::class, 'storecctvbackupstorage'])->name('backupstorage.store');
 Route::delete('/cctv/backup/storage/delete/{id}', [DropdownController::class, 'deletecctvbackupstorage'])->name('backupstorage.delete');
 
-
 // Cctv NVR
 Route::get('/cctv/nvr/add', [DropdownController::class, 'addcctvnvr'])->name('nvr.add');
 Route::post('/cctv/nvr/store', [DropdownController::class, 'storecctvnvr'])->name('nvr.store');
 Route::delete('/cctv/nvr/delete/{id}', [DropdownController::class, 'deletecctvnvr'])->name('nvr.delete');
-
 
 // poe/switch
 Route::get('/cctv/poe/switch/add', [DropdownController::class, 'addcctvpoeswitch'])->name('poeswitch.add');
@@ -521,11 +486,9 @@ Route::get('/attendence/machine/category/add', [DropdownController::class, 'adda
 Route::post('/attendence/machine/category/store', [DropdownController::class, 'storeattendencemachinecategory'])->name('attendencemachinecategory.store');
 Route::delete('/attendence/machine/category/delete/{id}', [DropdownController::class, 'deleteattendencemachinecategory'])->name('attendencemachinecategory.delete');
 
-
 Route::get('/comercial/category/add', [DropdownController::class, 'addcomercialcategory'])->name('comercialcategory.add');
 Route::post('/comercial/category/store', [DropdownController::class, 'storecomercialcategory'])->name('comercialcategory.store');
 Route::delete('/comercial/category/delete/{id}', [DropdownController::class, 'deletecomercialcategory'])->name('comercialcategory.delete');
-
 
 Route::get('/comercial/region/add', [DropdownController::class, 'addcomercialregion'])->name('comercialregion.add');
 Route::post('/comercial/region/store', [DropdownController::class, 'storecomercialregion'])->name('comercialregion.store');
@@ -534,7 +497,6 @@ Route::delete('/comercial/region/delete/{id}', [DropdownController::class, 'dele
 Route::get('/comercial/reverse/category/add', [DropdownController::class, 'addcomercialreversecategory'])->name('comercialreversecategory.add');
 Route::post('/comercial/reverse/category/store', [DropdownController::class, 'storecomercialreversecategory'])->name('comercialreversecategory.store');
 Route::delete('/comercial/reverse/category/delete/{id}', [DropdownController::class, 'deletecomercialreversecategory'])->name('comercialreversecategory.delete');
-
 
 Route::get('/comercial/complains/category/add', [DropdownController::class, 'addcomercialcomplainscategory'])->name('comercialcomplainscategory.add');
 Route::post('/comercial/complains/category/store', [DropdownController::class, 'storecomercialcomplainscategory'])->name('comercialcomplainscategory.store');
@@ -548,20 +510,20 @@ Route::get('/comercial/lumsumhidden/category/add', [DropdownController::class, '
 Route::post('/comercial/lumsumhidden/category/store', [DropdownController::class, 'storecomerciallumsumhiddencategory'])->name('comerciallumsumhiddencategory.store');
 Route::delete('/comercial/lumsumhidden/category/delete/{id}', [DropdownController::class, 'deletecomerciallumsumhiddencategory'])->name('comerciallumsumhiddencategory.delete');
 
-//03
+// 03
 Route::get('/purchase/dashboard', [PurchaseController::class, 'dashboard'])->name('purchase.dashboard');
-//05
+// 05
 Route::get('/purchase/billing', [PurchaseController::class, 'billing'])->name('purchase.billing');
 Route::get('/purchase/postbilling', [PurchaseController::class, 'postbilling'])->name('purchase.postbilling');
 
-//Inventory Controller
+// Inventory Controller
 Route::get('/inventory/dashboard', [InventoryController::class, 'dashboard'])->name('inventory.dashboard');
 
-//Access Controller
+// Access Controller
 Route::get('/access-rights', [AccessController::class, 'access'])->name('access');
 Route::post('/users', [AccessController::class, 'store'])->name('users.store');
 
-//RequisitionController
+// RequisitionController
 Route::get('/requisition', [RequisitionController::class, 'req'])->name('req');
 Route::get('/requisition-post', [RequisitionController::class, 'postreq'])->name('postreq');
 Route::post('/requisition-submit', [RequisitionController::class, 'submitreq'])->name('submit.req');
@@ -570,7 +532,7 @@ Route::put('/requisition-update/{id}', [RequisitionController::class, 'updatereq
 Route::get('/requisition-view/{id}', [RequisitionController::class, 'viewreq'])->name('view.req');
 Route::delete('/requisition-delete/{id}', [RequisitionController::class, 'deletereq'])->name('delete.req');
 
-//Vendor Controller
+// Vendor Controller
 Route::get('/vendor', [VendorController::class, 'vendor'])->name('vendor');
 Route::get('/vendor/postvendor', [VendorController::class, 'postvendor'])->name('post.vendor');
 Route::post('/vendor/store', [VendorController::class, 'store'])->name('vendor.store');
@@ -581,22 +543,22 @@ Route::delete('/vendor/delete/{id}', [VendorController::class, 'destroy'])->name
 
 Route::get('/inventory/dashboard', [InventoryController::class, 'dashboard'])->name('inventory.dashboard');
 
-//Inventory Received Controller
+// Inventory Received Controller
 Route::get('/inventory-received', [InventoryController::class, 'InventoryReceived'])->name('inventory.received');
 Route::get('/inventory-received-submission', [InventoryController::class, 'inventory'])->name('inventory');
 Route::post('/inventory/received/save-entries', [InventoryController::class, 'inventroysaveEntries'])->name('inventory.save_entries');
 
 Route::get('/inventory/received/{id}', [InventoryController::class, 'InventoryReceiveddelete'])->name('inventory.received.delete');
 
-//Categories
+// Categories
 Route::get('/inventory/category', [InventoryController::class, 'inventoryCategory'])->name('inventory.category');
 Route::post('/inventory/category/store', [InventoryController::class, 'inventoryCategoryStore'])->name('inventory.category.store');
 
-//Sub Categories
+// Sub Categories
 Route::get('/inventory/subcategory', [InventoryController::class, 'inventorySubCategory'])->name('inventory.subcategory');
 Route::post('/inventory/subcategory/store', [InventoryController::class, 'inventorySubCategoryStore'])->name('inventory.subcategory.store');
 
-//Articles
+// Articles
 Route::get('/inventory/articles', [InventoryController::class, 'inventoryArticle'])->name('inventory.articles');
 Route::post('/inventory/articles/store', [InventoryController::class, 'inventoryArticleStore'])->name('inventory.articles.store');
 
@@ -606,8 +568,7 @@ Route::post('/inventory/save-entries', [InventoryController::class, 'saveEntries
 
 Route::get('/inventory/latest-lot-number', [InventoryController::class, 'getLatestLotNumber']);
 
-
-//Internal Dispatch Controller
+// Internal Dispatch Controller
 Route::get('/internal-dispatch', [InternalDispatchController::class, 'internalDispatch'])->name('internal.dispatch');
 Route::get('/internal-dispatch-submission', [InternalDispatchController::class, 'dispatch'])->name('dispatch');
 Route::post('/inventory/dispatch/save-entries', [InternalDispatchController::class, 'saveEntries'])->name('save_entries');
@@ -615,7 +576,7 @@ Route::post('/inventory/dispatch/save-entries', [InternalDispatchController::cla
 Route::get('/internal-dispatch/latest-lot-number', [InternalDispatchController::class, 'getLatestDispatchLotNumber']);
 Route::get('/delete-internal-dispatch/{id}', [InternalDispatchController::class, 'delete_internalDispatch'])->name('delete.internal.dispatch');
 
-//PurchaseOrder Controller
+// PurchaseOrder Controller
 Route::get('/purchase-order', [PurchaseOrderController::class, 'purchaseOrder'])->name('purchase.order');
 Route::get('/purchase-order-submission', [PurchaseOrderController::class, 'purchaseOrderSubmission'])->name('purchase.order.submission');
 Route::post('/purchase-order/store', [PurchaseOrderController::class, 'submitPurchaseOrder'])->name('purchaseorder.store');
@@ -624,7 +585,7 @@ Route::put('/purchase-order/update/{id}', [PurchaseOrderController::class, 'upda
 Route::get('/view-purchase-order/{id}', [PurchaseOrderController::class, 'viewPurchaseOrder'])->name('view.purchase.order');
 Route::post('/send-pdf-email', [PurchaseOrderController::class, 'sendPDFViaEmail']);
 
-//Billing Controller
+// Billing Controller
 Route::get('/billing', [BillingController::class, 'billing'])->name('billing');
 Route::get('/billing-submission', [BillingController::class, 'billingSubmission'])->name('billing.submission');
 Route::post('/billing/store', [BillingController::class, 'submitBilling'])->name('billing.store');
@@ -633,11 +594,11 @@ Route::put('/billing/update/{id}', [BillingController::class, 'updateBilling'])-
 Route::get('/view-billing/{id}', [BillingController::class, 'viewBilling'])->name('view.billing');
 Route::post('/send-pdf-email', [BillingController::class, 'sendPDFViaEmail']);
 
-//Sales Items
+// Sales Items
 Route::get('/items/add', [SalesPlanningController::class, 'items'])->name('items');
 Route::post('/item/store', [SalesPlanningController::class, 'addItems'])->name('item.store');
 
-//Add planning
+// Add planning
 Route::get('/campaign', [SalesPlanningController::class, 'compaign'])->name('campaign');
 Route::get('/campaign/add', [SalesPlanningController::class, 'addCompaign'])->name('campaign.add');
 Route::post('/campaign/store', [SalesPlanningController::class, 'storeCampaign'])->name('campaign.store');
@@ -672,13 +633,12 @@ Route::get('/segment/add', [RegionController::class, 'addsegment'])->name('segme
 Route::post('/segment/store', [RegionController::class, 'storesegment'])->name('segment.store');
 Route::delete('/segment/delete/{id}', [RegionController::class, 'deleteesegment'])->name('segment.delete');
 
-
 //  dispatch
 Route::get('/dispatch/add', [RegionController::class, 'adddispatch'])->name('dispatch.add');
 Route::post('/dispatch/store', [RegionController::class, 'storedispatch'])->name('dispatch.store');
 Route::delete('/dispatch/delete/{id}', [RegionController::class, 'deleteedispatch'])->name('dispatch.delete');
 
-//Requirement
+// Requirement
 Route::get('requirements', [RequirementController::class, 'requirements'])->name('requirements');
 Route::get('/requirements/post', [RequirementController::class, 'postrequirements'])->name('requirements.post');
 Route::post('/requirement/store', [RequirementController::class, 'storeRequirement'])->name('requirement.store');
@@ -700,7 +660,6 @@ Route::get('/salesrhq', [RequirementController::class, 'salesrhq'])->name('sales
 Route::post('postsalesrhq', [RequirementController::class, 'postsalesrhq'])->name('postsalesrhq');
 Route::delete('destroysalesrhq/{id}', [RequirementController::class, 'destroysalesrhq'])->name('destroysalesrhq');
 
-
 // Sales Requirements Giveaways (Third Dynamic add button)
 Route::get('/salesgive', [RequirementController::class, 'salesgive'])->name('salesgive');
 Route::post('postsalesgive', [RequirementController::class, 'postsalesgive'])->name('postsalesgive');
@@ -710,34 +669,32 @@ Route::get('saleslead', [RequirementController::class, 'saleslead'])->name('sale
 Route::post('postsaleslead', [RequirementController::class, 'postsaleslead'])->name('postsaleslead');
 Route::delete('destroysaleslead/{id}', [RequirementController::class, 'destroysaleslead'])->name('destroysaleslead');
 
-//Sales Requirements Guard Category
+// Sales Requirements Guard Category
 Route::get('salesguard', [RequirementController::class, 'salesguard'])->name('salesguard');
 Route::post('postsalesguard', [RequirementController::class, 'postsalesguard'])->name('postsalesguard');
 Route::delete('destroysalesguard/{id}', [RequirementController::class, 'destroysalesguard'])->name('destroysalesguard');
 
-
-//Sales Vehicle Ownership Status
+// Sales Vehicle Ownership Status
 Route::get('salesvehicle', [RequirementController::class, 'salesvehicle'])->name('salesvehicle');
 Route::post('postsalesvehicle', [RequirementController::class, 'postsalesvehicle'])->name('postsalesvehicle');
 Route::delete('destroysalesvehicle/{id}', [RequirementController::class, 'destroysalesvehicle'])->name('destroysalesvehicle');
-//Sales Canine
+// Sales Canine
 Route::get('salescanine', [RequirementController::class, 'salescanine'])->name('salescanine');
 Route::post('postsalescanine', [RequirementController::class, 'postsalescanine'])->name('postsalescanine');
 Route::delete('destroysalescanine/{id}', [RequirementController::class, 'destroysalescanine'])->name('destroysalescanine');
 
-//Sales Consultancy
+// Sales Consultancy
 Route::get('salesconsultancy', [RequirementController::class, 'salesconsultancy'])->name('salesconsultancy');
 Route::post('postsalesconsultancy', [RequirementController::class, 'postsalesconsultancy'])->name('postsalesconsultancy');
 Route::delete('destroysalesconsultancy/{id}', [RequirementController::class, 'destroysalesconsultancy'])->name('destroysalesconsultancy');
 
-//Sales View PDF
+// Sales View PDF
 
 Route::post('/send-report-email', [RequirementController::class, 'sendReportEmail']);
 Route::post('/send-edit-report-email', [RequirementController::class, 'sendEditReportEmail']);
 Route::post('/send-pdf-email', [RequirementController::class, 'sendPDFViaEmail']);
 
 Route::resource('admin/roles', RoleController::class);
-
 
 Route::get('admin/users/edit/{id}', [RoleController::class, 'edit_access_role'])->name('edit_access_role');
 Route::post('admin/users/update/{id}', [RoleController::class, 'update_access_role'])->name('update_access_role');
@@ -754,15 +711,12 @@ Route::get('/admin/reminders', function () {
     return view('admin.reminders', compact('reminders'));
 });
 
-
-
 Route::get('/latestlicenseattachment/{id}', [ImageController::class, 'latestlicenseattachment'])->name('latestlicenseattachment');
 Route::get('/delete-image/{id}/{column}', [ImageController::class, 'deleteImage'])->name('admin.deleteImage');
 Route::get('/delete-image/{id}/{column}/{file}', [ImageController::class, 'deleteRentalImage'])->name('admin.deleteRentalImage');
 Route::get('/delete-image/{id}/{column}', [ImageController::class, 'deleteCustomerImage'])->name('admin.deleteCustomerImage');
 
-
-//Guard Duties :-
+// Guard Duties :-
 Route::get('duties', [CustomerController::class, 'duties'])->name('duties');
 Route::post('postduty', [CustomerController::class, 'postduty'])->name('postduty');
 Route::delete('duty/{id}', [CustomerController::class, 'destroyduty'])->name('deleteDuty');
@@ -776,24 +730,19 @@ Route::get('/weekly/recordes/edit/{id}', [WeaponRecordControler::class, 'editwea
 Route::put('/weekly/recordes/update/{id}', [WeaponRecordControler::class, 'updateweakly_recordes'])->name('update.weakly.recordes');
 Route::get('/weekly/recordes/delete/{id}', [WeaponRecordControler::class, 'deleteweakly_recordes'])->name('delete.weakly.recordes');
 
-
 Route::post('/weakly/uniform/recordes/store', [UniformRecordController::class, 'storeweakly_uniform_recordes'])->name('store.uniform.weakly.recordes');
 Route::post('/weekly/sales/record', [UniformRecordController::class, 'weekly_sales_record'])->name('weekly.sales.record');
 Route::get('/search/weekly/sales/record', [UniformRecordController::class, 'search_weekly_sales_record'])->name('search.weeklly.sales.reports');
 
-
 Route::get('admin/reports', [ReportController::class, 'admin_reports'])->name('admin_reports');
 
-
-Route::prefix('attendance')->name('attendance.')->group(function () {
-
+Route::prefix('attendance')->group(function () {
     // guest admin
     Route::middleware('auth')->controller(AttendanceController::class)->group(function () {
-        Route::get('attendance-view', 'attendance_view')->name('attendance_view');
+        Route::get('attendance-view', 'attendance_view')->name('attendance.attendance_view');
         Route::post('update-att', 'update_att')->name('dashboard.update-att');
         Route::post('delete-punch', 'delete_punch')->name('dashboard.delete-punch');
     });
-
 });
 
 Route::prefix('api')->name('api.')->group(function () {
@@ -804,5 +753,15 @@ Route::prefix('api')->name('api.')->group(function () {
                 Route::post('save-attendance', 'update_att')->name('save-attendance');
             });
         });
+    });
+});
+
+Route::prefix('leave-types')->name('dashboard.leave-types.')->group(function () {
+    Route::middleware('auth')->controller(LeaveTypeController::class)->group(function () {
+        Route::get('/', 'leave_types')->name('index');
+        Route::post('store', 'store')->name('store');
+        Route::get('get-data', 'get_data')->name('get-data');
+        Route::post('update', 'update')->name('update');
+        Route::post('delete', 'destroy')->name('delete');
     });
 });

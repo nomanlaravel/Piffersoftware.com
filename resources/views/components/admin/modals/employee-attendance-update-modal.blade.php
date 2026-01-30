@@ -41,8 +41,8 @@
                                     <form class="employeeAttendanceUpdateForm"
                                         action="{{ route('dashboard.update-att') }}" method="POST" novalidate>
                                         @csrf
-                                        <input type="hidden" name="day_attendance">
-                                        <input type="hidden" name="employee_id">
+                                        <input type="hidden" name="day_attendance" id="att_date_in">
+                                        <input type="hidden" name="employee_id" id="att_user_in">
                                         <div class="row">
                                             <div class="text-center col-md-6 col-6">
                                                 <div class="stats-box">
@@ -127,8 +127,8 @@
                                         action="{{ route('api.employee.attendance.save-attendance') }}" method="POST"
                                         novalidate>
                                         @csrf
-                                        <input type="hidden" name="day_attendance">
-                                        <input type="hidden" name="employee_id">
+                                        <input type="hidden" name="day_attendance" id="att_date_out">
+                                        <input type="hidden" name="employee_id" id="att_user_out">
                                         <div class="row">
                                             <div class="text-center col-md-6 col-6">
                                                 <div class="stats-box">
