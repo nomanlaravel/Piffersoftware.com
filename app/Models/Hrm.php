@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 class Hrm extends Model
 {
     use HasFactory;
-     protected $table = 'hrms';
+    protected $table = 'hrms';
     protected $fillable = [
         'activation',
         'name',
@@ -237,7 +237,7 @@ class Hrm extends Model
         'sub_guard_id'
     ];
 
-     public function customer()
+    public function customer()
     {
         return $this->belongsTo(Customer::class, 'client_id', 'id');
     }
@@ -247,16 +247,26 @@ class Hrm extends Model
         return $this->hasMany(Guarantor::class, 'hrms_id');
     }
 
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class, 'hrm_id');
+    }
+
+    public function employeeLeaves()
+    {
+        return $this->hasMany(EmployeeLeave::class, 'hrm_id');
+    }
+
 
     public function trainingssecontion()
     {
         return $this->hasMany(Training::class, 'hrms_id');
     }
 
-     public function payrolls()
-        {
-            return $this->hasMany(Payroll::class, 'hrms_id');
-        }
+    public function payrolls()
+    {
+        return $this->hasMany(Payroll::class, 'hrms_id');
+    }
 
     public function workExperiences()
     {
@@ -268,15 +278,15 @@ class Hrm extends Model
         return $this->hasMany(Education::class, 'hrms_id');
     }
 
-        public function trainings()
-        {
-            return $this->belongsToMany(Training::class, 'training_guard', 'guard_id', 'training_id');
-        }
+    public function trainings()
+    {
+        return $this->belongsToMany(Training::class, 'training_guard', 'guard_id', 'training_id');
+    }
 
-        public function dispatchsss()
-        {
-            return $this->hasMany(InternalDispatch::class,'issued_to');
-        }
+    public function dispatchsss()
+    {
+        return $this->hasMany(InternalDispatch::class, 'issued_to');
+    }
     public function admin()
     {
         return $this->belongsTo(Admin::class);

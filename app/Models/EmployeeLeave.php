@@ -12,7 +12,7 @@ class EmployeeLeave extends Model
 
     protected $fillable = [
         'leave_type_id',
-        'owner_id',
+        'hrm_id',
         'start_date',
         'end_date',
         'number_of_leaves',
@@ -30,7 +30,7 @@ class EmployeeLeave extends Model
 
     public function employee()
     {
-        return $this->belongsTo(User::class, 'owner_id');
+        return $this->belongsTo(Hrm::class, 'hrm_id');
     }
 
     public function approver()

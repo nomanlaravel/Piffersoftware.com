@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\EmployeeLeave;
 use App\Models\LeaveType;
+use App\Models\Hrm;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -20,9 +21,19 @@ class EmployeeLeaveController extends Controller
         $user = auth()->user();
         $query = EmployeeLeave::with(['leaveType', 'employee', 'approver']);
 
-        // If not admin/superadmin (column or spatie role), only show own leaves
-        if ($user->role !== 'admin' && $user->role !== 'superadmin' && !$user->hasRole('Super Admin') && !$user->hasRole('Admin')) {
-            $query->where('owner_id', $user->id);
+        // Check for admin role
+        $isAdmin = $user->role === 'admin' || $user->role === 'superadmin' || $user->hasRole('Super Admin') || $user->hasRole('Admin');
+
+        if (!$isAdmin) {
+            // Find linked HRM profile by email
+            $hrm = Hrm::where('email', $user->email)->first();
+
+            if ($hrm) {
+                $query->where('hrm_id', $hrm->id);
+            } else {
+                // If no HRM profile found, return empty result or handle appropriately
+                return response()->json([]);
+            }
         }
 
         $leaves = $query->latest()->get();
@@ -40,6 +51,13 @@ class EmployeeLeaveController extends Controller
                 'description' => 'nullable|string|max:255',
             ]);
 
+            $user = auth()->user();
+            $hrm = Hrm::where('email', $user->email)->first();
+
+            if (!$hrm) {
+                return response()->json(['message' => 'Employee profile not found for this user.'], 422);
+            }
+
             $start = Carbon::parse($request->start_date);
             $end = Carbon::parse($request->end_date);
             $days = $start->diffInDays($end) + 1;
@@ -48,7 +66,7 @@ class EmployeeLeaveController extends Controller
             $leaveType = LeaveType::find($request->leave_type_id);
             $year = $start->year;
 
-            $usedLeaves = EmployeeLeave::where('owner_id', auth()->id())
+            $usedLeaves = EmployeeLeave::where('hrm_id', $hrm->id)
                 ->where('leave_type_id', $request->leave_type_id)
                 ->where('year', $year)
                 ->where('status', 'approved')
@@ -62,7 +80,7 @@ class EmployeeLeaveController extends Controller
 
             EmployeeLeave::create([
                 'leave_type_id' => $request->leave_type_id,
-                'owner_id' => auth()->id(),
+                'hrm_id' => $hrm->id,
                 'start_date' => $request->start_date,
                 'end_date' => $request->end_date,
                 'number_of_leaves' => $days,
@@ -111,13 +129,17 @@ class EmployeeLeaveController extends Controller
     {
         try {
             $leave = EmployeeLeave::findOrFail($request->id);
+            $user = auth()->user();
+            $isAdmin = $user->role === 'admin' || $user->role === 'superadmin' || $user->hasRole('Super Admin') || $user->hasRole('Admin');
 
-            // Only own pending leaves or admin can delete
-            if ($leave->owner_id !== auth()->id() && auth()->user()->role !== 'admin' && !auth()->user()->hasRole('Super Admin') && !auth()->user()->hasRole('Admin')) {
-                return response()->json(['message' => 'Unauthorized'], 403);
+            if (!$isAdmin) {
+                $hrm = Hrm::where('email', $user->email)->first();
+                if (!$hrm || $leave->hrm_id !== $hrm->id) {
+                    return response()->json(['message' => 'Unauthorized'], 403);
+                }
             }
 
-            if ($leave->status !== 'pending' && auth()->user()->role !== 'admin') {
+            if ($leave->status !== 'pending' && !$isAdmin) {
                 return response()->json(['message' => 'Cannot delete non-pending leaves'], 422);
             }
 

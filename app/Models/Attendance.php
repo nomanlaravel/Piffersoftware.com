@@ -11,7 +11,7 @@ class Attendance extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'user_id',
+        'hrm_id',
         'date',
         'check_in',
         'check_out',
@@ -20,8 +20,8 @@ class Attendance extends Model
         'notes',
     ];
 
-    public function user()
+    public function hrm()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Hrm::class);
     }
 }

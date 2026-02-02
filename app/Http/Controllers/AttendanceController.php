@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Attendance;
 use Illuminate\Http\Request;
 
-use App\Models\User;
+use App\Models\Hrm;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -16,7 +16,7 @@ class AttendanceController extends Controller
      */
     public function attendance_view(Request $request)
     {
-        $employeesT = User::all();
+        $employeesT = Hrm::all();
         $years = range(Carbon::now()->year, Carbon::now()->year - 5);
 
         $month = $request->month ? Carbon::parse($request->month)->month : Carbon::now()->month;
@@ -30,7 +30,7 @@ class AttendanceController extends Controller
             $monthDays[] = Carbon::create($year, $month, $i)->format('Y-m-d');
         }
 
-        $query = User::with([
+        $query = Hrm::with([
             'attendances' => function ($q) use ($month, $year) {
                 $q->whereMonth('date', $month)->whereYear('date', $year);
             }
@@ -61,7 +61,7 @@ class AttendanceController extends Controller
 
     public function get_attendance(Request $request)
     {
-        $attendance = Attendance::where('user_id', $request->id)
+        $attendance = Attendance::where('hrm_id', $request->id)
             ->where('date', $request->date)
             ->first();
 
@@ -100,7 +100,7 @@ class AttendanceController extends Controller
 
         $attendance = Attendance::updateOrCreate(
             [
-                'user_id' => $request->employee_id,
+                'hrm_id' => $request->employee_id,
                 'date' => $request->day_attendance,
             ],
             [
