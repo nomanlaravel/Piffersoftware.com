@@ -687,7 +687,7 @@
                     style="background-color: transparent;">Reports</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link " href="http://localhost:8001/erp-register" target="_blank"
+                  <a class="nav-link " href="https://piffersoftware.com/lms/erp-register" target="_blank"
                     style="background-color: transparent;">LMS Management</a>
                 </li>
               @endif
