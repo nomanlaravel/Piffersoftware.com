@@ -10,6 +10,7 @@ use App\Http\Controllers\CorporateController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DropdownController;
 use App\Http\Controllers\EmailController;
+use App\Http\Controllers\EmployeeLeaveController;
 use App\Http\Controllers\HrmController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\InternalDispatchController;
@@ -36,9 +37,12 @@ use App\Mail\ArmourerVisitReminder;
 use App\Models\Customer;
 use App\Models\CustomerArmourer;
 use App\Models\ReminderNotification;
+use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -765,3 +769,31 @@ Route::prefix('leave-types')->name('dashboard.leave-types.')->group(function () 
         Route::post('delete', 'destroy')->name('delete');
     });
 });
+
+Route::prefix('employee-leaves')->name('dashboard.employee-leaves.')->group(function () {
+    Route::middleware('auth')->controller(EmployeeLeaveController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('get-data', 'get_data')->name('get-data');
+        Route::post('store', 'store')->name('store');
+        Route::post('update-status', 'update_status')->name('update-status');
+        Route::post('delete', 'destroy')->name('delete');
+    });
+});
+
+Route::get('assign-role', function () {
+    $role = Role::findOrFail(8);
+    $role->givePermissionTo(['view_leave_request']);
+
+    $user = User::where('email', 'employee@example.com')->firstOrFail();
+    $user->syncRoles([$role]);
+
+    return response()->json([
+        'user' => $user->email,
+        'role' => $role->name,
+        'permissions_count' => $role->permissions->count(),
+    ]);
+
+    // Permission::where('name', 'view_leave_request')->first();
+// return Permission::where('name', 'view_leave_request')->first();
+});
+

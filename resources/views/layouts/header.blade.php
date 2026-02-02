@@ -589,7 +589,7 @@
             @endcanany
 
             {{-- Operations --}}
-            @canany(['view_payroll', 'add_payroll', 'update_payroll', 'delete_payroll', 'view_training', 'add_training', 'update_training', 'delete_training'])
+            @canany(['view_payroll', 'add_payroll', 'update_payroll', 'delete_payroll', 'view_training', 'add_training', 'update_training', 'delete_training', 'view_attendance', 'view_leave_type', 'view_leave_request'])
               <li class="nav-item">
                 <a class="nav-link" data-toggle="collapse" href="#operSubMenu" aria-expanded="false"
                   aria-controls="operSubMenu">
@@ -601,23 +601,40 @@
                     @can('view_payroll')
                       <li class="nav-item"><a class="nav-link" href="{{ url('payroll') }}">Payroll</a></li>
                     @endcan
-                    <li class="nav-item"><a class="nav-link" data-toggle="collapse" href="#attendanceSubMenu"
-                        aria-expanded="false" aria-controls="attendanceSubMenu">Attendance</a></li>
-                    <div class="collapse" id="attendanceSubMenu">
-                      <ul class="nav flex-column sub-menu">
-                        <li class="nav-item"><a class="nav-link" href="{{route('attendance.attendance_view')}}">View
-                            Attendance</a></li>
-                      </ul>
-                    </div>
-                    <li class="nav-item"><a class="nav-link" data-toggle="collapse" href="#employeeLeaveSubMenu"
-                        aria-expanded="false" aria-controls="employeeLeaveSubMenu">Employee Leaves</a></li>
-                    <div class="collapse" id="employeeLeaveSubMenu">
-                      <ul class="nav flex-column sub-menu">
-                        <li class="nav-item"><a class="nav-link" href="{{route('dashboard.leave-types.index')}}">Add/View
-                            Leave Types</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#">Approve/Disapprove Leave Requests</a></li>
-                      </ul>
-                    </div>
+                    {{-- Attendance sub-menu --}}
+                    @can('view_attendance')
+                      <li class="nav-item">
+                        <a class="nav-link" data-toggle="collapse" href="#attendanceSubMenu" aria-expanded="false"
+                          aria-controls="attendanceSubMenu">Attendance Management</a>
+                        <div class="collapse" id="attendanceSubMenu">
+                          <ul class="nav flex-column sub-menu">
+                            <li class="nav-item"><a class="nav-link" href="{{route('attendance.attendance_view')}}">View
+                                Attendance</a></li>
+                          </ul>
+                        </div>
+                      </li>
+                    @endcan
+
+                    {{-- Leaves sub-menu --}}
+                    @canany(['view_leave_type', 'view_leave_request'])
+                      <li class="nav-item">
+                        <a class="nav-link" data-toggle="collapse" href="#employeeLeaveSubMenu" aria-expanded="false"
+                          aria-controls="employeeLeaveSubMenu">Employee Leaves</a>
+                        <div class="collapse" id="employeeLeaveSubMenu">
+                          <ul class="nav flex-column sub-menu">
+                            @can('view_leave_type')
+                              <li class="nav-item"><a class="nav-link"
+                                  href="{{route('dashboard.leave-types.index')}}">Add/View Leave Types</a></li>
+                            @endcan
+                            @can('view_leave_request')
+                              <li class="nav-item"><a class="nav-link"
+                                  href="{{route('dashboard.employee-leaves.index')}}">Approve/Disapprove Leave Requests</a>
+                              </li>
+                            @endcan
+                          </ul>
+                        </div>
+                      </li>
+                    @endcanany
                     @can('view_training')
                       <li class="nav-item"><a class="nav-link" href="{{ url('train') }}">Training</a></li>
                     @endcan
