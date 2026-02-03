@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('account_title');
             $table->string('account_number');
             $table->string('bank_name');
-            $table->string('branch_name');
+            $table->string('branch_name')->nullable();
             $table->unsignedBigInteger('hrm_id');
             $table->softDeletes();
             $table->timestamps();

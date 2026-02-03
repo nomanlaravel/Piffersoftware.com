@@ -12,6 +12,32 @@
                     method="POST" novalidate>
                     @csrf
                     <div class="esf-errors-print mb-2"></div>
+                    <!-- Bank Detail -->
+                     <h6><b>Employee Bank Detail</b></h6>
+                     <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Account Title<span class="text-danger">*</span></label>
+                                <input class="form-control" type="number" placeholder="Account Title" name="account_title"
+                                    required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Account Number<span class="text-danger">*</span></label>
+                                <input class="form-control" type="number" placeholder="Account Number" name="account_number"
+                                    required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Bank Name<span class="text-danger">*</span></label>
+                                <input class="form-control" type="number" placeholder="Bank Name" name="bank_name"
+                                    required>
+                            </div>
+                        </div>
+                     </div>
+                    <div class="esf-errors-print mb-2"></div>
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
