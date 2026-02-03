@@ -116,7 +116,6 @@ public function payrollsearch(Request $request)
     if (!$payroll) {
         return response()->json(['error' => 'Payroll not found'], 404);
     }
-
     return view('training.payroll_print', compact('payroll'));
 }
 

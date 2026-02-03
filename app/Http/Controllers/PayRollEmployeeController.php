@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\EmployeeBankDetail;
 use Illuminate\Http\Request;
 use App\Models\EmployeeSalaryStatus;
 use App\Models\EmployeeSalarySlip;
@@ -45,7 +44,7 @@ class PayRollEmployeeController extends Controller
 
         // Query employees with their salary slips for the selected month
         $query = Hrm::with([
-            'salaryStatus.bankDetail',
+            'salaryStatus',
             'salarySlips' => function ($q) use ($payrollMonth) {
                 $q->where('payroll_month', $payrollMonth);
             }
@@ -83,10 +82,10 @@ class PayRollEmployeeController extends Controller
 
             $basicSalary = $status->before_increment;
 
-            // Get bank account details
-            $bankAccount = 'N/A';
-            if ($status && $status->bankDetail) {
-                $bankAccount = $status->bankDetail->account_number ?? 'N/A';
+            // Get bank account details from HRM model
+            $bankAccount = $employee->bank_account ?? 'N/A';
+            if ($employee->bank) {
+                $bankAccount = $employee->bank . ' (' . $bankAccount . ')';
             }
 
             // Get designation
@@ -278,7 +277,7 @@ class PayRollEmployeeController extends Controller
 
     public function getSalaries(Request $request)
     {
-        $employeeSalaries = EmployeeSalaryStatus::with('bankDetail')->get();
+        $employeeSalaries = EmployeeSalaryStatus::get();
 
         // Simple manual implementation for DataTables
         $query = Hrm::with('salaryStatus');
@@ -349,7 +348,7 @@ class PayRollEmployeeController extends Controller
             'account_title' => 'required|string',
             'bank_name' => 'required|string',
             'account_number' => 'required',
-            'branch_name' => 'required',
+            'branch_name' => 'required|string',
         ]);
 
         $nextIncrement = Carbon::parse($request->salary_start)->addMonths($request->increment_time)->toDateString();
@@ -357,6 +356,7 @@ class PayRollEmployeeController extends Controller
         try {
             DB::beginTransaction();
 
+            // Update salary status
             EmployeeSalaryStatus::updateOrCreate(
                 ['employee_id' => $request->employee_id],
                 [
@@ -370,17 +370,14 @@ class PayRollEmployeeController extends Controller
                 ]
             );
 
-            EmployeeBankDetail::updateOrCreate(
-                [
-                    'hrm_id' => $request->employee_id
-                ],
-                [
-                    'account_title' => $request->account_title,
-                    'bank_name' => $request->bank_name,
-                    'account_number' => $request->account_number,
-                    'branch_name' => $request->branch_name
-                ]
-            );
+            // Update bank details in HRM model
+            Hrm::where('id', $request->employee_id)->update([
+                'bank' => $request->bank_name,
+                'account_title' => $request->account_title,
+                'bank_account' => $request->account_number,
+                'branch' => $request->branch_name,
+            ]);
+
             DB::commit();
             return response()->json(['success' => true, 'message' => 'Salary formula set successfully']);
         } catch (\Exception $e) {
@@ -403,12 +400,17 @@ class PayRollEmployeeController extends Controller
     public function getSalaryDetail($id)
     {
         try {
-            $employee = Hrm::with(['salaryStatus', 'bankDetail'])->findOrFail($id);
+            $employee = Hrm::with(['salaryStatus'])->findOrFail($id);
             return response()->json([
                 'success' => true,
                 'data' => [
                     'salary' => $employee->salaryStatus,
-                    'bank' => $employee->bankDetail,
+                    'bank' => [
+                        'account_title' => $employee->account_title,
+                        'bank_name' => $employee->bank,
+                        'account_number' => $employee->bank_account,
+                        'branch_name' => $employee->branch ?? ''
+                    ],
                     'employee' => [
                         'id' => $employee->id,
                         'name' => $employee->name

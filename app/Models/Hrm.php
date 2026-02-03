@@ -22,6 +22,7 @@ class Hrm extends Model
         'bank',
         'account_title',
         'bank_account',
+        'branch',
         'cell',
         'photo',
         'category',
@@ -301,11 +302,6 @@ class Hrm extends Model
         return $this->hasOne(EmployeeSalaryStatus::class, 'employee_id');
     }
 
-
-    public function bankDetail()
-    {
-        return $this->hasOne(EmployeeBankDetail::class, 'hrm_id');
-    }
 
     public function salarySlips()
     {

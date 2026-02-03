@@ -33,8 +33,4 @@ class EmployeeSalaryStatus extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function bankDetail()
-    {
-        return $this->hasOne(EmployeeBankDetail::class, 'hrm_id', 'employee_id');
-    }
 }
