@@ -13,6 +13,99 @@ use Illuminate\Support\Facades\DB;
 
 class PayRollEmployeeController extends Controller
 {
+    public function salaryReport()
+    {
+        $years = range(Carbon::now()->year, Carbon::now()->year - 5);
+        $months = [
+            1 => 'January',
+            2 => 'February',
+            3 => 'March',
+            4 => 'April',
+            5 => 'May',
+            6 => 'June',
+            7 => 'July',
+            8 => 'August',
+            9 => 'September',
+            10 => 'October',
+            11 => 'November',
+            12 => 'December'
+        ];
+        return view('a_payroll.salary_report', compact('years', 'months'));
+    }
+
+    public function getSalaryReportData(Request $request)
+    {
+        $month = $request->month ?? Carbon::now()->month;
+        $year = $request->year ?? Carbon::now()->year;
+        $dateStr = "$year-$month-01";
+        $daysInMonth = Carbon::parse($dateStr)->daysInMonth;
+
+        $query = Hrm::with([
+            'salaryStatus',
+            'attendances' => function ($q) use ($month, $year) {
+                $q->whereMonth('date', $month)->whereYear('date', $year);
+            }
+        ]);
+
+        if ($request->has('search') && isset($request->search['value'])) {
+            $searchValue = $request->search['value'];
+            $query->where(function ($q) use ($searchValue) {
+                $q->where('name', 'like', "%$searchValue%")
+                    ->orWhere('employee_no', 'like', "%$searchValue%");
+            });
+        }
+
+        $totalData = Hrm::count();
+        $totalFiltered = $query->count();
+
+        $limit = $request->input('length', 10);
+        $start = $request->input('start', 0);
+
+        $employees = $query->offset($start)
+            ->limit($limit)
+            ->get();
+
+        $data = [];
+        foreach ($employees as $employee) {
+            $status = $employee->salaryStatus;
+            $basicSalary = $status ? $status->before_increment : 0;
+
+            // Count Absents
+            $absents = $employee->attendances->where('status', 'absent')->count();
+
+            // Basic Deduction Calculation (Basic / DaysInMonth * Absents)
+            $absentDeduction = $daysInMonth > 0 ? ($basicSalary / $daysInMonth) * $absents : 0;
+
+            // In a real system, you'd fetch loans, bonuses, tax etc. 
+            // For now, let's provide placeholders that can be extended.
+            $bonus = 0;
+            $otherDeduction = 0;
+            $loan = 0;
+
+            $netSalary = $basicSalary - $absentDeduction - $otherDeduction - $loan + $bonus;
+
+            $data[] = [
+                'id' => $employee->id,
+                'name' => $employee->name,
+                'employee_no' => $employee->employee_no ?? 'N/A',
+                'basic_salary' => number_format($basicSalary, 2),
+                'absents' => $absents,
+                'absent_deduction' => number_format($absentDeduction, 2),
+                'bonus' => number_format($bonus, 2),
+                'loan' => number_format($loan, 2),
+                'net_salary' => number_format($netSalary, 2),
+                'action' => '<button class="btn btn-sm btn-info view-details-btn" data-id="' . $employee->id . '"><i class="fas fa-eye"></i> Details</button>'
+            ];
+        }
+
+        return response()->json([
+            "draw" => intval($request->input('draw')),
+            "recordsTotal" => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data" => $data
+        ]);
+    }
+
     public function index()
     {
         return view('a_payroll.set_salary');
@@ -175,5 +268,10 @@ class PayRollEmployeeController extends Controller
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
+    }
+
+    public function salary_report()
+    {
+        return view('a_payroll.salary_report');
     }
 }

@@ -610,7 +610,7 @@
                         <div class="collapse" id="payRollSubMenu">
                           <ul class="nav flex-column sub-menu">
                             <li class="nav-item"><a class="nav-link" href="{{route('dashboard.employee-payroll.salaries')}}">Set Employee Salary</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{{route('dashboard.employee-payroll.salaries')}}">Salary Report</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{route('dashboard.employee-payroll.salary-report')}}">Salary Report</a></li>
                           </ul>
                         </div>
                       </li>
