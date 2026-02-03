@@ -603,13 +603,14 @@
                     @endcan
 
                     {{-- PayRoll Management sub-menu --}}
-                    @can('view_attendance')
+                    @can('view_payroll')
                       <li class="nav-item">
                         <a class="nav-link" data-toggle="collapse" href="#payRollSubMenu" aria-expanded="false"
                           aria-controls="payRollSubMenu">Payroll Management</a>
                         <div class="collapse" id="payRollSubMenu">
                           <ul class="nav flex-column sub-menu">
                             <li class="nav-item"><a class="nav-link" href="{{route('dashboard.employee-payroll.salaries')}}">Set Employee Salary</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{route('dashboard.employee-payroll.salaries')}}">Salary Report</a></li>
                           </ul>
                         </div>
                       </li>
