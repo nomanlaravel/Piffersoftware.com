@@ -101,16 +101,28 @@
                 <table id="salaryReportTable" class="table w-100">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Employee Name</th>
-                            <th>Emp No</th>
+                            <th>Sr.No</th>
+                            <th>Name</th>
+                            <th>Bank Acc#</th>
+                            <th>Designation</th>
                             <th>Basic Salary</th>
                             <th>Absents</th>
-                            <th>Abs. Deduction</th>
-                            <th>Bonus</th>
-                            <th>Loans</th>
-                            <th>Net Salary</th>
-                            <th>Action</th>
+                            <th>Absents amount Deduction</th>
+                            <th>No of Half Days</th>
+                            <th>Half Days Deduction</th>
+                            <th>Late Minutes</th>
+                            <th>Late Minutes Deduction</th>
+                            <th>Sand Wich Rule Deduction</th>
+                            <th>Other Deduction</th>
+                            <th>Tax Deduction</th>
+                            <th>Loan</th>
+                            <th>Total Increment</th>
+                            <th>Total Salary</th>
+                            <th>Deduction befor Compensation</th>
+                            <th>Bouns</th>
+                            <th>Compensation</th>
+                            <th>Deduction after Compensation</th>
+                            <th>Total Salary approved</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -154,16 +166,28 @@
                     }
                 },
                 columns: [
-                    { data: 'id', name: 'id' },
+                    { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
                     { data: 'name', name: 'name' },
-                    { data: 'employee_no', name: 'employee_no' },
+                    { data: 'bank_account', name: 'bank_account' },
+                    { data: 'designation', name: 'designation' },
                     { data: 'basic_salary', name: 'basic_salary' },
                     { data: 'absents', name: 'absents' },
                     { data: 'absent_deduction', name: 'absent_deduction' },
-                    { data: 'bonus', name: 'bonus' },
+                    { data: 'half_days', name: 'half_days' },
+                    { data: 'half_day_deduction', name: 'half_day_deduction' },
+                    { data: 'late_minutes', name: 'late_minutes' },
+                    { data: 'late_minutes_deduction', name: 'late_minutes_deduction' },
+                    { data: 'sandwich_rule_deduction', name: 'sandwich_rule_deduction' },
+                    { data: 'other_deduction', name: 'other_deduction' },
+                    { data: 'tax_deduction', name: 'tax_deduction' },
                     { data: 'loan', name: 'loan' },
-                    { data: 'net_salary', name: 'net_salary' },
-                    { data: 'action', name: 'action', orderable: false, searchable: false }
+                    { data: 'total_increment', name: 'total_increment' },
+                    { data: 'total_salary', name: 'total_salary' },
+                    { data: 'deduction_before_compensation', name: 'deduction_before_compensation' },
+                    { data: 'bonus', name: 'bonus' },
+                    { data: 'compensation', name: 'compensation' },
+                    { data: 'deduction_after_compensation', name: 'deduction_after_compensation' },
+                    { data: 'total_salary_approved', name: 'total_salary_approved' }
                 ],
                 order: [[1, 'asc']],
                 pageLength: 25,
@@ -178,7 +202,7 @@
             });
 
             // Handle View Details Click
-            $(document).on('click', '.view-details-btn', function() {
+            $(document).on('click', '.view-details-btn', function () {
                 let id = $(this).data('id');
                 let month = $('select[name="month"]').val();
                 let year = $('select[name="year"]').val();
@@ -191,39 +215,39 @@
                     url: '/employee-payroll/employee-salaries/get-detail/' + id,
                     type: 'GET',
                     data: { month: month, year: year },
-                    success: function(res) {
-                        if(res.success) {
+                    success: function (res) {
+                        if (res.success) {
                             let d = res.data;
                             let html = `
-                                <div class="row mb-4">
-                                    <div class="col-md-6">
-                                        <p class="mb-1 text-muted small uppercase font-weight-bold">Employee</p>
-                                        <h4 class="font-weight-bold">${d.employee.name}</h4>
+                                    <div class="row mb-4">
+                                        <div class="col-md-6">
+                                            <p class="mb-1 text-muted small uppercase font-weight-bold">Employee</p>
+                                            <h4 class="font-weight-bold">${d.employee.name}</h4>
+                                        </div>
+                                        <div class="col-md-6 text-md-right">
+                                            <p class="mb-1 text-muted small uppercase font-weight-bold">Period</p>
+                                            <h4 class="font-weight-bold">${month}/${year}</h4>
+                                        </div>
                                     </div>
-                                    <div class="col-md-6 text-md-right">
-                                        <p class="mb-1 text-muted small uppercase font-weight-bold">Period</p>
-                                        <h4 class="font-weight-bold">${month}/${year}</h4>
+                                    <div class="table-responsive">
+                                        <table class="table table-sm border">
+                                            <tr class="bg-light">
+                                                <th colspan="2">Financial Overview</th>
+                                            </tr>
+                                            <tr>
+                                                <td>Basic Salary</td>
+                                                <td class="text-right font-weight-bold">₨ ${d.salary ? d.salary.before_increment : '0.00'}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Account Details</td>
+                                                <td class="text-right">${d.bank ? d.bank.bank_name + ' (' + d.bank.account_number + ')' : 'Not Set'}</td>
+                                            </tr>
+                                        </table>
                                     </div>
-                                </div>
-                                <div class="table-responsive">
-                                    <table class="table table-sm border">
-                                        <tr class="bg-light">
-                                            <th colspan="2">Financial Overview</th>
-                                        </tr>
-                                        <tr>
-                                            <td>Basic Salary</td>
-                                            <td class="text-right font-weight-bold">₨ ${d.salary ? d.salary.before_increment : '0.00'}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Account Details</td>
-                                            <td class="text-right">${d.bank ? d.bank.bank_name + ' (' + d.bank.account_number + ')' : 'Not Set'}</td>
-                                        </tr>
-                                    </table>
-                                </div>
-                                <div class="alert alert-info py-2 small">
-                                    <i class="fas fa-info-circle mr-1"></i> For attendance punch logs, please visit the Attendance Management module.
-                                </div>
-                            `;
+                                    <div class="alert alert-info py-2 small">
+                                        <i class="fas fa-info-circle mr-1"></i> For attendance punch logs, please visit the Attendance Management module.
+                                    </div>
+                                `;
                             $('#detailsResult').html(html);
                         }
                     }

@@ -302,7 +302,13 @@ class Hrm extends Model
     }
 
 
-    public function bankDetail(){
+    public function bankDetail()
+    {
         return $this->hasOne(EmployeeBankDetail::class, 'hrm_id');
+    }
+
+    public function salarySlips()
+    {
+        return $this->hasMany(EmployeeSalarySlip::class, 'employee_id');
     }
 }

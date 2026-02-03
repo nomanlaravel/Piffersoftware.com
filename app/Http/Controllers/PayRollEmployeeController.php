@@ -37,13 +37,17 @@ class PayRollEmployeeController extends Controller
     {
         $month = $request->month ?? Carbon::now()->month;
         $year = $request->year ?? Carbon::now()->year;
+
+        // Format as YYYY-MM for matching payroll_month
+        $payrollMonth = sprintf('%04d-%02d', $year, $month);
         $dateStr = "$year-$month-01";
         $daysInMonth = Carbon::parse($dateStr)->daysInMonth;
 
+        // Query employees with their salary slips for the selected month
         $query = Hrm::with([
-            'salaryStatus',
-            'attendances' => function ($q) use ($month, $year) {
-                $q->whereMonth('date', $month)->whereYear('date', $year);
+            'salaryStatus.bankDetail',
+            'salarySlips' => function ($q) use ($payrollMonth) {
+                $q->where('payroll_month', $payrollMonth);
             }
         ]);
 
@@ -66,36 +70,156 @@ class PayRollEmployeeController extends Controller
             ->get();
 
         $data = [];
+        $rowNum = $start + 1;
+
+
         foreach ($employees as $employee) {
             $status = $employee->salaryStatus;
-            $basicSalary = $status ? $status->before_increment : 0;
 
-            // Count Absents
-            $absents = $employee->attendances->where('status', 'absent')->count();
+            // Skip if no salary status
+            if (!$status) {
+                continue;
+            }
 
-            // Basic Deduction Calculation (Basic / DaysInMonth * Absents)
-            $absentDeduction = $daysInMonth > 0 ? ($basicSalary / $daysInMonth) * $absents : 0;
+            $basicSalary = $status->before_increment;
 
-            // In a real system, you'd fetch loans, bonuses, tax etc. 
-            // For now, let's provide placeholders that can be extended.
-            $bonus = 0;
-            $otherDeduction = 0;
-            $loan = 0;
+            // Get bank account details
+            $bankAccount = 'N/A';
+            if ($status && $status->bankDetail) {
+                $bankAccount = $status->bankDetail->account_number ?? 'N/A';
+            }
 
-            $netSalary = $basicSalary - $absentDeduction - $otherDeduction - $loan + $bonus;
+            // Get designation
+            $designation = $employee->designation ?? 'N/A';
 
-            $data[] = [
-                'id' => $employee->id,
-                'name' => $employee->name,
-                'employee_no' => $employee->employee_no ?? 'N/A',
-                'basic_salary' => number_format($basicSalary, 2),
-                'absents' => $absents,
-                'absent_deduction' => number_format($absentDeduction, 2),
-                'bonus' => number_format($bonus, 2),
-                'loan' => number_format($loan, 2),
-                'net_salary' => number_format($netSalary, 2),
-                'action' => '<button class="btn btn-sm btn-info view-details-btn" data-id="' . $employee->id . '"><i class="fas fa-eye"></i> Details</button>'
-            ];
+            // Check if salary slip exists for this month
+            $salarySlip = $employee->salarySlips->first();
+
+            if ($salarySlip) {
+                // Use data from existing salary slip
+                $data[] = [
+                    'DT_RowIndex' => $rowNum++,
+                    'name' => $employee->name,
+                    'bank_account' => $bankAccount,
+                    'designation' => $designation,
+                    'basic_salary' => number_format($salarySlip->basic_salary, 2),
+                    'absents' => $salarySlip->absents,
+                    'absent_deduction' => number_format($salarySlip->absent_deduction, 2),
+                    'half_days' => $salarySlip->half_days,
+                    'half_day_deduction' => number_format($salarySlip->half_day_deduction, 2),
+                    'late_minutes' => $salarySlip->late_minutes,
+                    'late_minutes_deduction' => number_format($salarySlip->late_minutes_deduction, 2),
+                    'sandwich_rule_deduction' => number_format($salarySlip->sandwich_rule_deduction, 2),
+                    'other_deduction' => number_format($salarySlip->other_deduction, 2),
+                    'tax_deduction' => number_format($salarySlip->tax_deduction, 2),
+                    'loan' => number_format($salarySlip->loan, 2),
+                    'total_increment' => number_format($salarySlip->totalIncrement, 2),
+                    'total_salary' => number_format($salarySlip->total_salary, 2),
+                    'deduction_before_compensation' => number_format($salarySlip->deduction_before_compensation, 2),
+                    'bonus' => number_format($salarySlip->bouns, 2),
+                    'compensation' => number_format($salarySlip->compensation, 2),
+                    'deduction_after_compensation' => number_format($salarySlip->deduction_after_compensation, 2),
+                    'total_salary_approved' => number_format($salarySlip->approved_salary, 2)
+                ];
+            } else {
+                // Check if employee's salary started on or before the selected month
+                if (!$status->salary_start) {
+                    // Skip if no salary start date
+                    continue;
+                }
+
+                $salaryStartDate = Carbon::parse($status->salary_start);
+                $reportDate = Carbon::parse($dateStr);
+
+                // Only show employee if their salary started on or before the report month
+                if ($salaryStartDate->greaterThan($reportDate)) {
+                    // Employee wasn't employed in this month, skip
+                    continue;
+                }
+
+                // Calculate on-the-fly if no salary slip exists
+                // Get attendance data
+                $attendances = $employee->attendances()
+                    ->whereMonth('date', $month)
+                    ->whereYear('date', $year)
+                    ->get();
+
+                // Count Absents
+                $absents = $attendances->where('status', 'absent')->count();
+
+                // Count Half Days
+                $halfDays = $attendances->where('status', 'half_day')->count();
+
+                // Calculate Late Minutes
+                $lateMinutes = $attendances->sum('late_minutes') ?? 0;
+
+                // Deduction Calculations
+                $absentDeduction = $daysInMonth > 0 ? ($basicSalary / $daysInMonth) * $absents : 0;
+                $halfDayDeduction = $daysInMonth > 0 ? ($basicSalary / $daysInMonth / 2) * $halfDays : 0;
+
+                // Late minutes deduction (1/480 of daily salary per late minute)
+                $dailySalary = $daysInMonth > 0 ? $basicSalary / $daysInMonth : 0;
+                $lateMinutesDeduction = $dailySalary > 0 ? ($dailySalary / 480) * $lateMinutes : 0;
+
+                // Sandwich Rule Deduction
+                $sandwichRuleDeduction = $this->calculateSandwichRuleDeduction($attendances, $dailySalary);
+
+                // Other Deductions
+                $otherDeduction = 0;
+
+                // Tax Deduction (2% of basic salary)
+                $taxDeduction = $basicSalary * 0.02;
+
+                // Loan Deduction
+                $loan = 0;
+
+                // Total Increment
+                $totalIncrement = $status ? ($status->last_increment_amount ?? 0) : 0;
+
+                // Total Salary (Basic + Increment)
+                $totalSalary = $basicSalary + $totalIncrement;
+
+                // Deduction Before Compensation
+                $deductionBeforeCompensation = $absentDeduction + $halfDayDeduction + $lateMinutesDeduction +
+                    $sandwichRuleDeduction + $otherDeduction + $taxDeduction + $loan;
+
+                // Bonus
+                $bonus = 0;
+
+                // Compensation
+                $compensation = 0;
+
+                // Deduction After Compensation
+                $deductionAfterCompensation = max(0, $deductionBeforeCompensation - $compensation);
+
+                // Total Salary Approved (Final)
+                $totalSalaryApproved = $totalSalary + $bonus + $compensation - $deductionBeforeCompensation;
+
+                $data[] = [
+                    'DT_RowIndex' => $rowNum++,
+                    'name' => $employee->name,
+                    'bank_account' => $bankAccount,
+                    'designation' => $designation,
+                    'basic_salary' => number_format($basicSalary, 2),
+                    'absents' => $absents,
+                    'absent_deduction' => number_format($absentDeduction, 2),
+                    'half_days' => $halfDays,
+                    'half_day_deduction' => number_format($halfDayDeduction, 2),
+                    'late_minutes' => $lateMinutes,
+                    'late_minutes_deduction' => number_format($lateMinutesDeduction, 2),
+                    'sandwich_rule_deduction' => number_format($sandwichRuleDeduction, 2),
+                    'other_deduction' => number_format($otherDeduction, 2),
+                    'tax_deduction' => number_format($taxDeduction, 2),
+                    'loan' => number_format($loan, 2),
+                    'total_increment' => number_format($totalIncrement, 2),
+                    'total_salary' => number_format($totalSalary, 2),
+                    'deduction_before_compensation' => number_format($deductionBeforeCompensation, 2),
+                    'bonus' => number_format($bonus, 2),
+                    'compensation' => number_format($compensation, 2),
+                    'deduction_after_compensation' => number_format($deductionAfterCompensation, 2),
+                    'total_salary_approved' => number_format($totalSalaryApproved, 2)
+                ];
+            }
         }
 
         return response()->json([
@@ -106,6 +230,47 @@ class PayRollEmployeeController extends Controller
         ]);
     }
 
+    /**
+     * Calculate sandwich rule deduction
+     * Deducts salary for leaves taken between holidays/weekends
+     */
+    private function calculateSandwichRuleDeduction($attendances, $dailySalary)
+    {
+        $deduction = 0;
+        $dates = $attendances->pluck('date')->sort()->values();
+
+        foreach ($dates as $index => $date) {
+            $currentDate = Carbon::parse($date);
+
+            // Check if this is a leave day
+            $attendance = $attendances->firstWhere('date', $date);
+            if ($attendance && in_array($attendance->status, ['leave', 'absent'])) {
+                // Check if previous day was weekend or holiday
+                $prevDay = $currentDate->copy()->subDay();
+                $nextDay = $currentDate->copy()->addDay();
+
+                // If sandwiched between weekend/holiday, apply deduction
+                if (
+                    ($prevDay->isWeekend() || $this->isHoliday($prevDay)) &&
+                    ($nextDay->isWeekend() || $this->isHoliday($nextDay))
+                ) {
+                    $deduction += $dailySalary;
+                }
+            }
+        }
+
+        return $deduction;
+    }
+
+    /**
+     * Check if a date is a holiday
+     */
+    private function isHoliday($date)
+    {
+        // TODO: Implement holiday checking logic
+        // You can create a holidays table and check against it
+        return false;
+    }
     public function index()
     {
         return view('a_payroll.set_salary');
