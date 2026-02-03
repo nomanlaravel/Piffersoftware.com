@@ -302,4 +302,7 @@ class Hrm extends Model
     }
 
 
+    public function bankDetail(){
+        return $this->hasOne(EmployeeBankDetail::class, 'hrm_id');
+    }
 }

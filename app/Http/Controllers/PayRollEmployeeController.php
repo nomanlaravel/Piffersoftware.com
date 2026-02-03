@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EmployeeBankDetail;
 use Illuminate\Http\Request;
 use App\Models\EmployeeSalaryStatus;
 use App\Models\EmployeeSalarySlip;
@@ -19,6 +20,8 @@ class PayRollEmployeeController extends Controller
 
     public function getSalaries(Request $request)
     {
+        $employeeSalaries = EmployeeSalaryStatus::with('bankDetail')->get();
+
         // Simple manual implementation for DataTables
         $query = Hrm::with('salaryStatus');
 
@@ -68,6 +71,8 @@ class PayRollEmployeeController extends Controller
             ];
         }
 
+        $employee_salaries = EmployeeSalaryStatus::with('bankDetail')->get();
+
         return response()->json([
             "draw" => intval($request->input('draw')),
             "recordsTotal" => intval($totalData),
@@ -83,6 +88,10 @@ class PayRollEmployeeController extends Controller
             'basic_salary' => 'required|numeric',
             'salary_start' => 'required|date',
             'increment_time' => 'required|integer',
+            'account_title' => 'required|string',
+            'bank_name' => 'required|string',
+            'account_number' => 'required',
+            'branch_name' => 'required',
         ]);
 
         $nextIncrement = Carbon::parse($request->salary_start)->addMonths($request->increment_time)->toDateString();
@@ -95,6 +104,7 @@ class PayRollEmployeeController extends Controller
                 [
                     'time_period' => $request->increment_time . ' months',
                     'before_increment' => $request->basic_salary,
+                    'salary_start' => $request->salary_start,
                     'next_increment' => $nextIncrement,
                     'increment_amount' => 0,
                     'status' => 'active',
@@ -102,6 +112,17 @@ class PayRollEmployeeController extends Controller
                 ]
             );
 
+            EmployeeBankDetail::updateOrCreate(
+                [
+                    'hrm_id' => $request->employee_id
+                ],
+                [
+                    'account_title' => $request->account_title,
+                    'bank_name' => $request->bank_name,
+                    'account_number' => $request->account_number,
+                    'branch_name' => $request->branch_name
+                ]
+            );
             DB::commit();
             return response()->json(['success' => true, 'message' => 'Salary formula set successfully']);
         } catch (\Exception $e) {
@@ -116,6 +137,26 @@ class PayRollEmployeeController extends Controller
             $status = EmployeeSalaryStatus::findOrFail($id);
             $status->delete();
             return response()->json(['success' => true, 'message' => 'Salary formula deleted successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function getSalaryDetail($id)
+    {
+        try {
+            $employee = Hrm::with(['salaryStatus', 'bankDetail'])->findOrFail($id);
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'salary' => $employee->salaryStatus,
+                    'bank' => $employee->bankDetail,
+                    'employee' => [
+                        'id' => $employee->id,
+                        'name' => $employee->name
+                    ]
+                ]
+            ]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }

@@ -11,10 +11,57 @@ $(document).ready(function () {
         let id = $(this).data('id');
         let name = $(this).data('name');
         let modal = $('#add_salary_formula');
+        let form = $('#addMonthlySalaryForm');
 
-        modal.find('.modal-title').text('Set Salary for ' + name);
+        // Reset form and errors
+        form[0].reset();
+        $('.esf-errors-print').html('');
+        modal.find('.modal-title').text('Salary Setup: ' + name);
         modal.find('[name="employee_id"]').val(id);
-        modal.modal('show');
+
+        // Fetch existing data
+        $.ajax({
+            url: '/employee-payroll/employee-salaries/get-detail/' + id,
+            type: 'GET',
+            beforeSend: function () {
+                modal.find('.submit-btn').prop('disabled', true).text('Loading...');
+            },
+            success: function (res) {
+                if (res.success && res.data) {
+                    let d = res.data;
+
+                    // Fill Bank Details
+                    if (d.bank) {
+                        form.find('[name="account_title"]').val(d.bank.account_title);
+                        form.find('[name="account_number"]').val(d.bank.account_number);
+                        form.find('[name="bank_name"]').val(d.bank.bank_name);
+                        form.find('[name="branch_name"]').val(d.bank.branch_name);
+                    }
+
+                    // Fill Salary Details
+                    if (d.salary) {
+                        form.find('[name="basic_salary"]').val(d.salary.before_increment).trigger('keyup');
+
+                        if (d.salary.time_period) {
+                            let months = d.salary.time_period.split(' ')[0];
+                            form.find('[name="increment_time"]').val(months);
+                        }
+
+                        // Set start date
+                        if (d.salary.salary_start) {
+                            form.find('[name="salary_start"]').val(d.salary.salary_start);
+                        } else if (d.salary.created_at) {
+                            let date = new Date(d.salary.created_at).toISOString().split('T')[0];
+                            form.find('[name="salary_start"]').val(date);
+                        }
+                    }
+                }
+            },
+            complete: function () {
+                modal.find('.submit-btn').prop('disabled', false).text('Set Salary Slip');
+                modal.modal('show');
+            }
+        });
     });
 
     // Form Submission

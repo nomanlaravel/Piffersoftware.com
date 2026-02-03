@@ -194,7 +194,7 @@
     </div>
 
     <x-modal-add-employee-salary-component />
-    <x-modal-employee-increment-sheet-component />
+<x-modal-employee-increment-sheet-component />
 </div>
 
 @push('js')

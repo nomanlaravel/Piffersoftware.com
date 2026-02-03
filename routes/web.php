@@ -787,6 +787,7 @@ Route::prefix('employee-payroll')->name('dashboard.employee-payroll.')->group(fu
         Route::post('employee-salaries/store', 'store')->name('salaries.store');
         Route::get('employee-salaries/get-salaries', 'getSalaries')->name('salaries.get');
         Route::delete('employee-salaries/delete/{id}', 'destroy')->name('salaries.delete');
+        Route::get('employee-salaries/get-detail/{id}', 'getSalaryDetail')->name('salaries.get-detail');
         Route::get('employee-salaries/increment-sheet/{id}', 'getIncrementSheet')->name('salaries.increment-sheet');
     });
 });

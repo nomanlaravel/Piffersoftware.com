@@ -16,6 +16,7 @@ class EmployeeSalaryStatus extends Model
         'next_increment',
         'increment_amount',
         'before_increment',
+        'salary_start',
         'status',
         'can_view',
         'employee_id',
@@ -30,5 +31,10 @@ class EmployeeSalaryStatus extends Model
     public function creator()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function bankDetail()
+    {
+        return $this->hasOne(EmployeeBankDetail::class, 'hrm_id', 'employee_id');
     }
 }
