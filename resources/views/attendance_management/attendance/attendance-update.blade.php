@@ -156,19 +156,17 @@
                                                     <a href="javascript:void(0);" class="view-attendance-details"
                                                         data-att-date="{{ $val }}" data-emp-id="{{ $employee->id }}"
                                                         data-emp-name="{{ $employee->name }}" data-toggle="modal"
-                                                        data-target="#attendance_info_in" data-bs-toggle="modal"
-                                                        data-bs-target="#attendance_info_in">
+                                                        data-target="#attendance_info_in">
                                                         <i class="fa fa-check text-success" data-toggle="tooltip"
                                                             data-placement="top" title="{{ $employee->name . ' ' . $val }}"></i>
                                                     </a>
                                                 </td>
                                             @else
                                                 <td>
-                                                    <a href="javascript:void(0);" class="view-attendance-details-absent"
+                                                    <a href="javascript:void(0);" class="view-attendance-details"
                                                         data-att-date="{{ $val }}" data-emp-id="{{ $employee->id }}"
-                                                        data-emp-name="{{ $employee->name }}" data-toggle="modal"
-                                                        data-target="#attendance_info_out" data-bs-toggle="modal"
-                                                        data-bs-target="#attendance_info_out">
+                                                        data-emp-name="{{ $employee->name }}" data-status="absent"
+                                                        data-toggle="modal" data-target="#attendance_info_in">
                                                         <i class="fa fa-times text-danger" data-toggle="tooltip"
                                                             data-placement="top" title="{{ $employee->name . ' ' . $val }}"></i>
                                                     </a>
@@ -180,6 +178,9 @@
                             </tbody>
                         </table>
                     </div>
+                    <div class="d-flex justify-content-end mt-3">
+                        {{ $result->links('pagination::bootstrap-4') }}
+                    </div>
                 </div>
             </div>
 
@@ -187,7 +188,7 @@
     </div>
 
 
-    <x-admin.modals.employee-attendance-update-modal />
+    <x-admin.modals.employee-attendance-update-modal :leave-types="$leaveTypes" />
 </div>
 
 
@@ -268,29 +269,37 @@
     });
 
 
-    $(document).on("click", ".view-attendance-details-absent", function (e) {
-        var $this = $(this);
-        var date = $this.attr('data-att-date');
-        var employee = $this.attr('data-emp-id');
-        var name = $this.attr('data-emp-name');
-        var modal = $("#attendance_info_out");
-
-        console.log("Absent Click - Date:", date, "Employee:", employee, "Name:", name);
-
-        if (!employee) {
-            // Fallback to .data() if .attr() fails
-            employee = $this.data('emp-id');
-            date = $this.data('att-date');
-            name = $this.data('emp-name');
+    function toggleAttendanceFields(status) {
+        if (!status) {
+            status = $('input[name="attendance_status"]:checked').val();
         }
 
-        $("#att_date_out").val(date);
-        $("#att_user_out").val(employee);
-        modal.find(".att-info").html('Attendance Info of ' + name);
-        modal.find(".li-html-2").html(
-            '<li><p class="mb-0">Punch at</p><p class="res-activity-time"><i class="fa fa-clock-o mr-2"></i>No details available</p></li>'
-        );
-    });
+        if (status === 'present') {
+            $('.present-content').show();
+            $('.absent-content').hide();
+            $('.punch-btn-section').show();
+
+            $('input[name="punch_in_time"]').prop('disabled', false);
+            $('input[name="punch_out_time"]').prop('disabled', false);
+
+            $('select[name="leave_type_id"]').prop('disabled', true);
+            $('textarea[name="remarks"]').prop('disabled', true);
+        } else if (status === 'absent') {
+            $('.present-content').hide();
+            $('.absent-content').show();
+            $('.punch-btn-section').show();
+
+            $('input[name="punch_in_time"]').prop('disabled', true);
+            $('input[name="punch_out_time"]').prop('disabled', true);
+
+            $('select[name="leave_type_id"]').prop('disabled', false);
+            $('textarea[name="remarks"]').prop('disabled', false);
+        } else {
+            $('.present-content').hide();
+            $('.absent-content').hide();
+            $('.punch-btn-section').hide();
+        }
+    }
 
     function timeDiffCalc(dateFuture, dateNow) {
         let diffInMilliSeconds = Math.abs(dateFuture - dateNow) / 1000;
@@ -325,45 +334,97 @@
     $(document).on("click", ".view-attendance-details", function (e) {
         var $this = $(this);
         var modal = $("#attendance_info_in");
+
+        // Reset views
         modal.find(".li-html").html('');
         modal.find(".punch-in-time").html('NA');
         modal.find(".punch-out-time").html('NA');
         modal.find(".working-hours").html('0:00 hrs');
 
+        // Clear previous inputs
+        modal.find('input[type="time"]').val('');
+        modal.find('select').val('');
+        modal.find('textarea').val('');
+
         var employeeId = $this.attr('data-emp-id') || $this.data('emp-id');
         var date = $this.attr('data-att-date') || $this.data('att-date');
         var name = $this.attr('data-emp-name') || $this.data('emp-name');
 
-        console.log("Present Click - Date:", date, "Employee:", employeeId, "Name:", name);
+        console.log("Attendance Modal Open - Date:", date, "Employee:", employeeId);
+
+        // Reset radio selection - Force Choice Flow
+        modal.find('input[name="attendance_status"]').prop('checked', false);
+        modal.find('.btn-group-toggle label').removeClass('active');
+        toggleAttendanceFields(''); // Hide content areas initially
 
         $("#att_date_in").val(date);
         $("#att_user_in").val(employeeId);
-        modal.find(".att-info").html('Attendance Info of ' + name);
+        modal.find(".att-info").html('Attendance Info of ' + name + ' <small class="text-muted">(' + date + ')</small>');
+        modal.find(".day").text(date);
 
         var formData = new FormData();
         formData.append('id', employeeId);
         formData.append('date', date);
 
+        // Reset Status Badge
+        modal.find('.current-status-text').text("Checking...").removeClass('badge-success badge-danger').addClass('badge-light');
+
         dynamicAjax('{{ route('api.employee.attendance.get-attendance') }}', "POST", formData,
             'attendanceReceived');
     });
 
-    function attendanceReceived(datedStampes) {
-        console.log(datedStampes);
-        if (datedStampes != undefined && datedStampes.length > 0) {
-            var modal = $("#attendance_info_in");
-            let punchIn = datedStampes[0].attendance;
-            let punchOut = datedStampes[datedStampes.length - 1].attendance;
+    function attendanceReceived(data) {
+        console.log("Attendance Data Received:", data);
+        var modal = $("#attendance_info_in");
+        var statusBadge = modal.find('.current-status-text');
+
+        if (data.status) {
+            // Update Status Badge
+            let statusText = data.status.charAt(0).toUpperCase() + data.status.slice(1);
+            statusBadge.text("Current Status: " + statusText);
+            statusBadge.removeClass('badge-light').addClass(data.status === 'present' ? 'badge-success' : 'badge-danger');
+
+            // Set radio button status
+            let statusToSelect = (data.status === 'leave' || data.status === 'absent') ? 'absent' : 'present';
+            let radioBtn = modal.find('input[name="attendance_status"][value="' + statusToSelect + '"]');
+
+            radioBtn.prop('checked', true);
+            modal.find('.btn-group-toggle label').removeClass('active');
+            radioBtn.parent().addClass('active');
+
+            // Show corresponding content fields
+            toggleAttendanceFields(statusToSelect);
+
+            // Pre-fill inputs
+            if (statusToSelect === 'present') {
+                if (data.check_in) modal.find('input[name="punch_in_time"]').val(data.check_in.substring(0, 5));
+                if (data.check_out) modal.find('input[name="punch_out_time"]').val(data.check_out.substring(0, 5));
+            } else {
+                modal.find('textarea[name="remarks"]').val(data.notes);
+                if (data.leave_type_id) {
+                    modal.find('select[name="leave_type_id"]').val(data.leave_type_id);
+                }
+            }
+        } else {
+            statusBadge.text("New Record").addClass('badge-light').removeClass('badge-success badge-danger');
+        }
+
+        // Process Activity / Punches
+        let punches = data.punches || [];
+        if (punches.length > 0) {
+            let punchIn = punches[0].attendance;
+            let punchOut = punches[punches.length - 1].attendance;
             modal.find(".working-hours").html(timeDiffCalc(new Date(punchOut), new Date(punchIn)));
-            modal.find(".punch-in-time").html(datedStampes[0].time);
-            modal.find(".punch-out-time").html(datedStampes[datedStampes.length - 1].time);
-            datedStampes.forEach(element => {
+            modal.find(".punch-in-time").html(punches[0].time);
+            modal.find(".punch-out-time").html(punches[punches.length - 1].time);
+
+            punches.forEach(element => {
                 modal.find(".li-html").append(
                     '<li><p class="mb-0">Punch at</p><p class="res-activity-time d-inline-block">' +
                     '<i class="fa fa-clock-o mr-2"></i>' + element.time +
                     '</p><i data-punchid="' + element.id +
                     '" class="fa fa-trash bx-tada pull-right mr-4 delete-punch"></i></li>'
-                )
+                );
             });
         }
     }

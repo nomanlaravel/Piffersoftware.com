@@ -17,6 +17,7 @@ class Attendance extends Model
         'check_out',
         'status',
         'total_hours',
+        'leave_type_id',
         'notes',
     ];
 

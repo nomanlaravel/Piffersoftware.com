@@ -16,6 +16,7 @@ use App\Http\Controllers\ImageController;
 use App\Http\Controllers\InternalDispatchController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\LeaveTypeController;
+use App\Http\Controllers\PayRollEmployeeController;
 use App\Http\Controllers\PdfController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\PurchaseOrderController;
@@ -780,20 +781,31 @@ Route::prefix('employee-leaves')->name('dashboard.employee-leaves.')->group(func
     });
 });
 
-Route::get('assign-role', function () {
-    $role = Role::findOrFail(8);
-    $role->givePermissionTo(['view_leave_request']);
-
-    $user = User::where('email', 'employee@example.com')->firstOrFail();
-    $user->syncRoles([$role]);
-
-    return response()->json([
-        'user' => $user->email,
-        'role' => $role->name,
-        'permissions_count' => $role->permissions->count(),
-    ]);
-
-    // Permission::where('name', 'view_leave_request')->first();
-// return Permission::where('name', 'view_leave_request')->first();
+Route::prefix('employee-payroll')->name('dashboard.employee-payroll.')->group(function () {
+    Route::middleware('auth')->controller(PayRollEmployeeController::class)->group(function () {
+        Route::get('employee-salaries', 'index')->name('salaries');
+        Route::post('employee-salaries/store', 'store')->name('salaries.store');
+        Route::get('employee-salaries/get-salaries', 'getSalaries')->name('salaries.get');
+        Route::delete('employee-salaries/delete/{id}', 'destroy')->name('salaries.delete');
+        Route::get('employee-salaries/increment-sheet/{id}', 'getIncrementSheet')->name('salaries.increment-sheet');
+    });
 });
+
+
+// Route::get('assign-role', function () {
+//     $role = Role::findOrFail(8);
+//     $role->givePermissionTo(['view_leave_request']);
+
+//     $user = User::where('email', 'employee@example.com')->firstOrFail();
+//     $user->syncRoles([$role]);
+
+//     return response()->json([
+//         'user' => $user->email,
+//         'role' => $role->name,
+//         'permissions_count' => $role->permissions->count(),
+//     ]);
+
+//     // Permission::where('name', 'view_leave_request')->first();
+// // return Permission::where('name', 'view_leave_request')->first();
+// });
 

@@ -296,5 +296,10 @@ class Hrm extends Model
         return $this->hasMany(TrainingGuard::class, 'guard_id');
     }
 
+    public function salaryStatus()
+    {
+        return $this->hasOne(EmployeeSalaryStatus::class, 'employee_id');
+    }
+
 
 }

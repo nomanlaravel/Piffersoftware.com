@@ -1,20 +1,19 @@
 <?php
 
-namespace App\View\Components\admin\modals;
+namespace App\View\Components;
 
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class EmployeeAttendanceUpdateModal extends Component
+class TableViewEmployeeSalaryFormulasComponent extends Component
 {
-    public $leaveTypes;
     /**
      * Create a new component instance.
      */
-    public function __construct($leaveTypes)
+    public function __construct()
     {
-        $this->leaveTypes = $leaveTypes;
+        //
     }
 
     /**
@@ -22,6 +21,6 @@ class EmployeeAttendanceUpdateModal extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.admin.modals.employee-attendance-update-modal');
+        return view('components.table-view-employee-salary-formulas-component');
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Attendance;
+use App\Models\LeaveType;
 use Illuminate\Http\Request;
 
 use App\Models\Hrm;
@@ -16,7 +17,7 @@ class AttendanceController extends Controller
      */
     public function attendance_view(Request $request)
     {
-        $employeesT = Hrm::all();
+        $employeesT = Hrm::select('id', 'name')->get();
         $years = range(Carbon::now()->year, Carbon::now()->year - 5);
 
         $month = $request->month ? Carbon::parse($request->month)->month : Carbon::now()->month;
@@ -40,7 +41,7 @@ class AttendanceController extends Controller
             $query->where('id', $request->employee_id);
         }
 
-        $result = $query->get();
+        $result = $query->paginate(20)->appends($request->all());
 
         // Basic calculation for stats
         $satSuns = [
@@ -55,8 +56,8 @@ class AttendanceController extends Controller
                 $satSuns['sundays']++;
         }
         $workingDays = count($monthDays) - ($satSuns['saturdays'] + $satSuns['sundays']);
-
-        return view('attendance_management.attendance.attendance-update', compact('employeesT', 'years', 'monthDays', 'result', 'workingDays', 'satSuns'));
+        $leaveTypes = LeaveType::all();
+        return view('attendance_management.attendance.attendance-update', compact('employeesT', 'years', 'monthDays', 'result', 'workingDays', 'satSuns', 'leaveTypes'));
     }
 
     public function get_attendance(Request $request)
@@ -65,12 +66,10 @@ class AttendanceController extends Controller
             ->where('date', $request->date)
             ->first();
 
+        $punches = [];
         if ($attendance) {
-            // Format to match what the JS expects (an array of punches)
-            // Even though we only have one row, we'll return it as an array
-            $data = [];
             if ($attendance->check_in) {
-                $data[] = [
+                $punches[] = [
                     'id' => $attendance->id,
                     'attendance' => $attendance->date . ' ' . $attendance->check_in,
                     'time' => Carbon::parse($attendance->check_in)->format('h:i A'),
@@ -78,17 +77,23 @@ class AttendanceController extends Controller
                 ];
             }
             if ($attendance->check_out) {
-                $data[] = [
+                $punches[] = [
                     'id' => $attendance->id,
                     'attendance' => $attendance->date . ' ' . $attendance->check_out,
                     'time' => Carbon::parse($attendance->check_out)->format('h:i A'),
                     'type' => 'out'
                 ];
             }
-            return response()->json($data);
         }
 
-        return response()->json([]);
+        return response()->json([
+            'punches' => $punches,
+            'status' => $attendance ? $attendance->status : null,
+            'notes' => $attendance ? $attendance->notes : '',
+            'leave_type_id' => $attendance ? $attendance->leave_type_id : null,
+            'check_in' => $attendance ? $attendance->check_in : null,
+            'check_out' => $attendance ? $attendance->check_out : null,
+        ]);
     }
 
     public function update_att(Request $request)
@@ -98,15 +103,38 @@ class AttendanceController extends Controller
             'day_attendance' => 'required',
         ]);
 
+        $status = 'present';
+        $checkIn = $request->punch_in_time;
+        $checkOut = $request->punch_out_time;
+        $notes = $request->remarks;
+        $leaveTypeId = null;
+
+        if ($request->attendance_status === 'absent') {
+            $status = 'absent';
+            $checkIn = null;
+            $checkOut = null;
+
+            if ($request->leave_type_id) {
+                $status = 'leave';
+                $leaveTypeId = $request->leave_type_id;
+                $leaveType = LeaveType::find($request->leave_type_id);
+                if ($leaveType) {
+                    $notes = "Leave: " . $leaveType->name . ". " . $notes;
+                }
+            }
+        }
+
         $attendance = Attendance::updateOrCreate(
             [
                 'hrm_id' => $request->employee_id,
                 'date' => $request->day_attendance,
             ],
             [
-                'check_in' => $request->punch_in_time,
-                'check_out' => $request->punch_out_time,
-                'status' => 'present'
+                'check_in' => $checkIn,
+                'check_out' => $checkOut,
+                'status' => $status,
+                'notes' => $notes,
+                'leave_type_id' => $leaveTypeId
             ]
         );
 
@@ -115,8 +143,10 @@ class AttendanceController extends Controller
             $in = Carbon::parse($attendance->check_in);
             $out = Carbon::parse($attendance->check_out);
             $attendance->total_hours = $out->diffInMinutes($in) / 60;
-            $attendance->save();
+        } else {
+            $attendance->total_hours = 0;
         }
+        $attendance->save();
 
         return response()->json('Attendance Updated Successfully');
     }
