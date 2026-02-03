@@ -146,14 +146,21 @@
 <!-- Add Employee Salary Modal -->
 @push('extended-js')
     <script>
-        $("[name=basic_salary]").keyup(function (e) {
-            let per_day = Math.floor($(this).val() / 30);
-            let per_hour = Math.floor(per_day / 8);
-            let per_minute = Math.floor(per_hour / 60);
-            $("[name=per_day]").val(per_day);
-            $("[name=per_hour]").val(per_hour);
-            $("[name=per_minute]").val(per_minute);
+        $(document).on('keyup', '[name=basic_salary]', function () {
+            const basicSalary = parseFloat($(this).val()) || 0;
 
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth() + 1;
+            const daysInMonth = new Date(year, month, 0).getDate();
+
+            const perDay = Math.floor(basicSalary / daysInMonth);
+            const perHour = Math.floor(perDay / 8);
+            const perMinute = Math.floor(perHour / 60);
+            
+            $('[name=per_day]').val(perDay);
+            $('[name=per_hour]').val(perHour);
+            $('[name=per_minute]').val(perMinute);
         });
     </script>
 @endpush
