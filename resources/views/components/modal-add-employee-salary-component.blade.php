@@ -36,8 +36,17 @@
                                     required>
                             </div>
                         </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Branch Name<span class="text-danger">*</span></label>
+                                <input class="form-control" type="number" placeholder="Branch Name" name="bank_name"
+                                    required>
+                            </div>
+                        </div>
                      </div>
                     <div class="esf-errors-print mb-2"></div>
+                    <div class="esf-errors-print mb-2"></div>
+                     <h6><b>Employee Salary Detail</b></h6>
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
