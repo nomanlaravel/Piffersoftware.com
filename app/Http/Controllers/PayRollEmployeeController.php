@@ -47,6 +47,14 @@ class PayRollEmployeeController extends Controller
             'salaryStatus',
             'salarySlips' => function ($q) use ($payrollMonth) {
                 $q->where('payroll_month', $payrollMonth);
+            },
+            'payrolls' => function ($q) use ($month, $year) {
+                $q->where(function ($q2) use ($month, $year) {
+                    $q2->whereMonth('created_at', $month)
+                        ->whereYear('created_at', $year)
+                        ->orWhereMonth('updated_at', $month)
+                        ->whereYear('updated_at', $year);
+                });
             }
         ]);
 
@@ -91,7 +99,7 @@ class PayRollEmployeeController extends Controller
             // Get designation
             $designation = $employee->designation ?? 'N/A';
 
-            // Check if salary slip exists for this month
+            $payroll = $employee->payrolls->first();
             $salarySlip = $employee->salarySlips->first();
 
             if ($salarySlip) {
@@ -101,6 +109,10 @@ class PayRollEmployeeController extends Controller
                     'name' => $employee->name,
                     'bank_account' => $bankAccount,
                     'designation' => $designation,
+                    'department' => $payroll->p_department ?? ($employee->unit ?? 'N/A'),
+                    'salary_details' => $payroll->p_salary_details ?? 'N/A',
+                    'attendance_records' => $payroll->p_attendance_records ?? 'N/A',
+                    'leave_records' => $payroll->p_leave_records ?? 'N/A',
                     'basic_salary' => number_format($salarySlip->basic_salary, 2),
                     'absents' => $salarySlip->absents,
                     'absent_deduction' => number_format($salarySlip->absent_deduction, 2),
@@ -110,10 +122,28 @@ class PayRollEmployeeController extends Controller
                     'late_minutes_deduction' => number_format($salarySlip->late_minutes_deduction, 2),
                     'sandwich_rule_deduction' => number_format($salarySlip->sandwich_rule_deduction, 2),
                     'other_deduction' => number_format($salarySlip->other_deduction, 2),
+                    'ot_hours' => $salarySlip->over_time_hours ?? ($payroll->p_total_overtime_hours ?? 0),
+                    'ot_rate' => $payroll->p_overtime_rate ?? 0,
                     'tax_deduction' => number_format($salarySlip->tax_deduction, 2),
+                    'income_tax' => number_format($salarySlip->income_tax, 2),
+                    'insurance_deductions' => $payroll->p_insurance_deductions ?? 0,
                     'loan' => number_format($salarySlip->loan, 2),
+                    'advance' => number_format($salarySlip->advance, 2),
+                    'lunch_allowance' => $payroll->lunch_allowlance ?? '0.00',
+                    'eobi' => $employee->c_eobi ?? ($payroll->peobi ?? 'N/A'),
+                    'social_security' => $employee->ss_staff ?? 'N/A',
+                    'performance_bonus' => $payroll->p_performance_bonus ?? 0,
+                    'year_end_bonus' => $payroll->p_year_end_bonus ?? 0,
+                    'other_allowances' => $payroll->p_other_allowances ?? 0,
                     'total_increment' => number_format($salarySlip->totalIncrement, 2),
+                    'gross_salary' => $payroll->p_gross_salary ?? number_format($salarySlip->total_salary, 2),
                     'total_salary' => number_format($salarySlip->total_salary, 2),
+                    'appraisal' => number_format($employee->appraisal, 2),
+                    'others' => $payroll->p_others ?? 0,
+                    'misc' => $payroll->p_misc ?? 0,
+                    'total_earning' => $payroll->total_earning ?? 0,
+                    'total_deductions' => number_format($salarySlip->total_deduction, 2),
+                    'net_salary' => number_format($salarySlip->approved_salary, 2),
                     'deduction_before_compensation' => number_format($salarySlip->deduction_before_compensation, 2),
                     'bonus' => number_format($salarySlip->bouns, 2),
                     'compensation' => number_format($salarySlip->compensation, 2),
@@ -199,6 +229,10 @@ class PayRollEmployeeController extends Controller
                     'name' => $employee->name,
                     'bank_account' => $bankAccount,
                     'designation' => $designation,
+                    'department' => $payroll->p_department ?? ($employee->unit ?? 'N/A'),
+                    'salary_details' => $payroll->p_salary_details ?? 'N/A',
+                    'attendance_records' => $payroll->p_attendance_records ?? 'N/A',
+                    'leave_records' => $payroll->p_leave_records ?? 'N/A',
                     'basic_salary' => number_format($basicSalary, 2),
                     'absents' => $absents,
                     'absent_deduction' => number_format($absentDeduction, 2),
@@ -208,10 +242,28 @@ class PayRollEmployeeController extends Controller
                     'late_minutes_deduction' => number_format($lateMinutesDeduction, 2),
                     'sandwich_rule_deduction' => number_format($sandwichRuleDeduction, 2),
                     'other_deduction' => number_format($otherDeduction, 2),
+                    'ot_hours' => $payroll->p_total_overtime_hours ?? 0,
+                    'ot_rate' => $payroll->p_overtime_rate ?? 0,
                     'tax_deduction' => number_format($taxDeduction, 2),
+                    'income_tax' => '0.00',
+                    'insurance_deductions' => $payroll->p_insurance_deductions ?? 0,
                     'loan' => number_format($loan, 2),
+                    'advance' => '0.00',
+                    'lunch_allowance' => $payroll->lunch_allowlance ?? '0.00',
+                    'eobi' => $employee->c_eobi ?? ($payroll->peobi ?? 'N/A'),
+                    'social_security' => $employee->ss_staff ?? 'N/A',
+                    'performance_bonus' => $payroll->p_performance_bonus ?? 0,
+                    'year_end_bonus' => $payroll->p_year_end_bonus ?? 0,
+                    'other_allowances' => $payroll->p_other_allowances ?? 0,
                     'total_increment' => number_format($totalIncrement, 2),
+                    'gross_salary' => $payroll->p_gross_salary ?? number_format($totalSalary, 2),
                     'total_salary' => number_format($totalSalary, 2),
+                    'appraisal' => number_format($employee->appraisal, 2),
+                    'others' => $payroll->p_others ?? 0,
+                    'misc' => $payroll->p_misc ?? 0,
+                    'total_earning' => $payroll->total_earning ?? 0,
+                    'total_deductions' => number_format($deductionAfterCompensation, 2),
+                    'net_salary' => number_format($totalSalaryApproved, 2),
                     'deduction_before_compensation' => number_format($deductionBeforeCompensation, 2),
                     'bonus' => number_format($bonus, 2),
                     'compensation' => number_format($compensation, 2),
@@ -277,8 +329,6 @@ class PayRollEmployeeController extends Controller
 
     public function getSalaries(Request $request)
     {
-        $employeeSalaries = EmployeeSalaryStatus::get();
-
         // Simple manual implementation for DataTables
         $query = Hrm::with('salaryStatus');
 
@@ -327,8 +377,6 @@ class PayRollEmployeeController extends Controller
                 'action' => $action
             ];
         }
-
-        $employee_salaries = EmployeeSalaryStatus::with('bankDetail')->get();
 
         return response()->json([
             "draw" => intval($request->input('draw')),

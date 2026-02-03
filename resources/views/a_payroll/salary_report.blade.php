@@ -105,6 +105,10 @@
                             <th>Name</th>
                             <th>Bank Acc#</th>
                             <th>Designation</th>
+                            <th>Department</th>
+                            <th>Salary Details</th>
+                            <th>Attendance Records</th>
+                            <th>Leave Records</th>
                             <th>Basic Salary</th>
                             <th>Absents</th>
                             <th>Absents amount Deduction</th>
@@ -115,14 +119,30 @@
                             <th>Sand Wich Rule Deduction</th>
                             <th>Other Deduction</th>
                             <th>Tax Deduction</th>
+                            <th>Income Tax</th>
+                            <th>Insurance Deductions</th>
                             <th>Loan</th>
+                            <th>Advance</th>
+                            <th>Lunch Allowance</th>
+                            <th>EOBI</th>
+                            <th>Social Security</th>
+                            <th>Performance Bonus</th>
+                            <th>Year-end Bonus</th>
+                            <th>Other Allowances</th>
                             <th>Total Increment</th>
+                            <th>Gross Salary</th>
                             <th>Total Salary</th>
-                            <th>Deduction befor Compensation</th>
-                            <th>Bouns</th>
+                            <th>Appraisal</th>
+                            <th>Others</th>
+                            <th>Misc</th>
+                            <th>Total Earning</th>
+                            <th>Total Deductions</th>
+                            <th>Net Salary</th>
+                            <th>Deduction before Compensation</th>
+                            <th>Bonus</th>
                             <th>Compensation</th>
                             <th>Deduction after Compensation</th>
-                            <th>Total Salary approved</th>
+                            <th>Total Salary Approved</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -170,6 +190,10 @@
                     { data: 'name', name: 'name' },
                     { data: 'bank_account', name: 'bank_account' },
                     { data: 'designation', name: 'designation' },
+                    { data: 'department', name: 'department' },
+                    { data: 'salary_details', name: 'salary_details' },
+                    { data: 'attendance_records', name: 'attendance_records' },
+                    { data: 'leave_records', name: 'leave_records' },
                     { data: 'basic_salary', name: 'basic_salary' },
                     { data: 'absents', name: 'absents' },
                     { data: 'absent_deduction', name: 'absent_deduction' },
@@ -180,9 +204,25 @@
                     { data: 'sandwich_rule_deduction', name: 'sandwich_rule_deduction' },
                     { data: 'other_deduction', name: 'other_deduction' },
                     { data: 'tax_deduction', name: 'tax_deduction' },
+                    { data: 'income_tax', name: 'income_tax' },
+                    { data: 'insurance_deductions', name: 'insurance_deductions' },
                     { data: 'loan', name: 'loan' },
+                    { data: 'advance', name: 'advance' },
+                    { data: 'lunch_allowance', name: 'lunch_allowance' },
+                    { data: 'eobi', name: 'eobi' },
+                    { data: 'social_security', name: 'social_security' },
+                    { data: 'performance_bonus', name: 'performance_bonus' },
+                    { data: 'year_end_bonus', name: 'year_end_bonus' },
+                    { data: 'other_allowances', name: 'other_allowances' },
                     { data: 'total_increment', name: 'total_increment' },
+                    { data: 'gross_salary', name: 'gross_salary' },
                     { data: 'total_salary', name: 'total_salary' },
+                    { data: 'appraisal', name: 'appraisal' },
+                    { data: 'others', name: 'others' },
+                    { data: 'misc', name: 'misc' },
+                    { data: 'total_earning', name: 'total_earning' },
+                    { data: 'total_deductions', name: 'total_deductions' },
+                    { data: 'net_salary', name: 'net_salary' },
                     { data: 'deduction_before_compensation', name: 'deduction_before_compensation' },
                     { data: 'bonus', name: 'bonus' },
                     { data: 'compensation', name: 'compensation' },
@@ -219,35 +259,35 @@
                         if (res.success) {
                             let d = res.data;
                             let html = `
-                                    <div class="row mb-4">
-                                        <div class="col-md-6">
-                                            <p class="mb-1 text-muted small uppercase font-weight-bold">Employee</p>
-                                            <h4 class="font-weight-bold">${d.employee.name}</h4>
-                                        </div>
-                                        <div class="col-md-6 text-md-right">
-                                            <p class="mb-1 text-muted small uppercase font-weight-bold">Period</p>
-                                            <h4 class="font-weight-bold">${month}/${year}</h4>
-                                        </div>
-                                    </div>
-                                    <div class="table-responsive">
-                                        <table class="table table-sm border">
-                                            <tr class="bg-light">
-                                                <th colspan="2">Financial Overview</th>
-                                            </tr>
-                                            <tr>
-                                                <td>Basic Salary</td>
-                                                <td class="text-right font-weight-bold">₨ ${d.salary ? d.salary.before_increment : '0.00'}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Account Details</td>
-                                                <td class="text-right">${d.bank ? d.bank.bank_name + ' (' + d.bank.account_number + ')' : 'Not Set'}</td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                    <div class="alert alert-info py-2 small">
-                                        <i class="fas fa-info-circle mr-1"></i> For attendance punch logs, please visit the Attendance Management module.
-                                    </div>
-                                `;
+                                                    <div class="row mb-4">
+                                                        <div class="col-md-6">
+                                                            <p class="mb-1 text-muted small uppercase font-weight-bold">Employee</p>
+                                                            <h4 class="font-weight-bold">${d.employee.name}</h4>
+                                                        </div>
+                                                        <div class="col-md-6 text-md-right">
+                                                            <p class="mb-1 text-muted small uppercase font-weight-bold">Period</p>
+                                                            <h4 class="font-weight-bold">${month}/${year}</h4>
+                                                        </div>
+                                                    </div>
+                                                    <div class="table-responsive">
+                                                        <table class="table table-sm border">
+                                                            <tr class="bg-light">
+                                                                <th colspan="2">Financial Overview</th>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Basic Salary</td>
+                                                                <td class="text-right font-weight-bold">₨ ${d.salary ? d.salary.before_increment : '0.00'}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Account Details</td>
+                                                                <td class="text-right">${d.bank ? d.bank.bank_name + ' (' + d.bank.account_number + ')' : 'Not Set'}</td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                    <div class="alert alert-info py-2 small">
+                                                        <i class="fas fa-info-circle mr-1"></i> For attendance punch logs, please visit the Attendance Management module.
+                                                    </div>
+                                                `;
                             $('#detailsResult').html(html);
                         }
                     }
