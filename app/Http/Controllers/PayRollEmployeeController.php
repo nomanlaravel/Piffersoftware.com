@@ -580,7 +580,8 @@ class PayRollEmployeeController extends Controller
             'success' => true,
             'data' => [
                 'title' => $holiday->title,
-                'date' => $holiday->date->format('Y-m-d'),
+                // 'date' => $holiday->date->format('Y-m-d'),
+                'date' => Carbon::parse($holiday->date)->format('d M Y'),
                 'type' => $holiday->type,
                 'is_paid' => $holiday->is_paid ? 'Paid' : 'Unpaid'
             ]

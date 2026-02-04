@@ -13,7 +13,6 @@ class MonthlyHolidays extends Model
     protected $fillable = [
         'title', 'user_id', 'year', 'month', 'date', 'is_paid', 'type'
     ];
-
     public function user(){
         return $this->belongsTo(User::class, 'user_id');
     }

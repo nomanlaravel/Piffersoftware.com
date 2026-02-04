@@ -199,6 +199,9 @@
                                                     @if($isHoliday)
                                                         <a href="javascript:void(0);" class="view-holiday-details"
                                                             data-date="{{ $val }}" 
+                                                            data-title = "{{$holidayInfo->title}}"
+                                                            data-type = "{{$holidayInfo->type}}"
+                                                            data-is_paid = "{{$holidayInfo->is_paid}}"
                                                             data-toggle="modal" data-target="#holiday_info_modal">
                                                             <i class="fa fa-star holiday-icon" data-toggle="tooltip"
                                                                 data-placement="top"
@@ -256,7 +259,7 @@
                             <h5 class="holiday-type">---</h5>
                         </div>
                         <div class="col-6">
-                            <p class="mb-0 text-muted">Status</p>
+                            <p class="mb-0 text-muted">Is_paid</p>
                             <h5 class="holiday-paid">---</h5>
                         </div>
                     </div>
@@ -579,13 +582,16 @@
 
     $("body").on("click", ".view-holiday-details", async function (e) {
         let date = $(this).data('date');
+        let title = $(this).data('title');
+        let type = $(this).data('type');
+        let is_paid = $(this).data('is_paid');
         let modal = $('#holiday_info_modal');
 
         // Reset to loading state
-        modal.find('.holiday-title').text('Loading...');
+        modal.find('.holiday-title').text(title);
         modal.find('.holiday-date').text(date);
-        modal.find('.holiday-type').text('...');
-        modal.find('.holiday-paid').text('...');
+        modal.find('.holiday-type').text(type);
+        modal.find('.holiday-paid').text(is_paid ? 'YES' : 'NO');
 
         try {
             const response = await fetch(`{{ route('dashboard.holidays.get-detail') }}?date=${date}`, {
