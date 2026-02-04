@@ -45,6 +45,12 @@ class PayRollEmployeeController extends Controller
         $dateStr = "$year-$month-01";
         $daysInMonth = Carbon::parse($dateStr)->daysInMonth;
 
+        // Fetch holidays for this month
+        $holidays = MonthlyHolidays::where('month', (int) $month)
+            ->where('year', (int) $year)
+            ->pluck('date')
+            ->toArray();
+
         // Query employees with their salary slips for the selected month
         $query = Hrm::with([
             'salaryStatus',
@@ -176,11 +182,17 @@ class PayRollEmployeeController extends Controller
                     ->whereYear('date', $year)
                     ->get();
 
-                // Count Absents
-                $absents = $attendances->where('status', 'absent')->count();
+                // Count Absents (skipping holidays)
+                $absents = $attendances->where('status', 'absent')
+                    ->filter(function ($att) use ($holidays) {
+                        return !in_array($att->date, $holidays);
+                    })->count();
 
-                // Count Half Days
-                $halfDays = $attendances->where('status', 'half_day')->count();
+                // Count Half Days (skipping holidays)
+                $halfDays = $attendances->where('status', 'half_day')
+                    ->filter(function ($att) use ($holidays) {
+                        return !in_array($att->date, $holidays);
+                    })->count();
 
                 // Calculate Late Minutes
                 $lateMinutes = $attendances->sum('late_minutes') ?? 0;
@@ -194,7 +206,7 @@ class PayRollEmployeeController extends Controller
                 $lateMinutesDeduction = $dailySalary > 0 ? ($dailySalary / 480) * $lateMinutes : 0;
 
                 // Sandwich Rule Deduction
-                $sandwichRuleDeduction = $this->calculateSandwichRuleDeduction($attendances, $dailySalary);
+                $sandwichRuleDeduction = $this->calculateSandwichRuleDeduction($attendances, $dailySalary, $holidays);
 
                 // Other Deductions
                 $otherDeduction = 0;
@@ -288,7 +300,7 @@ class PayRollEmployeeController extends Controller
      * Calculate sandwich rule deduction
      * Deducts salary for leaves taken between holidays/weekends
      */
-    private function calculateSandwichRuleDeduction($attendances, $dailySalary)
+    private function calculateSandwichRuleDeduction($attendances, $dailySalary, $holidays = [])
     {
         $deduction = 0;
         $dates = $attendances->pluck('date')->sort()->values();
@@ -299,16 +311,19 @@ class PayRollEmployeeController extends Controller
             // Check if this is a leave day
             $attendance = $attendances->firstWhere('date', $date);
             if ($attendance && in_array($attendance->status, ['leave', 'absent'])) {
-                // Check if previous day was weekend or holiday
+                // Check if previous day and next day were non-working
                 $prevDay = $currentDate->copy()->subDay();
                 $nextDay = $currentDate->copy()->addDay();
 
-                // If sandwiched between weekend/holiday, apply deduction
-                if (
-                    ($prevDay->isWeekend() || $this->isHoliday($prevDay)) &&
-                    ($nextDay->isWeekend() || $this->isHoliday($nextDay))
-                ) {
-                    $deduction += $dailySalary;
+                // If holidays are set for the month, use them + weekends
+                // If NO holidays are set, everything is a working day (per user request)
+                if (count($holidays) > 0) {
+                    if (
+                        ($prevDay->isWeekend() || $this->isHoliday($prevDay, $holidays)) &&
+                        ($nextDay->isWeekend() || $this->isHoliday($nextDay, $holidays))
+                    ) {
+                        $deduction += $dailySalary;
+                    }
                 }
             }
         }
@@ -319,11 +334,9 @@ class PayRollEmployeeController extends Controller
     /**
      * Check if a date is a holiday
      */
-    private function isHoliday($date)
+    private function isHoliday($date, $holidays = [])
     {
-        // TODO: Implement holiday checking logic
-        // You can create a holidays table and check against it
-        return false;
+        return in_array($date->format('Y-m-d'), $holidays);
     }
     public function index()
     {
@@ -494,59 +507,62 @@ class PayRollEmployeeController extends Controller
     }
 
 
-    public function holiDays(){
+    public function holiDays()
+    {
         $holidays = MonthlyHolidays::all();
         return view('a_payroll.holidays', compact('holidays'));
     }
 
-    public function holiDays_Store(Request $request){
+    public function holiDays_Store(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'holiday_title' => 'required',
             'holiday_date' => 'required',
             'type' => 'required|in:holiday,weekend',
             'is_paid' => 'required|in:1,0',
         ]);
-        if($validator->fails()){
+        if ($validator->fails()) {
             return back()->with('error', $validator->errors()->first());
-            }
-            
+        }
 
-            DB::beginTransaction();
-            try {
 
-                $date = Carbon::parse($request->holiday_date);
-                MonthlyHolidays::updateOrCreate(
-                    ['date' => $date],
-                    [
-                        'title' => $request->holiday_title,
-                        'year' => $date->year,
-                        'month' => $date->month,
-                        'date' => $date,
-                        'user_id' => Auth::user()->id,
-                        'is_paid' => (int) $request->is_paid,
-                        'type' => $request->type,
-                    ]
-                );
-                DB::commit();
-                } catch (\Throwable $e) {
-                    Log::info($e);
+        DB::beginTransaction();
+        try {
+
+            $date = Carbon::parse($request->holiday_date);
+            MonthlyHolidays::updateOrCreate(
+                ['date' => $date],
+                [
+                    'title' => $request->holiday_title,
+                    'year' => $date->year,
+                    'month' => $date->month,
+                    'date' => $date,
+                    'user_id' => Auth::user()->id,
+                    'is_paid' => (int) $request->is_paid,
+                    'type' => $request->type,
+                ]
+            );
+            DB::commit();
+        } catch (\Throwable $e) {
+            Log::info($e);
             return back()->with('error', 'Something went Wrong!');
         }
 
         return back()->with('success', 'Holiday created successfully');
     }
 
-    public function deleteHoliday($id){
+    public function deleteHoliday($id)
+    {
         $holiday = MonthlyHolidays::find($id);
 
-        if(!$holiday){
+        if (!$holiday) {
             return back()->with('error', "Holiday not found");
-            }
-            
-            try {
-                $holiday->delete();
-                } catch (\Throwable $e) {
-                    Log::info($e);
+        }
+
+        try {
+            $holiday->delete();
+        } catch (\Throwable $e) {
+            Log::info($e);
             return back()->with('error', 'Something went Wrong!');
         }
 
