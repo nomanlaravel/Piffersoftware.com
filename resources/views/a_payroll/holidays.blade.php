@@ -40,6 +40,8 @@
                         <tr>
                             <th>Sr.</th>
                             <th>Holiday Title</th>
+                            <th>Is_Paid</th>
+                            <th>Type</th>
                             <th>Date</th>
                             <th>Created by</th>
                             <th>Action</th>
@@ -50,6 +52,8 @@
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $holiday->title }}</td>
+                            <td>{{ $holiday->is_paid ? 'Yes' : 'No' }}</td>
+                            <td>{{ $holiday->type }}</td>
                             <td>{{ $holiday->date }}</td>
                             <td>{{ $holiday->user['name'] }}</td>
                             <td class="d-flex gap-2">
@@ -61,7 +65,9 @@
                                     data-bs-target="#holidayModal"
                                     data-id="{{$holiday->id}}"
                                     data-title={{$holiday->title}}
-                                    data-date={{\Carbon\Carbon::parse($holiday->date)->format('Y-m-d')}}>
+                                    data-date={{\Carbon\Carbon::parse($holiday->date)->format('Y-m-d')}}
+                                    data-is_paid={{$holiday->is_paid}}
+                                    data-type={{$holiday->type}}>
                                     <i class="fa-solid fa-pen-to-square"></i>
                                 </a>
                                 @endif
@@ -83,8 +89,6 @@
                                 @endif
                             </td>
                         </tr>
-
-
                         @endforeach
 
                     </tbody>
@@ -145,6 +149,22 @@
                         <label for="holiday_date" class="form-label">Date</label>
                         <input type="date" required class="form-control" name="holiday_date">
                     </div>
+                    <div class="mb-3">
+                        <label for="is_paid" class="form-label">Is_paid</label>
+                        <select name="is_paid" id="is_paid" required class="form-control">
+                            <option value="" selected>-- select --</option>
+                            <option value="1">Yes</option>
+                            <option value="0">No</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="type" class="form-label">Type</label>
+                        <select name="type" id="type" required class="form-control">
+                            <option value="" selected>-- select --</option>
+                            <option value="holiday">Holiday</option>
+                            <option value="weekend">Weekend</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -183,6 +203,8 @@
   const $methodField = $('#methodField');
   const $title = $('[name="holiday_title"]');
   const $date = $('[name="holiday_date"]');
+  const $is_paid = $('[name="is_paid"]');
+  const $type = $('[name="type"]');
 
   // CREATE mode
   $('#btnCreateHoliday').on('click', function () {
@@ -194,6 +216,8 @@
 
     $title.val('');
     $date.val('');
+    $type.val('');
+    $is_paid.val('');
   });
 
   // EDIT mode
@@ -201,12 +225,16 @@
     const id = $(this).data('id');
     const title = $(this).data('title');
     const date = $(this).data('date');
+    const type = $(this).data('type');
+    const is_paid = $(this).data('is_paid');
 
     $label.text('Edit Holiday');
     $submit.text('Update');
 
     $title.val(title);
     $date.val(date);
+    $type.val(type);
+    $is_paid.val(is_paid);
   });
 
 $(document).on('click', '.btnDeleteHoliday', function(){

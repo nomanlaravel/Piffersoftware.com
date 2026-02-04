@@ -503,6 +503,8 @@ class PayRollEmployeeController extends Controller
         $validator = Validator::make($request->all(), [
             'holiday_title' => 'required',
             'holiday_date' => 'required',
+            'type' => 'required|in:holiday,weekend',
+            'is_paid' => 'required|in:1,0',
         ]);
         if($validator->fails()){
             return back()->with('error', $validator->errors()->first());
@@ -521,6 +523,8 @@ class PayRollEmployeeController extends Controller
                         'month' => $date->month,
                         'date' => $date,
                         'user_id' => Auth::user()->id,
+                        'is_paid' => (int) $request->is_paid,
+                        'type' => $request->type,
                     ]
                 );
                 DB::commit();
