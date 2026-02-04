@@ -792,6 +792,7 @@ Route::prefix('employee-payroll')->name('dashboard.employee-payroll.')->group(fu
 
         // Salary Report Routes
         Route::get('salary-report', 'salaryReport')->name('salary-report');
+        Route::get('salary-report/data', 'getSalaryReportData')->name('salary-report.data');
         
         // Holidays Routes
         Route::get('holidays', 'holiDays')->name('holidays');
