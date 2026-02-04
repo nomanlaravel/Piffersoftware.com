@@ -10,6 +10,7 @@ use App\Models\Hrm;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Validator;
 
 class PayRollEmployeeController extends Controller
 {
@@ -494,6 +495,15 @@ class PayRollEmployeeController extends Controller
 
     public function holiDays(){
         $holidays = MonthlyHolidays::all();
+        return view('a_payroll.holidays', compact('holidays'));
+    }
+
+    public function holiDays_Store(Request $request){
+        $validator = Validator::make($request->all(), [
+            'holiday_title' => 'required',
+            'holiday_date' => 'required',
+        ]);
+        dd($request->all());
         return view('a_payroll.holidays', compact('holidays'));
     }
 }

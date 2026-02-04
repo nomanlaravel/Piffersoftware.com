@@ -30,41 +30,44 @@
 
 
             @if (Auth::user()->role != 'holiday' && Auth::user()->role != 'client')
-                <div class="new_branch mt-2">
-                    <a href="{{ url('postcustomer') }}"><button>+ Add Holiday</button></a>
-                </div>
+            <div class="new_branch mt-2">
+                <button type="button" class="btn btn-primary px-3" data-bs-toggle="modal"
+                    data-bs-target="#holidayModal">
+                    <i class="fa-solid fa-plus"></i> Add Holiday
+                </button>
+            </div>
             @endif
             @if ($holidays->isEmpty())
-                <p>No Holidays found.</p>
+            <p>No Holidays found.</p>
             @else
 
-                <div class="table-responsive">
-                    <table id="customersTable" class="table table-bordered table-striped table-fixed mt-3">
-                        <thead>
-                            <tr>
-                                <th>Customer ID</th>
-                                <th>Customer Legal Name</th>
-                                <th>Phone Number</th>
-                                <th>Customers Region</th>
+            <div class="table-responsive">
+                <table id="holidaysTable" class="table table-bordered table-striped table-fixed mt-3">
+                    <thead>
+                        <tr>
+                            <th>Customer ID</th>
+                            <th>Customer Legal Name</th>
+                            <th>Phone Number</th>
+                            <th>Customers Region</th>
 
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($holidays as $holiday)
-                                <tr>
-                                    <td>{{ $holiday->customers_id }}</td>
-                                    <td>{{ $holiday->customers_name }}</td>
-                                    <td>{{ $holiday->phone }}</td>
-                                    <td>{{ $holiday->customers_region }}</td>
-                                </tr>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($holidays as $holiday)
+                        <tr>
+                            <td>{{ $holiday->customers_id }}</td>
+                            <td>{{ $holiday->customers_name }}</td>
+                            <td>{{ $holiday->phone }}</td>
+                            <td>{{ $holiday->customers_region }}</td>
+                        </tr>
 
 
-                            @endforeach
+                        @endforeach
 
-                        </tbody>
-                    </table>
-                </div>
+                    </tbody>
+                </table>
+            </div>
             @endif
 
 
@@ -72,12 +75,12 @@
         </div>
     </div>
 
-    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="holidayModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Confirm Delete</h5>
+                    <h5 class="modal-title" id="holidayModalLabel">Confirm Delete</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -96,6 +99,34 @@
             </div>
         </div>
     </div>
+
+
+    <!-- Create Holiday Modal -->
+    <div class="modal fade" id="holidayModal" tabindex="-1" aria-labelledby="holidayModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <form method="post" action="{{route('dashboard.holidays.store')}}" class="modal-content">
+                @csrf
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="holidayModalLabel">Create New Holiday</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="holiday_title" class="form-label">Title</label>
+                        <input type="text" required class="form-control" id="holiday_title" placeholder="E.g; Eid, Kashmir">
+                    </div>
+                    <div class="mb-3">
+                        <label for="holiday_date" class="form-label">Date</label>
+                        <input type="date" required class="form-control" id="holiday_date">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 @include('layouts.footer')
 
@@ -106,35 +137,15 @@
 
 <script>
     $(document).ready(function () {
-        function searchCustomers() {
-            var searchText = $('#holiday-search').val().toLowerCase();
-            $.ajax({
-                url: "{{ route('search.holidays') }}",
-                type: 'GET',
-                data: { search: searchText },
-                success: function (data) {
-                    // Update the table body with the new rows
-                    $('table tbody').html(data.html);
-                },
-                error: function (xhr, status, error) {
-                    console.error("AJAX error: ", status, error);
-                    console.error("Response: ", xhr.responseText);
-                    $('table tbody').html('<tr><td colspan="4">There was an error processing your request.</td></tr>');
-                }
-            });
-        }
-
-        $('#search-button').click(searchCustomers);
-
-        $('#holiday-search').on('input', searchCustomers);
-    });
-
-    $(document).ready(function () {
         // INIT DATATABLE
-        var table = $('#customersTable').DataTable({
+        var table = $('#holidaysTable').DataTable({
             responsive: true,
             pageLength: 10,
             lengthMenu: [5, 10, 25, 50, 100],
+        });
+
+        $('#holiday-search').on('keyup', function () {
+            table.search(this.value).draw();
         });
     });
 </script>
