@@ -73,6 +73,8 @@
                                 <a href="javascript:void(0)"
                                     class="btn btn-danger btn-sm btnDeleteHoliday"
                                     data-bs-toggle="modal"
+                                    data-bs-target="#confirmDeleteModal"
+                                    data-id="{{$holiday->id}}"
                                     >
                                     <i class="fa-solid fa-trash"></i>
                                 </a>
@@ -111,7 +113,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <form id="deleteForm" action="" method="POST">
+                    <form id="deleteForm" method="POST">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-danger">Delete</button>
@@ -207,4 +209,12 @@
     $date.val(date);
   });
 
+$(document).on('click', '.btnDeleteHoliday', function(){
+    const id = $(this).data('id');
+
+    const deleteUrl = 
+    "{{ route('dashboard.holidays.delete', ':id') }}".replace(':id', id);
+
+    $("#deleteForm").attr('action', deleteUrl);
+});
 </script>

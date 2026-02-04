@@ -533,33 +533,19 @@ class PayRollEmployeeController extends Controller
     }
 
     public function deleteHoliday($id){
-        dd($id);
-        $validator = Validator::make($request->all(), [
-            'holiday_title' => 'required',
-            'holiday_date' => 'required',
-        ]);
-        if($validator->fails()){
-            return back()->with('error', $validator->errors()->first());
+        $holiday = MonthlyHolidays::find($id);
+
+        if(!$holiday){
+            return back()->with('error', "Holiday not found");
             }
             
             try {
-
-                $date = Carbon::parse($request->holiday_date);
-                MonthlyHolidays::updateOrCreate(
-                    ['date' => $date],
-                    [
-                        'title' => $request->holiday_title,
-                        'year' => $date->year,
-                        'month' => $date->month,
-                        'date' => $date,
-                        'user_id' => Auth::user()->id,
-                    ]
-                );
+                $holiday->delete();
                 } catch (\Throwable $e) {
                     Log::info($e);
             return back()->with('error', 'Something went Wrong!');
         }
 
-        return back()->with('success', 'Holiday created successfully');
+        return back()->with('success', 'Holiday deleted successfully');
     }
 }
