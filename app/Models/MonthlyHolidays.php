@@ -14,5 +14,7 @@ class MonthlyHolidays extends Model
         'title', 'user_id', 'year', 'month', 'date'
     ];
 
-    
+    public function user(){
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

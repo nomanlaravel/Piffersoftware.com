@@ -793,16 +793,16 @@ Route::prefix('employee-payroll')->name('dashboard.employee-payroll.')->group(fu
         // Salary Report Routes
         Route::get('salary-report', 'salaryReport')->name('salary-report');
         Route::get('salary-report/data', 'getSalaryReportData')->name('salary-report.data');
-        });
+    });
 });
 
 Route::prefix('holidays')->name('dashboard.holidays.')->group(function () {
     Route::middleware('auth')->controller(PayRollEmployeeController::class)->group(function () {
         Route::get('/', 'holiDays')->name('index');
         Route::post('store', 'holiDays_Store')->name('store');
+        Route::delete('delete/{id}', 'deleteHoliday')->name('delete');
     });
 });
-
 
 // Route::get('assign-role', function () {
 //     $role = Role::findOrFail(8);
@@ -820,4 +820,3 @@ Route::prefix('holidays')->name('dashboard.holidays.')->group(function () {
 //     // Permission::where('name', 'view_leave_request')->first();
 // // return Permission::where('name', 'view_leave_request')->first();
 // });
-

@@ -9,29 +9,22 @@
 
 <div class="customer_form">
     @include('headerlogout')
-    <ul class="nav nav-tabs mt-3" id="myTab" role="tablist">
-        <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#branches" type="button"
-                role="tab" aria-controls="branches" aria-selected="true"> Total Customers
-            </button>
-        </li>
-    </ul>
 
-    <div class="tab-content" id="myTabContent">
+    <div>
         <div class="tab-pane fade show active" id="branches" role="tabpanel" aria-labelledby="home-tab">
             <div class="modal-header border-0">
                 <div style="display:flex; column-gap:10px; align-items:center">
                     <button type="button" class="btn btn-link" onclick="history.back()">
                         <i class="bi bi-arrow-left"></i>
                     </button>
-                    <h5 class="mt-3" style="font-weight: 700;">Customers: </h5>
+                    <h5 class="mt-3" style="font-weight: 700;">Holidays: </h5>
                 </div>
             </div>
 
 
-            @if (Auth::user()->role != 'holiday' && Auth::user()->role != 'client')
-            <div class="new_branch mt-2">
-                <button type="button" class="btn btn-primary px-3" data-bs-toggle="modal"
+            @if (Auth::user()->role != 'customer' && Auth::user()->role != 'client')
+            <div class="new_branch my-2">
+                <button type="button" id="btnCreateHoliday" class="btn btn-primary px-3" data-bs-toggle="modal"
                     data-bs-target="#holidayModal">
                     <i class="fa-solid fa-plus"></i> Add Holiday
                 </button>
@@ -45,21 +38,48 @@
                 <table id="holidaysTable" class="table table-bordered table-striped table-fixed mt-3">
                     <thead>
                         <tr>
-                            <th>Customer ID</th>
-                            <th>Customer Legal Name</th>
-                            <th>Phone Number</th>
-                            <th>Customers Region</th>
-
+                            <th>Sr.</th>
+                            <th>Holiday Title</th>
+                            <th>Date</th>
+                            <th>Created by</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($holidays as $holiday)
                         <tr>
-                            <td>{{ $holiday->customers_id }}</td>
-                            <td>{{ $holiday->customers_name }}</td>
-                            <td>{{ $holiday->phone }}</td>
-                            <td>{{ $holiday->customers_region }}</td>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $holiday->title }}</td>
+                            <td>{{ $holiday->date }}</td>
+                            <td>{{ $holiday->user['name'] }}</td>
+                            <td class="d-flex gap-2">
+
+                                @if (Auth::user()->role != 'customer' && Auth::user()->role != 'client')
+                                <a href="javascript:void(0)"
+                                    class="btn btn-primary btn-sm btnEditHoliday"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#holidayModal"
+                                    data-id="{{$holiday->id}}"
+                                    data-title={{$holiday->title}}
+                                    data-date={{\Carbon\Carbon::parse($holiday->date)->format('Y-m-d')}}>
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </a>
+                                @endif
+                                @if (
+                                auth()->user()->hasAnyRole('Super Admin')
+                                )
+                                @if (auth()->user()->role !== 'client')
+
+                                <a href="javascript:void(0)"
+                                    class="btn btn-danger btn-sm btnDeleteHoliday"
+                                    data-bs-toggle="modal"
+                                    >
+                                    <i class="fa-solid fa-trash"></i>
+                                </a>
+
+                                @endif
+                                @endif
+                            </td>
                         </tr>
 
 
@@ -75,12 +95,13 @@
         </div>
     </div>
 
-    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="holidayModalLabel"
+
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="holidayDeleteModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="holidayModalLabel">Confirm Delete</h5>
+                    <h5 class="modal-title" id="holidayDeleteModalLabel">Confirm Delete</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -100,29 +121,32 @@
         </div>
     </div>
 
-
     <!-- Create Holiday Modal -->
     <div class="modal fade" id="holidayModal" tabindex="-1" aria-labelledby="holidayModalLabel" aria-hidden="true">
         <div class="modal-dialog">
-            <form method="post" action="{{route('dashboard.holidays.store')}}" class="modal-content">
+            <form method="POST" action="{{route('dashboard.holidays.store')}}" class="modal-content" id="holidayForm">
                 @csrf
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="holidayModalLabel">Create New Holiday</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    <div id="methodField">
+
+                    </div>
                     <div class="mb-3">
                         <label for="holiday_title" class="form-label">Title</label>
-                        <input type="text" required class="form-control" id="holiday_title" placeholder="E.g; Eid, Kashmir">
+                        <input type="text" required class="form-control" name="holiday_title"
+                            placeholder="E.g; Eid, Kashmir">
                     </div>
                     <div class="mb-3">
                         <label for="holiday_date" class="form-label">Date</label>
-                        <input type="date" required class="form-control" id="holiday_date">
+                        <input type="date" required class="form-control" name="holiday_date">
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save changes</button>
+                    <button type="submit" id="holidaySubmitBtn" class="btn btn-primary">Save changes</button>
                 </div>
             </form>
         </div>
@@ -148,4 +172,39 @@
             table.search(this.value).draw();
         });
     });
+</script>
+
+<script>
+  const $form = $('#holidayForm');
+  const $label = $('#holidayModalLabel');
+  const $submit = $('#holidaySubmitBtn');
+  const $methodField = $('#methodField');
+  const $title = $('[name="holiday_title"]');
+  const $date = $('[name="holiday_date"]');
+
+  // CREATE mode
+  $('#btnCreateHoliday').on('click', function () {
+    $label.text('Create New Holiday');
+    $submit.text('Create');
+
+    $form.attr('action', "{{ route('dashboard.holidays.store') }}");
+    $methodField.html('@method("POST")'); 
+
+    $title.val('');
+    $date.val('');
+  });
+
+  // EDIT mode
+  $(document).on('click', '.btnEditHoliday', function () {
+    const id = $(this).data('id');
+    const title = $(this).data('title');
+    const date = $(this).data('date');
+
+    $label.text('Edit Holiday');
+    $submit.text('Update');
+
+    $title.val(title);
+    $date.val(date);
+  });
+
 </script>

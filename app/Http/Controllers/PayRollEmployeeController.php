@@ -10,6 +10,7 @@ use App\Models\Hrm;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Log;
 use Validator;
 
 class PayRollEmployeeController extends Controller
@@ -503,7 +504,62 @@ class PayRollEmployeeController extends Controller
             'holiday_title' => 'required',
             'holiday_date' => 'required',
         ]);
-        dd($request->all());
-        return view('a_payroll.holidays', compact('holidays'));
+        if($validator->fails()){
+            return back()->with('error', $validator->errors()->first());
+            }
+            
+
+            DB::beginTransaction();
+            try {
+
+                $date = Carbon::parse($request->holiday_date);
+                MonthlyHolidays::updateOrCreate(
+                    ['date' => $date],
+                    [
+                        'title' => $request->holiday_title,
+                        'year' => $date->year,
+                        'month' => $date->month,
+                        'date' => $date,
+                        'user_id' => Auth::user()->id,
+                    ]
+                );
+                DB::commit();
+                } catch (\Throwable $e) {
+                    Log::info($e);
+            return back()->with('error', 'Something went Wrong!');
+        }
+
+        return back()->with('success', 'Holiday created successfully');
+    }
+
+    public function deleteHoliday($id){
+        dd($id);
+        $validator = Validator::make($request->all(), [
+            'holiday_title' => 'required',
+            'holiday_date' => 'required',
+        ]);
+        if($validator->fails()){
+            return back()->with('error', $validator->errors()->first());
+            }
+            
+            try {
+
+                $date = Carbon::parse($request->holiday_date);
+                MonthlyHolidays::updateOrCreate(
+                    ['date' => $date],
+                    [
+                        'title' => $request->holiday_title,
+                        'year' => $date->year,
+                        'month' => $date->month,
+                        'date' => $date,
+                        'user_id' => Auth::user()->id,
+                    ]
+                );
+                } catch (\Throwable $e) {
+                    Log::info($e);
+            return back()->with('error', 'Something went Wrong!');
+        }
+
+        return back()->with('success', 'Holiday created successfully');
     }
 }
