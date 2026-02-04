@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\MonthlyHolidays;
 use Illuminate\Http\Request;
 use App\Models\EmployeeSalaryStatus;
 use App\Models\EmployeeSalarySlip;
@@ -488,5 +489,11 @@ class PayRollEmployeeController extends Controller
     public function salary_report()
     {
         return view('a_payroll.salary_report');
+    }
+
+
+    public function holiDays(){
+        $holidays = MonthlyHolidays::all();
+        return view('a_payroll.holidays', compact('holidays'));
     }
 }

@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('monthly_non_working_days', function (Blueprint $table) {
+        Schema::create('monthly_holidays', function (Blueprint $table) {
             $table->id();
             $table->string('title');
             $table->unsignedBigInteger('user_id')->nullable();
             $table->year('year');
             $table->tinyInteger('month');
             $table->date('date');
-            $table->boolean('is_working_day')->default(true);
             $table->softDeletes();
             $table->timestamps();
 
@@ -33,6 +32,6 @@ return new class extends Migration
     public function down(): void
     {
         
-        Schema::dropIfExists('monthly_non_working_days');
+        Schema::dropIfExists('monthly_holidays');
     }
 };
