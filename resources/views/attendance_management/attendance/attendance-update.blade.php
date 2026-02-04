@@ -48,6 +48,35 @@
         background-color: #f8f9fa;
         vertical-align: middle;
     }
+
+    /* Holiday Highlighting */
+    .holiday-bg {
+        background-color: #fff3cd !important;
+        /* Light yellow bootstrap warning bg */
+    }
+
+    .holiday-icon {
+        color: #856404 !important;
+        /* Darker brown/gold for contrast on yellow */
+        font-size: 1.1rem;
+    }
+
+    .holiday-present {
+        color: #198754 !important;
+        /* Success green */
+        position: relative;
+    }
+
+    .holiday-present::after {
+        content: '\f005';
+        /* font-awesome star */
+        font-family: FontAwesome;
+        font-size: 0.5rem;
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        color: #856404;
+    }
 </style>
 
 <div class="customer_form">
@@ -129,7 +158,7 @@
                                     <th>Employee</th>
                                     <th>Statistics</th>
                                     @foreach ($monthDays as $item)
-                                        <th class="{{ in_array($item, $holidayDates) ? 'bg-warning' : '' }}">
+                                        <th class="{{ $holiDayData->has($item) ? 'holiday-bg' : '' }} text-center">
                                             {{ \Carbon\Carbon::parse($item)->format('d') }}
                                         </th>
                                     @endforeach
@@ -145,39 +174,45 @@
                                             <span class="stats-item">TD: {{ count($monthDays) }} | WD:
                                                 {{ $workingDays }}</span>
                                             <span class="stats-item">P: {{ $employee->attendances->count() }} | A:
-                                                {{ count($monthDays) - $employee->attendances->count() - count($holidayDates) }}</span>
-                                            <span class="stats-item">HOLIDAYS: {{ count($holidayDates) }}</span>
+                                                {{ count($monthDays) - $employee->attendances->count() - $holiDayData->count() }}</span>
+                                            <span class="stats-item">HOLIDAYS: {{ $holiDayData->count() }}</span>
                                         </td>
                                         @foreach ($monthDays as $attendance => $val)
                                             @php
                                                 $dayAttendance = $employee->attendances->firstWhere('date', $val);
-                                                $isHoliday = in_array($val, $holidayDates);
+                                                $isHoliday = $holiDayData->has($val);
+                                                $holidayInfo = $isHoliday ? $holiDayData->get($val) : null;
                                             @endphp
                                             @if ($dayAttendance)
-                                                <td class="{{ $isHoliday ? 'bg-warning' : '' }}">
+                                                <td class="{{ $isHoliday ? 'holiday-bg' : '' }}">
                                                     <a href="javascript:void(0);" class="view-attendance-details"
                                                         data-att-date="{{ $val }}" data-emp-id="{{ $employee->id }}"
                                                         data-emp-name="{{ $employee->name }}" data-toggle="modal"
                                                         data-target="#attendance_info_in">
-                                                        <i class="fa fa-check text-success" data-toggle="tooltip"
-                                                            data-placement="top" title="{{ $employee->name . ' ' . $val }}"></i>
+                                                        <i class="fa fa-check {{ $isHoliday ? 'holiday-present' : 'text-success' }}"
+                                                            data-toggle="tooltip" data-placement="top"
+                                                            title="{{ $employee->name . ' ' . $val }} {{ $isHoliday ? '(Holiday Work)' : '' }}"></i>
                                                     </a>
                                                 </td>
                                             @else
-                                                <td class="{{ $isHoliday ? 'bg-warning' : '' }}">
-                                                    <a href="javascript:void(0);" class="view-attendance-details"
-                                                        data-att-date="{{ $val }}" data-emp-id="{{ $employee->id }}"
-                                                        data-emp-name="{{ $employee->name }}"
-                                                        data-status="{{ $isHoliday ? 'holiday' : 'absent' }}" data-toggle="modal"
-                                                        data-target="#attendance_info_in">
-                                                        @if($isHoliday)
-                                                            <i class="fa fa-star text-warning" data-toggle="tooltip"
-                                                                data-placement="top" title="Holiday: {{ $val }}"></i>
-                                                        @else
+                                                <td class="{{ $isHoliday ? 'holiday-bg' : '' }}">
+                                                    @if($isHoliday)
+                                                        <a href="javascript:void(0);" class="view-holiday-details"
+                                                            data-date="{{ $val }}" 
+                                                            data-toggle="modal" data-target="#holiday_info_modal">
+                                                            <i class="fa fa-star holiday-icon" data-toggle="tooltip"
+                                                                data-placement="top"
+                                                                title="Holiday: {{ $holidayInfo->title ?? $val }}"></i>
+                                                        </a>
+                                                    @else
+                                                        <a href="javascript:void(0);" class="view-attendance-details"
+                                                            data-att-date="{{ $val }}" data-emp-id="{{ $employee->id }}"
+                                                            data-emp-name="{{ $employee->name }}" data-status="absent"
+                                                            data-toggle="modal" data-target="#attendance_info_in">
                                                             <i class="fa fa-times text-danger" data-toggle="tooltip"
                                                                 data-placement="top" title="{{ $employee->name . ' ' . $val }}"></i>
-                                                        @endif
-                                                    </a>
+                                                        </a>
+                                                    @endif
                                                 </td>
                                             @endif
                                         @endforeach
@@ -197,6 +232,38 @@
 
 
     <x-admin.modals.employee-attendance-update-modal :leave-types="$leaveTypes" />
+
+    <!-- Holiday Info Modal -->
+    <div id="holiday_info_modal" class="modal custom-modal fade" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Holiday Detail</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="mb-3">
+                        <i class="fa fa-calendar-check-o text-warning" style="font-size: 3rem;"></i>
+                    </div>
+                    <h4 class="holiday-title mb-1">---</h4>
+                    <p class="text-muted holiday-date">---</p>
+                    <hr>
+                    <div class="row">
+                        <div class="col-6">
+                            <p class="mb-0 text-muted">Type</p>
+                            <h5 class="holiday-type">---</h5>
+                        </div>
+                        <div class="col-6">
+                            <p class="mb-0 text-muted">Status</p>
+                            <h5 class="holiday-paid">---</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 
@@ -509,6 +576,41 @@
             $(".eror").html(response.responseJSON.response);
         }
     }
+
+    $("body").on("click", ".view-holiday-details", async function (e) {
+        let date = $(this).data('date');
+        let modal = $('#holiday_info_modal');
+
+        // Reset to loading state
+        modal.find('.holiday-title').text('Loading...');
+        modal.find('.holiday-date').text(date);
+        modal.find('.holiday-type').text('...');
+        modal.find('.holiday-paid').text('...');
+
+        try {
+            const response = await fetch(`{{ route('dashboard.holidays.get-detail') }}?date=${date}`, {
+                method: 'GET',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    'Accept': 'application/json'
+                }
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                modal.find('.holiday-title').text(result.data.title);
+                modal.find('.holiday-date').text(result.data.date);
+                modal.find('.holiday-type').text(result.data.type.charAt(0).toUpperCase() + result.data.type.slice(1));
+                modal.find('.holiday-paid').text(result.data.is_paid + ' Holiday');
+            } else {
+                modal.find('.holiday-title').text('Error: ' + (result.message || 'Unknown error'));
+            }
+        } catch (error) {
+            console.error('Holiday Fetch Error:', error);
+            modal.find('.holiday-title').text('Server Error');
+        }
+    });
 </script>
 
 @include('layouts.footer')

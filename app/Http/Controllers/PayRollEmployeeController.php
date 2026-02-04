@@ -568,4 +568,22 @@ class PayRollEmployeeController extends Controller
 
         return back()->with('success', 'Holiday deleted successfully');
     }
+    public function getHolidayDetail(Request $request)
+    {
+        $holiday = MonthlyHolidays::where('date', $request->date)->first();
+
+        if (!$holiday) {
+            return response()->json(['success' => false, 'message' => 'Holiday not found'], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'title' => $holiday->title,
+                'date' => $holiday->date->format('Y-m-d'),
+                'type' => $holiday->type,
+                'is_paid' => $holiday->is_paid ? 'Paid' : 'Unpaid'
+            ]
+        ]);
+    }
 }

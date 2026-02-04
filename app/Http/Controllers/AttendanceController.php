@@ -49,8 +49,8 @@ class AttendanceController extends Controller
             ->where('year', (int) $year)
             ->get();
 
-        $holidayDates = $holidays->pluck('date')->toArray();
-        $nonWorkingDaysCount = count($holidayDates);
+        $holiDayData = $holidays->keyBy('date');
+        $nonWorkingDaysCount = $holiDayData->count();
 
         $workingDays = count($monthDays) - $nonWorkingDaysCount;
 
@@ -61,7 +61,7 @@ class AttendanceController extends Controller
             'monthDays',
             'result',
             'workingDays',
-            'holidayDates',
+            'holiDayData',
             'leaveTypes'
         ));
     }
