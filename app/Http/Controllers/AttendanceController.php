@@ -7,6 +7,7 @@ use App\Models\LeaveType;
 use Illuminate\Http\Request;
 
 use App\Models\Hrm;
+use App\Models\MonthlyHolidays;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -43,21 +44,26 @@ class AttendanceController extends Controller
 
         $result = $query->paginate(20)->appends($request->all());
 
-        // Basic calculation for stats
-        $satSuns = [
-            'saturdays' => 0,
-            'sundays' => 0
-        ];
-        foreach ($monthDays as $day) {
-            $d = Carbon::parse($day);
-            if ($d->isSaturday())
-                $satSuns['saturdays']++;
-            if ($d->isSunday())
-                $satSuns['sundays']++;
-        }
-        $workingDays = count($monthDays) - ($satSuns['saturdays'] + $satSuns['sundays']);
+        // Calculate stats using MonthlyHolidays
+        $holidays = MonthlyHolidays::where('month', (int) $month)
+            ->where('year', (int) $year)
+            ->get();
+
+        $holidayDates = $holidays->pluck('date')->toArray();
+        $nonWorkingDaysCount = count($holidayDates);
+
+        $workingDays = count($monthDays) - $nonWorkingDaysCount;
+
         $leaveTypes = LeaveType::all();
-        return view('attendance_management.attendance.attendance-update', compact('employeesT', 'years', 'monthDays', 'result', 'workingDays', 'satSuns', 'leaveTypes'));
+        return view('attendance_management.attendance.attendance-update', compact(
+            'employeesT',
+            'years',
+            'monthDays',
+            'result',
+            'workingDays',
+            'holidayDates',
+            'leaveTypes'
+        ));
     }
 
     public function get_attendance(Request $request)

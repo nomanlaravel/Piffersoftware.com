@@ -315,12 +315,12 @@ class PayRollEmployeeController extends Controller
                 $prevDay = $currentDate->copy()->subDay();
                 $nextDay = $currentDate->copy()->addDay();
 
-                // If holidays are set for the month, use them + weekends
+                // If holidays are set for the month, use them.
                 // If NO holidays are set, everything is a working day (per user request)
                 if (count($holidays) > 0) {
                     if (
-                        ($prevDay->isWeekend() || $this->isHoliday($prevDay, $holidays)) &&
-                        ($nextDay->isWeekend() || $this->isHoliday($nextDay, $holidays))
+                        $this->isHoliday($prevDay, $holidays) &&
+                        $this->isHoliday($nextDay, $holidays)
                     ) {
                         $deduction += $dailySalary;
                     }

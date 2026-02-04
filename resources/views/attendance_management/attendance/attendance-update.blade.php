@@ -129,7 +129,9 @@
                                     <th>Employee</th>
                                     <th>Statistics</th>
                                     @foreach ($monthDays as $item)
-                                        <th>{{ \Carbon\Carbon::parse($item)->format('d') }}</th>
+                                        <th class="{{ in_array($item, $holidayDates) ? 'bg-warning' : '' }}">
+                                            {{ \Carbon\Carbon::parse($item)->format('d') }}
+                                        </th>
                                     @endforeach
                                 </tr>
                             </thead>
@@ -143,16 +145,16 @@
                                             <span class="stats-item">TD: {{ count($monthDays) }} | WD:
                                                 {{ $workingDays }}</span>
                                             <span class="stats-item">P: {{ $employee->attendances->count() }} | A:
-                                                {{ count($monthDays) - $employee->attendances->count() - ($satSuns['saturdays'] + $satSuns['sundays']) }}</span>
-                                            <span class="stats-item">SAT: {{ $satSuns['saturdays'] }} | SUN:
-                                                {{ $satSuns['sundays'] }}</span>
+                                                {{ count($monthDays) - $employee->attendances->count() - count($holidayDates) }}</span>
+                                            <span class="stats-item">HOLIDAYS: {{ count($holidayDates) }}</span>
                                         </td>
                                         @foreach ($monthDays as $attendance => $val)
                                             @php
                                                 $dayAttendance = $employee->attendances->firstWhere('date', $val);
+                                                $isHoliday = in_array($val, $holidayDates);
                                             @endphp
                                             @if ($dayAttendance)
-                                                <td>
+                                                <td class="{{ $isHoliday ? 'bg-warning' : '' }}">
                                                     <a href="javascript:void(0);" class="view-attendance-details"
                                                         data-att-date="{{ $val }}" data-emp-id="{{ $employee->id }}"
                                                         data-emp-name="{{ $employee->name }}" data-toggle="modal"
@@ -162,13 +164,19 @@
                                                     </a>
                                                 </td>
                                             @else
-                                                <td>
+                                                <td class="{{ $isHoliday ? 'bg-warning' : '' }}">
                                                     <a href="javascript:void(0);" class="view-attendance-details"
                                                         data-att-date="{{ $val }}" data-emp-id="{{ $employee->id }}"
-                                                        data-emp-name="{{ $employee->name }}" data-status="absent"
-                                                        data-toggle="modal" data-target="#attendance_info_in">
-                                                        <i class="fa fa-times text-danger" data-toggle="tooltip"
-                                                            data-placement="top" title="{{ $employee->name . ' ' . $val }}"></i>
+                                                        data-emp-name="{{ $employee->name }}"
+                                                        data-status="{{ $isHoliday ? 'holiday' : 'absent' }}" data-toggle="modal"
+                                                        data-target="#attendance_info_in">
+                                                        @if($isHoliday)
+                                                            <i class="fa fa-star text-warning" data-toggle="tooltip"
+                                                                data-placement="top" title="Holiday: {{ $val }}"></i>
+                                                        @else
+                                                            <i class="fa fa-times text-danger" data-toggle="tooltip"
+                                                                data-placement="top" title="{{ $employee->name . ' ' . $val }}"></i>
+                                                        @endif
                                                     </a>
                                                 </td>
                                             @endif
