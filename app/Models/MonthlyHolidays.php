@@ -11,7 +11,7 @@ class MonthlyHolidays extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'title', 'user_id', 'year', 'month', 'date'
+        'title', 'user_id', 'year', 'month', 'date', 'is_paid', 'type'
     ];
 
     public function user(){
