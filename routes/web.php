@@ -16,6 +16,7 @@ use App\Http\Controllers\ImageController;
 use App\Http\Controllers\InternalDispatchController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\LeaveTypeController;
+use App\Http\Controllers\LmsController;
 use App\Http\Controllers\PayRollEmployeeController;
 use App\Http\Controllers\PdfController;
 use App\Http\Controllers\PurchaseController;
@@ -804,6 +805,13 @@ Route::prefix('holidays')->name('dashboard.holidays.')->group(function () {
         Route::delete('delete/{id}', 'deleteHoliday')->name('delete');
     });
 });
+
+Route::prefix('lms')->name('dashboard.lms.')->group(function () {
+    Route::middleware('auth')->controller(LmsController::class)->group(function () {
+        Route::get('/', 'LMS')->name('index');
+    });
+});
+
 
 // Route::get('assign-role', function () {
 //     $role = Role::findOrFail(8);

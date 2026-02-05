@@ -710,7 +710,7 @@
                     style="background-color: transparent;">Reports</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link " href="https://piffersoftware.com/lms/erp-register" target="_blank"
+                  <a class="nav-link " href="{{route('dashboard.lms.index')}}"
                     style="background-color: transparent;">LMS Management</a>
                 </li>
               @endif
