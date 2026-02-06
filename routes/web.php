@@ -806,7 +806,7 @@ Route::prefix('holidays')->name('dashboard.holidays.')->group(function () {
     });
 });
 
-Route::prefix('lms')->name('dashboard.lms.')->group(function () {
+Route::prefix('erp-lms')->name('dashboard.lms.')->group(function () {
     Route::middleware('auth')->controller(LmsController::class)->group(function () {
         Route::get('/', 'LMS')->name('index');
     });
