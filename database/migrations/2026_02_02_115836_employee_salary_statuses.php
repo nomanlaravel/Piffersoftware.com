@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->date('next_increment')->nullable();
             $table->decimal('increment_amount', 12, 2)->default(0);
             $table->decimal('before_increment', 12, 2)->default(0);
+            $table->date('salary_start')->nullable();
 
             $table->string('status')->default('active'); // active, frozen
             $table->boolean('can_view')->default(true);

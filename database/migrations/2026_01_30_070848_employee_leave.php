@@ -13,9 +13,9 @@ return new class extends Migration {
         Schema::create('employee_leaves', function (Blueprint $table) {
             $table->id();
             $table->foreignId('leave_type_id')->constrained();
-            $table->foreignId('owner_id')->constrained('users')->onDelete('cascade');
-            $table->date('start_date');
-            $table->date('end_date');
+            $table->foreignId('hrm_id')->constrained('hrms')->onDelete('cascade');
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
             $table->double('number_of_leaves')->default(1);
             $table->string('description')->nullable();
             $table->text('remarks')->nullable();
