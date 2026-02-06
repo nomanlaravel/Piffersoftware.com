@@ -9,4 +9,4 @@ class LmsController extends Controller
     public function LMS(){
         return view('lms.index');
     }
-}
+} 
