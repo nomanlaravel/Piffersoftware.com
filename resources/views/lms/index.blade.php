@@ -27,14 +27,15 @@
     /* Layout Adjustments */
     #main {
         padding: 16px;
-        transition: margin-right .5s; /* Transition for the right sidebar toggle */
+        transition: margin-right .5s;
+        /* Transition for the right sidebar toggle */
     }
 
     /* Desktop: Push content right to clear the fixed LEFT navbar (approx 15-20% width) */
     @media (min-width: 992px) {
         #main {
             margin-left: 17%;
-            width: 82%; 
+            width: 82%;
         }
     }
 
@@ -74,8 +75,7 @@
                             <form id="lms-create-user-form">
                                 @csrf
                                 <div class="form-group mb-3">
-                                    <label for="lms_email" class="form-label font-weight-bold ml-1">Email
-                                        Implementation</label>
+                                    <label for="lms_email" class="form-label font-weight-bold ml-1">Email</label>
                                     <input type="email" class="form-control" id="lms_email" name="email"
                                         placeholder="user@gmail.com" required>
                                 </div>
@@ -183,13 +183,6 @@
 </div>
 
 <script>
-    fetch('https://piffersoftware.com/lms/api/faculties', { 
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-            body: JSON.stringify({ email, password })
-        })
-
-
     function openNav() {
         document.getElementById("mySidebar").style.width = "250px";
         // When opening right sidebar, push content to left (margin-right) or just let it overlay
@@ -210,39 +203,38 @@
 
         const email = document.getElementById('lms_email').value;
         const password = document.getElementById('lms_password').value;
+        const faculty = document.getElementById('lms_faculty').value;
         const feedback = document.getElementById('lms-feedback');
+        const submitBtn = this.querySelector('button[type="submit"]');
 
         feedback.innerHTML = '<div class="alert alert-info py-2">Creating account...</div>';
+        submitBtn.disabled = true;
 
-        // TODO: Replace with actual Fetch API call
-        fetch('https://piffersoftware.com/lms/api/register', { 
+        fetch('{{ route("dashboard.lms.register") }}', { 
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-            body: JSON.stringify({ email, password })
+            headers: { 
+                'Content-Type': 'application/json', 
+                'X-CSRF-TOKEN': '{{ csrf_token() }}' 
+            },
+            body: JSON.stringify({ email, password, faculty })
         })
-
-        // Simulation:
-        setTimeout(() => {
-            console.log("Mock Create User:", { email, password });
-            feedback.innerHTML = '<div class="alert alert-success py-2">Account created successfully (Simulation). API integration pending.</div>';
-
-            // Add to table safely
-            const tbody = document.getElementById('lms-users-table-body');
-            if (tbody) {
-                // Remove loading if present
-                if (tbody.querySelector('td[colspan]')) tbody.innerHTML = '';
-
-                const row = `<tr>
-                    <td>#</td>
-                    <td>${email}</td>
-                    <td>${new Date().toISOString().split('T')[0]}</td>
-                    <td><button class="btn btn-sm btn-info text-white">View</button></td>
-                 </tr>`;
-                tbody.insertAdjacentHTML('afterbegin', row);
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success' || data.success) {
+                feedback.innerHTML = `<div class="alert alert-success py-2">${data.message || 'Account created successfully!'}</div>`;
+                this.reset();
+                fetchLmsUsers(); // Refresh the table
+            } else {
+                feedback.innerHTML = `<div class="alert alert-danger py-2">${data.message || 'Failed to create account.'}</div>`;
             }
-
-            this.reset();
-        }, 1500);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            feedback.innerHTML = '<div class="alert alert-danger py-2">An error occurred while connecting to the server.</div>';
+        })
+        .finally(() => {
+            submitBtn.disabled = false;
+        });
     });
 
     // 2. Fetch Users
@@ -252,25 +244,18 @@
 
         tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-muted"><div class="spinner-border spinner-border-sm text-success" role="status"></div> Refreshing data...</td></tr>';
 
-        // TODO: Replace with actual Fetch API call
-        // fetch('/api/lms/users').then...
-
-        // Simulation:
-        setTimeout(() => {
-            // Mock Data
-            const users = [
-                { id: 101, email: 'admin@piffersoftware.com', created_at: '2023-11-01' },
-                { id: 102, email: 'user.demo@example.com', created_at: '2023-12-15' },
-                { id: 103, email: 'faculty@piffer.edu', created_at: '2024-01-20' },
-            ];
-
+        fetch('{{ route("dashboard.lms.users") }}')
+        .then(response => response.json())
+        .then(data => {
+            const users = data.users || [];
             let rows = '';
+            
             if (users.length > 0) {
                 users.forEach(user => {
                     rows += `<tr>
                         <td>${user.id}</td>
                         <td>${user.email}</td>
-                        <td>${user.created_at}</td>
+                        <td>${user.created_at || 'N/A'}</td>
                         <td>
                             <button class="btn btn-sm btn-info text-white me-1">Details</button>
                         </td>
@@ -280,7 +265,11 @@
                 rows = '<tr><td colspan="4" class="text-center text-muted">No users found.</td></tr>';
             }
             tbody.innerHTML = rows;
-        }, 1000);
+        })
+        .catch(error => {
+            console.error('Error fetching users:', error);
+            tbody.innerHTML = '<tr><td colspan="4" class="text-center text-danger">Failed to load user data.</td></tr>';
+        });
     }
 
     // Initialize

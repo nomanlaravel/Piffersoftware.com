@@ -33,4 +33,13 @@ class LmsApiService
                 ->json();
         });
     }
+
+    public function register(array $data)
+    {
+        return Http::timeout(10)
+            ->post("{$this->baseUrl}/register", array_merge([
+                'access_code' => 'piffersoftware'
+            ], $data))
+            ->json();
+    }
 }
