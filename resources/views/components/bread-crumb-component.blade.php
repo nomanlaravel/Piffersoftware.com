@@ -129,13 +129,13 @@
     <div class="row align-items-center">
         <div class="col-md-8">
             <ul class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a class="text-capitalize" href="{{route('dashboard')}}">Dashboard</a>
+                </li>
                 <?php $segments = ''; ?>
-                @foreach (Request::segments() as $segment)
-                    <?php    $segments .= '/' . $segment; ?>
-                    <li class="breadcrumb-item {{ $loop->last ? 'active' : '' }}">
-                        <a class="text-capitalize" href="{{ $segments }}">{{ str_replace('-', ' ', $segment) }}</a>
+                    <li class="breadcrumb-item active">
+                        <a class="text-capitalize" href="{{ $segments }}">{{ str_replace('-', ' ', collect(request()->segments())->last()) }}</a>
                     </li>
-                @endforeach
             </ul>
             <h3 class="page-title breadcrumb-card-head text-capitalize">
                 {{ str_replace('-', ' ', collect(request()->segments())->last()) }}
