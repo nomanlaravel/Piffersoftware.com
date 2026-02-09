@@ -77,12 +77,21 @@
                                     <label for="lms_email" class="form-label font-weight-bold ml-1">Email
                                         Implementation</label>
                                     <input type="email" class="form-control" id="lms_email" name="email"
-                                        placeholder="user@example.com" required>
+                                        placeholder="user@gmail.com" required>
                                 </div>
                                 <div class="form-group mb-4">
                                     <label for="lms_password" class="form-label font-weight-bold ml-1">Password</label>
                                     <input type="password" class="form-control" id="lms_password" name="password"
                                         placeholder="••••••••" required>
+                                </div>
+                                <div class="form-group mb-4">
+                                    <label for="lms_faculty" class="form-label font-weight-bold ml-1">Select Faculty</label>
+                                    <select class="form-control py-2" id="lms_faculty" name="faculty" required>
+                                        <option value="" selected>Choose Faculty</option>
+                                        @foreach($faculties as $faculty)
+                                            <option value="{{ $faculty['id'] }}">{{ $faculty['name'] }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                                 <button type="submit" class="btn btn-primary btn-block btn-lms w-100"
                                     style="background-color: #69c430; border: none; padding: 12px;">
@@ -118,13 +127,23 @@
                                         </tr>
                                     </thead>
                                     <tbody id="lms-users-table-body">
-                                        <!-- Data will be injected here via JS -->
-                                        <tr>
-                                            <td colspan="4" class="text-center py-4 text-muted">
-                                                <div class="spinner-border spinner-border-sm text-success" role="status">
-                                                </div> Loading users...
-                                            </td>
-                                        </tr>
+                                        @if(count($lmsUsers) > 0)
+                                            @foreach($lmsUsers as $user)
+                                                <tr>
+                                                    <td>{{ $user['id'] }}</td>
+                                                    <td>{{ $user['email'] }}</td>
+                                                    <td>{{ $user['created_at'] }}</td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-info text-white me-1">Details</button>
+                                                        {{-- Future: Add Edit/Delete buttons here --}}
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        @else
+                                            <tr>
+                                                <td colspan="4" class="text-center text-muted">No users found.</td>
+                                            </tr>
+                                        @endif
                                     </tbody>
                                 </table>
                             </div>
@@ -164,6 +183,13 @@
 </div>
 
 <script>
+    fetch('https://piffersoftware.com/lms/api/faculties', { 
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+            body: JSON.stringify({ email, password })
+        })
+
+
     function openNav() {
         document.getElementById("mySidebar").style.width = "250px";
         // When opening right sidebar, push content to left (margin-right) or just let it overlay
@@ -189,11 +215,11 @@
         feedback.innerHTML = '<div class="alert alert-info py-2">Creating account...</div>';
 
         // TODO: Replace with actual Fetch API call
-        // fetch('/api/lms/create-user', { 
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-        //     body: JSON.stringify({ email, password })
-        // })
+        fetch('https://piffersoftware.com/lms/api/register', { 
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+            body: JSON.stringify({ email, password })
+        })
 
         // Simulation:
         setTimeout(() => {
