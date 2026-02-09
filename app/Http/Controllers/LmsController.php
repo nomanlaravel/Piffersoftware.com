@@ -29,7 +29,6 @@ class LmsController extends Controller
         ]);
 
         $response = $this->lmsApiService->register($request->only(['name','email', 'password', 'faculty_id']));
-
         return response()->json($response);
     }
 

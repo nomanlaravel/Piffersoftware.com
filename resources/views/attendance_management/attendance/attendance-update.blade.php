@@ -32,18 +32,6 @@
         }
     }
 
-    /* Table Statistics Styling */
-    .stats-column {
-        min-width: 150px;
-        font-size: 11px;
-        line-height: 1.4;
-    }
-
-    .stats-item {
-        display: block;
-        white-space: nowrap;
-    }
-
     .table thead th {
         background-color: #f8f9fa;
         vertical-align: middle;
@@ -170,12 +158,9 @@
                                         <td>
                                             {{ $employee->name }} {{ $employee->id }}
                                         </td>
-                                        <td class="stats-column">
-                                            <span class="stats-item">TD: {{ count($monthDays) }} | WD:
-                                                {{ $workingDays }}</span>
-                                            <span class="stats-item">P: {{ $employee->attendances->count() }} | A:
-                                                {{ count($monthDays) - $employee->attendances->count() - $holiDayData->count() }}</span>
-                                            <span class="stats-item">HOLIDAYS: {{ $holiDayData->count() }}</span>
+                                        <td>
+                                            TD: {{ count($monthDays) }} | WD: {{ $workingDays }} P: {{ $employee->attendances->count() }} | A:
+                                            {{ count($monthDays) - $employee->attendances->count() - $holiDayData->count() }} | HOLIDAYS: {{ $holiDayData->count() }}
                                         </td>
                                         @foreach ($monthDays as $attendance => $val)
                                             @php
