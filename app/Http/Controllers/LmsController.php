@@ -22,12 +22,13 @@ class LmsController extends Controller
     public function register(Request $request)
     {
         $request->validate([
+            'name' => 'required|string|max:255',
             'email' => 'required|email',
             'password' => 'required|min:6',
-            'faculty' => 'nullable|string',
+            'faculty_id' => 'nullable|string',
         ]);
 
-        $response = $this->lmsApiService->register($request->only(['email', 'password', 'faculty']));
+        $response = $this->lmsApiService->register($request->only(['name','email', 'password', 'faculty_id']));
 
         return response()->json($response);
     }

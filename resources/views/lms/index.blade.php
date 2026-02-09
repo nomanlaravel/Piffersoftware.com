@@ -75,6 +75,11 @@
                             <form id="lms-create-user-form">
                                 @csrf
                                 <div class="form-group mb-3">
+                                    <label for="lms_name" class="form-label font-weight-bold ml-1">Name</label>
+                                    <input type="text" class="form-control" id="lms_name" name="name"
+                                        placeholder="John Doe" required>
+                                </div>
+                                <div class="form-group mb-4">
                                     <label for="lms_email" class="form-label font-weight-bold ml-1">Email</label>
                                     <input type="email" class="form-control" id="lms_email" name="email"
                                         placeholder="user@gmail.com" required>
@@ -202,8 +207,9 @@
         e.preventDefault();
 
         const email = document.getElementById('lms_email').value;
+        const name = document.getElementById('lms_name').value;
         const password = document.getElementById('lms_password').value;
-        const faculty = document.getElementById('lms_faculty').value;
+        const faculty_id = document.getElementById('lms_faculty').value;
         const feedback = document.getElementById('lms-feedback');
         const submitBtn = this.querySelector('button[type="submit"]');
 
@@ -216,11 +222,11 @@
                 'Content-Type': 'application/json', 
                 'X-CSRF-TOKEN': '{{ csrf_token() }}' 
             },
-            body: JSON.stringify({ email, password, faculty })
+            body: JSON.stringify({ name, email, password, faculty_id })
         })
         .then(response => response.json())
         .then(data => {
-            if (data.status === 'success' || data.success) {
+            if (data.status === true || data.success) {
                 feedback.innerHTML = `<div class="alert alert-success py-2">${data.message || 'Account created successfully!'}</div>`;
                 this.reset();
                 fetchLmsUsers(); // Refresh the table
