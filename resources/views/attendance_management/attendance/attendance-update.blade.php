@@ -6,17 +6,37 @@
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-    li {
-        cursor: pointer;
+    :root {
+        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        --danger-gradient: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%);
+        --warning-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        --info-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        --dark-gradient: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        --light-bg: #f8f9ff;
+        --text-primary: #2d3748;
+        --text-secondary: #718096;
+        --border-radius-lg: 16px;
+        --border-radius-md: 12px;
+        --border-radius-sm: 8px;
+        --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+        --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+        --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.16);
+        --shadow-xl: 0 12px 48px rgba(0, 0, 0, 0.2);
     }
 
-    .select2-container {
-        width: 100% !important;
+    * {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     }
 
-    /* Side-bar margin fix */
+    body {
+        background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf4 100%);
+        min-height: 100vh;
+    }
+
     .customer_form {
         margin-left: 15% !important;
         padding: 30px !important;
@@ -32,38 +52,656 @@
         }
     }
 
-    .table thead th {
-        background-color: #f8f9fa;
+    /* Modern Alert Styling */
+    .alert-success {
+        background: linear-gradient(135deg, rgba(17, 153, 142, 0.1) 0%, rgba(56, 239, 125, 0.1) 100%);
+        border: 2px solid rgba(56, 239, 125, 0.3);
+        border-radius: var(--border-radius-md);
+        color: #0d9488;
+        font-weight: 500;
+        box-shadow: var(--shadow-sm);
+        animation: slideDown 0.4s ease-out;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Main Card Styling */
+    .card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: var(--border-radius-lg);
+        box-shadow: var(--shadow-lg);
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .card:hover {
+        box-shadow: var(--shadow-xl);
+        transform: translateY(-2px);
+    }
+
+    .card-header {
+        background: var(--primary-gradient);
+        color: white;
+        padding: 24px 32px;
+        border-bottom: none;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .card-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+        animation: shine 3s infinite;
+    }
+
+    @keyframes shine {
+        0% {
+            transform: translateX(-100%);
+        }
+
+        100% {
+            transform: translateX(100%);
+        }
+    }
+
+    .card-header h2 {
+        margin: 0;
+        font-size: 28px;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .card-body {
+        padding: 32px;
+    }
+
+    /* Filter Section */
+    .filter-row {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+        padding: 24px;
+        border-radius: var(--border-radius-md);
+        margin-bottom: 28px;
+        border: 1px solid rgba(102, 126, 234, 0.1);
+    }
+
+    .form-group {
+        margin-bottom: 0;
+    }
+
+    .form-group label {
+        color: var(--text-primary);
+        font-weight: 600;
+        font-size: 13px;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* Select2 Styling */
+    .select2-container {
+        width: 100% !important;
+    }
+
+    .select2-container .select2-selection--single {
+        height: 48px !important;
+        border: 2px solid #e2e8f0 !important;
+        border-radius: var(--border-radius-sm) !important;
+        transition: all 0.3s ease !important;
+        background: white !important;
+    }
+
+    .select2-container--default.select2-container--focus .select2-selection--single,
+    .select2-container .select2-selection--single:focus,
+    .select2-container .select2-selection--single:hover {
+        border-color: #667eea !important;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 44px !important;
+        color: var(--text-primary) !important;
+        font-weight: 500 !important;
+        padding-left: 16px !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 44px !important;
+        right: 8px !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__placeholder {
+        color: #94a3b8 !important;
+    }
+
+    /* Select2 Dropdown */
+    .select2-dropdown {
+        border: 2px solid #e2e8f0 !important;
+        border-radius: var(--border-radius-sm) !important;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+    }
+
+    .select2-results__option {
+        padding: 12px 16px !important;
+        font-weight: 500 !important;
+    }
+
+    .select2-results__option--highlighted {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%) !important;
+        color: #667eea !important;
+    }
+
+    /* Validation Error Styling */
+    .error {
+        display: block;
+        color: #ef4444;
+        font-size: 13px;
+        font-weight: 600;
+        margin-top: 6px;
+        padding: 8px 12px;
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.1) 100%);
+        border-radius: 6px;
+        border-left: 3px solid #ef4444;
+        animation: errorShake 0.4s ease-in-out;
+    }
+
+    @keyframes errorShake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+    }
+
+    .select2-container--default.error .select2-selection--single,
+    .form-control.error,
+    .select.error {
+        border-color: #ef4444 !important;
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+    }
+
+    /* Search Button */
+    .btn-success {
+        background: var(--success-gradient) !important;
+        border: none !important;
+        height: 48px;
+        border-radius: var(--border-radius-sm);
+        font-weight: 600;
+        font-size: 15px;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+        box-shadow: 0 4px 12px rgba(17, 153, 142, 0.3);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-success::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        transition: left 0.5s;
+    }
+
+    .btn-success:hover::before {
+        left: 100%;
+    }
+
+    .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(17, 153, 142, 0.4);
+    }
+
+    .btn-success:active {
+        transform: translateY(0);
+    }
+
+    /* Export Buttons */
+    .dt-buttons {
+        margin-bottom: 20px;
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .dt-buttons .btn {
+        border-radius: 10px !important;
+        font-weight: 600 !important;
+        padding: 12px 24px !important;
+        border: none !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+        transition: all 0.3s ease !important;
+        text-transform: uppercase !important;
+        font-size: 13px !important;
+        letter-spacing: 0.5px !important;
+        color: white !important;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .dt-buttons .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        transition: left 0.5s;
+    }
+
+    .dt-buttons .btn:hover::before {
+        left: 100%;
+    }
+
+    .dt-buttons .btn-danger {
+        background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%) !important;
+    }
+
+    .dt-buttons .btn-secondary {
+        background: linear-gradient(135deg, #374151 0%, #4b5563 100%) !important;
+    }
+
+    .dt-buttons .btn-info {
+        background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%) !important;
+    }
+
+    .dt-buttons .btn:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25) !important;
+    }
+
+    /* DataTables Search Box */
+    .dataTables_wrapper .dataTables_filter {
+        margin-bottom: 20px;
+    }
+
+    .dataTables_wrapper .dataTables_filter input {
+        border: 2px solid #e2e8f0 !important;
+        border-radius: 10px !important;
+        padding: 10px 16px !important;
+        font-size: 14px !important;
+        font-weight: 500 !important;
+        color: #2d3748 !important;
+        transition: all 0.3s ease !important;
+        margin-left: 8px !important;
+        width: 250px !important;
+    }
+
+    .dataTables_wrapper .dataTables_filter input:focus {
+        outline: none !important;
+        border-color: #667eea !important;
+        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1) !important;
+    }
+
+    .dataTables_wrapper .dataTables_filter label {
+        font-weight: 600 !important;
+        color: #2d3748 !important;
+        font-size: 14px !important;
+    }
+
+    /* Table Styling */
+    .table-responsive {
+        border-radius: var(--border-radius-md);
+        overflow-x: auto !important;
+        overflow-y: visible;
+        box-shadow: var(--shadow-sm);
+        margin-top: 24px;
+        max-width: 100%;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .custom-table {
+        margin-bottom: 0 !important;
+        border-collapse: separate;
+        border-spacing: 0;
+        min-width: 100%;
+        width: max-content;
+    }
+
+    .custom-table thead th {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white !important;
+        font-weight: 700;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 16px 12px;
+        border: none;
+        white-space: nowrap;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    .custom-table thead th:first-child {
+        padding-left: 24px;
+        min-width: 180px;
+    }
+
+    .custom-table thead th:nth-child(2) {
+        min-width: 300px;
+    }
+
+    .custom-table tbody td {
+        padding: 14px 12px;
         vertical-align: middle;
+        border-bottom: 1px solid #e2e8f0;
+        color: var(--text-primary);
+        font-size: 14px;
+        transition: background-color 0.2s ease;
+    }
+
+    .custom-table tbody td:first-child {
+        padding-left: 24px;
+        font-weight: 600;
+    }
+
+    .custom-table tbody tr {
+        transition: all 0.2s ease;
+    }
+
+    .custom-table tbody tr:hover {
+        background-color: rgba(102, 126, 234, 0.04);
+        transform: scale(1.005);
+    }
+
+    .custom-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    /* Attendance Icons */
+    .custom-table td a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .custom-table td a i {
+        font-size: 16px;
+        transition: all 0.3s ease;
+    }
+
+    .custom-table td a i.fa-check {
+        color: #10b981;
+    }
+
+    .custom-table td a i.fa-times {
+        color: #ef4444;
+    }
+
+    .custom-table td a i.fa-star {
+        color: #f59e0b;
+    }
+
+    .custom-table td a:hover {
+        background: rgba(102, 126, 234, 0.1);
+        transform: scale(1.15) rotate(5deg);
+    }
+
+    .custom-table td a:hover i {
+        transform: scale(1.2);
     }
 
     /* Holiday Highlighting */
     .holiday-bg {
-        background-color: #fff3cd !important;
-        /* Light yellow bootstrap warning bg */
+        background: linear-gradient(135deg, rgba(251, 191, 36, 0.15) 0%, rgba(252, 211, 77, 0.15) 100%) !important;
+        position: relative;
+    }
+
+    .holiday-bg::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #f59e0b, #fbbf24);
     }
 
     .holiday-icon {
-        color: #856404 !important;
-        /* Darker brown/gold for contrast on yellow */
-        font-size: 1.1rem;
+        color: #d97706 !important;
+        font-size: 16px;
+        filter: drop-shadow(0 2px 4px rgba(217, 119, 6, 0.3));
     }
 
     .holiday-present {
-        color: #198754 !important;
-        /* Success green */
+        color: #10b981 !important;
         position: relative;
     }
 
     .holiday-present::after {
         content: '\f005';
-        /* font-awesome star */
         font-family: FontAwesome;
-        font-size: 0.5rem;
+        font-size: 10px;
         position: absolute;
-        top: -5px;
-        right: -5px;
-        color: #856404;
+        top: -6px;
+        right: -6px;
+        color: #f59e0b;
+        background: white;
+        border-radius: 50%;
+        padding: 2px;
+        filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+    }
+
+    /* Statistics Badge */
+    .custom-table tbody td:nth-child(2) {
+        font-family: 'Inter', sans-serif;
+        font-size: 14px;
+        color: #2d3748;
+        font-weight: 600;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%);
+        border-left: 4px solid #667eea;
+        padding: 14px 16px !important;
+        line-height: 1.6;
+        white-space: nowrap;
+        min-width: 300px;
+    }
+
+    /* Pagination */
+    .pagination {
+        margin-top: 24px;
+    }
+
+    .page-link {
+        border: 2px solid #e2e8f0;
+        color: #667eea;
+        font-weight: 600;
+        margin: 0 4px;
+        border-radius: var(--border-radius-sm);
+        transition: all 0.3s ease;
+        padding: 8px 16px;
+    }
+
+    .page-link:hover {
+        background: var(--primary-gradient);
+        color: white;
+        border-color: transparent;
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .page-item.active .page-link {
+        background: var(--primary-gradient);
+        border-color: transparent;
+        box-shadow: var(--shadow-md);
+    }
+
+    /* Tooltips */
+    .tooltip-inner {
+        background: var(--dark-gradient);
+        border-radius: var(--border-radius-sm);
+        padding: 8px 16px;
+        font-weight: 500;
+        box-shadow: var(--shadow-md);
+    }
+
+    /* Loading Animation */
+    @keyframes pulse {
+
+        0%,
+        100% {
+            opacity: 1;
+        }
+
+        50% {
+            opacity: 0.5;
+        }
+    }
+
+    .loading {
+        animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+        .card-header h2 {
+            font-size: 22px;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .filter-row {
+            padding: 16px;
+        }
+
+        .custom-table thead th,
+        .custom-table tbody td {
+            font-size: 12px;
+            padding: 10px 8px;
+        }
+    }
+
+    /* Smooth Scrollbar */
+    .table-responsive::-webkit-scrollbar {
+        height: 10px;
+    }
+
+    .table-responsive::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 10px;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 10px;
+        border: 2px solid #f1f5f9;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    }
+
+    /* Scroll Indicator */
+    .table-responsive {
+        position: relative;
+    }
+
+    .table-responsive::after {
+        content: '← Scroll to view more →';
+        position: sticky;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%);
+        color: white;
+        padding: 8px 16px;
+        font-size: 12px;
+        font-weight: 600;
+        border-radius: 8px 0 0 0;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+        float: right;
+        margin-top: -10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .table-responsive:hover::after {
+        opacity: 1;
+    }
+
+    /* DataTables Pagination Styling */
+    .dataTables_wrapper .dataTables_paginate {
+        margin-top: 24px;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        border: 2px solid #e2e8f0 !important;
+        color: #667eea !important;
+        font-weight: 600 !important;
+        margin: 0 4px !important;
+        border-radius: 8px !important;
+        transition: all 0.3s ease !important;
+        padding: 8px 16px !important;
+        background: white !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+        background: var(--primary-gradient) !important;
+        color: white !important;
+        border-color: transparent !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3) !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+        background: var(--primary-gradient) !important;
+        border-color: transparent !important;
+        color: white !important;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4) !important;
+    }
+
+    .dataTables_wrapper .dataTables_info {
+        font-weight: 600;
+        color: #64748b;
+        font-size: 14px;
+        padding-top: 12px;
+    }
+
+    /* Mobile Improvements */
+    @media (max-width: 768px) {
+        .table-responsive::after {
+            content: '← Swipe →';
+            font-size: 11px;
+            padding: 6px 12px;
+        }
+
+        .dt-buttons {
+            justify-content: center;
+        }
+
+        .dataTables_wrapper .dataTables_filter input {
+            width: 180px !important;
+        }
     }
 </style>
 
@@ -93,9 +731,7 @@
                             <select class="select select2 floating" name="employee_id" required>
                                 <option value="">Employee</option>
                                 @forelse ($employeesT as $employee)
-                                    <option value="{{ $employee->id }}">
-                                        employeeId - {{ $employee->id }}
-                                    </option>
+                                    <option value="{{ $employee->id }}">{{ $employee->name }}</option>
                                 @empty
                                     <option value="">No employee found.</option>
                                 @endforelse
@@ -103,7 +739,7 @@
                         </div>
                     </div>
                     <div class="col-sm-6 col-md-3">
-                        <div class="form-group form-focus select-focus">
+                        <div class="form-group form-focus">
                             <select class="select select2 floating" name="month" required>
                                 <option value="">Month</option>
                                 <option>Jan</option>
@@ -159,8 +795,10 @@
                                             {{ $employee->name }} {{ $employee->id }}
                                         </td>
                                         <td>
-                                            TD: {{ count($monthDays) }} | WD: {{ $workingDays }} P: {{ $employee->attendances->count() }} | A:
-                                            {{ count($monthDays) - $employee->attendances->count() - $holiDayData->count() }} | HOLIDAYS: {{ $holiDayData->count() }}
+                                            TD: {{ count($monthDays) }} | WD: {{ $workingDays }} P:
+                                            {{ $employee->attendances->count() }} | A:
+                                            {{ count($monthDays) - $employee->attendances->count() - $holiDayData->count() }}
+                                            | HOLIDAYS: {{ $holiDayData->count() }}
                                         </td>
                                         @foreach ($monthDays as $attendance => $val)
                                             @php
@@ -183,10 +821,8 @@
                                                 <td class="{{ $isHoliday ? 'holiday-bg' : '' }}">
                                                     @if($isHoliday)
                                                         <a href="javascript:void(0);" class="view-holiday-details"
-                                                            data-date="{{ $val }}" 
-                                                            data-title = "{{$holidayInfo->title}}"
-                                                            data-type = "{{$holidayInfo->type}}"
-                                                            data-is_paid = "{{$holidayInfo->is_paid}}"
+                                                            data-date="{{ $val }}" data-title="{{$holidayInfo->title}}"
+                                                            data-type="{{$holidayInfo->type}}" data-is_paid="{{$holidayInfo->is_paid}}"
                                                             data-toggle="modal" data-target="#holiday_info_modal">
                                                             <i class="fa fa-star holiday-icon" data-toggle="tooltip"
                                                                 data-placement="top"
@@ -301,12 +937,22 @@
     }
 
     $(function () {
-        $('.select2').select2();
+        $('.select2').select2({
+            placeholder: "Select an option",
+            allowClear: true
+        });
 
         $(".custom-table").DataTable({
             dom: "Bfrtip",
+            scrollX: true,
+            scrollCollapse: true,
+            responsive: false,
+            autoWidth: false,
+            pageLength: 25,
             buttons: [{
                 extend: "excelHtml5",
+                text: '<i class="fa fa-file-excel-o mr-2"></i>Excel',
+                title: 'Attendance Report',
                 className: "btn btn-danger",
                 exportOptions: {
                     orthogonal: "myExport",
@@ -315,6 +961,8 @@
             },
             {
                 extend: "csvHtml5",
+                text: '<i class="fa fa-file-text-o mr-2"></i>CSV',
+                title: 'Attendance Report',
                 className: "btn btn-secondary",
                 exportOptions: {
                     columns: [0, 1, 2]
@@ -322,12 +970,20 @@
             },
             {
                 extend: "pdfHtml5",
+                text: '<i class="fa fa-file-pdf-o mr-2"></i>PDF',
+                title: 'Attendance Report',
                 className: "btn btn-info",
+                orientation: 'landscape',
+                pageSize: 'A4',
                 exportOptions: {
                     columns: [0, 1, 2]
                 },
             },
             ],
+            language: {
+                search: "_INPUT_",
+                searchPlaceholder: "Search employees..."
+            }
         });
     });
 
@@ -475,6 +1131,8 @@
         // Process Activity / Punches
         let punches = data.punches || [];
         if (punches.length > 0) {
+            modal.find(".li-html").html(''); // Clear the list first
+
             let punchIn = punches[0].attendance;
             let punchOut = punches[punches.length - 1].attendance;
             modal.find(".working-hours").html(timeDiffCalc(new Date(punchOut), new Date(punchIn)));
@@ -486,9 +1144,11 @@
                     '<li><p class="mb-0">Punch at</p><p class="res-activity-time d-inline-block">' +
                     '<i class="fa fa-clock-o mr-2"></i>' + element.time +
                     '</p><i data-punchid="' + element.id +
-                    '" class="fa fa-trash bx-tada pull-right mr-4 delete-punch"></i></li>'
+                    '" class="fa fa-trash bx-tada delete-punch"></i></li>'
                 );
             });
+        } else {
+            modal.find(".li-html").html('<li class="no-activity"><i class="fa fa-info-circle mr-2"></i>No activity recorded</li>');
         }
     }
 
