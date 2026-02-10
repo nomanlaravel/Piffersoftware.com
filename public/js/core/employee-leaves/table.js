@@ -8,6 +8,7 @@ $(function () {
         },
         responsive: true,
         autoWidth: false,
+        dom: '<"d-flex justify-content-between align-items-center p-3"lf>rt<"d-flex justify-content-between align-items-center p-3"ip>',
         columns: [
             {
                 data: "leave_type.name",

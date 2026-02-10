@@ -8,7 +8,7 @@ $(function () {
         },
         responsive: true,
         autoWidth: false,
-        dom: '<"d-flex justify-content-between align-items-center mb-3"lf>rt<"d-flex justify-content-between align-items-center mt-3"ip>',
+        dom: '<"d-flex justify-content-between align-items-center p-3"lf>rt<"d-flex justify-content-between align-items-center p-3"ip>',
         columns: [
             {
                 data: "id",
@@ -46,8 +46,8 @@ $(function () {
                 data: "paid",
                 render: function (data) {
                     return data
-                        ? '<span class="text-success"><i class="fas fa-check-circle mr-1"></i> Paid</span>'
-                        : '<span class="text-danger"><i class="fas fa-times-circle mr-1"></i> Unpaid</span>';
+                        ? '<span class="badge text-success"><i class="fas fa-check-circle mr-1"></i> Paid</span>'
+                        : '<span class="badge text-danger"><i class="fas fa-times-circle mr-1"></i> Unpaid</span>';
                 }
             },
             {
