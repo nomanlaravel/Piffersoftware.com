@@ -801,6 +801,7 @@ Route::prefix('holidays')->name('dashboard.holidays.')->group(function () {
     Route::middleware('auth')->controller(PayRollEmployeeController::class)->group(function () {
         Route::get('/', 'holiDays')->name('index');
         Route::post('store', 'holiDays_Store')->name('store');
+        Route::get('get-holidays', 'get_holidays')->name('get-holidays');
         Route::get('get-detail', 'getHolidayDetail')->name('get-detail');
         Route::delete('delete/{id}', 'deleteHoliday')->name('delete');
     });

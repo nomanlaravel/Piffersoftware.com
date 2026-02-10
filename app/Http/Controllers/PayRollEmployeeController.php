@@ -587,4 +587,21 @@ class PayRollEmployeeController extends Controller
             ]
         ]);
     }
+
+    public function get_holidays(Request $request)
+    {
+        $holidays = MonthlyHolidays::all()->map(function ($holiday) {
+            return [
+                'id' => $holiday->id,
+                'title' => $holiday->title,
+                'created_by' => $holiday->user ? $holiday->user->name : 'N/A',
+                'date' => Carbon::parse($holiday->date)->format('d M Y'),
+                'type' => $holiday->type,
+                'is_paid' => $holiday->is_paid ? 'Paid' : 'Unpaid'
+            ];
+        });
+
+        return response()->json($holidays);
+    }
+
 }

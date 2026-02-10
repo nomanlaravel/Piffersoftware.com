@@ -1,42 +1,48 @@
 @include('layouts.header')
 
-@yield('main')
-<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+{{-- External CSS Vendors --}}
+@include('vendors.data-tables')
+@include('vendors.toastr')
+@include('vendors.sweet-alerts')
 
-{{-- DataTables CSS --}}
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
+{{-- Shared Attendance Module Styles --}}
+@include('attendance_management.shared.styles')
 
 <div class="customer_form">
     @include('headerlogout')
 
-    <div>
-        <div class="tab-pane fade show active" id="branches" role="tabpanel" aria-labelledby="home-tab">
-            <div class="modal-header border-0">
-                <div style="display:flex; column-gap:10px; align-items:center">
-                    <button type="button" class="btn btn-link" onclick="history.back()">
-                        <i class="bi bi-arrow-left"></i>
-                    </button>
-                    <h5 class="mt-3" style="font-weight: 700;">Holidays: </h5>
-                </div>
+    {{-- Breadcrumb with Add Button --}}
+    <x-bread-crumb-component :modal="true" modalId="add_holiday" modalType="Holiday" :showClock="'false'" />
+
+    {{-- Success Alert --}}
+    @if (Session::has('message') || isset($message))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fa fa-check" aria-hidden="true"></i><strong class="ml-2">{{ Session::get('message') }}
+                {{ $message ?? 'Done' }}</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+        </div>
+    @endif
+
+    <div class="table-card">
+    <div class="table-card-header">
+        <div>
+            <div class="table-card-title">
+                <i class="fas fa-calendar-check"></i>
+                <span>Leave Requests History</span>
             </div>
-
-
-            @if (Auth::user()->role != 'customer' && Auth::user()->role != 'client')
-            <div class="new_branch my-2">
-                <button type="button" id="btnCreateHoliday" class="btn btn-primary px-3" data-bs-toggle="modal"
-                    data-bs-target="#holidayModal">
-                    <i class="fa-solid fa-plus"></i> Add Holiday
-                </button>
-            </div>
-            @endif
-            @if ($holidays->isEmpty())
-            <p>No Holidays found.</p>
-            @else
-
-            <div class="table-responsive">
-                <table id="holidaysTable" class="table table-bordered table-striped table-fixed mt-3">
-                    <thead>
+            <p class="table-card-subtitle">Track and manage employee leave applications</p>
+        </div>
+        <button class="btn-refresh" id="btn-refresh-table">
+            <i class="fas fa-sync-alt"></i>
+            <span>Refresh Data</span>
+        </button>
+    </div>
+    <div class="table-card-body">
+        <div class="table-responsive">
+            <table class="table table-hover holidays-table w-100">
+                <thead>
                         <tr>
                             <th>Sr.</th>
                             <th>Holiday Title</th>
@@ -44,88 +50,17 @@
                             <th>Type</th>
                             <th>Date</th>
                             <th>Created by</th>
-                            <th>Action</th>
+                            <th class="text-right">Action</th>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($holidays as $holiday)
-                        <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $holiday->title }}</td>
-                            <td>{{ $holiday->is_paid ? 'Yes' : 'No' }}</td>
-                            <td>{{ $holiday->type }}</td>
-                            <td>{{ $holiday->date }}</td>
-                            <td>{{ $holiday->user['name'] }}</td>
-                            <td class="d-flex gap-2">
-
-                                @if (Auth::user()->role != 'customer' && Auth::user()->role != 'client')
-                                <a href="javascript:void(0)"
-                                    class="btn btn-primary btn-sm btnEditHoliday"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#holidayModal"
-                                    data-id="{{$holiday->id}}"
-                                    data-title={{$holiday->title}}
-                                    data-date={{\Carbon\Carbon::parse($holiday->date)->format('Y-m-d')}}
-                                    data-is_paid={{$holiday->is_paid}}
-                                    data-type={{$holiday->type}}>
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </a>
-                                @endif
-                                @if (
-                                auth()->user()->hasAnyRole('Super Admin')
-                                )
-                                @if (auth()->user()->role !== 'client')
-
-                                <a href="javascript:void(0)"
-                                    class="btn btn-danger btn-sm btnDeleteHoliday"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#confirmDeleteModal"
-                                    data-id="{{$holiday->id}}"
-                                    >
-                                    <i class="fa-solid fa-trash"></i>
-                                </a>
-
-                                @endif
-                                @endif
-                            </td>
-                        </tr>
-                        @endforeach
-
-                    </tbody>
-                </table>
-            </div>
-            @endif
-
-
-
+                </thead>
+                <tbody>
+                    <!-- DataTables populated via JS -->
+                </tbody>
+            </table>
         </div>
     </div>
+</div>
 
-
-    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="holidayDeleteModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="holidayDeleteModalLabel">Confirm Delete</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p>Are you sure you want to delete?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <form id="deleteForm" method="POST">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Create Holiday Modal -->
     <div class="modal fade" id="holidayModal" tabindex="-1" aria-labelledby="holidayModalLabel" aria-hidden="true">
@@ -173,28 +108,21 @@
             </form>
         </div>
     </div>
+
+    <x-modal-leave-comment-component />
 </div>
+
+
+{{-- Shared Scripts --}}
+@include('attendance_management.shared.scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script src="{{ asset('js/core/holidays/main.js') }}"></script>
+<script src="{{ asset('js/core/holidays/table.js') }}"></script>
+
 @include('layouts.footer')
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
-
-
-<script>
-    $(document).ready(function () {
-        // INIT DATATABLE
-        var table = $('#holidaysTable').DataTable({
-            responsive: true,
-            pageLength: 10,
-            lengthMenu: [5, 10, 25, 50, 100],
-        });
-
-        $('#holiday-search').on('keyup', function () {
-            table.search(this.value).draw();
-        });
-    });
-</script>
 
 <script>
   const $form = $('#holidayForm');
