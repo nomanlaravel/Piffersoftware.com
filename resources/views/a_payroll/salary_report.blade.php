@@ -1,300 +1,243 @@
 @include('layouts.header')
 
-@push('css')
-    @include('vendors.data-tables')
-    <style>
-        :root {
-            --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-            --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-        }
+{{-- External CSS Vendors --}}
+@include('vendors.data-tables')
+@include('vendors.toastr')
+@include('vendors.sweet-alerts')
 
-        .premium-header {
-            background: var(--primary-gradient);
-            padding: 3rem 2rem;
-            border-radius: 0 0 40px 40px;
-            margin-bottom: -4rem;
-            color: white;
-        }
+{{-- Shared Attendance Module Styles --}}
+@include('attendance_management.shared.styles')
 
-        .table-card {
-            background: white;
-            border-radius: 24px;
-            padding: 2rem;
-            box-shadow: var(--card-shadow);
-            margin-top: 2rem;
-        }
+<style>
+    .filter-card {
+        background: white;
+        border-radius: var(--border-radius-lg);
+        padding: 2rem;
+        box-shadow: var(--shadow-md);
+        margin-bottom: 2rem;
+        border: 1px solid rgba(102, 126, 234, 0.1);
+    }
 
-        .filter-card {
-            background: white;
-            border-radius: 20px;
-            padding: 1.5rem;
-            box-shadow: var(--card-shadow);
-            margin-bottom: 2rem;
-        }
+    .form-control-premium {
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+        padding: 0.75rem 1rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
 
-        .form-control-premium {
-            border-radius: 10px;
-            border: 1px solid #e5e7eb;
-            padding: 0.5rem 1rem;
-        }
+    .form-control-premium:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    }
 
-        #salaryReportTable thead th {
-            background: #f9fafb;
-            color: #4b5563;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            padding: 1.25rem 1rem;
-            border: none;
-        }
+    .btn-generate {
+        background: var(--primary-gradient);
+        color: white;
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: var(--shadow-md);
+        transition: all 0.3s ease;
+    }
 
-        #salaryReportTable tbody td {
-            padding: 1rem;
-            vertical-align: middle;
-            border-bottom: 1px solid #f3f4f6;
-        }
-    </style>
-@endpush
+    .btn-generate:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+        color: white;
+    }
+
+    /* Custom Table Card Adjustments */
+    .table-card {
+        margin-top: 2rem;
+    }
+
+    /* DataTables Controls Refinement */
+    .dataTables_wrapper .row:first-child {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        padding: 1rem 1.5rem !important;
+        margin: 0 !important;
+        border-bottom: 1px solid #f1f5f9;
+        background: #fcfdfe;
+    }
+
+    .dataTables_wrapper .dataTables_length,
+    .dataTables_wrapper .dataTables_filter {
+        margin-bottom: 0 !important;
+        padding: 0 !important;
+        width: auto !important;
+    }
+
+    .dataTables_wrapper .dataTables_filter label,
+    .dataTables_wrapper .dataTables_length label {
+        margin-bottom: 0 !important;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    /* Fix for horizontal scroll with many columns */
+    .table-responsive {
+        border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
+    }
+
+    #salaryReportTable thead th {
+        white-space: nowrap;
+    }
+</style>
 
 <div class="customer_form">
     @include('headerlogout')
 
-    <div class="premium-header">
-        <div class="container-fluid text-center">
-            <h1 class="font-weight-bold mb-2">Monthly Salary Report</h1>
-            <p class="opacity-75">Overview of employee earnings and deductions</p>
-        </div>
-    </div>
+    {{-- Breadcrumb Component --}}
+    <x-bread-crumb-component :modal="false" :showClock="'false'" />
 
-    <div class="container-fluid py-5 mt-n4">
-        {{-- Filters --}}
+    <div class="container-fluid py-4">
+        {{-- Filters Section --}}
         <div class="filter-card">
-            <form id="filterForm" class="row align-items-end">
+            <div class="d-flex align-items-center mb-4">
+                <div class="flex-shrink-0 bg-primary-light p-3 rounded-3 me-3"
+                    style="background: rgba(102, 126, 234, 0.1); color: #667eea;">
+                    <i class="fas fa-filter fs-4"></i>
+                </div>
+                <div>
+                    <h5 class="fw-bold mb-0">Report Filters</h5>
+                    <p class="text-muted small mb-0">Select period to generate the monthly payroll breakdown</p>
+                </div>
+            </div>
+
+            <form id="filterForm" class="row g-3 align-items-end">
                 <div class="col-md-4">
-                    <label class="small font-weight-bold">Select Month</label>
-                    <select name="month" class="form-control form-control-premium">
+                    <label class="form-label fw-bold text-dark small text-uppercase">Select Month</label>
+                    <select name="month" class="form-select form-control-premium">
                         @foreach($months as $num => $name)
                             <option value="{{ $num }}" {{ $num == date('n') ? 'selected' : '' }}>{{ $name }}</option>
                         @endforeach
                     </select>
                 </div>
                 <div class="col-md-4">
-                    <label class="small font-weight-bold">Select Year</label>
-                    <select name="year" class="form-control form-control-premium">
+                    <label class="form-label fw-bold text-dark small text-uppercase">Select Year</label>
+                    <select name="year" class="form-select form-control-premium">
                         @foreach($years as $year)
                             <option value="{{ $year }}" {{ $year == date('Y') ? 'selected' : '' }}>{{ $year }}</option>
                         @endforeach
                     </select>
                 </div>
-                <div class="col-md-4 mt-3 mt-md-0">
-                    <button type="submit" class="btn btn-primary w-100 py-2 font-weight-bold"
-                        style="border-radius: 10px;">
-                        <i class="fas fa-search mr-2"></i> Generate Report
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-generate w-100">
+                        <i class="fas fa-file-invoice-dollar me-2"></i> Generate Report
                     </button>
                 </div>
             </form>
         </div>
 
-        {{-- Report Table --}}
-        <div class="table-card">
-            <div class="table-responsive">
-                <table id="salaryReportTable" class="table w-100">
-                    <thead>
-                        <tr>
-                            <th>Sr.No</th>
-                            <th>Name</th>
-                            <th>Bank Acc#</th>
-                            <th>Designation</th>
-                            <th>Department</th>
-                            <th>Salary Details</th>
-                            <th>Attendance Records</th>
-                            <th>Leave Records</th>
-                            <th>Basic Salary</th>
-                            <th>Absents</th>
-                            <th>Absents amount Deduction</th>
-                            <th>No of Half Days</th>
-                            <th>Half Days Deduction</th>
-                            <th>Late Minutes</th>
-                            <th>Late Minutes Deduction</th>
-                            <th>Sand Wich Rule Deduction</th>
-                            <th>Other Deduction</th>
-                            <th>Tax Deduction</th>
-                            <th>Income Tax</th>
-                            <th>Insurance Deductions</th>
-                            <th>Loan</th>
-                            <th>Advance</th>
-                            <th>Lunch Allowance</th>
-                            <th>EOBI</th>
-                            <th>Social Security</th>
-                            <th>Performance Bonus</th>
-                            <th>Year-end Bonus</th>
-                            <th>Other Allowances</th>
-                            <th>Total Increment</th>
-                            <th>Gross Salary</th>
-                            <th>Total Salary</th>
-                            <th>Appraisal</th>
-                            <th>Others</th>
-                            <th>Misc</th>
-                            <th>Total Earning</th>
-                            <th>Total Deductions</th>
-                            <th>Net Salary</th>
-                            <th>Deduction before Compensation</th>
-                            <th>Bonus</th>
-                            <th>Compensation</th>
-                            <th>Deduction after Compensation</th>
-                            <th>Total Salary Approved</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+        {{-- Report Table Section --}}
+        <div class="card table-card border-0">
+            <div class="card-header bg-white border-bottom-0 py-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title fw-bold mb-1">
+                            <i class="fas fa-list-alt text-primary me-2"></i>Payroll Statement
+                        </h5>
+                        <p class="text-muted small mb-0 ms-4 ps-1">Comprehensive breakdown of all employee earnings and
+                            deductions</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table id="salaryReportTable" class="table table-hover w-100 m-0">
+                        <thead>
+                            <tr>
+                                <th class="ps-4">No</th>
+                                <th>Name</th>
+                                <th>Bank Acc#</th>
+                                <th>Designation</th>
+                                <th>Department</th>
+                                <th>Salary Details</th>
+                                <th>Attendance Records</th>
+                                <th>Leave Records</th>
+                                <th>Basic Salary</th>
+                                <th>Absents</th>
+                                <th>Absents amount Deduction</th>
+                                <th>No of Half Days</th>
+                                <th>Half Days Deduction</th>
+                                <th>Late Minutes</th>
+                                <th>Late Minutes Deduction</th>
+                                <th>Sand Wich Rule Deduction</th>
+                                <th>Other Deduction</th>
+                                <th>Tax Deduction</th>
+                                <th>Income Tax</th>
+                                <th>Insurance Deductions</th>
+                                <th>Loan</th>
+                                <th>Advance</th>
+                                <th>Lunch Allowance</th>
+                                <th>EOBI</th>
+                                <th>Social Security</th>
+                                <th>Performance Bonus</th>
+                                <th>Year-end Bonus</th>
+                                <th>Other Allowances</th>
+                                <th>Total Increment</th>
+                                <th>Gross Salary</th>
+                                <th>Total Salary</th>
+                                <th>Appraisal</th>
+                                <th>Others</th>
+                                <th>Misc</th>
+                                <th>Total Earning</th>
+                                <th>Total Deductions</th>
+                                <th>Net Salary</th>
+                                <th>Deduction before Compensation</th>
+                                <th>Bonus</th>
+                                <th>Compensation</th>
+                                <th>Deduction after Compensation</th>
+                                <th class="pe-4">Total Salary Approved</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 <!-- Employee Details Modal -->
-<div id="detailsModal" class="modal fade" role="dialog">
+<div id="detailsModal" class="modal fade" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
-            <div class="modal-header bg-light">
-                <h5 class="modal-title font-weight-bold">Employee Breakdown</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content border-0 shadow-xl" style="border-radius: 24px; overflow: hidden;">
+            <div class="modal-header border-0 pb-0 shadow-sm"
+                style="background: linear-gradient(to bottom, #f8faff, #ffffff); padding: 24px 32px 16px;">
+                <div>
+                    <h5 class="modal-title fw-bold"
+                        style="background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                        Employee Payroll Breakdown
+                    </h5>
+                    <p class="text-muted small mb-0 mt-1">Detailed financial overview for the selected period</p>
+                </div>
+                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-4" id="detailsResult">
-                <div class="text-center py-4">
-                    <div class="spinner-border text-primary" role="status"></div>
-                </div>
+                {{-- Loaded via AJAX --}}
+            </div>
+            <div class="modal-footer border-0 p-4 pt-0">
+                <button type="button" class="btn btn-light btn-lg px-4" data-bs-dismiss="modal"
+                    style="border-radius: 12px; font-weight: 600; font-size: 15px;">Close</button>
             </div>
         </div>
     </div>
 </div>
 
 @push('js')
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+    {{-- Shared Scripts --}}
+    @include('attendance_management.shared.scripts')
 
-    <script>
-        $(document).ready(function () {
-            let table = $('#salaryReportTable').DataTable({
-                processing: true,
-                serverSide: true,
-                ajax: {
-                    url: "{{ route('dashboard.employee-payroll.salary-report.data') }}",
-                    data: function (d) {
-                        d.month = $('select[name="month"]').val();
-                        d.year = $('select[name="year"]').val();
-                    }
-                },
-                columns: [
-                    { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
-                    { data: 'name', name: 'name' },
-                    { data: 'bank_account', name: 'bank_account' },
-                    { data: 'designation', name: 'designation' },
-                    { data: 'department', name: 'department' },
-                    { data: 'salary_details', name: 'salary_details' },
-                    { data: 'attendance_records', name: 'attendance_records' },
-                    { data: 'leave_records', name: 'leave_records' },
-                    { data: 'basic_salary', name: 'basic_salary' },
-                    { data: 'absents', name: 'absents' },
-                    { data: 'absent_deduction', name: 'absent_deduction' },
-                    { data: 'half_days', name: 'half_days' },
-                    { data: 'half_day_deduction', name: 'half_day_deduction' },
-                    { data: 'late_minutes', name: 'late_minutes' },
-                    { data: 'late_minutes_deduction', name: 'late_minutes_deduction' },
-                    { data: 'sandwich_rule_deduction', name: 'sandwich_rule_deduction' },
-                    { data: 'other_deduction', name: 'other_deduction' },
-                    { data: 'tax_deduction', name: 'tax_deduction' },
-                    { data: 'income_tax', name: 'income_tax' },
-                    { data: 'insurance_deductions', name: 'insurance_deductions' },
-                    { data: 'loan', name: 'loan' },
-                    { data: 'advance', name: 'advance' },
-                    { data: 'lunch_allowance', name: 'lunch_allowance' },
-                    { data: 'eobi', name: 'eobi' },
-                    { data: 'social_security', name: 'social_security' },
-                    { data: 'performance_bonus', name: 'performance_bonus' },
-                    { data: 'year_end_bonus', name: 'year_end_bonus' },
-                    { data: 'other_allowances', name: 'other_allowances' },
-                    { data: 'total_increment', name: 'total_increment' },
-                    { data: 'gross_salary', name: 'gross_salary' },
-                    { data: 'total_salary', name: 'total_salary' },
-                    { data: 'appraisal', name: 'appraisal' },
-                    { data: 'others', name: 'others' },
-                    { data: 'misc', name: 'misc' },
-                    { data: 'total_earning', name: 'total_earning' },
-                    { data: 'total_deductions', name: 'total_deductions' },
-                    { data: 'net_salary', name: 'net_salary' },
-                    { data: 'deduction_before_compensation', name: 'deduction_before_compensation' },
-                    { data: 'bonus', name: 'bonus' },
-                    { data: 'compensation', name: 'compensation' },
-                    { data: 'deduction_after_compensation', name: 'deduction_after_compensation' },
-                    { data: 'total_salary_approved', name: 'total_salary_approved' }
-                ],
-                order: [[1, 'asc']],
-                pageLength: 25,
-                language: {
-                    processing: '<div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div>'
-                }
-            });
-
-            $('#filterForm').on('submit', function (e) {
-                e.preventDefault();
-                table.draw();
-            });
-
-            // Handle View Details Click
-            $(document).on('click', '.view-details-btn', function () {
-                let id = $(this).data('id');
-                let month = $('select[name="month"]').val();
-                let year = $('select[name="year"]').val();
-                let modal = $('#detailsModal');
-
-                modal.modal('show');
-                $('#detailsResult').html('<div class="text-center py-5"><div class="spinner-border text-primary"></div></div>');
-
-                $.ajax({
-                    url: '/employee-payroll/employee-salaries/get-detail/' + id,
-                    type: 'GET',
-                    data: { month: month, year: year },
-                    success: function (res) {
-                        if (res.success) {
-                            let d = res.data;
-                            let html = `
-                                                    <div class="row mb-4">
-                                                        <div class="col-md-6">
-                                                            <p class="mb-1 text-muted small uppercase font-weight-bold">Employee</p>
-                                                            <h4 class="font-weight-bold">${d.employee.name}</h4>
-                                                        </div>
-                                                        <div class="col-md-6 text-md-right">
-                                                            <p class="mb-1 text-muted small uppercase font-weight-bold">Period</p>
-                                                            <h4 class="font-weight-bold">${month}/${year}</h4>
-                                                        </div>
-                                                    </div>
-                                                    <div class="table-responsive">
-                                                        <table class="table table-sm border">
-                                                            <tr class="bg-light">
-                                                                <th colspan="2">Financial Overview</th>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Basic Salary</td>
-                                                                <td class="text-right font-weight-bold">₨ ${d.salary ? d.salary.before_increment : '0.00'}</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Account Details</td>
-                                                                <td class="text-right">${d.bank ? d.bank.bank_name + ' (' + d.bank.account_number + ')' : 'Not Set'}</td>
-                                                            </tr>
-                                                        </table>
-                                                    </div>
-                                                    <div class="alert alert-info py-2 small">
-                                                        <i class="fas fa-info-circle mr-1"></i> For attendance punch logs, please visit the Attendance Management module.
-                                                    </div>
-                                                `;
-                            $('#detailsResult').html(html);
-                        }
-                    }
-                });
-            });
-        });
-    </script>
+    {{-- Module Specific Scripts --}}
+    <script src="{{ asset('js/core/salary-report/table.js') }}"></script>
 @endpush
 
 @include('layouts.footer')
