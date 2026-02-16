@@ -44,12 +44,20 @@
                                     <span class="toggle-text">Present</span>
                                 </span>
                             </label>
+                            <label class="toggle-option leave-option">
+                                <input type="radio" name="attendance_status" id="status_leave" value="leave"
+                                    onchange="toggleAttendanceFields(this.value)">
+                                <span class="toggle-content">
+                                    <i class="fa fa-calendar-minus-o"></i>
+                                    <span class="toggle-text">Leave</span>
+                                </span>
+                            </label>
                             <label class="toggle-option absent-option">
                                 <input type="radio" name="attendance_status" id="status_absent" value="absent"
                                     onchange="toggleAttendanceFields(this.value)">
                                 <span class="toggle-content">
                                     <i class="fa fa-times-circle"></i>
-                                    <span class="toggle-text">Absent/Leave</span>
+                                    <span class="toggle-text">Absent</span>
                                 </span>
                             </label>
                         </div>
@@ -141,8 +149,8 @@
                         </div>
                     </div>
 
-                    <!-- Absent View: Leave Types -->
-                    <div class="absent-content attendance-section" style="display: none;">
+                    <!-- Leave View: Leave Types -->
+                    <div class="leave-content attendance-section" style="display: none;">
                         <div class="row justify-content-center">
                             <div class="col-md-10">
                                 <div class="info-card leave-card">
@@ -176,6 +184,30 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Absent View: Simple Remarks -->
+                    <div class="absent-content attendance-section" style="display: none;">
+                        <div class="row justify-content-center">
+                            <div class="col-md-10">
+                                <div class="info-card absent-card">
+                                    <div class="card-icon">
+                                        <i class="fa fa-user-times"></i>
+                                    </div>
+                                    <h6 class="card-title-sm">Absent Information</h6>
+
+                                    <div class="modern-input-group">
+                                        <label>
+                                            <i class="fa fa-comment mr-2"></i>Remarks/Reason
+                                        </label>
+                                        <textarea class="modern-textarea" name="remarks" rows="4"
+                                            placeholder="Enter reason for absence..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
 
                     <!-- Submit Button -->
                     <div class="modal-footer-custom punch-btn-section" style="display: none;">
@@ -328,6 +360,12 @@
         box-shadow: 0 4px 12px rgba(238, 9, 121, 0.3);
     }
 
+    .status-badge.badge-warning {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+        box-shadow: 0 4px 12px rgba(240, 147, 251, 0.3);
+    }
+
     /* Toggle Section */
     .attendance-toggle-section {
         margin-bottom: 32px;
@@ -344,7 +382,7 @@
 
     .toggle-btn-group {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr;
         gap: 16px;
     }
 
@@ -405,6 +443,29 @@
         color: #11998e;
     }
 
+    .leave-option .toggle-content {
+        border-color: #e2e8f0;
+    }
+
+    .leave-option .toggle-content i {
+        color: #cbd5e1;
+    }
+
+    .leave-option input:checked~.toggle-content {
+        background: linear-gradient(135deg, rgba(240, 147, 251, 0.1) 0%, rgba(245, 87, 108, 0.1) 100%);
+        border-color: #f093fb;
+        box-shadow: 0 4px 16px rgba(240, 147, 251, 0.2);
+    }
+
+    .leave-option input:checked~.toggle-content i {
+        color: #f093fb;
+        transform: scale(1.1);
+    }
+
+    .leave-option input:checked~.toggle-content .toggle-text {
+        color: #f093fb;
+    }
+
     .absent-option .toggle-content {
         border-color: #e2e8f0;
     }
@@ -463,6 +524,10 @@
     }
 
     .leave-card::before {
+        background: linear-gradient(90deg, #f093fb, #f5576c);
+    }
+
+    .absent-card::before {
         background: linear-gradient(90deg, #ee0979, #ff6a00);
     }
 
@@ -780,6 +845,90 @@
     }
 
     /* Responsive */
+    .stats-container {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .stat-item {
+        font-size: 12px;
+        color: #64748b;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .stat-counts {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+    }
+
+    .badge-success-light {
+        background: #ecfdf5;
+        color: #059669;
+        border: 1px solid #10b981;
+    }
+
+    .badge-warning-light {
+        background: #fffbeb;
+        color: #d97706;
+        border: 1px solid #f59e0b;
+    }
+
+    .badge-danger-light {
+        background: #fef2f2;
+        color: #dc2626;
+        border: 1px solid #ef4444;
+    }
+
+    .leave-report-section {
+        background: rgba(255, 255, 255, 0.5);
+        border-radius: 12px;
+        padding: 15px;
+    }
+
+    .leave-summary-table {
+        margin-bottom: 0;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .leave-summary-table thead th {
+        font-size: 11px;
+        text-transform: uppercase;
+        color: #64748b;
+        border-bottom: 2px solid #e2e8f0;
+    }
+
+    .leave-summary-table td {
+        font-size: 13px;
+        vertical-align: middle;
+        border-bottom: 1px solid #f1f5f9;
+        font-weight: 500;
+    }
+
+    .leave-count-badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 50px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .count-used {
+        background: #fef2f2;
+        color: #dc2626;
+    }
+
+    .count-remaining {
+        background: #ecfdf5;
+        color: #059669;
+    }
+
     @media (max-width: 768px) {
         .modal-dialog {
             margin: 16px;

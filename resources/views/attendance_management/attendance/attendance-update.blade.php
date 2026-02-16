@@ -224,9 +224,19 @@
     }
 
     @keyframes errorShake {
-        0%, 100% { transform: translateX(0); }
-        25% { transform: translateX(-5px); }
-        75% { transform: translateX(5px); }
+
+        0%,
+        100% {
+            transform: translateX(0);
+        }
+
+        25% {
+            transform: translateX(-5px);
+        }
+
+        75% {
+            transform: translateX(5px);
+        }
     }
 
     .select2-container--default.error .select2-selection--single,
@@ -307,7 +317,7 @@
         left: -100%;
         width: 100%;
         height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
         transition: left 0.5s;
     }
 
@@ -390,19 +400,7 @@
         padding: 16px 12px;
         border: none;
         white-space: nowrap;
-        position: sticky;
-        top: 0;
-        z-index: 10;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-    }
-
-    .custom-table thead th:first-child {
-        padding-left: 24px;
-        min-width: 180px;
-    }
-
-    .custom-table thead th:nth-child(2) {
-        min-width: 300px;
     }
 
     .custom-table tbody td {
@@ -415,8 +413,8 @@
     }
 
     .custom-table tbody td:first-child {
-        padding-left: 24px;
         font-weight: 600;
+        padding-left: 16px;
     }
 
     .custom-table tbody tr {
@@ -425,7 +423,6 @@
 
     .custom-table tbody tr:hover {
         background-color: rgba(102, 126, 234, 0.04);
-        transform: scale(1.005);
     }
 
     .custom-table tbody tr:last-child td {
@@ -511,18 +508,29 @@
         filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
     }
 
-    /* Statistics Badge */
-    .custom-table tbody td:nth-child(2) {
+    /* Statistics Badge Styling */
+    .custom-table tbody td:nth-child(3) {
         font-family: 'Inter', sans-serif;
-        font-size: 14px;
+        font-size: 13px;
         color: #2d3748;
         font-weight: 600;
-        background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%);
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%) !important;
         border-left: 4px solid #667eea;
-        padding: 14px 16px !important;
-        line-height: 1.6;
+        padding: 12px 14px !important;
+        line-height: 1.5;
+        min-width: 240px;
         white-space: nowrap;
-        min-width: 300px;
+    }
+
+    .custom-table thead th:nth-child(3){
+        min-width: 240px;
+        white-space: nowrap;
+        text-align: center;
+    }
+    .custom-table thead th:nth-child(2), th:nth-child(1) {
+        min-width: 150px;
+        white-space: nowrap;
+        text-align: center;
     }
 
     /* Pagination */
@@ -578,6 +586,121 @@
 
     .loading {
         animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    /* Statistics & Report Styles */
+    .stats-container {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        min-width: 120px;
+    }
+
+    .stat-item {
+        font-size: 11px;
+        color: #64748b;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        white-space: nowrap;
+    }
+
+    .stat-counts {
+        display: flex;
+        gap: 4px;
+        flex-wrap: nowrap;
+        margin-top: 2px;
+    }
+
+    .stat-counts .badge {
+        font-size: 10px;
+        padding: 2px 6px;
+        font-weight: 800;
+        border-radius: 4px;
+        min-width: 32px;
+        text-align: center;
+    }
+
+    .badge-success-light {
+        background: #ecfdf5;
+        color: #059669;
+        border-color: #10b981;
+    }
+
+    .badge-warning-light {
+        background: #fffbeb;
+        color: #d97706;
+        border-color: #f59e0b;
+    }
+
+    .badge-danger-light {
+        background: #fef2f2;
+        color: #dc2626;
+        border-color: #ef4444;
+    }
+
+    .leave-report-section {
+        background: #ffffff;
+        border-radius: var(--border-radius-md);
+        padding: 10px;
+    }
+
+    .leave-summary-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        border: 1px solid #e2e8f0;
+        border-radius: var(--border-radius-sm);
+        overflow: hidden;
+    }
+
+    .leave-summary-table thead th {
+        background: #f8fafc !important;
+        color: #64748b !important;
+        font-size: 11px;
+        text-transform: uppercase;
+        padding: 12px;
+        border-bottom: 2px solid #e2e8f0;
+    }
+
+    .leave-summary-table td {
+        padding: 12px;
+        font-size: 13px;
+        border-bottom: 1px solid #f1f5f9;
+        font-weight: 500;
+        color: #1e293b;
+    }
+
+    .leave-count-badge {
+        padding: 4px 10px;
+        border-radius: 50px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .count-used {
+        background: #fef2f2;
+        color: #dc2626;
+    }
+
+    .count-remaining {
+        background: #ecfdf5;
+        color: #059669;
+    }
+
+    .view-leave-summary {
+        font-weight: 600;
+        padding: 6px 12px;
+        border-radius: var(--border-radius-sm);
+        transition: all 0.2s;
+        white-space: nowrap;
+    }
+
+    .view-leave-summary:hover {
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-sm);
     }
 
     /* Responsive Adjustments */
@@ -687,6 +810,9 @@
         padding-top: 12px;
     }
 
+
+
+
     /* Mobile Improvements */
     @media (max-width: 768px) {
         .table-responsive::after {
@@ -780,10 +906,11 @@
                             <thead>
                                 <tr>
                                     <th>Employee</th>
+                                    <th>Annual Report</th>
                                     <th>Statistics</th>
                                     @foreach ($monthDays as $item)
                                         <th class="{{ $holiDayData->has($item) ? 'holiday-bg' : '' }} text-center">
-                                            {{ \Carbon\Carbon::parse($item)->format('d') }}
+                                            s {{ \Carbon\Carbon::parse($item)->format('d') }}
                                         </th>
                                     @endforeach
                                 </tr>
@@ -795,10 +922,30 @@
                                             {{ $employee->name }} {{ $employee->id }}
                                         </td>
                                         <td>
-                                            TD: {{ count($monthDays) }} | WD: {{ $workingDays }} P:
-                                            {{ $employee->attendances->count() }} | A:
-                                            {{ count($monthDays) - $employee->attendances->count() - $holiDayData->count() }}
-                                            | HOLIDAYS: {{ $holiDayData->count() }}
+                                            <button type="button" class="btn btn-sm btn-primary-gradient view-leave-summary"
+                                                data-emp-id="{{ $employee->id }}" data-emp-name="{{ $employee->name }}"
+                                                data-year="{{ $year ?? date('Y') }}" data-toggle="modal"
+                                                data-target="#leave_summary_modal">
+                                                <i class="fa fa-bar-chart mr-1"></i> Report
+                                            </button>
+                                        </td>
+                                        <td>
+                                            <div class="stats-container">
+                                                <div class="d-flex gap-2">
+                                                    <span class="stat-item"><i class="fa fa-calendar-o"></i>
+                                                        TD:{{ count($monthDays) }}</span> |
+                                                    <span class="stat-item"><i class="fa fa-briefcase"></i>
+                                                        WD:{{ $workingDays }}</span>
+                                                </div>
+                                                <div class="stat-counts">
+                                                    <span class="badge badge-success-light"
+                                                        title="Present">P:{{ $employee->present_count }}</span>
+                                                    <span class="badge badge-warning-light"
+                                                        title="Leave">L:{{ $employee->leave_count }}</span>
+                                                    <span class="badge badge-danger-light"
+                                                        title="Absent">A:{{ $employee->absent_count }}</span>
+                                                </div>
+                                            </div>
                                         </td>
                                         @foreach ($monthDays as $attendance => $val)
                                             @php
@@ -949,6 +1096,9 @@
             responsive: false,
             autoWidth: false,
             pageLength: 25,
+            columnDefs: [
+                { width: "280px", targets: 2 }  // Statistics column minimum width
+            ],
             buttons: [{
                 extend: "excelHtml5",
                 text: '<i class="fa fa-file-excel-o mr-2"></i>Excel',
@@ -993,30 +1143,45 @@
             status = $('input[name="attendance_status"]:checked').val();
         }
 
+        const modal = $("#attendance_info_in");
+
         if (status === 'present') {
-            $('.present-content').show();
-            $('.absent-content').hide();
-            $('.punch-btn-section').show();
+            modal.find('.present-content').show();
+            modal.find('.leave-content').hide();
+            modal.find('.absent-content').hide();
+            modal.find('.punch-btn-section').show();
 
-            $('input[name="punch_in_time"]').prop('disabled', false);
-            $('input[name="punch_out_time"]').prop('disabled', false);
+            modal.find('input[name="punch_in_time"]').prop('disabled', false);
+            modal.find('input[name="punch_out_time"]').prop('disabled', false);
+            modal.find('select[name="leave_type_id"]').prop('disabled', true);
+            modal.find('textarea[name="remarks"]').prop('disabled', true);
+        } else if (status === 'leave') {
+            modal.find('.present-content').hide();
+            modal.find('.leave-content').show();
+            modal.find('.absent-content').hide();
+            modal.find('.punch-btn-section').show();
 
-            $('select[name="leave_type_id"]').prop('disabled', true);
-            $('textarea[name="remarks"]').prop('disabled', true);
+            modal.find('input[name="punch_in_time"]').prop('disabled', true);
+            modal.find('input[name="punch_out_time"]').prop('disabled', true);
+            modal.find('.leave-content').find('select[name="leave_type_id"]').prop('disabled', false);
+            modal.find('.leave-content').find('textarea[name="remarks"]').prop('disabled', false);
+            modal.find('.absent-content').find('textarea[name="remarks"]').prop('disabled', true);
         } else if (status === 'absent') {
-            $('.present-content').hide();
-            $('.absent-content').show();
-            $('.punch-btn-section').show();
+            modal.find('.present-content').hide();
+            modal.find('.leave-content').hide();
+            modal.find('.absent-content').show();
+            modal.find('.punch-btn-section').show();
 
-            $('input[name="punch_in_time"]').prop('disabled', true);
-            $('input[name="punch_out_time"]').prop('disabled', true);
-
-            $('select[name="leave_type_id"]').prop('disabled', false);
-            $('textarea[name="remarks"]').prop('disabled', false);
+            modal.find('input[name="punch_in_time"]').prop('disabled', true);
+            modal.find('input[name="punch_out_time"]').prop('disabled', true);
+            modal.find('select[name="leave_type_id"]').prop('disabled', true);
+            modal.find('.absent-content').find('textarea[name="remarks"]').prop('disabled', false);
+            modal.find('.leave-content').find('textarea[name="remarks"]').prop('disabled', true);
         } else {
-            $('.present-content').hide();
-            $('.absent-content').hide();
-            $('.punch-btn-section').hide();
+            modal.find('.present-content').hide();
+            modal.find('.leave-content').hide();
+            modal.find('.absent-content').hide();
+            modal.find('.punch-btn-section').hide();
         }
     }
 
@@ -1101,10 +1266,18 @@
             // Update Status Badge
             let statusText = data.status.charAt(0).toUpperCase() + data.status.slice(1);
             statusBadge.text("Current Status: " + statusText);
-            statusBadge.removeClass('badge-light').addClass(data.status === 'present' ? 'badge-success' : 'badge-danger');
+            statusBadge.removeClass('badge-light badge-success badge-danger badge-warning');
+
+            if (data.status === 'present') {
+                statusBadge.addClass('badge-success');
+            } else if (data.status === 'leave') {
+                statusBadge.addClass('badge-warning');
+            } else {
+                statusBadge.addClass('badge-danger');
+            }
 
             // Set radio button status
-            let statusToSelect = (data.status === 'leave' || data.status === 'absent') ? 'absent' : 'present';
+            let statusToSelect = data.status;
             let radioBtn = modal.find('input[name="attendance_status"][value="' + statusToSelect + '"]');
 
             radioBtn.prop('checked', true);
@@ -1118,14 +1291,16 @@
             if (statusToSelect === 'present') {
                 if (data.check_in) modal.find('input[name="punch_in_time"]').val(data.check_in.substring(0, 5));
                 if (data.check_out) modal.find('input[name="punch_out_time"]').val(data.check_out.substring(0, 5));
-            } else {
-                modal.find('textarea[name="remarks"]').val(data.notes);
+            } else if (statusToSelect === 'leave') {
+                modal.find('.leave-content').find('textarea[name="remarks"]').val(data.notes);
                 if (data.leave_type_id) {
                     modal.find('select[name="leave_type_id"]').val(data.leave_type_id);
                 }
+            } else if (statusToSelect === 'absent') {
+                modal.find('.absent-content').find('textarea[name="remarks"]').val(data.notes);
             }
         } else {
-            statusBadge.text("New Record").addClass('badge-light').removeClass('badge-success badge-danger');
+            statusBadge.text("New Record").addClass('badge-light').removeClass('badge-success badge-danger badge-warning');
         }
 
         // Process Activity / Punches
@@ -1262,6 +1437,92 @@
             modal.find('.holiday-title').text('Server Error');
         }
     });
+
+    $(document).on("click", ".view-leave-summary", function (e) {
+        var $this = $(this);
+        var modal = $("#leave_summary_modal");
+        var employeeId = $this.data('emp-id');
+        var name = $this.data('emp-name');
+        var year = $this.data('year');
+
+        modal.find(".modal-title").html('Annual Leave Summary - ' + name);
+        modal.find(".current-year-text").text(year);
+        modal.find(".leave-summary-body").html('<tr><td colspan="4" class="text-center text-muted"><i class="fa fa-spinner fa-spin mr-2"></i>Loading summary...</td></tr>');
+
+        var formData = new FormData();
+        formData.append('employee_id', employeeId);
+        formData.append('year', year);
+
+        dynamicAjax('{{ route('api.employee.attendance.get-leave-summary') }}', "POST", formData,
+            'fillLeaveSummary');
+    });
+
+    function fillLeaveSummary(data) {
+        var modal = $("#leave_summary_modal");
+        if (data.leave_summary && data.leave_summary.length > 0) {
+            let summaryHtml = '';
+            data.leave_summary.forEach(item => {
+                summaryHtml += `
+                    <tr>
+                        <td class="font-weight-600">${item.name}</td>
+                        <td class="text-center">${item.allowed}</td>
+                        <td class="text-center"><span class="leave-count-badge count-used">${item.used}</span></td>
+                        <td class="text-center"><span class="leave-count-badge count-remaining">${item.remaining}</span></td>
+                    </tr>
+                `;
+            });
+            modal.find('.leave-summary-body').html(summaryHtml);
+        } else {
+            modal.find('.leave-summary-body').html('<tr><td colspan="4" class="text-center text-muted">No leave data found for this year.</td></tr>');
+        }
+    }
 </script>
+
+<!-- Leave Summary Modal -->
+<div class="modal custom-modal fade" id="leave_summary_modal" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content modern-modal">
+            <div class="modal-header gradient-header">
+                <div class="header-content">
+                    <h5 class="modal-title">Annual Leave Summary</h5>
+                    <p class="modal-subtitle mb-0">Yearly leave allocation and usage</p>
+                </div>
+                <button type="button" class="close-btn" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body modern-modal-body">
+                <div class="leave-report-section">
+                    <h6 class="section-title mb-3">
+                        <i class="fa fa-pie-chart mr-2"></i>Report for Year <span class="current-year-text"></span>
+                    </h6>
+                    <div class="table-responsive">
+                        <table class="table leave-summary-table">
+                            <thead>
+                                <tr class="bg-light">
+                                    <th>Leave Type</th>
+                                    <th class="text-center">Allowed</th>
+                                    <th class="text-center">Used</th>
+                                    <th class="text-center">Remaining</th>
+                                </tr>
+                            </thead>
+                            <tbody class="leave-summary-body">
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="text-center mt-4">
+                    <button type="button" class="btn-modern btn-primary-gradient" data-dismiss="modal"
+                        data-bs-dismiss="modal">
+                        Close Report
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 @include('layouts.footer')

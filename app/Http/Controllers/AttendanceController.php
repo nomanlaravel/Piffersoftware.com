@@ -44,6 +44,14 @@ class AttendanceController extends Controller
 
         $result = $query->paginate(20)->appends($request->all());
 
+        // Pre-calculate statistics for the month
+        $result->getCollection()->transform(function ($employee) {
+            $employee->present_count = $employee->attendances->where('status', 'present')->count();
+            $employee->leave_count = $employee->attendances->where('status', 'leave')->count();
+            $employee->absent_count = $employee->attendances->where('status', 'absent')->count();
+            return $employee;
+        });
+
         // Calculate stats using MonthlyHolidays
         $holidays = MonthlyHolidays::where('month', (int) $month)
             ->where('year', (int) $year)
@@ -64,6 +72,33 @@ class AttendanceController extends Controller
             'holiDayData',
             'leaveTypes'
         ));
+    }
+
+    public function get_leave_summary(Request $request)
+    {
+        $year = $request->year ?? Carbon::now()->year;
+        $leaveUsage = Attendance::where('hrm_id', $request->employee_id)
+            ->whereYear('date', $year)
+            ->where('status', 'leave')
+            ->select('leave_type_id', DB::raw('count(*) as used'))
+            ->groupBy('leave_type_id')
+            ->get();
+
+        $leaveTypes = LeaveType::all();
+        $summary = $leaveTypes->map(function ($type) use ($leaveUsage) {
+            $usedRecord = $leaveUsage->where('leave_type_id', $type->id)->first();
+            return [
+                'name' => $type->name,
+                'allowed' => $type->allowed,
+                'used' => $usedRecord ? $usedRecord->used : 0,
+                'remaining' => $type->allowed - ($usedRecord ? $usedRecord->used : 0)
+            ];
+        });
+
+        return response()->json([
+            'leave_summary' => $summary,
+            'current_year' => $year
+        ]);
     }
 
     public function get_attendance(Request $request)
@@ -119,11 +154,15 @@ class AttendanceController extends Controller
             $status = 'absent';
             $checkIn = null;
             $checkOut = null;
+            $leaveTypeId = null;
+        } elseif ($request->attendance_status === 'leave') {
+            $status = 'leave';
+            $checkIn = null;
+            $checkOut = null;
+            $leaveTypeId = $request->leave_type_id;
 
-            if ($request->leave_type_id) {
-                $status = 'leave';
-                $leaveTypeId = $request->leave_type_id;
-                $leaveType = LeaveType::find($request->leave_type_id);
+            if ($leaveTypeId) {
+                $leaveType = LeaveType::find($leaveTypeId);
                 if ($leaveType) {
                     $notes = "Leave: " . $leaveType->name . ". " . $notes;
                 }

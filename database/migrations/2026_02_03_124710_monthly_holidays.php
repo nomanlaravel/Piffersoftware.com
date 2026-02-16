@@ -19,7 +19,7 @@ return new class extends Migration
             $table->tinyInteger('month');
             $table->date('date');
             $table->enum('type', ['holiday', 'weekend'])->default('holiday')->comment('holiday,weekend');
-$table->boolean('is_paid')->default(false);
+            $table->boolean('is_paid')->default(false);
             $table->softDeletes();
             $table->timestamps();
 

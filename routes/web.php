@@ -756,6 +756,7 @@ Route::prefix('api')->name('api.')->group(function () {
         Route::prefix('attendance')->name('attendance.')->group(function () {
             Route::controller(AttendanceController::class)->group(function () {
                 Route::post('get-attendance', 'get_attendance')->name('get-attendance');
+                Route::post('get-leave-summary', 'get_leave_summary')->name('get-leave-summary');
                 Route::post('save-attendance', 'update_att')->name('save-attendance');
             });
         });
