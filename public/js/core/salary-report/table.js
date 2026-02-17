@@ -5,6 +5,10 @@ $(document).ready(function () {
             serverSide: true,
             ajax: {
                 url: "/employee-payroll/salary-report/data",
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 data: function (d) {
                     d.month = $('select[name="month"]').val();
                     d.year = $('select[name="year"]').val();
