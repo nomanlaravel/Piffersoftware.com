@@ -37,140 +37,140 @@ class HrmController extends Controller
 
 
     public function hrm_notifications($id)
-        {
-            $hrm = Hrm::findOrFail($id);
+    {
+        $hrm = Hrm::findOrFail($id);
 
-            $notifications = ReminderNotification::where('user_id', $hrm->id)
-                ->where('entity_type', 'hrm') 
-                ->orderBy('created_at', 'desc')
-                ->get();
+        $notifications = ReminderNotification::where('user_id', $hrm->id)
+            ->where('entity_type', 'hrm')
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-            return view('hrms.reminders.notifications', compact('hrm', 'notifications'));
-        }
-
-    public function payroll(){
-      $payrolls = Payroll::with('hrm')->paginate(10);
-      $hrm=Hrm::all();
-    //   return $payrolls;
-      return view('training.payroll',compact('payrolls','hrm'));
+        return view('hrms.reminders.notifications', compact('hrm', 'notifications'));
     }
-  public function delete_payroll(Request $request, $id)
+
+    public function payroll()
+    {
+        $payrolls = Payroll::with('hrm')->paginate(10);
+        $hrm = Hrm::all();
+        //   return $payrolls;
+        return view('training.payroll', compact('payrolls', 'hrm'));
+    }
+    public function delete_payroll(Request $request, $id)
     {
         DB::table('payrolls')->where('id', $id)->delete();
-        return redirect()->back()->with('success','Deleted successfully');
+        return redirect()->back()->with('success', 'Deleted successfully');
     }
 
 
-public function saveItems(Request $request)
-
-{
-    Log::info('Full Request Data:', ['data' => $request->all()]);
-         $item= new Item();
-        $item->payroll_id=$request->payroll_id;
-        $item->name=$request->name;
-        $item->item_dis=$request->item_dis;
+    public function saveItems(Request $request)
+    {
+        Log::info('Full Request Data:', ['data' => $request->all()]);
+        $item = new Item();
+        $item->payroll_id = $request->payroll_id;
+        $item->name = $request->name;
+        $item->item_dis = $request->item_dis;
         $item->save();
-    return back()->with('success', 'Items saved successfully.');
-}
-
-
-
-public function payrollsearch(Request $request)
-{
-    // Retrieve HRM data to pass to the view
-    $hrm = Hrm::all();
-
-    // Start a query on the Payroll model, including the 'hrm' relationship
-    $query = Payroll::with('hrm');
-
-    // Filter by month and year if provided
-    if ($request->has('month') && $request->has('year')) {
-        $query->where(function ($q) use ($request) {
-            $q->whereMonth('created_at', $request->month)
-              ->whereYear('created_at', $request->year)
-              ->orWhere(function ($q) use ($request) {
-                  $q->whereMonth('updated_at', $request->month)
-                    ->whereYear('updated_at', $request->year);
-              });
-        });
+        return back()->with('success', 'Items saved successfully.');
     }
 
-    // Filter by HRM name if provided
-    if ($request->has('name') && !empty($request->name)) {
-        $query->whereHas('hrm', function ($q) use ($request) {
-            $q->where('name', $request->name);
-        });
+
+
+    public function payrollsearch(Request $request)
+    {
+        // Retrieve HRM data to pass to the view
+        $hrm = Hrm::all();
+
+        // Start a query on the Payroll model, including the 'hrm' relationship
+        $query = Payroll::with('hrm');
+
+        // Filter by month and year if provided
+        if ($request->has('month') && $request->has('year')) {
+            $query->where(function ($q) use ($request) {
+                $q->whereMonth('created_at', $request->month)
+                    ->whereYear('created_at', $request->year)
+                    ->orWhere(function ($q) use ($request) {
+                        $q->whereMonth('updated_at', $request->month)
+                            ->whereYear('updated_at', $request->year);
+                    });
+            });
+        }
+
+        // Filter by HRM name if provided
+        if ($request->has('name') && !empty($request->name)) {
+            $query->whereHas('hrm', function ($q) use ($request) {
+                $q->where('name', $request->name);
+            });
+        }
+
+        $payrolls = $query->paginate(10);
+
+        // Return the view with the search results and HRM data
+        return view('training.payroll', compact('payrolls', 'hrm'));
     }
 
-    $payrolls = $query->paginate(10);
 
-    // Return the view with the search results and HRM data
-    return view('training.payroll', compact('payrolls', 'hrm'));
-}
-
-
-  public function print_payroll($id)
-{
-    $payroll = Payroll::with(['hrm', 'items'])->find($id);
-    //   return  $payroll;
-    if (!$payroll) {
-        return response()->json(['error' => 'Payroll not found'], 404);
+    public function print_payroll($id)
+    {
+        $payroll = Payroll::with(['hrm', 'items'])->find($id);
+        //   return  $payroll;
+        if (!$payroll) {
+            return response()->json(['error' => 'Payroll not found'], 404);
+        }
+        return view('training.payroll_print', compact('payroll'));
     }
-    return view('training.payroll_print', compact('payroll'));
-}
 
     public function getcustomerGuards(Request $request, $id)
     {
-                $user = Auth::user();
-                $customerName = $user->customer_name;
-                $role = $user->role;
+        $user = Auth::user();
+        $customerName = $user->customer_name;
+        $role = $user->role;
 
-                if ($customerName) {
-                    $hrmData = Hrm::with(['guarantors', 'trainings.guards'])
-                        ->where('client_name', $customerName)
-                        ->paginate(10);
+        if ($customerName) {
+            $hrmData = Hrm::with(['guarantors', 'trainings.guards'])
+                ->where('client_name', $customerName)
+                ->paginate(10);
 
-                } else {
-                    $hrmData = Hrm::with(['guarantors', 'trainings.guards'])->paginate(10);
-                }
-                return view('Hrm.guards', compact('hrmData'));
+        } else {
+            $hrmData = Hrm::with(['guarantors', 'trainings.guards'])->paginate(10);
+        }
+        return view('Hrm.guards', compact('hrmData'));
 
 
     }
     public function hrm()
     {
-       $userEmail = Auth::user()->email;
+        $userEmail = Auth::user()->email;
         $user = Auth::user();
         $customerName = $user->customer_name;
 
         if ($customerName) {
             $hrmData = Hrm::whereNull('sub_guard_id')->with('guarantors')
-                    ->where('client_name', $customerName)
-                     ->get();
+                ->where('client_name', $customerName)
+                ->get();
         } else {
             $hrmData = Hrm::with('guarantors')->get();
         }
-           $regions = Hrm::whereNotNull('hrm_region')->distinct()->pluck('hrm_region');
+        $regions = Hrm::whereNotNull('hrm_region')->distinct()->pluck('hrm_region');
 
-        return view('Hrm.hrm', compact('hrmData','regions'));
+        return view('Hrm.hrm', compact('hrmData', 'regions'));
     }
 
-public function staff_details_search(Request $request)
-{
-    $query = Hrm::query();
+    public function staff_details_search(Request $request)
+    {
+        $query = Hrm::query();
 
-    if ($request->filled('region')) {
-        $query->where('hrm_region', $request->region);
+        if ($request->filled('region')) {
+            $query->where('hrm_region', $request->region);
+        }
+        $hrms = $query->get(); // paginate if data is big
+        // Always pass regions for dropdown
+        $regions = Hrm::whereNotNull('hrm_region')->distinct()->pluck('hrm_region');
+        return view('Hrm.staff_details_search', [
+            'hrms' => $hrms,
+            'regions' => $regions,
+            'filters' => $request->all(),
+        ]);
     }
-    $hrms = $query->get(); // paginate if data is big
-    // Always pass regions for dropdown
-    $regions = Hrm::whereNotNull('hrm_region')->distinct()->pluck('hrm_region');
-    return view('Hrm.staff_details_search', [
-        'hrms' => $hrms,
-        'regions' => $regions,
-        'filters' => $request->all(),
-    ]);
-}
 
 
     public function search(Request $request)
@@ -264,17 +264,19 @@ public function staff_details_search(Request $request)
         return response()->json(['html' => $rows]);
     }
 
-    public function showhrm( $id){
+    public function showhrm($id)
+    {
         $hrms = Hrm::find($id);
-        
+
         return view('Hrm.viewhrm', compact('hrms'));
     }
-    public function showguarantors( $id){
+    public function showguarantors($id)
+    {
         $hrm = Hrm::find($id);
         // return view('Hrm.viewguarantors', ['guarantor'=> $guarantor]);
         return view('Hrm.viewguarantors', compact('hrm'));
     }
-public function posthrm()
+    public function posthrm()
     {
         // return 2345;
         $branches = Admin::all();
@@ -286,17 +288,17 @@ public function posthrm()
         $hiredats = HiredAt::all();
         $customers = Customer::all();
         $training = Training::whereNotNull('hrms_id')->get();
-         $hrms = Hrm::all();
-         $guards = Hrm::whereNull('sub_guard_id')->get();
+        $hrms = Hrm::all();
+        $guards = Hrm::whereNull('sub_guard_id')->get();
         //  return $guards;
-         $dispatches = InternalDispatch::all();
+        $dispatches = InternalDispatch::all();
 
         //   return $dispatches;
-        return view('Hrm.posthrm', compact('categories', 'diseases', 'eobis', 'socials', 'branches', 'designations','hiredats', 'customers','training','hrms','dispatches','guards'));
+        return view('Hrm.posthrm', compact('categories', 'diseases', 'eobis', 'socials', 'branches', 'designations', 'hiredats', 'customers', 'training', 'hrms', 'dispatches', 'guards'));
     }
     public function getNextSubGuard($id)
-{
-           // Fetch the customer information based on the provided ID
+    {
+        // Fetch the customer information based on the provided ID
         $hrm = Hrm::find($id);
 
         // Check if the hrm exists
@@ -306,11 +308,12 @@ public function posthrm()
 
         // Return the hrm information in JSON format
         return response()->json($hrm);
-}
-  public function sub_hrms($id){
-      $subGuards = Hrm::where('sub_guard_id', $id)->get();
-      return  view('Hrm.sub_guards', compact('subGuards'));
-  }
+    }
+    public function sub_hrms($id)
+    {
+        $subGuards = Hrm::where('sub_guard_id', $id)->get();
+        return view('Hrm.sub_guards', compact('subGuards'));
+    }
 
     public function import(Request $request)
     {
@@ -323,7 +326,7 @@ public function posthrm()
         return redirect()->back()->with('success', 'HRM data imported successfully!');
     }
 
-     public function submit_hrm(Request $request)
+    public function submit_hrm(Request $request)
     {
         // return $request->all();
 
@@ -333,17 +336,58 @@ public function posthrm()
             $hrmData = $request->except('_token');
 
             $hrmImageFields = [
-                'photo', 'cnic_front', 'cnic_back', 'f_attach', 't_attach', 'p_attach',
-                'h_verify', 'b_verify', 'p_verify', 'd_book', 'v_verify', 'copy_bill',
-                'n_verify', 'insurrance', 'guard_bank', 'bio_verify', 'c_verify', 'dpo_verify',
-                'form_attach', 'rec_attach', 'eight_verify', 'sahulat_v', 'l_finger',
-                'f_finger', 'm_finger', 'i_finger', 't_finger', 'additionals',
-                'f_attachment', 'vaccine_card',
-                'medical_fit_card', 'medical_fit_attach', 'phy_attach', 'vac_pr',
-                'front_eobi', 'back_eobi', 'front_ss',
-                'back_ss', 'snc_pol', 'next_frc', 'next_legal',
-                'next_photo', 'next_claim', 'next_copy', 'next_attach', 'ex_next_attach',
-                's_front', 's_back', 's_attach', 'insp_pic', 'insp_attach', 'ex_observ_attach',
+                'photo',
+                'cnic_front',
+                'cnic_back',
+                'f_attach',
+                't_attach',
+                'p_attach',
+                'h_verify',
+                'b_verify',
+                'p_verify',
+                'd_book',
+                'v_verify',
+                'copy_bill',
+                'n_verify',
+                'insurrance',
+                'guard_bank',
+                'bio_verify',
+                'c_verify',
+                'dpo_verify',
+                'form_attach',
+                'rec_attach',
+                'eight_verify',
+                'sahulat_v',
+                'l_finger',
+                'f_finger',
+                'm_finger',
+                'i_finger',
+                't_finger',
+                'additionals',
+                'f_attachment',
+                'vaccine_card',
+                'medical_fit_card',
+                'medical_fit_attach',
+                'phy_attach',
+                'vac_pr',
+                'front_eobi',
+                'back_eobi',
+                'front_ss',
+                'back_ss',
+                'snc_pol',
+                'next_frc',
+                'next_legal',
+                'next_photo',
+                'next_claim',
+                'next_copy',
+                'next_attach',
+                'ex_next_attach',
+                's_front',
+                's_back',
+                's_attach',
+                'insp_pic',
+                'insp_attach',
+                'ex_observ_attach',
                 'appraisal_attach',
             ];
 
@@ -362,8 +406,17 @@ public function posthrm()
             $hrm = Hrm::create($hrmData);
 
             $guarantorData = $request->only([
-                'g_name', 'g_fname', 'g_relation', 'g_tenure_rel', 'pos_verify', 'head_office_no',
-                'head_floor_no', 'head_building', 'head_block', 'head_area', 'head_city',
+                'g_name',
+                'g_fname',
+                'g_relation',
+                'g_tenure_rel',
+                'pos_verify',
+                'head_office_no',
+                'head_floor_no',
+                'head_building',
+                'head_block',
+                'head_area',
+                'head_city',
             ]);
 
             $guarantorDataArray = [];
@@ -384,7 +437,9 @@ public function posthrm()
 
                 // Define the Guarantor image fields
                 $guarantorImageFields = [
-                    'g_cnic_f', 'g_cnic_b', 'head_attach',
+                    'g_cnic_f',
+                    'g_cnic_b',
+                    'head_attach',
                 ];
 
                 foreach ($guarantorImageFields as $field) {
@@ -402,60 +457,76 @@ public function posthrm()
 
             $hrm->guarantors()->createMany($guarantorDataArray);
 
-                    $payrolldata = $request->only([
-                    'p_department', 'p_salary_details',
-                    'p_attendance_records', 'p_leave_records', 'p_total_overtime_hours', 'p_overtime_rate',
-                    'p_tax_deductions', 'p_insurance_deductions', 'p_performance_bonus', 'p_year_end_bonus',
-                    'p_other_allowances', 'p_gross_salary', 'p_total_deductions', 'p_net_salary',
-                    'p_other_deductions'
-                ]);
+            $payrolldata = $request->only([
+                'p_department',
+                'p_salary_details',
+                'p_attendance_records',
+                'p_leave_records',
+                'p_total_overtime_hours',
+                'p_overtime_rate',
+                'p_tax_deductions',
+                'p_insurance_deductions',
+                'p_performance_bonus',
+                'p_year_end_bonus',
+                'p_other_allowances',
+                'p_gross_salary',
+                'p_total_deductions',
+                'p_net_salary',
+                'p_other_deductions'
+            ]);
 
-                $payrollDataArray = [];
+            $payrollDataArray = [];
 
-                foreach ($payrolldata['p_department'] as $index => $pdepartment) {
-                    $payrollRow = [
-                        'p_department' => $pdepartment??null,
-                        'p_salary_details' => $payrolldata['p_salary_details'][$index] ?? null,
-                        'p_attendance_records' => $payrolldata['p_attendance_records'][$index] ?? null,
-                        'p_leave_records' => $payrolldata['p_leave_records'][$index] ?? null,
-                        'p_total_overtime_hours' => $payrolldata['p_total_overtime_hours'][$index] ?? null,
-                        'p_overtime_rate' => $payrolldata['p_overtime_rate'][$index] ?? null,
-                        'p_tax_deductions' => $payrolldata['p_tax_deductions'][$index] ?? null,
-                        'p_insurance_deductions' => $payrolldata['p_insurance_deductions'][$index] ?? null,
-                        'p_performance_bonus' => $payrolldata['p_performance_bonus'][$index] ?? null,
-                        'p_year_end_bonus' => $payrolldata['p_year_end_bonus'][$index] ?? null,
-                        'p_other_allowances' => $payrolldata['p_other_allowances'][$index] ?? null,
-                        'p_gross_salary' => $payrolldata['p_gross_salary'][$index] ?? null,
-                        'p_total_deductions' => $payrolldata['p_total_deductions'][$index] ?? null,
-                        'p_net_salary' => $payrolldata['p_net_salary'][$index] ?? null,
-                        'p_other_deductions' => $payrolldata['p_other_deductions'][$index] ?? null,
-                    ];
+            foreach ($payrolldata['p_department'] as $index => $pdepartment) {
+                $payrollRow = [
+                    'p_department' => $pdepartment ?? null,
+                    'p_salary_details' => $payrolldata['p_salary_details'][$index] ?? null,
+                    'p_attendance_records' => $payrolldata['p_attendance_records'][$index] ?? null,
+                    'p_leave_records' => $payrolldata['p_leave_records'][$index] ?? null,
+                    'p_total_overtime_hours' => $payrolldata['p_total_overtime_hours'][$index] ?? null,
+                    'p_overtime_rate' => $payrolldata['p_overtime_rate'][$index] ?? null,
+                    'p_tax_deductions' => $payrolldata['p_tax_deductions'][$index] ?? null,
+                    'p_insurance_deductions' => $payrolldata['p_insurance_deductions'][$index] ?? null,
+                    'p_performance_bonus' => $payrolldata['p_performance_bonus'][$index] ?? null,
+                    'p_year_end_bonus' => $payrolldata['p_year_end_bonus'][$index] ?? null,
+                    'p_other_allowances' => $payrolldata['p_other_allowances'][$index] ?? null,
+                    'p_gross_salary' => $payrolldata['p_gross_salary'][$index] ?? null,
+                    'p_total_deductions' => $payrolldata['p_total_deductions'][$index] ?? null,
+                    'p_net_salary' => $payrolldata['p_net_salary'][$index] ?? null,
+                    'p_other_deductions' => $payrolldata['p_other_deductions'][$index] ?? null,
+                ];
 
-                    // Define the Payroll file attachment fields
-                    $payrollFileFields = [
-                        'p_employee_pay_slips', 'p_payroll_reports',
-                    ];
+                // Define the Payroll file attachment fields
+                $payrollFileFields = [
+                    'p_employee_pay_slips',
+                    'p_payroll_reports',
+                ];
 
-                    foreach ($payrollFileFields as $field) {
-                        if ($request->hasFile($field) && isset($request->file($field)[$index])) {
-                            $file = $request->file($field)[$index];
-                            $file_name = time() . '_' . $file->getClientOriginalName();
-                            $file->move(public_path('uploads/payrolls'), $file_name);
-                            $payrollRow[$field] = 'uploads/payrolls/' . $file_name;
-                        }
+                foreach ($payrollFileFields as $field) {
+                    if ($request->hasFile($field) && isset($request->file($field)[$index])) {
+                        $file = $request->file($field)[$index];
+                        $file_name = time() . '_' . $file->getClientOriginalName();
+                        $file->move(public_path('uploads/payrolls'), $file_name);
+                        $payrollRow[$field] = 'uploads/payrolls/' . $file_name;
                     }
-
-                    $payrollDataArray[] = $payrollRow;
                 }
 
-                // Save payroll data
-                $hrm->payrolls()->createMany($payrollDataArray);
+                $payrollDataArray[] = $payrollRow;
+            }
+
+            // Save payroll data
+            $hrm->payrolls()->createMany($payrollDataArray);
 
 
 
             $trainingdata = $request->only([
-                'general_trainer_name', 'training_no', 'training_s_date', 'training_region', 'name_of_range', 'type_of_training',
-                 'training_notes',
+                'general_trainer_name',
+                'training_no',
+                'training_s_date',
+                'training_region',
+                'name_of_range',
+                'type_of_training',
+                'training_notes',
             ]);
             $trainingdataArray = [];
             foreach ($trainingdata['general_trainer_name'] as $index => $tName) {
@@ -471,7 +542,10 @@ public function posthrm()
 
                 // Define the Guarantor image fields
                 $trainerImageFields = [
-                    'training_course_file', 'expenses_proof_attach', 'training_certificate', 'attachment_anyone',
+                    'training_course_file',
+                    'expenses_proof_attach',
+                    'training_certificate',
+                    'attachment_anyone',
                 ];
 
                 foreach ($trainerImageFields as $field) {
@@ -491,8 +565,16 @@ public function posthrm()
 
 
             $workExperienceData = $request->only([
-                'org_name', 'email_oc', 'poc', 'w_desig', 'w_salary',
-                'ser_tenure', 'achivement', 'join_date', 'end_date', 't_exp',
+                'org_name',
+                'email_oc',
+                'poc',
+                'w_desig',
+                'w_salary',
+                'ser_tenure',
+                'achivement',
+                'join_date',
+                'end_date',
+                't_exp',
             ]);
 
             $workExperienceDataArray = [];
@@ -512,7 +594,9 @@ public function posthrm()
 
 
                 $workExperienceImageFields = [
-                    'jec', 'jec_attach', 'ser_other',
+                    'jec',
+                    'jec_attach',
+                    'ser_other',
                 ];
 
                 foreach ($workExperienceImageFields as $field) {
@@ -531,8 +615,18 @@ public function posthrm()
             $hrm->workExperiences()->createMany($workExperienceDataArray);
 
             $educationData = $request->only([
-                'degree', 'degree_date', 'institute_name', 'a_body', 'ex_notes',
-                'degree_no', 'degree_level', 'ob_marks', 't_marks', 'grade', 'date_start', 'date_end',
+                'degree',
+                'degree_date',
+                'institute_name',
+                'a_body',
+                'ex_notes',
+                'degree_no',
+                'degree_level',
+                'ob_marks',
+                't_marks',
+                'grade',
+                'date_start',
+                'date_end',
                 'adress_inst',
             ]);
 
@@ -580,24 +674,30 @@ public function posthrm()
             $hrmId = $hrm->id;
 
             Log::info('HRM data successfully stored. hrm ID: ' . $hrmId);
-            Mail::to($hrm->email)->send(
-                        new RegisterGuardEmail(
-                            $hrm->name,             // guard's name
-                            'Guard',                // position
-                            $hrm->start_date ?? '', // start date
-                            route('login')          // login URL
-                        )
-                    );
+
+            if (isset($hrm->email)) {
+                Mail::to($hrm->email)->send(
+                    new RegisterGuardEmail(
+                        $hrm->name,             // guard's name
+                        'Guard',                // position
+                        $hrm->start_date ?? '', // start date
+                        route('login')          // login URL
+                    )
+                );
+                $message = "HRM record was saved successfully.";
+            } else {
+                $message = "HRM record was saved successfully. Email not sent because hrm email is missing.";
+            }
 
             if ($request->has('save_and_email')) {
                 $url = route('viewhrm', ['id' => $hrmId]);
-                return redirect()->to($url)->with('success', 'hrm data successfully stored.');
+                return redirect()->to($url)->with('success', $message);
             } elseif ($request->has('save_and_share')) {
-                return redirect()->route('posthrm')->with('success', 'hrm data successfully stored.')->with('hrmId', $hrmId);
+                return redirect()->route('posthrm')->with('success', $message)->with('hrmId', $hrmId);
             } elseif ($request->has('save_and_new')) {
-                return redirect()->route('posthrm')->with('success', 'hrm data successfully stored.');
+                return redirect()->route('posthrm')->with('success', $message);
             } else {
-                return redirect()->route('hrm')->with('success', 'hrm data successfully stored.');
+                return redirect()->route('hrm')->with('success', $message);
             }
 
         } catch (\Exception $e) {
@@ -640,20 +740,20 @@ public function posthrm()
     }
 
     public function edithrm($id)
-{
-    $hrms = Hrm::find($id);
-    $train = Training::find($id);
-    $guarantorCount = $hrms->guarantors->count();
-    $training = $hrms->trainingssecontion;
-    $payrolls = $hrms->payrolls;
-    $customers = Customer::all();
-    $dispatches = $hrms->dispatchsss;
-    $guard = Hrm::with('trainingAssignment.training')->find($id);
+    {
+        $hrms = Hrm::find($id);
+        $train = Training::find($id);
+        $guarantorCount = $hrms->guarantors->count();
+        $training = $hrms->trainingssecontion;
+        $payrolls = $hrms->payrolls;
+        $customers = Customer::all();
+        $dispatches = $hrms->dispatchsss;
+        $guard = Hrm::with('trainingAssignment.training')->find($id);
 
-    // Certificate API fetch
-    $employee = Hrm::findOrFail($id);
-    if ($employee->employee_no) {
-    $params = ['userid' => $employee->employee_no];
+        // Certificate API fetch
+        $employee = Hrm::findOrFail($id);
+        if ($employee->employee_no) {
+            $params = ['userid' => $employee->employee_no];
         } elseif ($employee->employee_no) {
             $params = ['idnumber' => $employee->employee_no];
         } else {
@@ -661,24 +761,24 @@ public function posthrm()
         }
 
 
-    $response = Http::get('https://guardstrainingmoodle.piffers.net/certapi.php', $params);
+        $response = Http::get('https://guardstrainingmoodle.piffers.net/certapi.php', $params);
 
-    // Convert JSON to array
-    $certificates = $response->json();
-    //  dd($response->body(), $certificates);
+        // Convert JSON to array
+        $certificates = $response->json();
+        //  dd($response->body(), $certificates);
 //    return $certificates;
-    // Pass certificates to Blade too
-    return view('Hrm.edithrm', compact(
-        'hrms',
-        'guarantorCount',
-        'training',
-        'payrolls',
-        'customers',
-        'guard',
-        'dispatches',
-        'certificates'
-    ));
-}
+        // Pass certificates to Blade too
+        return view('Hrm.edithrm', compact(
+            'hrms',
+            'guarantorCount',
+            'training',
+            'payrolls',
+            'customers',
+            'guard',
+            'dispatches',
+            'certificates'
+        ));
+    }
 
 
     //   public function update_hrm(Request $request, $id)
@@ -836,59 +936,100 @@ public function posthrm()
             $hrm->update($request->except('_token', '_method'));
 
             $hrmImageFields = [
-                'photo', 'cnic_front', 'cnic_back', 'f_attach', 't_attach', 'p_attach',
-                'h_verify', 'b_verify', 'p_verify', 'd_book', 'v_verify', 'copy_bill',
-                'n_verify', 'insurrance', 'guard_bank', 'bio_verify', 'c_verify', 'dpo_verify',
-                'form_attach', 'rec_attach', 'eight_verify', 'sahulat_v', 'l_finger',
-                'f_finger', 'm_finger', 'i_finger', 't_finger', 'additionals',
-                'f_attachment', 'vaccine_card',
-                'medical_fit_card', 'medical_fit_attach', 'phy_attach', 'vac_pr',
-                'front_eobi', 'back_eobi', 'front_ss',
-                'back_ss', 'snc_pol', 'next_frc', 'next_legal',
-                'next_photo', 'next_claim', 'next_copy', 'next_attach', 'ex_next_attach',
-                's_front', 's_back', 's_attach', 'insp_pic', 'insp_attach', 'ex_observ_attach',
+                'photo',
+                'cnic_front',
+                'cnic_back',
+                'f_attach',
+                't_attach',
+                'p_attach',
+                'h_verify',
+                'b_verify',
+                'p_verify',
+                'd_book',
+                'v_verify',
+                'copy_bill',
+                'n_verify',
+                'insurrance',
+                'guard_bank',
+                'bio_verify',
+                'c_verify',
+                'dpo_verify',
+                'form_attach',
+                'rec_attach',
+                'eight_verify',
+                'sahulat_v',
+                'l_finger',
+                'f_finger',
+                'm_finger',
+                'i_finger',
+                't_finger',
+                'additionals',
+                'f_attachment',
+                'vaccine_card',
+                'medical_fit_card',
+                'medical_fit_attach',
+                'phy_attach',
+                'vac_pr',
+                'front_eobi',
+                'back_eobi',
+                'front_ss',
+                'back_ss',
+                'snc_pol',
+                'next_frc',
+                'next_legal',
+                'next_photo',
+                'next_claim',
+                'next_copy',
+                'next_attach',
+                'ex_next_attach',
+                's_front',
+                's_back',
+                's_attach',
+                'insp_pic',
+                'insp_attach',
+                'ex_observ_attach',
                 'appraisal_attach',
             ];
-        foreach ($hrmImageFields as $field) {
-            if ($request->hasFile($field)) {
-                $files = $request->file($field);
+            foreach ($hrmImageFields as $field) {
+                if ($request->hasFile($field)) {
+                    $files = $request->file($field);
 
-                if (!is_array($files)) {
-                    $files = [$files]; // Convert single file to array
-                }
-
-                $filePaths = [];
-
-                foreach ($files as $file) {
-                    $extension = $file->getClientOriginalExtension();
-                    $file_name = time() . '_' . uniqid() . '.' . $extension;
-
-                    // Delete old files if they exist
-                    if (!empty($hrm->$field)) {
-                        $oldFiles = [];
-
-                        if (is_string($hrm->$field)) {
-                            $decoded = json_decode($hrm->$field, true);
-                            $oldFiles = is_array($decoded) ? $decoded : [$hrm->$field];
-                        } elseif (is_array($hrm->$field)) {
-                            $oldFiles = $hrm->$field;
-                        }
-
-                        foreach ($oldFiles as $oldFile) {
-                            if (file_exists(public_path($oldFile))) {
-                                unlink(public_path($oldFile));
-                            }
-                        }
+                    if (!is_array($files)) {
+                        $files = [$files]; // Convert single file to array
                     }
 
-                    $file->move(public_path('uploads/images'), $file_name);
-                    $filePaths[] = 'uploads/images/' . $file_name;
-                }
+                    $filePaths = [];
 
-                // Save single or multiple files
-                $hrm->$field = count($filePaths) > 1 ? json_encode($filePaths) : $filePaths[0];
+                    foreach ($files as $file) {
+                        $extension = $file->getClientOriginalExtension();
+                        $file_name = time() . '_' . uniqid() . '.' . $extension;
+
+                        // Delete old files if they exist
+                        if (!empty($hrm->$field)) {
+                            $oldFiles = [];
+
+                            if (is_string($hrm->$field)) {
+                                $decoded = json_decode($hrm->$field, true);
+                                $oldFiles = is_array($decoded) ? $decoded : [$hrm->$field];
+                            } elseif (is_array($hrm->$field)) {
+                                $oldFiles = $hrm->$field;
+                            }
+
+                            foreach ($oldFiles as $oldFile) {
+                                if (file_exists(public_path($oldFile))) {
+                                    unlink(public_path($oldFile));
+                                }
+                            }
+                        }
+
+                        $file->move(public_path('uploads/images'), $file_name);
+                        $filePaths[] = 'uploads/images/' . $file_name;
+                    }
+
+                    // Save single or multiple files
+                    $hrm->$field = count($filePaths) > 1 ? json_encode($filePaths) : $filePaths[0];
+                }
             }
-        }
 
 
             //     foreach ($hrmImageFields as $field) {
@@ -918,33 +1059,34 @@ public function posthrm()
                 $hrm->activation = $request->input('activation');
             }
 
-               $hrm->save();
+            $hrm->save();
 
-                   $payrollsData = $request->input('payrolls', []);
+            $payrollsData = $request->input('payrolls', []);
 
-                        foreach ($payrollsData as $payrollData) {
-                            $payrollId = $payrollData['p_id'] ?? null;
-                             $payrollFileFields = [
-                                    'p_employee_pay_slips', 'p_payroll_reports',
-                                ];
-                        foreach ($payrollFileFields as $field) {
-                            if ($request->hasFile($field) && isset($payrollData[$field])) {
-                                $file = $request->file($field);
-                                $extension = $file->getClientOriginalExtension();
-                                $file_name = time() . '_' . $file->getClientOriginalName();
-                                 $file->move(public_path('uploads/payrolls'), $file_name);
-                                 $payrollData[$field] = 'uploads/payrolls/' . $file_name;
-                                }
-                            }
-                            if (empty($payrollId)) {
-                                $hrm->payrolls()->create($payrollData);
-                            } else {
-                                $payroll = payroll::find($payrollId);
-                                if ($payroll) {
-                                    $payroll->update($payrollData);
-                                }
-                            }
-                        }
+            foreach ($payrollsData as $payrollData) {
+                $payrollId = $payrollData['p_id'] ?? null;
+                $payrollFileFields = [
+                    'p_employee_pay_slips',
+                    'p_payroll_reports',
+                ];
+                foreach ($payrollFileFields as $field) {
+                    if ($request->hasFile($field) && isset($payrollData[$field])) {
+                        $file = $request->file($field);
+                        $extension = $file->getClientOriginalExtension();
+                        $file_name = time() . '_' . $file->getClientOriginalName();
+                        $file->move(public_path('uploads/payrolls'), $file_name);
+                        $payrollData[$field] = 'uploads/payrolls/' . $file_name;
+                    }
+                }
+                if (empty($payrollId)) {
+                    $hrm->payrolls()->create($payrollData);
+                } else {
+                    $payroll = payroll::find($payrollId);
+                    if ($payroll) {
+                        $payroll->update($payrollData);
+                    }
+                }
+            }
 
             // Update Guarantors
             $guarantorsData = $request->input('guarantors', []);
@@ -953,7 +1095,9 @@ public function posthrm()
                 $guarantorId = $guarantorData['g_id'] ?? null;
 
                 $guarantorFields = [
-                    'g_cnic_f', 'g_cnic_b', 'head_attach',
+                    'g_cnic_f',
+                    'g_cnic_b',
+                    'head_attach',
                 ];
 
                 foreach ($guarantorFields as $field) {
@@ -976,34 +1120,34 @@ public function posthrm()
                 }
             }
 
-                   $trainingdata = $request->input('trainings', []);
-                    $trainerImageFields = ['training_course_file', 'expenses_proof_attach', 'training_certificate', 'attachment_anyone'];
+            $trainingdata = $request->input('trainings', []);
+            $trainerImageFields = ['training_course_file', 'expenses_proof_attach', 'training_certificate', 'attachment_anyone'];
 
-                    foreach ($trainingdata as $index => $training) {
-                        $trainingId = $training['training_id'] ?? null;
+            foreach ($trainingdata as $index => $training) {
+                $trainingId = $training['training_id'] ?? null;
 
-                        foreach ($trainerImageFields as $field) {
-                            if ($request->hasFile("trainings.$index.$field")) {
-                                $file = $request->file("trainings.$index.$field");
-                                $file_name = time() . '_' . $file->getClientOriginalName();
-                                $file->move(public_path('uploads/images'), $file_name);
-                                $training[$field] = 'uploads/images/' . $file_name;
-                            } elseif ($trainingId) {
-                                $existingTraining = $hrm->trainingssecontion()->find($trainingId);
-                                if ($existingTraining) {
-                                    $training[$field] = $existingTraining->$field;
-                                }
-                            }
-                        }
-
-                        if ($trainingId) {
-                            // Update existing training record
-                            $trainingRecord = $hrm->trainingssecontion()->find($trainingId);
-                            if ($trainingRecord) {
-                                $trainingRecord->update($training);
-                            }
+                foreach ($trainerImageFields as $field) {
+                    if ($request->hasFile("trainings.$index.$field")) {
+                        $file = $request->file("trainings.$index.$field");
+                        $file_name = time() . '_' . $file->getClientOriginalName();
+                        $file->move(public_path('uploads/images'), $file_name);
+                        $training[$field] = 'uploads/images/' . $file_name;
+                    } elseif ($trainingId) {
+                        $existingTraining = $hrm->trainingssecontion()->find($trainingId);
+                        if ($existingTraining) {
+                            $training[$field] = $existingTraining->$field;
                         }
                     }
+                }
+
+                if ($trainingId) {
+                    // Update existing training record
+                    $trainingRecord = $hrm->trainingssecontion()->find($trainingId);
+                    if ($trainingRecord) {
+                        $trainingRecord->update($training);
+                    }
+                }
+            }
 
 
             // Update Work Experiences
@@ -1013,7 +1157,9 @@ public function posthrm()
                 $workExperienceId = $workExperience['w_id'] ?? null;
 
                 $workExperienceFields = [
-                    'jec', 'jec_attach', 'ser_other',
+                    'jec',
+                    'jec_attach',
+                    'ser_other',
                 ];
 
                 foreach ($workExperienceFields as $field) {
@@ -1043,7 +1189,8 @@ public function posthrm()
                 $educationId = $education['d_id'] ?? null;
 
                 $educationFields = [
-                    'degree_pic', 'degree_attach',
+                    'degree_pic',
+                    'degree_attach',
                 ];
 
                 foreach ($educationFields as $field) {
@@ -1082,7 +1229,7 @@ public function posthrm()
     }
 
 
-   public function sendPDFViaEmail(Request $request)
+    public function sendPDFViaEmail(Request $request)
     {
         try {
             $email = $request->input('email');
@@ -1163,7 +1310,7 @@ public function posthrm()
     public function hiredat()
     {
         $hiredats = HiredAt::all();
-        return view('Hrm.hiredat' , compact('hiredats'));
+        return view('Hrm.hiredat', compact('hiredats'));
     }
 
     public function posthiredat(Request $request)
@@ -1369,47 +1516,52 @@ public function posthrm()
         }
     }
 
-     public function addObservation(){
+    public function addObservation()
+    {
         $observations = Observation::all();
-         return view('Hrm.observation',compact('observations'));
-   }
-   public function storeobservation(Request $request){
+        return view('Hrm.observation', compact('observations'));
+    }
+    public function storeobservation(Request $request)
+    {
         $observations = new Observation();
         $observations->o_name = $request->o_name;
         $observations->save();
-        return redirect()->back()->with('success','Observation added successfully');
-   }
-
-   public function deleteeobservation($id){
-       $observations = Observation::find($id);
-       $observations->delete();
-       return redirect()->back()->with('success','Observation deleted successfully');
-   }
-
-   public function delete_hrm($id){
-     $delete = Hrm::find($id);
-     $delete->delete();
-     return redirect()->back()->with('success',' Deleted successfully');
-   }
-
-   public function IsHrm(Request $request){
-    $validator = Validator::make($request->all(), [
-        'hrm_email' => 'required|email'
-    ]);
-    
-    if($validator->fails()){
-        return response()->json([
-            'status' => false,
-            'data' => $validator->errors()->first()
-        ], 403);
+        return redirect()->back()->with('success', 'Observation added successfully');
     }
 
-    $hrm = HRM::where('email', $request->hrm_email)->first();
+    public function deleteeobservation($id)
+    {
+        $observations = Observation::find($id);
+        $observations->delete();
+        return redirect()->back()->with('success', 'Observation deleted successfully');
+    }
 
-    return response()->json([
-        'status' => true,
-        'data' => $hrm
-    ]);
-   }
+    public function delete_hrm($id)
+    {
+        $delete = Hrm::find($id);
+        $delete->delete();
+        return redirect()->back()->with('success', ' Deleted successfully');
+    }
+
+    public function IsHrm(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'hrm_email' => 'required|email'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'data' => $validator->errors()->first()
+            ], 403);
+        }
+
+        $hrm = HRM::where('email', $request->hrm_email)->first();
+
+        return response()->json([
+            'status' => true,
+            'data' => $hrm
+        ]);
+    }
 
 }

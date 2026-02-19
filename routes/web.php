@@ -187,18 +187,21 @@ Route::post('postdesignation', [HrmController::class, 'postdesignation'])->name(
 Route::delete('designation/{id}', [HrmController::class, 'destroydesignation'])->name('deleteDesignation');
 Route::get('designation/{id}/edit', [HrmController::class, 'editdesignation'])->name('editDesignation');
 Route::put('designation/{id}', [HrmController::class, 'updatedesignation'])->name('updateDesignation');
+
 // Hrm Fall In EOBI Cities :
 Route::get('eobi', [HrmController::class, 'eobi'])->name('eobi');
 Route::post('posteobi', [HrmController::class, 'posteobi'])->name('posteobi');
 Route::get('/eobi/{id}/edit', [HrmController::class, 'editeobi'])->name('editEobi');
 Route::put('/eobi/{id}', [HrmController::class, 'updateeobi'])->name('updateEobi');
 Route::delete('/eobi/{id}', [HrmController::class, 'destroyeobi'])->name('deleteEobi');
+
 // Hrm Fall In EOBI Cities (Social Security) :
 Route::get('social', [HrmController::class, 'social'])->name('social');
 Route::post('postsocial', [HrmController::class, 'postsocial'])->name('postsocial');
 Route::get('social/{id}/edit', [HrmController::class, 'editsocial'])->name('editSocial');
 Route::put('social/{id}', [HrmController::class, 'updatesocial'])->name('updateSocial');
 Route::delete('social/{id}', [HrmController::class, 'destroysocial'])->name('deleteSocial');
+
 // Hrm Diseases :
 Route::get('disease', [HrmController::class, 'disease'])->name('disease');
 Route::post('postdisease', [HrmController::class, 'postdisease'])->name('postdisease');

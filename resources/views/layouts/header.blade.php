@@ -609,8 +609,10 @@
                           aria-controls="payRollSubMenu">Payroll Management</a>
                         <div class="collapse" id="payRollSubMenu">
                           <ul class="nav flex-column sub-menu">
-                            <li class="nav-item"><a class="nav-link" href="{{route('dashboard.employee-payroll.salaries')}}">Set Employee Salary</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{{route('dashboard.employee-payroll.salary-report')}}">Salary Report</a></li>
+                            <li class="nav-item"><a class="nav-link"
+                                href="{{route('dashboard.employee-payroll.salaries')}}">Set Employee Salary</a></li>
+                            <li class="nav-item"><a class="nav-link"
+                                href="{{route('dashboard.employee-payroll.salary-report')}}">Salary Report</a></li>
                           </ul>
                         </div>
                       </li>
@@ -710,11 +712,11 @@
                     style="background-color: transparent;">Reports</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link " href="{{route('dashboard.lms.index')}}"
-                    style="background-color: transparent;">LMS Management</a>
+                  <a class="nav-link " href="{{route('dashboard.lms.index')}}" style="background-color: transparent;">LMS
+                    Management</a>
                 </li>
               @endif
-            @endif 
+            @endif
 
           </ul>
 
@@ -740,19 +742,19 @@
       };
 
       @if(Session::has('success'))
-        toastr.success("{{ Session::get('success') }}");
+        toastr.success({!! json_encode(Session::get('success')) !!});
       @endif
 
       @if(Session::has('error'))
-        toastr.error("{{ Session::get('error') }}");
+        toastr.error({!! json_encode(Session::get('error')) !!});
       @endif
 
       @if(Session::has('info'))
-        toastr.info("{{ Session::get('info') }}");
+        toastr.info({!! json_encode(Session::get('info')) !!});
       @endif
 
       @if(Session::has('warning'))
-        toastr.warning("{{ Session::get('warning') }}");
+        toastr.warning({!! json_encode(Session::get('warning')) !!});
       @endif
     </script>
 
