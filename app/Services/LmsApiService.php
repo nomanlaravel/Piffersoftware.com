@@ -18,6 +18,7 @@ class LmsApiService
     {
         return Cache::remember('lms_faculties', 3600, function () {
             return Http::timeout(5)
+                ->withoutVerifying()
                 ->retry(2, 200)
                 ->get("{$this->baseUrl}/faculties")
                 ->json();
@@ -28,6 +29,7 @@ class LmsApiService
     {
         return Cache::remember('lms_users', 300, function () {
             return Http::timeout(5)
+                ->withoutVerifying()
                 ->retry(2, 200)
                 ->get("{$this->baseUrl}/get-users")
                 ->json();
@@ -37,6 +39,7 @@ class LmsApiService
     public function register(array $data)
     {
         return Http::timeout(10)
+            ->withoutVerifying()
             ->post("{$this->baseUrl}/register", array_merge([
                 'access_code' => 'piffersoftware'
             ], $data))

@@ -176,19 +176,19 @@ Route::get('/observation/type/add', [HrmController::class, 'addObservation'])->n
 Route::post('/observation/type/store', [HrmController::class, 'storeobservation'])->name('observation.store');
 Route::delete('/observation/type/delete/{id}', [HrmController::class, 'deleteeobservation'])->name('observation.delete');
 
-// Hrm Hired At
+//Hrm Hired At
 Route::get('hiredat', [HrmController::class, 'hiredat'])->name('hiredat');
 Route::post('posthiredat', [HrmController::class, 'posthiredat'])->name('posthiredat');
 Route::delete('/hiredat/{id}', [HrmController::class, 'deletehiredat'])->name('deletehiredat');
 
-// Designations ..
+//Designations ..
 Route::get('designation', [HrmController::class, 'designation'])->name('designation');
 Route::post('postdesignation', [HrmController::class, 'postdesignation'])->name('postdesignation');
 Route::delete('designation/{id}', [HrmController::class, 'destroydesignation'])->name('deleteDesignation');
 Route::get('designation/{id}/edit', [HrmController::class, 'editdesignation'])->name('editDesignation');
 Route::put('designation/{id}', [HrmController::class, 'updatedesignation'])->name('updateDesignation');
 
-// Hrm Fall In EOBI Cities :
+//Hrm Fall In EOBI Cities :
 Route::get('eobi', [HrmController::class, 'eobi'])->name('eobi');
 Route::post('posteobi', [HrmController::class, 'posteobi'])->name('posteobi');
 Route::get('/eobi/{id}/edit', [HrmController::class, 'editeobi'])->name('editEobi');
@@ -202,7 +202,7 @@ Route::get('social/{id}/edit', [HrmController::class, 'editsocial'])->name('edit
 Route::put('social/{id}', [HrmController::class, 'updatesocial'])->name('updateSocial');
 Route::delete('social/{id}', [HrmController::class, 'destroysocial'])->name('deleteSocial');
 
-// Hrm Diseases :
+//Hrm Diseases :
 Route::get('disease', [HrmController::class, 'disease'])->name('disease');
 Route::post('postdisease', [HrmController::class, 'postdisease'])->name('postdisease');
 Route::get('diseases/{id}/edit', [HrmController::class, 'editdisease'])->name('editDisease');
@@ -212,8 +212,8 @@ Route::post('/send-pdf-email', [HrmController::class, 'sendPDFViaEmail']);
 
 Route::post('/hrm/import', [HrmController::class, 'import'])->name('hrm.import');
 
-// Regulatory Affairs :-
-// Regulator
+//Regulatory Affairs :-
+//Regulator
 Route::get('regulator', [RegulatoryController::class, 'regulator'])->name('regulator');
 Route::get('postregulator', [RegulatoryController::class, 'postregulator'])->name('postregulator');
 Route::post('submit_regulator', [RegulatoryController::class, 'submit_regulator'])->name('submit_regulator');
@@ -225,7 +225,7 @@ Route::get('regulator/delete/{id}', [RegulatoryController::class, 'regulator_del
 
 Route::post('/send-pdf-email', [RegulatoryController::class, 'sendPDFViaEmail']);
 
-// Corporate
+//Corporate
 Route::get('corporate', [CorporateController::class, 'corporate'])->name('corporate');
 Route::get('postcorporate', [CorporateController::class, 'postcorporate'])->name('postcorporate');
 Route::post('submit_corporate', [CorporateController::class, 'submit_corporate'])->name('submit_corporate');
@@ -236,7 +236,7 @@ Route::get('viewcorporate/{id}', [CorporateController::class, 'viewcorporate'])-
 Route::get('corporate/delete/{id}', [CorporateController::class, 'corporate_delete'])->name('corporate_delete');
 Route::post('/send-pdf-email', [CorporateController::class, 'sendPDFViaEmail']);
 
-// Chamber
+//Chamber
 Route::get('chamber', [ChamberController::class, 'chamber'])->name('chamber');
 Route::get('postchamber', [ChamberController::class, 'postchamber'])->name('postchamber');
 Route::post('submitchamber', [ChamberController::class, 'submitchamber'])->name('submitchamber');
@@ -246,7 +246,7 @@ Route::put('/update_chamber/{id}', [ChamberController::class, 'update_chamber'])
 Route::get('viewchamber/{id}', [ChamberController::class, 'viewchamber'])->name('viewchamber');
 Route::post('/send-pdf-email', [ChamberController::class, 'sendPDFViaEmail']);
 
-// Training
+//Training
 Route::get('train', [TrainingController::class, 'train'])->name('train');
 Route::get('posttrain', [TrainingController::class, 'posttrain'])->name('posttrain');
 Route::post('submit_train', [TrainingController::class, 'submit_train'])->name('submit_train');

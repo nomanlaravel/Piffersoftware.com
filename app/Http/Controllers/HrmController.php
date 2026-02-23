@@ -761,7 +761,7 @@ class HrmController extends Controller
         }
 
 
-        $response = Http::get('https://guardstrainingmoodle.piffers.net/certapi.php', $params);
+        $response = Http::withoutVerifying()->get('https://guardstrainingmoodle.piffers.net/certapi.php', $params);
 
         // Convert JSON to array
         $certificates = $response->json();
