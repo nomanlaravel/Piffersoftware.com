@@ -113,11 +113,26 @@
                                        border: 2px solid #667eea; border-radius: 8px; margin-top: 8px; z-index: 1000;
                                        box-shadow: 0 8px 24px rgba(102, 126, 234, 0.15);">
 
-                                <!-- Search -->
-                                <div style="padding: 12px; border-bottom: 1px solid #e0e0e0;">
-                                    <input type="text" id="customerSearch" class="form-control"
-                                        placeholder="Search customers..."
-                                        style="border: 1px solid #e0e0e0; border-radius: 6px; padding: 8px 12px;">
+                                <!-- Search & Filter -->
+                                <div style="padding: 12px; border-bottom: 1px solid #e0e0e0; background-color: #fcfcfc;">
+                                    <div class="row no-gutters">
+                                        <div class="col-6 pr-2">
+                                            <select id="regionFilter" class="form-control form-control-sm"
+                                                style="border: 1px solid #e0e0e0; border-radius: 6px; font-size: 0.85rem;">
+                                                <option value="">All Regions</option>
+                                                @if(isset($regions))
+                                                    @foreach($regions as $region)
+                                                        <option value="{{ $region }}">{{ $region }}</option>
+                                                    @endforeach
+                                                @endif
+                                            </select>
+                                        </div>
+                                        <div class="col-6">
+                                            <input type="text" id="customerSearch" class="form-control form-control-sm"
+                                                placeholder="Search name/email..."
+                                                style="border: 1px solid #e0e0e0; border-radius: 6px; font-size: 0.85rem;">
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <!-- Select All -->
@@ -139,6 +154,8 @@
                                         @foreach($customers as $customer)
                                             <div class="customer-option"
                                                 data-email="{{ strtolower($customer->email) }}"
+                                                data-name="{{ strtolower($customer->customers_name) }}"
+                                                data-region="{{ $customer->customers_region }}"
                                                 style="padding: 10px 16px; border-bottom: 1px solid #f0f0f0; cursor: pointer;">
                                                 <label style="display: flex; align-items: center; margin: 0; cursor: pointer;">
                                                     <input type="checkbox" name="customers[]" value="{{ $customer->id }}"
@@ -184,18 +201,22 @@
                             <i class="bi bi-chat-text-fill mr-2" style="color: #667eea;"></i>Message
                         </label>
                         <textarea class="form-control" id="emailMessage" name="email_message" rows="6"
-                            placeholder="Write your message here..." required>{{ old('email_message') }}</textarea>
+                            placeholder="Write your message here..." style="text-align: left;" required>{{ old('email_message') }}</textarea>
                     </div>
 
-                    <!-- Attachment -->
+                    <!-- Attachments -->
                     <div class="form-group">
-                        <label for="emailAttachment" class="font-weight-bold">
-                            <i class="bi bi-paperclip mr-2" style="color: #667eea;"></i>Attachment (optional)
+                        <label class="font-weight-bold">
+                            <i class="bi bi-paperclip mr-2" style="color: #667eea;"></i>Attachments (optional)
                         </label>
-                        <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="emailAttachment" name="emailAttachment">
-                            <label class="custom-file-label" for="emailAttachment">Choose file...</label>
+                        <div class="custom-file mb-2">
+                            <input type="file" class="custom-file-input" id="emailAttachments" name="emailAttachments[]" multiple>
+                            <label class="custom-file-label" id="attachmentsLabel" for="emailAttachments">Choose files...</label>
                         </div>
+                        <div id="fileListContainer" class="d-flex flex-wrap mt-2" style="gap: 8px;">
+                            <!-- File badges will appear here -->
+                        </div>
+                        <small class="text-muted"><i class="bi bi-info-circle mr-1"></i>You can select multiple files at once.</small>
                     </div>
                 </div>
 
@@ -267,10 +288,54 @@
 .customer-option:hover {
     background-color: #f0f4ff !important;
 }
+
+/* CKEditor Custom Styling */
+.ck-editor__editable_inline {
+    min-height: 200px;
+    border-bottom-left-radius: 8px !important;
+    border-bottom-right-radius: 8px !important;
+    text-align: left !important;
+}
+.ck-editor__editable_inline p,
+.ck-editor__editable_inline h1,
+.ck-editor__editable_inline h2,
+.ck-editor__editable_inline h3,
+.ck-editor__editable_inline h4,
+.ck-editor__editable_inline li,
+.ck-editor__editable_inline blockquote {
+    text-align: left !important;
+    margin-bottom: 0.5em !important;
+}
+.ck-editor__top {
+    border-top-left-radius: 8px !important;
+    border-top-right-radius: 8px !important;
+}
 </style>
 
 <script>
+let emailEditor;
+
 document.addEventListener('DOMContentLoaded', function () {
+
+    // Initialize CKEditor
+    ClassicEditor
+        .create(document.querySelector('#emailMessage'), {
+            toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
+            placeholder: 'Write your message here...'
+        })
+        .then(editor => {
+            emailEditor = editor;
+            
+            // Remove required to prevent 'An invalid form control with name="email_message" is not focusable' error
+            const textarea = document.querySelector('#emailMessage');
+            if (textarea.hasAttribute('required')) {
+                textarea.removeAttribute('required');
+            }
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
 
     if (typeof jQuery === 'undefined') {
         console.error('jQuery is not loaded!');
@@ -287,6 +352,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const selectedCountSpan = $('#selectedCount');
     const customerSearch = $('#customerSearch');
+    const regionFilter = $('#regionFilter');
 
     const sendToAllInput = $('#sendToAllInput');
     const excludedContainer = $('#excludedCustomersContainer');
@@ -309,16 +375,25 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // ✅ Search
-    customerSearch.on('keyup', function () {
-        const term = $(this).val().toLowerCase();
+    // ✅ Search and Region Filter
+    function filterCustomers() {
+        const searchTerm = customerSearch.val().toLowerCase();
+        const selectedRegion = regionFilter.val();
 
         $('#customerList .customer-option').each(function () {
-            const email = $(this).data('email');
-            if (!email) return;
-            $(this).toggle(email.includes(term));
+            const email = $(this).data('email') || "";
+            const name = $(this).data('name') || "";
+            const region = $(this).data('region') || "";
+
+            const matchesSearch = email.includes(searchTerm) || name.includes(searchTerm);
+            const matchesRegion = selectedRegion === "" || region === selectedRegion;
+
+            $(this).toggle(matchesSearch && matchesRegion);
         });
-    });
+    }
+
+    customerSearch.on('keyup', filterCustomers);
+    regionFilter.on('change', filterCustomers);
 
     // ✅ Select All
     selectAllCheckbox.on('change', function () {
@@ -413,10 +488,33 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // ✅ Attachment label
-    $('#emailAttachment').on('change', function () {
-        const fileName = $(this).val().split('\\').pop();
-        $(this).next('.custom-file-label').html(fileName || 'Choose file...');
+    // ✅ Attachments handling (Multiple)
+    const attachmentsInput = $('#emailAttachments');
+    const attachmentsLabel = $('#attachmentsLabel');
+    const fileListContainer = $('#fileListContainer');
+
+    attachmentsInput.on('change', function () {
+        const files = this.files;
+        fileListContainer.empty();
+        
+        if (files.length === 0) {
+            attachmentsLabel.html('Choose files...');
+            return;
+        }
+
+        attachmentsLabel.html(`${files.length} file(s) selected`);
+
+        Array.from(files).forEach((file, index) => {
+            const fileSize = (file.size / 1024).toFixed(1); // KB
+            const badge = $(`
+                <div class="badge badge-light border p-2 d-flex align-items-center" style="font-weight: 500; color: #555; background: #fff;">
+                    <i class="bi bi-file-earmark-check mr-2" style="color: #28a745;"></i>
+                    <span class="text-truncate" style="max-width: 150px;">${file.name}</span>
+                    <span class="ml-2 text-muted" style="font-size: 0.75rem;">(${fileSize} KB)</span>
+                </div>
+            `);
+            fileListContainer.append(badge);
+        });
     });
 
     // ✅ Reset modal
@@ -437,11 +535,27 @@ document.addEventListener('DOMContentLoaded', function () {
 
         updateSelectedCount();
         customerSearch.val('');
+        regionFilter.val('');
         $('#customerList .customer-option').show();
-        $('#emailAttachment').next('.custom-file-label').html('Choose file...');
+        attachmentsLabel.html('Choose files...');
+        fileListContainer.empty();
+
+        // Reset CKEditor
+        if (emailEditor) {
+            emailEditor.setData('');
+        }
     });
 
+
+
     updateSelectedCount();
+
+    // Sync CKEditor data before submission
+    $('#composeEmailForm').on('submit', function () {
+        if (emailEditor) {
+            document.querySelector('#emailMessage').value = emailEditor.getData();
+        }
+    });
 
     // Debug submit
     $('#composeEmailForm').on('submit', function () {
@@ -451,8 +565,14 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log('customers[]:', formData.getAll('customers[]'));
         console.log('excluded_customers[]:', formData.getAll('excluded_customers[]'));
         console.log('subject:', formData.get('email_subject'));
+        
+        // Final sync before submit
+        if (emailEditor) {
+            formData.set('email_message', emailEditor.getData());
+        }
         console.log('message:', formData.get('email_message'));
     });
+
 
 });
 </script>

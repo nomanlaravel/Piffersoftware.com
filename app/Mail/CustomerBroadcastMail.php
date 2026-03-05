@@ -6,10 +6,15 @@ use Illuminate\Mail\Mailable;
 
 class CustomerBroadcastMail extends Mailable
 {
+    /**
+     * @param string $subjectText
+     * @param string $bodyText
+     * @param string[] $attachmentPaths Array of absolute paths to files
+     */
     public function __construct(
         public string $subjectText,
         public string $bodyText,
-        public ?string $attachmentPath = null // can be null
+        public array $attachmentPaths = []
     ) {}
 
     public function build()
@@ -20,9 +25,12 @@ class CustomerBroadcastMail extends Mailable
                 'body' => $this->bodyText,
             ]);
 
-        // ✅ attach directly because it's already a full absolute path
-        if (!empty($this->attachmentPath) && file_exists($this->attachmentPath)) {
-            $mail->attach($this->attachmentPath);
+        if (!empty($this->attachmentPaths)) {
+            foreach ($this->attachmentPaths as $path) {
+                if (file_exists($path)) {
+                    $mail->attach($path);
+                }
+            }
         }
 
         return $mail;
