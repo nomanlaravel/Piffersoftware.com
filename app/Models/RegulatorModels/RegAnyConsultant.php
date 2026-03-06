@@ -1,7 +1,6 @@
 <?php
 
-namespace App\Models;
-
+namespace App\Models\RegulatorModels;
 use App\Models\Regulator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
