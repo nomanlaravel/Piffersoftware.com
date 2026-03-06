@@ -103,7 +103,7 @@
                         Customer Management
                     </button>
                 </h2>
-                <div id="collapseTotalCustomer" class="accordion-collapse collapse show"
+                <div id="collapseTotalCustomer" class="accordion-collapse collapse"
                     aria-labelledby="headingTotalCustomer" data-bs-parent="#totalCustomerAccordion">
                     <div class="accordion-body">
                         @if (Auth::user()->role != 'customer')
