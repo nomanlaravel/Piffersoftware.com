@@ -38,7 +38,7 @@ class AuthController extends Controller
         return redirect('/login');
     }
     
-    public function dashboard()
+    public function  dashboard()
     {
         $customers = Customer::select('id', 'email', 'customers_name', 'customers_region')->get();
         $regions = Customer::whereNotNull('customers_region')
@@ -47,4 +47,5 @@ class AuthController extends Controller
             ->pluck('customers_region');
         return view('auth.dashboard', compact('customers', 'regions'));
     }
+    
 }
