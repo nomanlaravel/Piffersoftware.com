@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\Api\CustomerInspectionController;
+use App\Models\Customer;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -20,7 +21,6 @@ use App\Http\Controllers\Api\CustomerInspectionController;
 
 // routes/api.php
 Route::get('is-hrm', [HrmController::class, 'IsHrm']);
-
 
 
 Route::get('/customer-data/{id}', [CustomerController::class, 'getCustomerData']);

@@ -116,9 +116,9 @@
                                 <!-- Search & Filter -->
                                 <div style="padding: 12px; border-bottom: 1px solid #e0e0e0; background-color: #fcfcfc;">
                                     <div class="row no-gutters">
-                                        <div class="col-6 pr-2">
+                                        <div class="col-4 pr-1">
                                             <select id="regionFilter" class="form-control form-control-sm"
-                                                style="border: 1px solid #e0e0e0; border-radius: 6px; font-size: 0.85rem;">
+                                                style="border: 1px solid #e0e0e0; border-radius: 6px; font-size: 0.8rem; padding: 0 5px;">
                                                 <option value="">All Regions</option>
                                                 @if(isset($regions))
                                                     @foreach($regions as $region)
@@ -127,10 +127,18 @@
                                                 @endif
                                             </select>
                                         </div>
-                                        <div class="col-6">
+                                        <div class="col-3 pr-1">
+                                            <select id="statusFilter" class="form-control form-control-sm"
+                                                style="border: 1px solid #e0e0e0; border-radius: 6px; font-size: 0.8rem; padding: 0 5px;">
+                                                <option value="">All Status</option>
+                                                <option value="1">Active</option>
+                                                <option value="0">Inactive</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-5">
                                             <input type="text" id="customerSearch" class="form-control form-control-sm"
                                                 placeholder="Search name/email..."
-                                                style="border: 1px solid #e0e0e0; border-radius: 6px; font-size: 0.85rem;">
+                                                style="border: 1px solid #e0e0e0; border-radius: 6px; font-size: 0.8rem;">
                                         </div>
                                     </div>
                                 </div>
@@ -156,6 +164,7 @@
                                                 data-email="{{ strtolower($customer->email) }}"
                                                 data-name="{{ strtolower($customer->customers_name) }}"
                                                 data-region="{{ $customer->customers_region }}"
+                                                data-active="{{ $customer->customers_activation_check }}"
                                                 style="padding: 10px 16px; border-bottom: 1px solid #f0f0f0; cursor: pointer;">
                                                 <label style="display: flex; align-items: center; margin: 0; cursor: pointer;">
                                                     <input type="checkbox" name="customers[]" value="{{ $customer->id }}"
@@ -353,6 +362,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const selectedCountSpan = $('#selectedCount');
     const customerSearch = $('#customerSearch');
     const regionFilter = $('#regionFilter');
+    const statusFilter = $('#statusFilter');
 
     const sendToAllInput = $('#sendToAllInput');
     const excludedContainer = $('#excludedCustomersContainer');
@@ -375,25 +385,29 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // ✅ Search and Region Filter
+    // ✅ Search, Region, and Status Filter
     function filterCustomers() {
         const searchTerm = customerSearch.val().toLowerCase();
         const selectedRegion = regionFilter.val();
+        const selectedStatus = statusFilter.val();
 
         $('#customerList .customer-option').each(function () {
-            const email = $(this).data('email') || "";
-            const name = $(this).data('name') || "";
-            const region = $(this).data('region') || "";
+            const email = String($(this).data('email') || "");
+            const name = String($(this).data('name') || "");
+            const region = String($(this).data('region') || "");
+            const status = String($(this).data('active') !== undefined ? $(this).data('active') : "");
 
             const matchesSearch = email.includes(searchTerm) || name.includes(searchTerm);
             const matchesRegion = selectedRegion === "" || region === selectedRegion;
+            const matchesStatus = selectedStatus === "" || status === selectedStatus;
 
-            $(this).toggle(matchesSearch && matchesRegion);
+            $(this).toggle(matchesSearch && matchesRegion && matchesStatus);
         });
     }
 
     customerSearch.on('keyup', filterCustomers);
     regionFilter.on('change', filterCustomers);
+    statusFilter.on('change', filterCustomers);
 
     // ✅ Select All
     selectAllCheckbox.on('change', function () {
@@ -536,6 +550,7 @@ document.addEventListener('DOMContentLoaded', function () {
         updateSelectedCount();
         customerSearch.val('');
         regionFilter.val('');
+        statusFilter.val('');
         $('#customerList .customer-option').show();
         attachmentsLabel.html('Choose files...');
         fileListContainer.empty();

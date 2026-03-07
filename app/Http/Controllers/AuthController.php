@@ -40,7 +40,7 @@ class AuthController extends Controller
     
     public function  dashboard()
     {
-        $customers = Customer::select('id', 'email', 'customers_name', 'customers_region')->get();
+        $customers = Customer::select('id', 'email', 'customers_name', 'customers_region', 'customers_activation_check')->get();
         $regions = Customer::whereNotNull('customers_region')
             ->where('customers_region', '!=', '')
             ->distinct()
