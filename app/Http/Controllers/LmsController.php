@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\LmsApiService;
 use Illuminate\Http\Request;
+use App\Models\Hrm;
 
 class LmsController extends Controller
 {
@@ -12,11 +13,12 @@ class LmsController extends Controller
     }
     public function LMS()
     {
+        $hrms = Hrm::select('id', 'name', 'hrm_region')->get();
         $facultiesData = $this->lmsApiService->getFaculties();
         $faculties = $facultiesData['faculties'] ?? [];
         $usersData = $this->lmsApiService->getUsers();
         $lmsUsers = $usersData['users'] ?? [];
-        return view('lms.index', compact('faculties', 'lmsUsers'));
+        return view('lms.index', compact('faculties', 'lmsUsers', 'hrms'));
     }
 
     public function register(Request $request)
