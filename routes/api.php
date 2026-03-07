@@ -6,6 +6,7 @@ use App\Models\Training;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\Api\CustomerInspectionController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -29,7 +30,7 @@ Route::get('all/customer-data', [CustomerController::class, 'getallCustomerData'
 // Testing purpose only
 Route::get('/customer', [TrainingController::class, 'sendInactiveEmail']);
 
-
+Route::post('/customer-inspection', [CustomerInspectionController::class, 'InspectionStore']);
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
