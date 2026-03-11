@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Mail\CustomerReportMail;
+use App\Models\Customer;
 use Illuminate\Http\Request;
 use App\Models\CustomerInspection;
 use Illuminate\Support\Facades\Validator;
+use Mail;
 class CustomerInspectionController extends Controller
 {
     public function InspectionStore(Request $request)
@@ -19,7 +22,7 @@ class CustomerInspectionController extends Controller
 
         try {
             $validator = Validator::make($request->all(), [
-                'customer_id' => 'required',
+                'customer_name' => 'required',
                 'inspection_no' => 'required',
                 'inspection_emp_id' => 'required',
                 'inspection_emp_name' => 'required',
@@ -38,8 +41,17 @@ class CustomerInspectionController extends Controller
                 ]);
             }
 
+            $customer = Customer::where('customers_name', $request->customer_name)->first();
+
+            if(!$customer){
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Scan QR code Customer not found',
+                ]);
+            }
+
             $customerInspection = new CustomerInspection();
-            $customerInspection->customers_id = $request->customer_id;
+            $customerInspection->customers_id = $customer ? $customer->id : null;
             $customerInspection->inspection_no = $request->inspection_no;
             $customerInspection->inspection_emp_id = $request->inspection_emp_id;
             $customerInspection->inspection_emp_name = $request->inspection_emp_name;
@@ -77,6 +89,7 @@ class CustomerInspectionController extends Controller
 
             $customerInspection->save();
 
+            Mail::to('coding.ata@gmail.com')->send(new CustomerReportMail('Thank you'));
             return response()->json([
                 'status' => 'success',
                 'message' => 'Inspection added successfully',
