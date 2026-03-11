@@ -6,9 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Mail\CustomerReportMail;
 use App\Models\Customer;
 use App\Models\Question;
+use App\Models\QuestionOption;
+use App\Models\InspectionForm;
+use App\Models\InspectionAnswer;
 use Illuminate\Http\Request;
 use App\Models\CustomerInspection;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 use Mail;
 class CustomerInspectionController extends Controller
 {
@@ -20,20 +24,27 @@ class CustomerInspectionController extends Controller
                 'message' => 'Invalid token, Access denied',
             ]);
         }
+        
+        DB::beginTransaction();
 
         try {
             $validator = Validator::make($request->all(), [
-                'customer_name' => 'required',
-                'inspection_no' => 'required',
-                'inspection_emp_id' => 'required',
-                'inspection_emp_name' => 'required',
-                'inspection_emp_cell' => 'required',
-                'inspection_pic' => 'required', 
-                'inspection_note' => 'required',
-                'inspection_attach' => 'required', 
-                'inspection_rem_petr' => 'required',
-            ]);
+    'customer_name' => 'required|string',
+    'inspection_no' => 'required|string',
+    'inspection_emp_id' => 'required|string',
+    'inspection_emp_name' => 'required|string',
+    'inspection_emp_cell' => 'required|string',
+    'inspection_pic' => 'required',
+    'inspection_note' => 'required|string',
+    'inspection_attach' => 'required',
+    'inspection_rem_petr' => 'required',
 
+    'answers' => 'required|array|min:1',
+
+    'answers.*.question_id' => 'required|exists:questions,id',
+    'answers.*.option_id' => 'nullable|exists:question_options,id',
+    'answers.*.custom_answer' => 'nullable|string',
+]);
             if ($validator->fails()) {
                 return response()->json([
                     'status' => 'error',
@@ -41,6 +52,44 @@ class CustomerInspectionController extends Controller
                     'errors' => $validator->errors(),
                 ]);
             }
+
+            $totalQuestions = Question::count();
+if (count($request->answers) != $totalQuestions) {
+    return response()->json([
+        'status' => 'error',
+        'message' => 'All questions must be answered'
+    ]);
+}
+
+$questionIds = collect($request->answers)->pluck('question_id');
+
+if ($questionIds->count() !== $questionIds->unique()->count()) {
+    return response()->json([
+        'status' => 'error',
+        'message' => 'Duplicate question answers detected'
+    ]);
+}
+
+foreach ($request->answers as $answer) {
+    if (!empty($answer['option_id'])) {
+        $validOption = QuestionOption ::where('id', $answer['option_id'])
+            ->where('question_id', $answer['question_id'])
+            ->exists();
+        if (!$validOption) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Invalid option for question ID ' . $answer['question_id']
+            ]);
+        }
+    }
+    if (empty($answer['option_id']) && empty($answer['custom_answer'])) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Each question must have either an option or a custom answer'
+        ]);
+    }
+}
+
 
             $customer = Customer::where('customers_name', $request->customer_name)->first();
 
@@ -90,11 +139,30 @@ class CustomerInspectionController extends Controller
 
             $customerInspection->save();
 
-            Mail::to('coding.ata@gmail.com')->send(new CustomerReportMail($customerInspection));
+
+            
+$inspectionForm = InspectionForm::create([
+    'rider_id' => $request->inspection_emp_id,
+    'customer_id' => $customerInspection->id,
+    'submitted_at' => now(),
+]);
+
+foreach ($request->answers as $answer) {
+    InspectionAnswer::create([
+        'inspection_form_id' => $inspectionForm->id,
+        'question_id' => $answer['question_id'],
+        'option_id' => $answer['option_id'] ?? null,
+        'custom_answer' => $answer['custom_answer'] ?? null,
+    ]);
+}
+
+DB::commit();
+            // Mail::to('coding.ata@gmail.com')->send(new CustomerReportMail($customerInspection));
             return response()->json([
                 'status' => 'success',
-                'message' => 'Inspection added successfully',
-                'data' => $customerInspection
+                'message' => 'Inspection stored successfully',
+                'customer_inspection' => $customerInspection,
+                'inspection_form' => $inspectionForm,
             ]);
         } catch (\Exception $e) {
             return response()->json([

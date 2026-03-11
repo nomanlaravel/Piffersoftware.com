@@ -16,14 +16,6 @@ class InspectionForm extends Model
     ];
 
     /**
-     * Get the rider (user) that started the inspection.
-     */
-    public function rider()
-    {
-        return $this->belongsTo(User::class, 'rider_id');
-    }
-
-    /**
      * Get the customer associated with the inspection.
      */
     public function customer()

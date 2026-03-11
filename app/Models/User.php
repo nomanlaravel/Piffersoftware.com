@@ -104,12 +104,4 @@ class User extends Authenticatable
     {
         return $this->hasMany(Attendance::class);
     }
-
-    /**
-     * Get the inspection forms for the rider.
-     */
-    public function inspections()
-    {
-        return $this->hasMany(InspectionForm::class, 'rider_id');
-    }
 }

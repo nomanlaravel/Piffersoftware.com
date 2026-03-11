@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('inspection_forms', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('rider_id')->constrained('users')->onDelete('cascade');
+            $table->string('rider_id');
             $table->foreignId('customer_id')->constrained('customers')->onDelete('cascade');
             $table->timestamp('submitted_at')->nullable();
             $table->timestamps();
