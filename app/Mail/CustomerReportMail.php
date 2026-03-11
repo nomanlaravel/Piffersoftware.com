@@ -13,12 +13,13 @@ class CustomerReportMail extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $customerInspection;
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct($customerInspection)
     {
-        //
+        $this->customerInspection = $customerInspection;
     }
 
     /**
@@ -38,6 +39,9 @@ class CustomerReportMail extends Mailable
     {
         return new Content(
             view: 'customers.inspection_report_mail.index',
+            with: [
+                'customerInspection' => $this->customerInspection,
+            ],
         );
     }
 

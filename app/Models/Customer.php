@@ -281,5 +281,11 @@ class Customer extends Model
         return $this->hasMany(\App\Models\ReminderNotification::class, 'user_id');
     }
 
-
+    /**
+     * Get the inspection forms for the customer.
+     */
+    public function inspections()
+    {
+        return $this->hasMany(InspectionForm::class);
+    }
 }

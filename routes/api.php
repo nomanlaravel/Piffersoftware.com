@@ -36,3 +36,10 @@ Route::post('/customer-inspection', [CustomerInspectionController::class, 'Inspe
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::prefix('inspections')->group(function () {
+    Route::get('/questions', [CustomerInspectionController::class, 'getQuestions']);
+    Route::post('/start', [InspectionController::class, 'startInspection']);
+    Route::post('/{id}/submit', [InspectionController::class, 'submitAnswers']);
+    Route::get('/results', [InspectionController::class, 'getResults']);
+});

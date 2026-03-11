@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Mail\CustomerReportMail;
 use App\Models\Customer;
+use App\Models\Question;
 use Illuminate\Http\Request;
 use App\Models\CustomerInspection;
 use Illuminate\Support\Facades\Validator;
@@ -89,7 +90,7 @@ class CustomerInspectionController extends Controller
 
             $customerInspection->save();
 
-            Mail::to('coding.ata@gmail.com')->send(new CustomerReportMail('Thank you'));
+            Mail::to('coding.ata@gmail.com')->send(new CustomerReportMail($customerInspection));
             return response()->json([
                 'status' => 'success',
                 'message' => 'Inspection added successfully',
@@ -101,5 +102,15 @@ class CustomerInspectionController extends Controller
                 'message' => 'Failed to add inspection: ' . $e->getMessage(),
             ]);
         }
+    }
+
+    public function getQuestions()
+    {
+        $questions = Question::with('options')->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $questions
+        ]);
     }
 }

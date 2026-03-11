@@ -7,5 +7,7 @@
 </head>
 <body>
     <p>Email sended</p>
+    <p>Customer Name: {{ $customerInspection->customer_name }}</p>
+    <p>Customer Name: {{ $customerInspection }}</p>
 </body>
 </html>
