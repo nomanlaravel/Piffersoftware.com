@@ -55,18 +55,16 @@ class CustomerInspectionController extends Controller
             $totalQuestions = Question::count();
             if (count($request->answers) != $totalQuestions) {
                 return response()->json([
-                    'status' => 'error',
-                    'message' => 'All questions must be answered'
-                ]);
+                    'All questions must be answered'
+                ], 422);
             }
 
             $questionIds = collect($request->answers)->pluck('question_id');
 
             if ($questionIds->count() !== $questionIds->unique()->count()) {
                 return response()->json([
-                    'status' => 'error',
-                    'message' => 'Duplicate question answers detected'
-                ]);
+                    'Duplicate question answers detected'
+                ], 422);
             }
 
             foreach ($request->answers as $answer) {
@@ -76,16 +74,14 @@ class CustomerInspectionController extends Controller
                         ->exists();
                     if (!$validOption) {
                         return response()->json([
-                            'status' => 'error',
-                            'message' => 'Invalid option for question ID ' . $answer['question_id']
-                        ]);
+                            'Invalid option for question ID ' . $answer['question_id']
+                        ], 422);
                     }
                 }
                 if (empty($answer['option_id']) && empty($answer['custom_answer'])) {
                     return response()->json([
-                        'status' => 'error',
-                        'message' => 'Each question must have either an option or a custom answer'
-                    ]);
+                         'Each question must have either an option or a custom answer'
+                    ], 422);
                 }
             }
 
@@ -93,9 +89,8 @@ class CustomerInspectionController extends Controller
 
             if (!$customer) {
                 return response()->json([
-                    'status' => 'error',
-                    'message' => 'Scan QR code Customer not found',
-                ]);
+                    'Scan QR code Customer not found'
+                ], 404);
             }
 
             $customerInspection = new CustomerInspection();
@@ -153,8 +148,10 @@ class CustomerInspectionController extends Controller
             }
 
             DB::commit();
-            // Mail::to('coding.ata@gmail.com')->send(new CustomerReportMail($customerInspection));
-            Mail::to('coding.ata@gmail.com')->queue(new CustomerReportMail($customerInspection));
+            if($customer->email != null || $customer->email != ''){
+                Mail::to('coding.ata@gmail.com')->send(new CustomerReportMail($customerInspection));
+                // Mail::to('coding.ata@gmail.com')->queue(new CustomerReportMail($customerInspection));
+            }
             
             return response()->json([
                 'status' => 'success',
