@@ -20,10 +20,8 @@ class CustomerInspectionController extends Controller
     public function InspectionStore(Request $request)
     {
         if ($request->token !== 'rider_scanner') {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Invalid token, Access denied',
-            ]);
+            return response()->json("Invalid token Access denied"
+            , 403);
         }
 
         DB::beginTransaction();

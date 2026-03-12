@@ -135,7 +135,7 @@
 
                             <h4>Inspection Photo</h4>
 
-                            <img src="{{ asset($inspection->inspection_pic) }}"
+                                <img src="{{ asset('storage/'.$inspection->inspection_pic) }}"
                                 style="max-width:100%;border-radius:6px">
 
                             @endif
