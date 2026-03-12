@@ -154,8 +154,8 @@ class CustomerInspectionController extends Controller
             $inspectionForm->load('answers.question', 'answers.option');
 
             if ($customer->email != null && $customer->email != '') {
-                // Mail::to($customer->email)->send(new CustomerReportMail($customerInspection, $inspectionForm));
-                Mail::to("coding.ata@gmail.com")->send(new CustomerReportMail($customerInspection, $inspectionForm));
+                Mail::to($customer->email)->send(new CustomerReportMail($customerInspection, $inspectionForm));
+                // Mail::to("coding.ata@gmail.com")->send(new CustomerReportMail($customerInspection, $inspectionForm));
             }
 
             return response()->json([
