@@ -13,38 +13,39 @@ use Illuminate\Http\Request;
 use App\Models\CustomerInspection;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Log;
 use Mail;
 class CustomerInspectionController extends Controller
 {
     public function InspectionStore(Request $request)
     {
-        if($request->token !== 'rider_scanner'){
+        if ($request->token !== 'rider_scanner') {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Invalid token, Access denied',
             ]);
         }
-        
+
         DB::beginTransaction();
 
         try {
             $validator = Validator::make($request->all(), [
-    'customer_name' => 'required|string',
-    'inspection_no' => 'required|string',
-    'inspection_emp_id' => 'required|string',
-    'inspection_emp_name' => 'required|string',
-    'inspection_emp_cell' => 'required|string',
-    'inspection_pic' => 'required',
-    'inspection_note' => 'required|string',
-    'inspection_attach' => 'required',
-    'inspection_rem_petr' => 'required',
+                'customer_name' => 'required|string',
+                'inspection_no' => 'required|string|unique:customer_inspections,inspection_no',
+                'inspection_emp_id' => 'required|string',
+                'inspection_emp_name' => 'required|string',
+                'inspection_emp_cell' => 'required|string',
+                // 'inspection_pic' => 'required|image|mimes:jpg,png,webp|max:2048',
+                // 'inspection_attach' => 'required|file|mimes:jpg,png,webp,pdf,mp4|max:10240',
+                'inspection_note' => 'required|string',
+                'inspection_rem_petr' => 'required',
 
-    'answers' => 'required|array|min:1',
+                'answers' => 'required|array|min:1',
 
-    'answers.*.question_id' => 'required|exists:questions,id',
-    'answers.*.option_id' => 'nullable|exists:question_options,id',
-    'answers.*.custom_answer' => 'nullable|string',
-]);
+                'answers.*.question_id' => 'required|exists:questions,id',
+                'answers.*.option_id' => 'nullable|exists:question_options,id',
+                'answers.*.custom_answer' => 'nullable|string|max:1000',
+            ]);
             if ($validator->fails()) {
                 return response()->json([
                     'status' => 'error',
@@ -54,46 +55,45 @@ class CustomerInspectionController extends Controller
             }
 
             $totalQuestions = Question::count();
-if (count($request->answers) != $totalQuestions) {
-    return response()->json([
-        'status' => 'error',
-        'message' => 'All questions must be answered'
-    ]);
-}
+            if (count($request->answers) != $totalQuestions) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'All questions must be answered'
+                ]);
+            }
 
-$questionIds = collect($request->answers)->pluck('question_id');
+            $questionIds = collect($request->answers)->pluck('question_id');
 
-if ($questionIds->count() !== $questionIds->unique()->count()) {
-    return response()->json([
-        'status' => 'error',
-        'message' => 'Duplicate question answers detected'
-    ]);
-}
+            if ($questionIds->count() !== $questionIds->unique()->count()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Duplicate question answers detected'
+                ]);
+            }
 
-foreach ($request->answers as $answer) {
-    if (!empty($answer['option_id'])) {
-        $validOption = QuestionOption ::where('id', $answer['option_id'])
-            ->where('question_id', $answer['question_id'])
-            ->exists();
-        if (!$validOption) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Invalid option for question ID ' . $answer['question_id']
-            ]);
-        }
-    }
-    if (empty($answer['option_id']) && empty($answer['custom_answer'])) {
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Each question must have either an option or a custom answer'
-        ]);
-    }
-}
+            foreach ($request->answers as $answer) {
+                if (!empty($answer['option_id'])) {
+                    $validOption = QuestionOption::where('id', $answer['option_id'])
+                        ->where('question_id', $answer['question_id'])
+                        ->exists();
+                    if (!$validOption) {
+                        return response()->json([
+                            'status' => 'error',
+                            'message' => 'Invalid option for question ID ' . $answer['question_id']
+                        ]);
+                    }
+                }
+                if (empty($answer['option_id']) && empty($answer['custom_answer'])) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Each question must have either an option or a custom answer'
+                    ]);
+                }
+            }
 
+            $customer = Customer::where('display_name_as', $request->customer_name)->first();
 
-            $customer = Customer::where('customers_name', $request->customer_name)->first();
-
-            if(!$customer){
+            if (!$customer) {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Scan QR code Customer not found',
@@ -119,10 +119,8 @@ foreach ($request->answers as $answer) {
 
             // Handle inspection_pic upload
             if ($request->hasFile('inspection_pic')) {
-                $file = $request->file('inspection_pic');
-                $filename = time() . '_pic_' . $file->getClientOriginalName();
-                $file->move($uploadPath, $filename);
-                $customerInspection->inspection_pic = 'uploads/inspections/' . $filename;
+                $path = $request->file('inspection_pic')->store('inspections', 'public');
+                $customerInspection->inspection_pic = $path;
             } else {
                 $customerInspection->inspection_pic = $request->inspection_pic;
             }
@@ -140,24 +138,26 @@ foreach ($request->answers as $answer) {
             $customerInspection->save();
 
 
-            
-$inspectionForm = InspectionForm::create([
-    'rider_id' => $request->inspection_emp_id,
-    'customer_id' => $customerInspection->id,
-    'submitted_at' => now(),
-]);
 
-foreach ($request->answers as $answer) {
-    InspectionAnswer::create([
-        'inspection_form_id' => $inspectionForm->id,
-        'question_id' => $answer['question_id'],
-        'option_id' => $answer['option_id'] ?? null,
-        'custom_answer' => $answer['custom_answer'] ?? null,
-    ]);
-}
+            $inspectionForm = InspectionForm::create([
+                'rider_id' => $request->inspection_emp_id,
+                'customer_id' => $customer->id,
+                'submitted_at' => now(),
+            ]);
 
-DB::commit();
+            foreach ($request->answers as $answer) {
+                InspectionAnswer::create([
+                    'inspection_form_id' => $inspectionForm->id,
+                    'question_id' => $answer['question_id'],
+                    'option_id' => $answer['option_id'] ?? null,
+                    'custom_answer' => $answer['custom_answer'] ?? null,
+                ]);
+            }
+
+            DB::commit();
             // Mail::to('coding.ata@gmail.com')->send(new CustomerReportMail($customerInspection));
+            Mail::to('coding.ata@gmail.com')->queue(new CustomerReportMail($customerInspection));
+            
             return response()->json([
                 'status' => 'success',
                 'message' => 'Inspection stored successfully',
@@ -165,6 +165,11 @@ DB::commit();
                 'inspection_form' => $inspectionForm,
             ]);
         } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Inspection creation failed', [
+                'error' => $e->getMessage(),
+                'request' => $request->all(),
+            ]);
             return response()->json([
                 'status' => 'error',
                 'message' => 'Failed to add inspection: ' . $e->getMessage(),

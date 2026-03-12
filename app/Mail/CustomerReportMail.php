@@ -2,56 +2,68 @@
 
 namespace App\Mail;
 
+use App\Models\CustomerInspection;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class CustomerReportMail extends Mailable
+class CustomerReportMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    public $customerInspection;
-    /**
-     * Create a new message instance.
-     */
-    public function __construct($customerInspection)
+    public CustomerInspection $customerInspection;
+
+    public function __construct(CustomerInspection $customerInspection)
     {
         $this->customerInspection = $customerInspection;
     }
 
-    /**
-     * Get the message envelope.
-     */
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Customer Report Mail',
+            subject: 'Inspection Report - ' . $this->customerInspection->inspection_no,
         );
     }
 
-    /**
-     * Get the message content definition.
-     */
     public function content(): Content
     {
         return new Content(
             view: 'customers.inspection_report_mail.index',
             with: [
-                'customerInspection' => $this->customerInspection,
+                'inspection' => $this->customerInspection,
+                'companyName' => 'PIFFERS SECURITY SERVICES'
             ],
         );
     }
 
-    /**
-     * Get the attachments for the message.
-     *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
-     */
-    public function attachments(): array
-    {
-        return [];
+   public function attachments(): array
+{
+    $attachments = [];
+
+    if ($this->customerInspection->inspection_attach) {
+
+        $path = public_path($this->customerInspection->inspection_attach);
+
+        if (file_exists($path)) {
+            $attachments[] = Attachment::fromPath($path);
+        }
     }
+
+    $pdf = Pdf::loadView('customers.inspection_report_mail.index', [
+        'inspection' => $this->customerInspection,
+                'companyName' => 'PIFFERS SECURITY SERVICES'
+    ]);
+
+    $attachments[] = Attachment::fromData(
+        fn () => $pdf->output(),
+        'inspection-report-' . $this->customerInspection->inspection_no . '.pdf'
+    )->withMime('application/pdf');
+
+    return $attachments;
+}
 }
