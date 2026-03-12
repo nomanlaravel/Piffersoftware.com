@@ -20,8 +20,11 @@ class CustomerInspectionController extends Controller
     public function InspectionStore(Request $request)
     {
         if ($request->token !== 'rider_scanner') {
-            return response()->json("Invalid token Access denied"
-            , 403);
+            return response()->json(
+                "Invalid token Access denied"
+                ,
+                403
+            );
         }
 
         DB::beginTransaction();
@@ -78,7 +81,7 @@ class CustomerInspectionController extends Controller
                 }
                 if (empty($answer['option_id']) && empty($answer['custom_answer'])) {
                     return response()->json([
-                         'Each question must have either an option or a custom answer'
+                        'Each question must have either an option or a custom answer'
                     ], 422);
                 }
             }
@@ -146,11 +149,10 @@ class CustomerInspectionController extends Controller
             }
 
             DB::commit();
-            if($customer->email != null || $customer->email != ''){
-                Mail::to('coding.ata@gmail.com')->send(new CustomerReportMail($customerInspection));
-                // Mail::to('coding.ata@gmail.com')->queue(new CustomerReportMail($customerInspection));
+            if ($customer->email != null || $customer->email != '') {
+                Mail::to($customer->email)->send(new CustomerReportMail($customerInspection));
             }
-            
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Inspection stored successfully',
