@@ -48,10 +48,8 @@ class CustomerInspectionController extends Controller
             ]);
             if ($validator->fails()) {
                 return response()->json([
-                    'status' => 'error',
-                    'message' => 'Validation failed',
-                    'errors' => $validator->errors(),
-                ]);
+                    $validator->errors(),
+                ], 422);
             }
 
             $totalQuestions = Question::count();
@@ -163,7 +161,7 @@ class CustomerInspectionController extends Controller
                 'message' => 'Inspection stored successfully',
                 'customer_inspection' => $customerInspection,
                 'inspection_form' => $inspectionForm,
-            ]);
+            ], 200);
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Inspection creation failed', [
@@ -173,7 +171,7 @@ class CustomerInspectionController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'Failed to add inspection: ' . $e->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
