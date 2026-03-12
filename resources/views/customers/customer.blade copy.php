@@ -25,7 +25,75 @@
         </div>
     </div>
 
-    
+    <!-- <ul class="nav nav-tabs mt-3" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#branches" type="button"
+                role="tab" aria-controls="branches" aria-selected="true"> Total Customers
+            </button>
+        </li>
+    </ul> -->
+
+
+
+
+    <!--<div class="col-lg-6">-->
+    <!--    <h4><i><b>Search Customers:</b></i></h4>-->
+
+    <!-- Search Form -->
+    <!--    <div class="input-group mb-3">-->
+    <!--        <input type="text" id="customer-search" class="form-control" placeholder="Search here...">-->
+    <!--    </div>-->
+    <!--</div>-->
+
+
+    <!--<div class="tab-content" id="myTabContent">-->
+    <!--    <div class="tab-pane fade show active" id="branches" role="tabpanel" aria-labelledby="home-tab">-->
+    <!--        @if (Auth::user()->role != 'customer' && Auth::user()->role != 'client')-->
+    <!--            <div class="new_branch mt-2">-->
+    <!--                <a href="{{ url('postcustomer') }}"><button>+ New Customer</button></a>-->
+    <!--            </div>-->
+    <!--        @endif-->
+
+    <!--        <table class="table table-bordered table-striped table-fixed mt-3">-->
+    <!--            <thead>-->
+    <!--                <tr>-->
+    <!--                    <th>Customer ID</th>-->
+    <!--                    <th>Customer Legal Name</th>-->
+    <!--                    <th>Phone Number</th>-->
+    <!--                    <th>Action</th>-->
+    <!--                </tr>-->
+    <!--            </thead>-->
+    <!--            <tbody id="customer-table-body">-->
+    <!--                @foreach ($customers as $customer)-->
+    <!--                    <tr>-->
+    <!--                        <td>{{ $customer->customers_id }}</td>-->
+    <!--                        <td>{{ $customer->customers_name }}</td>-->
+    <!--                        <td>{{ $customer->phone }}</td>-->
+    <!--                        <td style="display:flex; gap: 10px; height:99px; align-items: center;">-->
+    <!--                            <a href="{{ route('viewcustomer', ['id' => $customer->id]) }}" class="" style="width:66%; height:55%;">-->
+    <!--                                <i class="material-icons" style="color: rgb(92, 92, 255);">visibility</i>-->
+    <!--                            </a>-->
+    <!--                             @if (Auth::user()->role != 'customer' && Auth::user()->role != 'client')-->
+    <!--                                <a href="{{ route('editcustomer', ['id' => $customer->id]) }}" class="ml-2" style="width:66%; height:55%;">-->
+    <!--                                    <i class="material-icons" style="color: rgb(57, 221, 57);">edit</i>-->
+    <!--                                </a>-->
+    <!--                            @endif-->
+    <!--                            {{-- @if (Auth::user()->role != 'customer')-->
+    <!--                                <form action="{{ route('deletecustomer', ['id' => $customer->id]) }}" method="POST" class="delete-form">-->
+    <!--                                    @csrf-->
+    <!--                                    @method('DELETE')-->
+    <!--                                    <button type="button" class="btn deletebtn mb-2" style="width:66%; height:65%;" data-toggle="modal" data-target="#confirmDeleteModal" data-delete-url="{{ route('deletecustomer', ['id' => $customer->id]) }}">-->
+    <!--                                        <i class="material-icons" style="color: rgb(216, 0, 0);">delete</i>-->
+    <!--                                    </button>-->
+    <!--                                </form>-->
+    <!--                            @endif --}}-->
+    <!--                        </td>-->
+    <!--                    </tr>-->
+    <!--                @endforeach-->
+    <!--            </tbody>-->
+    <!--        </table>-->
+    <!--    </div>-->
+    <!--</div>-->
     @if (!$customers->isEmpty())
         <div class="accordion mb-3" id="totalCustomerAccordion">
             <div class="accordion-item">
@@ -218,7 +286,6 @@
                         <th>Phone Number</th>
                         <th>Customers Region</th>
 
-                        <th>Qr Code</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -232,21 +299,6 @@
                             <td>{{ $customer->customers_name }}</td>
                             <td>{{ $customer->phone }}</td>
                             <td>{{ $customer->customers_region }}</td>
-                            <td>
-                                @if($customer->qrcode_path)
-                                    <div class="text-center">
-                                        <a href="{{ asset($customer->qrcode_path) }}" target="_blank">
-                                            <img src="{{ asset($customer->qrcode_path) }}" alt="QR Code" width="50" style="border: 1px solid #ddd; padding: 2px;">
-                                        </a>
-                                        <br>
-                                        <a href="{{ asset($customer->qrcode_path) }}" download class="btn btn-sm btn-outline-info mt-1" title="Download QR Code">
-                                            <i class="fa-solid fa-download"></i> Download
-                                        </a>
-                                    </div>
-                                @else
-                                    <span class="text-muted">No QR Code</span>
-                                @endif
-                            </td>
                             <td class="d-flex gap-2">
                                 @if($customer->notification_status == 1)
                                     <div style="position: relative; display: inline-block;">

@@ -278,6 +278,19 @@ class CustomerController extends Controller
             $rows .= '<td>' . htmlspecialchars($customer->phone) . '</td>';
             $rows .= '<td>' . htmlspecialchars($customer->customers_region) . '</td>';
             $rows .= '<td>';
+            if ($customer->qrcode_path) {
+                $rows .= '<div class="text-center">';
+                $rows .= '<a href="' . asset($customer->qrcode_path) . '" target="_blank">';
+                $rows .= '<img src="' . asset($customer->qrcode_path) . '" alt="QR Code" width="50" style="border: 1px solid #ddd; padding: 2px;">';
+                $rows .= '</a><br>';
+                $rows .= '<a href="' . asset($customer->qrcode_path) . '" download class="btn btn-sm btn-outline-info mt-1" title="Download QR Code">';
+                $rows .= '<i class="fa-solid fa-download"></i> Download';
+                $rows .= '</a></div>';
+            } else {
+                $rows .= '<span class="text-muted">No QR Code</span>';
+            }
+            $rows .= '</td>';
+            $rows .= '<td>';
             $rows .= '<a href="' . route('viewcustomer', ['id' => $customer->id]) . '">';
             $rows .= '<i class="material-icons" style="color: rgb(92, 92, 255);">visibility</i>';
             $rows .= '</a>';

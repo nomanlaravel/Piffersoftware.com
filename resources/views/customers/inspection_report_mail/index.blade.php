@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>{{ $companyName }} - Inspection Report</title>
     <style>
@@ -10,7 +11,7 @@
             margin: 0;
             padding: 0;
             background: #f6f7f9;
-            font-family: Arial
+            font-family: DejaVu Sans, Arial, sans-serif;
         }
 
         table {
@@ -61,6 +62,14 @@
             background: #f9fafb;
             font-size: 12px;
             color: #6b7280
+        }
+
+        /* PDF-specific: prevent rows from breaking across pages */
+        .qa-table tr {
+            page-break-inside: avoid;
+        }
+        .qa-table {
+            page-break-before: auto;
         }
     </style>
 </head>
@@ -142,6 +151,52 @@
 
                         </td>
                     </tr>
+
+                    @if(isset($inspectionForm) && $inspectionForm && $inspectionForm->answers->count() > 0)
+                    <tr>
+                        <td style="padding: 0 24px 24px 24px;">
+
+                            <h3 style="margin-top:24px;color:#0b2a4a;border-bottom:2px solid #0b2a4a;padding-bottom:8px;">
+                                Questions &amp; Answers
+                            </h3>
+
+                            <table class="qa-table" style="width:100%;border:1px solid #e5e7eb;margin-top:12px;border-collapse:collapse;font-family:DejaVu Sans, Arial, sans-serif;">
+                                <thead>
+                                    <tr style="background:#0b2a4a;color:#ffffff;">
+                                        <th style="padding:10px;font-weight:bold;width:30px;border:1px solid #e5e7eb;text-align:left;">#</th>
+                                        <th style="padding:10px;font-weight:bold;border:1px solid #e5e7eb;text-align:right;direction:rtl;" dir="rtl">Question</th>
+                                        <th style="padding:10px;font-weight:bold;width:140px;border:1px solid #e5e7eb;text-align:left;">Answer</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                @foreach($inspectionForm->answers as $index => $answer)
+                                    <tr style="background:{{ $index % 2 == 0 ? '#f9fafb' : '#ffffff' }};page-break-inside:avoid;">
+                                        <td style="padding:10px;border:1px solid #e5e7eb;text-align:left;vertical-align:top;">{{ $index + 1 }}</td>
+                                        <td style="padding:10px;border:1px solid #e5e7eb;text-align:right;direction:rtl;vertical-align:top;" dir="rtl">
+                                            {{ $answer->question->question ?? 'N/A' }}
+                                        </td>
+                                        <td style="padding:10px;border:1px solid #e5e7eb;text-align:left;vertical-align:top;">
+                                            @if($answer->option)
+                                                {{ $answer->option->option_text }}
+                                            @endif
+                                            @if($answer->custom_answer)
+                                                @if($answer->option)
+                                                    <br><em style="color:#6b7280;">Additional: </em>
+                                                @endif
+                                                {{ $answer->custom_answer }}
+                                            @endif
+                                            @if(!$answer->option && !$answer->custom_answer)
+                                                <em style="color:#9ca3af;">No answer provided</em>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+
+                        </td>
+                    </tr>
+                    @endif
 
                     <tr>
                         <td class="footer">
