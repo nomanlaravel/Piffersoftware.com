@@ -8,6 +8,7 @@ use App\Models\EmployeeSalaryStatus;
 use App\Models\EmployeeSalarySlip;
 use App\Models\Hrm;
 use Carbon\Carbon;
+use App\Models\EmployeeLeave;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Log;
@@ -54,6 +55,7 @@ class PayRollEmployeeController extends Controller
         // Query employees with their salary slips for the selected month
         $query = Hrm::with([
             'salaryStatus',
+            'employeeLeaves.leaveType',
             'salarySlips' => function ($q) use ($payrollMonth) {
                 $q->where('payroll_month', $payrollMonth);
             },
@@ -104,13 +106,25 @@ class PayRollEmployeeController extends Controller
             if ($employee->bank) {
                 $bankAccount = $employee->bank . ' (' . $bankAccount . ')';
             }
+            $unpaidLeaves = EmployeeLeave::where('hrm_id', $employee->id)
+                ->where('status', 'approved')
+                ->whereHas('leaveType', function ($q) {
+                    $q->where('paid', 0);
+                })
+                ->sum('number_of_leaves');
 
-            // Get designation
+            $paidLeaves = EmployeeLeave::where('hrm_id', $employee->id)
+                ->where('status', 'approved')
+                ->whereHas('leaveType', function ($q) {
+                    $q->where('paid', 1);
+                })
+                ->sum('number_of_leaves');
+
+
             $designation = $employee->designation ?? 'N/A';
 
             $payroll = $employee->payrolls->first();
             $salarySlip = $employee->salarySlips->first();
-
             if ($salarySlip) {
                 // Use data from existing salary slip
                 $data[] = [
@@ -121,7 +135,9 @@ class PayRollEmployeeController extends Controller
                     'department' => $payroll->p_department ?? ($employee->unit ?? 'N/A'),
                     'salary_details' => $payroll->p_salary_details ?? 'N/A',
                     'attendance_records' => $payroll->p_attendance_records ?? 'N/A',
-                    'leave_records' => $payroll->p_leave_records ?? 'N/A',
+                    'leave_records' => $paidLeaves,
+                    'unpaid_leave_record' => $unpaidLeaves,
+                    'unpaid_leave_deduction' => number_format($unpaidLeaveDeduction, 2),
                     'basic_salary' => number_format($salarySlip->basic_salary, 2),
                     'absents' => $salarySlip->absents,
                     'absent_deduction' => number_format($salarySlip->absent_deduction, 2),
@@ -182,25 +198,26 @@ class PayRollEmployeeController extends Controller
                     ->whereYear('date', $year)
                     ->get();
 
-                // Count Absents (skipping holidays)
-                $absents = $attendances->where('status', 'absent')
-                    ->filter(function ($att) use ($holidays) {
-                        return !in_array($att->date, $holidays);
-                    })->count();
+                $absentOnly = $attendances->where('status', 'absent')
+                    ->filter(fn($att) => !in_array($att->date, $holidays))
+                    ->count();
 
-                // Count Half Days (skipping holidays)
                 $halfDays = $attendances->where('status', 'half_day')
-                    ->filter(function ($att) use ($holidays) {
-                        return !in_array($att->date, $holidays);
-                    })->count();
+                    ->filter(fn($att) => !in_array($att->date, $holidays))
+                    ->count();
+
+                $unpaidLeaves = EmployeeLeave::where('hrm_id', $employee->id)
+                    ->where('status', 'approved')
+                    ->whereHas('leaveType', fn($q) => $q->where('paid', 0))
+                    ->sum('number_of_leaves');
 
                 // Calculate Late Minutes
                 $lateMinutes = $attendances->sum('late_minutes') ?? 0;
 
                 // Deduction Calculations
-                $absentDeduction = $daysInMonth > 0 ? ($basicSalary / $daysInMonth) * $absents : 0;
+                $absentDeduction = $daysInMonth > 0 ? ($basicSalary / $daysInMonth) * $absentOnly : 0;
                 $halfDayDeduction = $daysInMonth > 0 ? ($basicSalary / $daysInMonth / 2) * $halfDays : 0;
-
+                $unpaidLeaveDeduction = $daysInMonth > 0 ? ($basicSalary / $daysInMonth) * $unpaidLeaves : 0;
                 // Late minutes deduction (1/480 of daily salary per late minute)
                 $dailySalary = $daysInMonth > 0 ? $basicSalary / $daysInMonth : 0;
                 $lateMinutesDeduction = $dailySalary > 0 ? ($dailySalary / 480) * $lateMinutes : 0;
@@ -224,7 +241,7 @@ class PayRollEmployeeController extends Controller
                 $totalSalary = $basicSalary + $totalIncrement;
 
                 // Deduction Before Compensation
-                $deductionBeforeCompensation = $absentDeduction + $halfDayDeduction + $lateMinutesDeduction +
+                $deductionBeforeCompensation = $absentDeduction + $unpaidLeaveDeduction + $halfDayDeduction + $lateMinutesDeduction +
                     $sandwichRuleDeduction + $otherDeduction + $taxDeduction + $loan;
 
                 // Bonus
@@ -247,9 +264,11 @@ class PayRollEmployeeController extends Controller
                     'department' => $payroll->p_department ?? ($employee->unit ?? 'N/A'),
                     'salary_details' => $payroll->p_salary_details ?? 'N/A',
                     'attendance_records' => $payroll->p_attendance_records ?? 'N/A',
-                    'leave_records' => $payroll->p_leave_records ?? 'N/A',
+                    'leave_records' => $paidLeaves,
+                    'unpaid_leave_record' => $unpaidLeaves,
+                    'unpaid_leave_deduction' => number_format($unpaidLeaveDeduction, 2),
                     'basic_salary' => number_format($basicSalary, 2),
-                    'absents' => $absents,
+                    'absents' => $absentOnly,
                     'absent_deduction' => number_format($absentDeduction, 2),
                     'half_days' => $halfDays,
                     'half_day_deduction' => number_format($halfDayDeduction, 2),
@@ -512,7 +531,6 @@ class PayRollEmployeeController extends Controller
         $holidays = MonthlyHolidays::all();
         return view('a_payroll.holidays', compact('holidays'));
     }
-
     public function holiDays_Store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -521,52 +539,95 @@ class PayRollEmployeeController extends Controller
             'type' => 'required|in:holiday,weekend',
             'is_paid' => 'required|in:1,0',
         ]);
+
         if ($validator->fails()) {
-            return back()->with('error', $validator->errors()->first());
+            return response()->json([
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
         }
 
-
-        DB::beginTransaction();
         try {
-
             $date = Carbon::parse($request->holiday_date);
-            MonthlyHolidays::updateOrCreate(
-                ['date' => $date],
-                [
+
+            if ($request->id) {
+                // Update existing holiday
+                $holiday = MonthlyHolidays::find($request->id);
+                if (!$holiday) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Holiday not found'
+                    ], 404);
+                }
+
+                $holiday->update([
                     'title' => $request->holiday_title,
                     'year' => $date->year,
                     'month' => $date->month,
                     'date' => $date,
-                    'user_id' => Auth::user()->id,
+                    'user_id' => Auth::id(),
                     'is_paid' => (int) $request->is_paid,
                     'type' => $request->type,
-                ]
-            );
-            DB::commit();
+                ]);
+
+                $message = 'Holiday updated successfully';
+            } else {
+                // Create new holiday
+                MonthlyHolidays::create([
+                    'title' => $request->holiday_title,
+                    'year' => $date->year,
+                    'month' => $date->month,
+                    'date' => $date,
+                    'user_id' => Auth::id(),
+                    'is_paid' => (int) $request->is_paid,
+                    'type' => $request->type,
+                ]);
+
+                $message = 'Holiday created successfully';
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => $message
+            ]);
+
         } catch (\Throwable $e) {
-            Log::info($e);
-            return back()->with('error', 'Something went Wrong!');
+            Log::error($e);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Something went wrong'
+            ], 500);
         }
-
-        return back()->with('success', 'Holiday created successfully');
     }
-
     public function deleteHoliday($id)
     {
         $holiday = MonthlyHolidays::find($id);
 
         if (!$holiday) {
-            return back()->with('error', "Holiday not found");
+            return response()->json([
+                'success' => false,
+                'message' => 'Holiday not found'
+            ], 404);
         }
 
         try {
             $holiday->delete();
-        } catch (\Throwable $e) {
-            Log::info($e);
-            return back()->with('error', 'Something went Wrong!');
-        }
 
-        return back()->with('success', 'Holiday deleted successfully');
+            return response()->json([
+                'success' => true,
+                'message' => 'Holiday deleted successfully'
+            ]);
+
+        } catch (\Throwable $e) {
+
+            Log::error($e);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Something went wrong'
+            ], 500);
+        }
     }
     public function getHolidayDetail(Request $request)
     {

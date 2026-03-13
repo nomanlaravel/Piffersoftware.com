@@ -114,17 +114,58 @@ class DatabaseSeeder extends Seeder
             ['name' => 'add_role', 'group_name' => 'role', 'guard_name' => 'web'],
             ['name' => 'update_role', 'group_name' => 'role', 'guard_name' => 'web'],
             ['name' => 'delete_role', 'group_name' => 'role', 'guard_name' => 'web'],
+
+            ['name' => 'view_leave_type', 'group_name' => 'leave_type', 'guard_name' => 'web'],
+            ['name' => 'add_leave_type', 'group_name' => 'leave_type', 'guard_name' => 'web'],
+            ['name' => 'update_leave_type', 'group_name' => 'leave_type', 'guard_name' => 'web'],
+            ['name' => 'delete_leave_type', 'group_name' => 'leave_type', 'guard_name' => 'web'],
+
+            ['name' => 'view_leave_request', 'group_name' => 'leave', 'guard_name' => 'web'],
+            ['name' => 'add_leave_request', 'group_name' => 'leave', 'guard_name' => 'web'],
+            ['name' => 'approve_leave_request', 'group_name' => 'leave', 'guard_name' => 'web'],
+            ['name' => 'reject_leave_request', 'group_name' => 'leave', 'guard_name' => 'web'],
+            ['name' => 'delete_leave_request', 'group_name' => 'leave', 'guard_name' => 'web'],
+
+            
         ];
 
         // Create or update permissions
         foreach ($permissions as $perm) {
-            Permission::firstOrCreate($perm);
+            Permission::firstOrCreate(
+                [
+                    'name' => $perm['name'],
+                    'guard_name' => $perm['guard_name']
+                ],
+                [
+                    'group_name' => $perm['group_name']
+                ]
+            );
         }
 
         // Assign all permissions to Super Admin role
         $superAdminRole->syncPermissions(array_column($permissions, 'name'));
 
-        // Assign Super Admin role to the admin user
+        // Assign leave permission to multiple roles
+        $roles = ['Super Admin', 'customer', 'user', 'client'];
+
+        foreach ($roles as $roleName) {
+            $role = Role::firstOrCreate([
+                'name' => $roleName,
+                'guard_name' => 'web'
+            ]);
+
+            // All roles can view and add leave requests
+            $role->givePermissionTo(['view_leave_request', 'add_leave_request']);
+
+            // Only Super Admin can approve/reject
+            if ($roleName == 'Super Admin') {
+                $role->givePermissionTo(['approve_leave_request', 'reject_leave_request', 'delete_leave_request']);
+            }
+        }
+        // Assign Super Admin role to admin user
         $admin->assignRole('Super Admin');
     }
+
+
 }
+

@@ -15,7 +15,21 @@
 <div class="container-fluid mt-4">
     <h3 class="text-center text-light bg-secondary">PIFFERS Security Services</h3>
     <h3 class="text-center text-light bg-dark">
-        CRO Daily Tasks - {{ \Carbon\Carbon::now()->format('F Y') }}
+        CRO Daily Tasks <div>
+<div class="mb-3">
+    @if(request('date_range'))
+        Date Range: {{ request('date_range') }}
+    @elseif(request('month'))
+        @php
+            [$year, $month] = explode('-', request('month'));
+            $monthName = \Carbon\Carbon::create($year, $month, 1)->format('F Y');
+        @endphp
+        <h5>Month: {{ $monthName }}</h5>
+    @else
+        <h5>Current Month Tasks</h5>
+    @endif
+</div>
+</div>
     </h3>
 
     <button onclick="exportTableToExcel('croTaskTable')" class="btn btn-success mb-2">Export to Excel</button>
@@ -40,7 +54,11 @@
                                 <td>{{ $group->section_number }}</td>
                                 <td colspan="{{ $totalDays + 1 }}">{{ $group->title }}</td>
                             </tr>
-                            @foreach ($group->tasks as $task)
+@foreach ($group->tasks as $task)
+                                @php
+                                    $hasAssignments = $task->assignments->isNotEmpty();
+                                @endphp
+                                @if($hasAssignments || !($branch && $branch != 'all'))
                                 <tr>
                                     <td>{{ $task->task_number }}</td>
                                     <td class="text-nowrap">{{ $task->task_description }}</td>
@@ -52,6 +70,7 @@
                                         <td>{!! $assigned && $assigned->is_assigned ? '<b class="text-success">✓</b>' : '<b class="text-danger">❌</b>' !!}</td>
                                     @endforeach
                                 </tr>
+                                @endif
                             @endforeach
                         @endforeach
                     </tbody>

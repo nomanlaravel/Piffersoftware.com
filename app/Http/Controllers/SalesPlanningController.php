@@ -103,7 +103,7 @@ class SalesPlanningController extends Controller
     }
     public function feedback_register_report(Request $request)
     {
-            $cros = Cro::whereNotIn('region', ['Central-2', 'Central-3'])->orderBy('id')->get();
+        $cros = Cro::whereNotIn('region', ['Central-2', 'Central-3'])->orderBy('id')->get();
         $query = Allreport::with('cro')->where('report_name', 'feedback_register_report');
 
         // Filtering logic
@@ -152,12 +152,12 @@ class SalesPlanningController extends Controller
         return view('nationwide.index', [
             'nationwide' => $nationwide,
             'filters' => $request->all(),
-            'total_new' => $nationwide->sum('new_profiles'),
-            'total_old' => $nationwide->sum('old_profiles'),
-            'total_sedulous' => $nationwide->sum('sedulous_profiles'),
-            'total_handbooks' => $nationwide->sum('handbooks'),
-            'total_kaychains' => $nationwide->sum('kay_chains'),
-            'total_calenders' => $nationwide->sum('calenders'),
+            'total_new' => $nationwide->sum(fn($row) => (int) $row->new_profiles),
+            'total_old' => $nationwide->sum(fn($row) => (int) $row->old_profiles),
+            'total_sedulous' => $nationwide->sum(fn($row) => (int) $row->sedulous_profiles),
+            'total_handbooks' => $nationwide->sum(fn($row) => (int) $row->handbooks),
+            'total_kaychains' => $nationwide->sum(fn($row) => (int) $row->kay_chains),
+            'total_calenders' => $nationwide->sum(fn($row) => (int) $row->calenders),
         ]);
     }
     public function search_daily_email_analytics_compaign(Request $request)
@@ -189,7 +189,7 @@ class SalesPlanningController extends Controller
         if ($request->filled('e_date')) {
             $query->whereDate('e_date', $request->e_date);
         }
-        $requirements = $query->where('type','security')->get();
+        $requirements = $query->where('type', 'security')->get();
         // Get unique RHQs for the select dropdown
         $all_rhqs = Requirement::select('rhq')->distinct()->pluck('rhq');
 
@@ -216,7 +216,7 @@ class SalesPlanningController extends Controller
             $query->whereDate('e_date', $request->e_date);
         }
 
-        $requirements = $query->where('type','sedulous')->get();
+        $requirements = $query->where('type', 'sedulous')->get();
         // Get unique RHQs for the select dropdown
         $all_rhqs = Requirement::select('rhq')->distinct()->pluck('rhq');
         return view('requirement.active', [
@@ -294,7 +294,7 @@ class SalesPlanningController extends Controller
         if ($request->filled('start_date')) {
             $query->whereDate('start_date', $request->start_date); // OK: start_date is a date field
         }
-            if ($request->filled('end_date')) {
+        if ($request->filled('end_date')) {
             $query->whereDate('end_date', $request->end_date); // OK: start_date is a date field
         }
         if ($request->filled('campaign_number')) {

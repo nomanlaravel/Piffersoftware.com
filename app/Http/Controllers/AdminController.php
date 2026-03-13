@@ -658,7 +658,6 @@ class AdminController extends Controller
                     'engine_no' => $adminMoveData['engine_no'][$index],
                     'chasis_no' => $adminMoveData['chasis_no'][$index],
                     'vehicle_color' => $adminMoveData['vehicle_color'][$index],
-                    'vehicle_model' => $adminMoveData['vehicle_model'][$index],
                 ];
 
                 $adminMoveFields = [
@@ -1817,34 +1816,108 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Task Group deleted successfully');
     }
     //Office Equipments Add
-    public function search_crotask(Request $request)
-    {
-        $monthInput = $request->input('month'); // e.g. "2025-06"
-        if (!$monthInput) {
-            $month = now()->month;
-            $year = now()->year;
-        } else {
-            [$year, $month] = explode('-', $monthInput);
-        }
+//  public function search_crotask(Request $request)
+//     {
+//         $monthInput = $request->input('month');
+//         $dateRangeInput = $request->input('date_range');
+        
+//         if ($dateRangeInput) {
+//             [$start, $end] = explode(' to ', $dateRangeInput);
+//             $startDate = Carbon::parse($start);
+//             $endDate = Carbon::parse($end);
+//         } elseif ($monthInput) {
+//             [$year, $month] = explode('-', $monthInput);
+//             $startDate = Carbon::create($year, $month, 1);
+//             $endDate = $startDate->copy()->endOfMonth();
+//         } else {
+//             // Default current month
+//             $startDate = Carbon::now()->startOfMonth();
+//             $endDate = Carbon::now()->endOfMonth();
+//         }
 
+//         $totalDays = $startDate->diffInDays($endDate) + 1;
+
+//         // Fetch TaskGroups with assignments in the selected range
+//         $groups = TaskGroup::whereHas('tasks.assignments', function($query) use ($startDate, $endDate) {
+//             $query->whereBetween('assigned_date', [$startDate->toDateString(), $endDate->toDateString()]);
+//         })
+//         ->with(['tasks.assignments' => function ($query) use ($startDate, $endDate) {
+//             $query->whereBetween('assigned_date', [$startDate->toDateString(), $endDate->toDateString()]);
+//         }])
+//         ->get();
+
+//         // Debug
+//         Log::info("Selected Date Range: {$startDate->toDateString()} to {$endDate->toDateString()}");
+//         foreach ($groups as $group) {
+//             foreach ($group->tasks as $task) {
+//                 Log::info("Task: {$task->task_description}", ['assignments' => $task->assignments->toArray()]);
+//             }
+//         }
+
+//         return view('crotask.search', compact('groups', 'startDate', 'totalDays', 'endDate'));
+//     }
+public function search_crotask(Request $request)
+{
+    $monthInput = $request->month;
+    $dateRange = $request->date_range;
+    $region = $request->region;
+    $branch = $request->branch;
+
+    // Date Logic
+    if ($dateRange) {
+        [$start, $end] = explode(' to ', $dateRange);
+        $startDate = Carbon::parse($start);
+        $endDate = Carbon::parse($end);
+    } elseif ($monthInput) {
+        [$year, $month] = explode('-', $monthInput);
         $startDate = Carbon::create($year, $month, 1);
         $endDate = $startDate->copy()->endOfMonth();
-
-        $groups = TaskGroup::with([
-            'tasks.assignments' => function ($query) use ($startDate, $endDate) {
-                $query->whereBetween('assigned_date', [
-                    $startDate->toDateString(),
-                    $endDate->toDateString()
-                ]);
-            }
-        ])->get();
-
-        $totalDays = $startDate->diffInDays($endDate) + 1;
-        return view('crotask.search', compact('groups', 'startDate', 'totalDays'));
+    } else {
+        $startDate = Carbon::now()->startOfMonth();
+        $endDate = Carbon::now()->endOfMonth();
     }
 
+    $totalDays = $startDate->diffInDays($endDate) + 1;
 
+    // Base assignment query with date filter
+    $assignmentQuery = TaskAssignment::query()
+        ->whereBetween('assigned_date', [$startDate->toDateString(), $endDate->toDateString()]);
 
+    // Branch filter
+    if ($branch && $branch != 'all') {
+        $assignmentQuery->where('branch_id', $branch);
+    }
+
+    // Region filter via Admin branch_city/branch_area
+    if ($region && $region != 'all') {
+        $assignmentQuery->whereHas('branch', function ($q) use ($region) {
+            $q->where('branch_city', 'LIKE', "%{$region}%")
+              ->orWhere('branch_area', 'LIKE', "%{$region}%");
+        });
+    }
+
+    $groups = TaskGroup::with([
+        'tasks.assignments' => function ($q) use ($startDate, $endDate, $branch, $region) {
+            $q->whereBetween('assigned_date', [$startDate->toDateString(), $endDate->toDateString()]);
+            
+            if ($branch && $branch != 'all') {
+                $q->where('branch_id', $branch);
+            }
+            if ($region && $region != 'all') {
+                $q->whereHas('branch', function ($bq) use ($region) {
+                    $bq->where('branch_city', 'LIKE', "%{$region}%")
+                       ->orWhere('branch_area', 'LIKE', "%{$region}%");
+                });
+            }
+        }
+    ])
+    ->with('tasks.assignments.branch')
+    ->get();
+
+    return view('crotask.search', compact(
+        'groups', 'startDate', 'endDate', 'totalDays', 'region', 'branch'
+    ));
+}
     public function adminequipments()
     {
         $adminequipments = OfficeEquipment::all();
