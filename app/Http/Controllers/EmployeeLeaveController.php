@@ -55,7 +55,17 @@ class EmployeeLeaveController extends Controller
             $hrm = Hrm::where('email', $user->email)->first();
 
             if (!$hrm) {
-                return response()->json(['message' => 'Employee profile not found for this user.'], 422);
+                $role = strtolower($user->role ?? '');
+
+                if (in_array($role, ['admin', 'superadmin'])) {
+                    return response()->json([
+                        'message' => ucfirst($role) . ' You Are Not Allowed To Send Leave Request'
+                    ], 403);
+                } else {
+                    return response()->json([
+                        'message' => 'Employee profile not found for this user.'
+                    ], 422);
+                }
             }
 
             $start = Carbon::parse($request->start_date);

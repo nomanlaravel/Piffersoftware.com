@@ -15,8 +15,13 @@ class TaskAssignment extends Model
         'is_assigned',
     ];
 
-      public function task()
+    public function task()
     {
         return $this->belongsTo(CroTask::class, 'cro_task_id');
+    }
+
+    public function branch()
+    {
+        return $this->belongsTo(Admin::class, 'branch_id', 'branch_id');
     }
 }

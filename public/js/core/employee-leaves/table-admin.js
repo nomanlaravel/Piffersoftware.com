@@ -73,7 +73,7 @@ $(function () {
                             <a class="dropdown-item update-leave-status text-danger" href="javascript:void(0)" data-id="${row.id}" data-action="rejected">
                                 <i class="fas fa-times-circle mr-2"></i> Reject Request
                             </a>
-                            <div class="dropdown-divider"></div>
+                            <div class="dropdown-divider" style="background-color: white;"></div>
                         `;
                     }
                     return `
@@ -81,10 +81,10 @@ $(function () {
                             <a href="#" class="action-icon" data-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-ellipsis-v"></i>
                             </a>
-                            <div class="dropdown-menu dropdown-menu-right">
+                            <div class="dropdown-menu dropdown-menu-right" style="background-color: white;">
                                 ${actions}
-                                <a class="dropdown-item delete-leave-request text-muted" href="javascript:void(0)" data-id="${row.id}">
-                                    <i class="fas fa-trash-alt mr-2"></i> Delete Record
+                                <a class="dropdown-item delete-leave-request btn-inline-secondary text-center pt-2" style="margin-left: -2px; height: 45px; background: rgba(108,117,125,0.1); color: #6c757d; border:1px solid #6c757d; padding:4px 10px; border-radius:5px; display:inline-block;" href="javascript:void(0)" data-id="${row.id}">
+                                    <i class="fas fa-trash-alt mr-4"></i>Delete Record
                                 </a>
                             </div>
                         </div>

@@ -162,6 +162,8 @@
                                 <th>Salary Details</th>
                                 <th>Attendance Records</th>
                                 <th>Leave Records</th>
+                                <th>Unpaid Leave Records</th>
+                                <th>Unpaid Leave amount Deduction</th>
                                 <th>Basic Salary</th>
                                 <th>Absents</th>
                                 <th>Absents amount Deduction</th>
