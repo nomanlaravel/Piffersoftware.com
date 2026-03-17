@@ -45,11 +45,16 @@
 @foreach ($quotationreport as $dateKey => $dailyReports)
 <tr>
     <td>{{ $loop->iteration }}</td>
+
+    @php
+        $report = $dailyReports->first();
+    @endphp
+
     <td>{{ \Carbon\Carbon::parse($dateKey)->format('d M Y') }}</td>
 
     @foreach ($cros as $cro)
         @php
-            $report = $dailyReports->first(function ($r) use ($cro, $dateKey) {
+            $report = $dailyReports->first(function ($r) use ($cro) {
                 return $r->cro_id == $cro->id && !empty($r->attachment);
             });
         @endphp
@@ -67,6 +72,7 @@
             @endif
         </td>
     @endforeach
+
 </tr>
 @endforeach
 
