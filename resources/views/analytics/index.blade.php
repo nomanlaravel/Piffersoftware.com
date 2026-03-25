@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,102 +23,113 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
 </head>
+
 <body>
-<div class="container-fluid mt-4">
-    <h2 class="text-center text-light bg-dark py-2">
-    Social Media Accounts Reporting
-    </h2>
-    <div class="card">
-        <div class="card-body">
-            <table id="analyticsTable" class="table table-bordered display nowrap" style="width:100%">
-                <thead class="table-dark">
-                <tr>
-                    <th>#</th>
-                    <th>Date</th>
-                    <th>Description</th>
-                    <th>LinkedIn</th>
-                    <th>Facebook</th>
-                    <th>Twitter</th>
-                    <th>Instagram</th>
-                </tr>
-                </thead>
-                <tbody>
-                @if($analytics)
-                    <tr>
-                        <td>1</td>
-                        <td>{{ $analytics->date ?? 'N/A' }}</td>
-                        <td>Details of Like, Comment & Subscribers</td>
-                        <td>
-                            Morning Post - {{ $analytics->linkedin_morning_post }}<br>
-                            Why PIFFERS - {{ $analytics->linkedin_why_pifra }}<br>
+    <div class="container-fluid mt-4">
+        <h2 class="text-center text-light bg-dark py-2">
+            Social Media Accounts Reporting
+        </h2>
+        <div class="card">
+            <div class="card-body">
+                <table id="analyticsTable" class="table table-bordered display nowrap" style="width:100%">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th>LinkedIn</th>
+                            <th>Facebook</th>
+                            <th>Twitter</th>
+                            <th>Instagram</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+    @forelse($analytics as $index => $item)
+        <tr>
+            <td>{{ $index + 1 }}</td>
+            <td>{{ $item->date ?? 'N/A' }}</td>
+            <td>Details of Like, Comment & Subscribers</td>
 
-                            What we do - {{ $analytics->linkedin_what_we_do }}<br>
+            <td>
+                Morning Post - {{ $item->linkedin_morning_post }}<br>
+                Why PIFFERS - {{ $item->linkedin_why_pifra }}<br>
+                What we do - {{ $item->linkedin_what_we_do }}<br>
+                What we do video - {{ $item->linkedin_what_we_do_vedio }}<br>
+                Subscribers - {{ $item->linkedin_subscribers }}<br>
+                Comments - {{ $item->linkedin_comments }}
+            </td>
 
-                            What we do video - {{ $analytics->linkedin_what_we_do_vedio }}<br>
+            <td>
+                Morning Post - {{ $item->facebook_morning_post }}<br>
+                Why PIFFERS - {{ $item->facebook_why_pifra }}<br>
+                What we do - {{ $item->facebook_what_we_do }}<br>
+                What we do video - {{ $item->facebook_what_we_do_vedio }}<br>
+                Subscribers - {{ $item->facebook_subscribers }}<br>
+                Comments - {{ $item->facebook_comments }}
+            </td>
 
-                            Subscribers - {{ $analytics->linkedin_subscribers }}<br>
-                            Comments - {{ $analytics->linkedin_comments }}
-                        </td>
-                        <td>
-                            Morning Post - {{ $analytics->facebook_morning_post }}<br>
-                            Why PIFFERS - {{ $analytics->facebook_why_pifra }}<br>
-                            What we do - {{ $analytics->facebook_what_we_do }}<br>
+            <td>
+                Morning Post - {{ $item->twitter_morning_post }}<br>
+                Why PIFFERS - {{ $item->twitter_why_pifra }}<br>
+                What we do - {{ $item->twitter_what_we_do }}<br>
+                What we do video - {{ $item->twitter_what_we_do_vedio }}<br>
+                Subscribers - {{ $item->twitter_subscribers }}<br>
+                Comments - {{ $item->twitter_comments }}
+            </td>
 
-                            What we do video - {{ $analytics->facebook_what_we_do_vedio }}<br>
-                            Subscribers - {{ $analytics->facebook_subscribers }}<br>
-                            Comments - {{ $analytics->facebook_comments }}
-                        </td>
-                        <td>
-                            Morning Post - {{ $analytics->twitter_morning_post }}<br>
-                            Why PIFFERS - {{ $analytics->twitter_why_pifra }}<br>
-                            What we do - {{ $analytics->twitter_what_we_do }}<br>
+            <td>
+                Morning Post - {{ $item->instagram_morning_post }}<br>
+                Why PIFFERS - {{ $item->instagram_why_pifra }}<br>
+                What we do - {{ $item->instagram_what_we_do }}<br>
+                What we do video - {{ $item->instagram_what_we_do_vedio }}<br>
+                Subscribers - {{ $item->instagram_subscribers }}<br>
+                Comments - {{ $item->instagram_comments }}
+            </td>
+        </tr>
 
-                            What we do video - {{ $analytics->twitter_what_we_do_vedio }}<br>
-                            Subscribers - {{ $analytics->twitter_subscribers }}<br>
-                            Comments - {{ $analytics->twitter_comments }}
-                        </td>
-                        <td>
-                            Morning Post - {{ $analytics->instagram_morning_post }}<br>
-                            Why PIFFERS - {{ $analytics->instagram_why_pifra }}<br>
-                            What we do - {{ $analytics->instagram_what_we_do }}<br>
-                            What we do video - {{ $analytics->instagram_what_we_do_vedio }}<br>
-                            Subscribers - {{ $analytics->instagram_subscribers }}<br>
-                            Comments - {{ $analytics->instagram_comments }}
-                        </td>
-                    </tr>
-                @else
-                    <tr><td colspan="7" class="text-center text-danger">No data available</td></tr>
-                @endif
-                </tbody>
-            </table>
+    @empty
+        <tr>
+            <td colspan="7" class="text-center text-danger">
+                No data available
+            </td>
+        </tr>
+    @endforelse
+</tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
 
-<script>
-    $(document).ready(function () {
-        $('#analyticsTable').DataTable({
-            dom: 'Bfrtip',
-            buttons: [
-                'copyHtml5',
-                'excelHtml5',
-                'pdfHtml5',
-                {
-                    extend: 'print',
-                    title: 'Social Media Accounts Reporting',
-                    messageTop: 'Generated Report - Social Media Accounts Reporting',
-                    customize: function (win) {
-                        $(win.document.body).css('font-size', '12pt');
-                        $(win.document.body).find('table').addClass('compact').css('font-size', 'inherit');
+    <script>
+        $(document).ready(function () {
+            $('#analyticsTable').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    'copyHtml5',
+                    'excelHtml5',
+                    'pdfHtml5',
+                    {
+                        extend: 'print',
+                        title: 'Social Media Accounts Reporting',
+                        messageTop: 'Generated Report - Social Media Accounts Reporting',
+                        customize: function (win) {
+                            $(win.document.body).css('font-size', '12pt');
+                            $(win.document.body).find('table').addClass('compact').css('font-size', 'inherit');
+                        }
                     }
-                }
-            ],
-            scrollX: true,
-            paging: false,
-            info: false,
-            searching: false,
+                ],
+                scrollX: true,
+                paging: false,
+                info: false,
+                searching: false,
+            });
         });
-    });
-</script>
+    </script>
+
+    {{-- Laravel Pagination Links --}}
+    <div class="d-flex justify-content-center mt-4">
+        {{ $analytics->appends(request()->query())->links() }}
+    </div>
 </body>
+
 </html>

@@ -74,8 +74,22 @@ class SalesPlanningController extends Controller
     public function quotation_register_report(Request $request)
     {
         $cros = Cro::orderBy('id')->get();
-        $query = Allreport::with('cro')->where('report_name', 'quotation_register_report');
+        $branches = Admin::orderBy('branch_office_name')->get();
+        $query = Allreport::with('cro', 'branch')->where('report_name', 'quotation_register_report');
+        $regions = Cro::select('region')->distinct()->pluck('region');
 
+        // Branch Filter
+        if ($request->filled('branch')) {
+            $query->whereHas('branch', function ($q) use ($request) {
+                $q->where('branch_office_name', $request->region);
+            });
+        }
+        // Region Filter
+        if ($request->filled('region')) {
+            $query->whereHas('cro', function ($q) use ($request) {
+                $q->where('region', $request->region);
+            });
+        }
         if ($request->filled('month')) {
             try {
                 $date = Carbon::createFromFormat('Y-m', $request->month);
@@ -92,20 +106,37 @@ class SalesPlanningController extends Controller
                 ->whereDate('end_date', '<=', $request->end_date);
         }
 
+
         $quotationreport = $query
             ->orderBy('start_date', 'asc')
             ->get()
             ->groupBy(function ($report) {
                 return Carbon::parse($report->start_date)->format('Y-m-d');
             });
+
         //   return $quotationreport;
-        return view('quotationreport.index', compact('cros', 'quotationreport'));
+        return view('quotationreport.index', compact('cros', 'quotationreport', 'regions', 'branches'));
     }
+
     public function feedback_register_report(Request $request)
     {
         $cros = Cro::whereNotIn('region', ['Central-2', 'Central-3'])->orderBy('id')->get();
         $query = Allreport::with('cro')->where('report_name', 'feedback_register_report');
+        $branches = Admin::orderBy('branch_office_name')->get();
+        $regions = Cro::select('region')->distinct()->pluck('region');
 
+        // Branch Filter
+        if ($request->filled('branch')) {
+            $query->whereHas('branch', function ($q) use ($request) {
+                $q->where('branch_office_name', $request->region);
+            });
+        }
+        // Region Filter
+        if ($request->filled('region')) {
+            $query->whereHas('cro', function ($q) use ($request) {
+                $q->where('region', $request->region);
+            });
+        }
         // Filtering logic
         if ($request->filled('month')) {
             try {
@@ -142,7 +173,6 @@ class SalesPlanningController extends Controller
         }
 
 
-
         if ($request->filled('remarks')) {
             $query->whereDate('remarks', $request->remarks);
         }
@@ -160,15 +190,43 @@ class SalesPlanningController extends Controller
             'total_calenders' => $nationwide->sum(fn($row) => (int) $row->calenders),
         ]);
     }
+
     public function search_daily_email_analytics_compaign(Request $request)
     {
-        $query = SocialMediaAnalytics::query();
+        $query = SocialMediaAnalytics::query()->with(['admin', 'customer']);
 
+        // Date Filter
         if ($request->filled('date')) {
             $query->whereDate('date', $request->date);
         }
 
-        $analytics = $query->first();
+        // Month Filter
+        if ($request->filled('month')) {
+            try {
+                $date = Carbon::createFromFormat('Y-m', $request->month);
+                $query->whereBetween('date', [
+                    $date->startOfMonth()->toDateString(),
+                    $date->endOfMonth()->toDateString()
+                ]);
+            } catch (\Exception $e) {
+            }
+        }
+
+        // Branch Filter
+        if ($request->filled('branch') && $request->branch !== 'all') {
+            $query->whereHas('customer', function ($q) use ($request) {
+                $q->where('branch_name', $request->branch);
+            });
+        }
+
+        // Region Filter
+        if ($request->filled('region') && $request->region !== 'all') {
+            $query->whereHas('customer', function ($q) use ($request) {
+                $q->where('customers_region', $request->region);
+            });
+        }
+
+        $analytics = $query->paginate(50);
 
         return view('analytics.index', [
             'analytics' => $analytics,

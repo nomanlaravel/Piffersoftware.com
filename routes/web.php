@@ -306,6 +306,10 @@ Route::get('/viewcustomer/{id}', [CustomerController::class, 'viewcustomer'])->n
 Route::get('/customers/{id}/sub-customers', [CustomerController::class, 'sub_customer'])->name('sub_customer');
 Route::get('/subcustomers/{customer_id}/sub-customers', [CustomerController::class, 'getSubCustomers'])->name('sub_child_customers');
 Route::get('/viewcustomerone/{id}', [CustomerController::class, 'viewcustomerone'])->name('viewcustomerone');
+
+
+Route::put('/inspection/{id}', [CustomerController::class, 'update'])->name('inspection.update');
+Route::delete('/inspection/{id}', [CustomerController::class, 'destroy'])->name('inspection.destroy');
 Route::get('/getcustomer/{id}', [CustomerController::class, 'getCustomer'])->name('getcustomer');
 Route::post('/send-report-email', [CustomerController::class, 'sendReportEmail']);
 Route::post('/send-edit-report-email', [CustomerController::class, 'sendEditReportEmail']);
@@ -620,6 +624,9 @@ Route::get('/analytics', [AdminController::class, 'analytics_index']);
 Route::post('/analytics/update-field', [AdminController::class, 'update_Field'])->name('analytics.update');
 Route::post('/wnationwide/store', [AdminController::class, 'wnationwide_store'])->name('wnationwide.store');
 
+Route::get('/admin/feedback/report', [AdminController::class, 'feedbackReports'])->name('admin.feedback.report');
+Route::get('admin/admin/social/report', [AdminController::class, 'filterReports'])->name('admin.admin.social.report');
+Route::get('/admin/quotation/report', [AdminController::class, 'filterQuotationReports'])->name('admin.quotation.report');
 Route::get('/search/daily/email/analytics/Compaign', [SalesPlanningController::class, 'search_daily_email_analytics_compaign'])->name('daily.analytics.compaign.search');
 Route::get('/search/sales/register/report', [SalesPlanningController::class, 'search_sales_register_report'])->name('search.sales.register.report');
 Route::get('/search/quotation/register/report', [SalesPlanningController::class, 'quotation_register_report'])->name('search.quotation.register.report');

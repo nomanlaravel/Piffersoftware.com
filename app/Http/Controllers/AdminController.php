@@ -9,7 +9,7 @@ use App\Models\Token;
 use App\Models\Notice;
 use App\Models\Rental;
 use App\Models\Repair;
-use App\Models\Social;
+use App\Models\Region;
 use App\Models\CroTask;
 use App\Models\Campaign;
 use App\Models\Customer;
@@ -52,7 +52,7 @@ class AdminController extends Controller
     public function admin_moveable_assets(Request $request)
     {
         // $query  = Admin::with('moveables');
-        $query  = Admin::with('moveables');
+        $query = Admin::with('moveables');
 
         if ($request->filled('branch_office_name') && $request->branch_office_name !== 'all') {
             $query->where('branch_office_name', $request->branch_office_name);
@@ -295,27 +295,210 @@ class AdminController extends Controller
 
         return view('admin.editadmin', compact('socials'));
     }
-
     public function admin()
     {
         $branches = Admin::with('reports')->get();
-        // return $branches;
-        return view('admin.admin', ['branches' => $branches]);
+        $regions_city = Admin::whereNotNull('branch_city')
+            ->where('branch_city', '!=', '')
+            ->pluck('branch_city');
+
+        $regions_area = Admin::whereNotNull('branch_area')
+            ->where('branch_area', '!=', '')
+            ->pluck('branch_area');
+
+        // Merge & unique
+        $regions = $regions_city->merge($regions_area)->unique()->values();
+        // return 
+        return view('admin.admin', ['branches' => $branches, 'regions' => $regions]);
     }
+
+    public function filterQuotationReports(Request $request)
+    {
+        $cros = Cro::all();
+        $branches = Admin::all();
+        $regions_city = Admin::whereNotNull('branch_city')
+            ->where('branch_city', '!=', '')
+            ->pluck('branch_city');
+
+        $regions_area = Admin::whereNotNull('branch_area')
+            ->where('branch_area', '!=', '')
+            ->pluck('branch_area');
+
+        // Merge & unique
+        $regions = $regions_city->merge($regions_area)->unique()->values();
+
+        $query = Allreport::where('report_name', 'quotation_register_report');
+
+        // Date Filter  
+        if ($request->filled('quotation_report_date')) {
+            $query->whereDate('created_at', $request->quotation_report_date);
+        }
+
+        // Month Filter
+        if ($request->filled('month')) {
+            try {
+                $date = Carbon::createFromFormat('Y-m', $request->month);
+                $query->whereYear('created_at', $date->year)
+                    ->whereMonth('created_at', $date->month);
+            } catch (\Exception $e) {
+            }
+        }
+
+        // Branch filter
+        if ($request->filled('branch') && $request->branch !== 'all') {
+            $query->whereHas('branch', function ($q) use ($request) {
+                $q->where('branch_office_name', $request->branch);
+            });
+        }
+
+        // Region filter
+        if ($request->filled('region') && $request->region !== 'all') {
+            $query->whereHas('branch', function ($q) use ($request) {
+                $q->where('branch_city', 'LIKE', "%{$request->region}%")
+                    ->orWhere('branch_area', 'LIKE', "%{$request->region}%");
+            });
+        }
+
+        $allReports = $query->get();
+
+        // Group by date for the view format
+        $quotationreport = [];
+        foreach ($allReports as $report) {
+            $dateKey = $report->created_at->format('Y-m-d');
+            if (!isset($quotationreport[$dateKey])) {
+                $quotationreport[$dateKey] = collect();
+            }
+            $quotationreport[$dateKey]->push($report);
+        }
+
+        return view('quotationreport.index', compact('quotationreport', 'cros', 'branches', 'regions'));
+    }
+
+    // ... rest of existing methods unchanged ...
+    public function feedbackReports(Request $request)
+    {
+        $cros = Cro::all();
+        $branches = Admin::all();
+        $regions_city = Admin::whereNotNull('branch_city')
+            ->where('branch_city', '!=', '')
+            ->pluck('branch_city');
+
+        $regions_area = Admin::whereNotNull('branch_area')
+            ->where('branch_area', '!=', '')
+            ->pluck('branch_area');
+
+        // Merge & unique
+        $regions = $regions_city->merge($regions_area)->unique()->values();
+
+        $query = Allreport::where('report_name', 'quotation_register_report');
+
+        // Date Filter  
+        if ($request->filled('feedback_report_date')) {
+            $query->whereDate('created_at', $request->feedback_report_date);
+        }
+
+        // Month Filter
+        if ($request->filled('month')) {
+            try {
+                $date = Carbon::createFromFormat('Y-m', $request->month);
+                $query->whereYear('created_at', $date->year)
+                    ->whereMonth('created_at', $date->month);
+            } catch (\Exception $e) {
+            }
+        }
+
+        // Branch filter
+        if ($request->filled('branch') && $request->branch !== 'all') {
+            $query->whereHas('branch', function ($q) use ($request) {
+                $q->where('branch_office_name', $request->branch);
+            });
+        }
+
+        // Region filter
+        if ($request->filled('region') && $request->region !== 'all') {
+            $query->whereHas('branch', function ($q) use ($request) {
+                $q->where('branch_city', 'LIKE', "%{$request->region}%")
+                    ->orWhere('branch_area', 'LIKE', "%{$request->region}%");
+            });
+        }
+
+        $allReports = $query->get();
+
+        // Group by date for the view format
+        $feedbackreport = [];
+        foreach ($allReports as $report) {
+            $dateKey = $report->created_at->format('Y-m-d');
+            if (!isset($quotationreport[$dateKey])) {
+                $quotationreport[$dateKey] = collect();
+            }
+            $quotationreport[$dateKey]->push($report);
+        }
+
+        return view('feedbackreport.index', compact('feedbackreport', 'cros', 'branches', 'regions'));
+    }
+
+    public function filterReports(Request $request)
+    {
+    
+        $branches = Admin::all();
+
+        $query = SocialMediaAnalytics::query()->with('admin');
+        
+        // Date Filter  
+        if ($request->filled('social_report_date')) {
+            $query->whereDate('created_at', $request->social_report_date);
+        }
+
+        // Month Filter
+        if ($request->filled('month')) {
+            try {
+                $date = Carbon::createFromFormat('Y-m', $request->month);
+                $query->whereYear('date', $date->year)
+                    ->whereMonth('date', $date->month);
+            } catch (\Exception $e) {
+            }
+        }
+
+        // Branch Filter  
+        if ($request->filled('branch_office_name') && $request->branch_office_name !== 'all') {
+            $query->whereHas('admin', function ($q) use ($request) {
+                $q->where('branch_office_name', $request->branch_office_name);
+            });
+        }
+
+        // Region Filter
+        if ($request->filled('region') && $request->region !== 'all') {
+            $query->whereHas('admin', function ($q) use ($request) {
+                $q->where('branch_city', 'LIKE', "%{$request->region}%")
+                    ->orWhere('branch_area', 'LIKE', "%{$request->region}%");
+            });
+        }
+
+        $analytics = $query->paginate(50);
+    
+        return view('analytics.index', [
+            'analytics' => $analytics,
+            'branches' => $branches,
+            'filters' => $request->all()
+        ]);
+    }
+
 
     public function search_baranceshes(Request $request)
     {
         $branchOfficeName = $request->branch_office_name;
-        $reportDate = $request->report_date;
+        $reportDate = $request->daily_report_date;
 
         $branches = Admin::all();
 
         // Start query builder for Admin with reports
-        $query = Admin::with(['reports' => function ($q) use ($reportDate) {
-            if ($reportDate) {
-                $q->where('report_date', $reportDate);
+        $query = Admin::with([
+            'reports' => function ($q) use ($reportDate) {
+                if ($reportDate) {
+                    $q->whereDate('report_date', $reportDate);
+                }
             }
-        }]);
+        ]);
 
         if ($branchOfficeName && $branchOfficeName !== 'all') {
             $query->where('branch_office_name', $branchOfficeName);
@@ -1036,10 +1219,10 @@ class AdminController extends Controller
             ->get();
         $notices = Notice::all();
         // return $quotationReports;
-        $taskdeiry= TaskRecordDairy::all();
+        $taskdeiry = TaskRecordDairy::all();
         $wnationswide = Wnationwide::all();
         $contractDetail = ContractDetail::all();
-         
+
         $totals = [
             'repeater' => $records->sum('repeater'),
             'body_guard' => $records->sum('body_guard'),
@@ -1071,7 +1254,7 @@ class AdminController extends Controller
             'rifle_223_m4_bullets' => $records->sum('rifle_223_m4_bullets'),
         ];
         $uniformbranches = UniformRecord::with('Ubranch')->get();
-        return view('admin.editadmin', compact('admins', 'feedbackReports', 'compaigns', 'analytics', 'salesreports', 'quotationReports','wnationswide','taskdeiry', 'notices','records','contractDetail', 'totals','uniformbranches'));
+        return view('admin.editadmin', compact('admins', 'feedbackReports', 'compaigns', 'analytics', 'salesreports', 'quotationReports', 'wnationswide', 'taskdeiry', 'notices', 'records', 'contractDetail', 'totals', 'uniformbranches'));
     }
 
     public function autoSave(Request $request)
@@ -1692,12 +1875,14 @@ class AdminController extends Controller
     public function crotask($id)
     {
         $admin = Admin::findOrFail($id);
-        $groups = TaskGroup::with(['tasks.assignments' => function ($query) {
-            $query->whereBetween('assigned_date', [
-                now()->startOfMonth()->toDateString(),
-                now()->endOfMonth()->toDateString()
-            ]);
-        }])->get();
+        $groups = TaskGroup::with([
+            'tasks.assignments' => function ($query) {
+                $query->whereBetween('assigned_date', [
+                    now()->startOfMonth()->toDateString(),
+                    now()->endOfMonth()->toDateString()
+                ]);
+            }
+        ])->get();
 
         $daysInMonth = now()->daysInMonth;
 
@@ -1743,20 +1928,20 @@ class AdminController extends Controller
 
 
 
-        public function deletetask_group($id)
-        {
-            $task = TaskGroup::find($id);
-            $task->delete();
-            return redirect()->back()->with('success', 'Task Group deleted successfully');
-        }
+    public function deletetask_group($id)
+    {
+        $task = TaskGroup::find($id);
+        $task->delete();
+        return redirect()->back()->with('success', 'Task Group deleted successfully');
+    }
 
-        public function update_taskgroup(Request $request, $id)
-        {
-            $task =TaskGroup::find($id);
-            $task->title = $request->input('title');
-            $task->save();
-            return redirect()->back()->with('success', 'Tasks Group updated successfully');
-        }
+    public function update_taskgroup(Request $request, $id)
+    {
+        $task = TaskGroup::find($id);
+        $task->title = $request->input('title');
+        $task->save();
+        return redirect()->back()->with('success', 'Tasks Group updated successfully');
+    }
 
 
 
@@ -1795,7 +1980,7 @@ class AdminController extends Controller
         foreach ($tasks as $taskNumber) {
             $parts = explode('.', $taskNumber);
             if (isset($parts[1]) && is_numeric($parts[1])) {
-                $subNumber = (int)$parts[1];
+                $subNumber = (int) $parts[1];
                 if ($subNumber > $maxSubNumber) {
                     $maxSubNumber = $subNumber;
                 }
@@ -1815,109 +2000,74 @@ class AdminController extends Controller
         $task->delete();
         return redirect()->back()->with('success', 'Task Group deleted successfully');
     }
-    //Office Equipments Add
-//  public function search_crotask(Request $request)
-//     {
-//         $monthInput = $request->input('month');
-//         $dateRangeInput = $request->input('date_range');
-        
-//         if ($dateRangeInput) {
-//             [$start, $end] = explode(' to ', $dateRangeInput);
-//             $startDate = Carbon::parse($start);
-//             $endDate = Carbon::parse($end);
-//         } elseif ($monthInput) {
-//             [$year, $month] = explode('-', $monthInput);
-//             $startDate = Carbon::create($year, $month, 1);
-//             $endDate = $startDate->copy()->endOfMonth();
-//         } else {
-//             // Default current month
-//             $startDate = Carbon::now()->startOfMonth();
-//             $endDate = Carbon::now()->endOfMonth();
-//         }
 
-//         $totalDays = $startDate->diffInDays($endDate) + 1;
+    public function search_crotask(Request $request)
+    {
+        $monthInput = $request->month;
+        $dateRange = $request->date_range;
+        $region = $request->region;
+        $branch = $request->branch;
 
-//         // Fetch TaskGroups with assignments in the selected range
-//         $groups = TaskGroup::whereHas('tasks.assignments', function($query) use ($startDate, $endDate) {
-//             $query->whereBetween('assigned_date', [$startDate->toDateString(), $endDate->toDateString()]);
-//         })
-//         ->with(['tasks.assignments' => function ($query) use ($startDate, $endDate) {
-//             $query->whereBetween('assigned_date', [$startDate->toDateString(), $endDate->toDateString()]);
-//         }])
-//         ->get();
-
-//         // Debug
-//         Log::info("Selected Date Range: {$startDate->toDateString()} to {$endDate->toDateString()}");
-//         foreach ($groups as $group) {
-//             foreach ($group->tasks as $task) {
-//                 Log::info("Task: {$task->task_description}", ['assignments' => $task->assignments->toArray()]);
-//             }
-//         }
-
-//         return view('crotask.search', compact('groups', 'startDate', 'totalDays', 'endDate'));
-//     }
-public function search_crotask(Request $request)
-{
-    $monthInput = $request->month;
-    $dateRange = $request->date_range;
-    $region = $request->region;
-    $branch = $request->branch;
-
-    // Date Logic
-    if ($dateRange) {
-        [$start, $end] = explode(' to ', $dateRange);
-        $startDate = Carbon::parse($start);
-        $endDate = Carbon::parse($end);
-    } elseif ($monthInput) {
-        [$year, $month] = explode('-', $monthInput);
-        $startDate = Carbon::create($year, $month, 1);
-        $endDate = $startDate->copy()->endOfMonth();
-    } else {
-        $startDate = Carbon::now()->startOfMonth();
-        $endDate = Carbon::now()->endOfMonth();
-    }
-
-    $totalDays = $startDate->diffInDays($endDate) + 1;
-
-    // Base assignment query with date filter
-    $assignmentQuery = TaskAssignment::query()
-        ->whereBetween('assigned_date', [$startDate->toDateString(), $endDate->toDateString()]);
-
-    // Branch filter
-    if ($branch && $branch != 'all') {
-        $assignmentQuery->where('branch_id', $branch);
-    }
-
-    // Region filter via Admin branch_city/branch_area
-    if ($region && $region != 'all') {
-        $assignmentQuery->whereHas('branch', function ($q) use ($region) {
-            $q->where('branch_city', 'LIKE', "%{$region}%")
-              ->orWhere('branch_area', 'LIKE', "%{$region}%");
-        });
-    }
-
-    $groups = TaskGroup::with([
-        'tasks.assignments' => function ($q) use ($startDate, $endDate, $branch, $region) {
-            $q->whereBetween('assigned_date', [$startDate->toDateString(), $endDate->toDateString()]);
-            
-            if ($branch && $branch != 'all') {
-                $q->where('branch_id', $branch);
-            }
-            if ($region && $region != 'all') {
-                $q->whereHas('branch', function ($bq) use ($region) {
-                    $bq->where('branch_city', 'LIKE', "%{$region}%")
-                       ->orWhere('branch_area', 'LIKE', "%{$region}%");
-                });
-            }
+        // Date Logic
+        if ($dateRange) {
+            [$start, $end] = explode(' to ', $dateRange);
+            $startDate = Carbon::parse($start);
+            $endDate = Carbon::parse($end);
+        } elseif ($monthInput) {
+            [$year, $month] = explode('-', $monthInput);
+            $startDate = Carbon::create($year, $month, 1);
+            $endDate = $startDate->copy()->endOfMonth();
+        } else {
+            $startDate = Carbon::now()->startOfMonth();
+            $endDate = Carbon::now()->endOfMonth();
         }
-    ])
-    ->with('tasks.assignments.branch')
-    ->get();
 
-    return view('crotask.search', compact(
-        'groups', 'startDate', 'endDate', 'totalDays', 'region', 'branch'
-    ));
-}
+        $totalDays = $startDate->diffInDays($endDate) + 1;
+
+        // Base assignment query with date filter
+        $assignmentQuery = TaskAssignment::query()
+            ->whereBetween('assigned_date', [$startDate->toDateString(), $endDate->toDateString()]);
+
+        // Branch filter
+        if ($branch && $branch != 'all') {
+            $assignmentQuery->where('branch_id', $branch);
+        }
+
+        // Region filter via Admin branch_city/branch_area
+        if ($region && $region != 'all') {
+            $assignmentQuery->whereHas('branch', function ($q) use ($region) {
+                $q->where('branch_city', 'LIKE', "%{$region}%")
+                    ->orWhere('branch_area', 'LIKE', "%{$region}%");
+            });
+        }
+
+        $groups = TaskGroup::with([
+            'tasks.assignments' => function ($q) use ($startDate, $endDate, $branch, $region) {
+                $q->whereBetween('assigned_date', [$startDate->toDateString(), $endDate->toDateString()]);
+
+                if ($branch && $branch != 'all') {
+                    $q->where('branch_id', $branch);
+                }
+                if ($region && $region != 'all') {
+                    $q->whereHas('branch', function ($bq) use ($region) {
+                        $bq->where('branch_city', 'LIKE', "%{$region}%")
+                            ->orWhere('branch_area', 'LIKE', "%{$region}%");
+                    });
+                }
+            }
+        ])
+            ->with('tasks.assignments.branch')
+            ->get();
+
+        return view('crotask.search', compact(
+            'groups',
+            'startDate',
+            'endDate',
+            'totalDays',
+            'region',
+            'branch'
+        ));
+    }
     public function adminequipments()
     {
         $adminequipments = OfficeEquipment::all();

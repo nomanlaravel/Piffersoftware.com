@@ -56,6 +56,25 @@
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Weekly Milleage Record</button>
                     </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="social_media_analytics-tab" data-bs-toggle="tab"
+                    data-bs-target="#social_media_analytics" type="button" role="tab"
+                    aria-controls="social_media_analytics" aria-selected="false">
+                    Social Media Report
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="Quotation-tab" data-bs-toggle="tab" data-bs-target="#Quotation"
+                    type="button" role="tab" aria-controls="Quotation" aria-selected="false">
+                    Quotation Log Registered
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="Feedback-tab" data-bs-toggle="tab" data-bs-target="#Feedback" type="button"
+                    role="tab" aria-controls="Feedback" aria-selected="false">
+                    Daily Feedback
+                </button>
+            </li>
                 </ul>
                 <div class="tab-content mt-3" id="myTabContent">
                 <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
@@ -77,8 +96,8 @@
                             </div>
                             <div class="col-md-3">
                                 <label>Report Date</label>
-                                <input type="date" name="report_date" class="form-control"
-                                    value="{{ request('report_date') }}">
+                                <input type="date" name="daily_report_date" class="form-control"
+                                    value="{{ request('daily_report_date') }}">
                             </div>
                             <div class="col-md-3 mt-4">
                                 <button type="submit" class="btn btn-outline-light"><img
@@ -105,7 +124,6 @@
                             @endforeach
                         </select>
                     </div>
-
                     <div class="col-md-3 mt-4">
                         <button type="submit" class="btn btn-outline-light"><img
                                 src="https://cdn-icons-png.flaticon.com/128/18444/18444736.png" alt=""
@@ -114,6 +132,164 @@
                 </div>
             </form>
             </div>
+            <div class="tab-pane fade " id="social_media_analytics" role="tabpanel" aria-labelledby="files-tab">
+                {{-- <h4>Files Reports Nationwide</h4> --}}
+                <form method="GET" action="{{ route('admin.admin.social.report') }}">
+                    <div class="row mb-4">
+                            <div class="col-md-3">
+                                <label>Report Date</label>
+                                <input type="date" name="social_report_date" class="form-control"
+                                    value="{{ request('social_report_date') }}">
+                            </div>
+                        <!-- Month -->
+                        <div class="col-md-2">
+                            <label class="form-label">Month</label>
+                            <input type="month" id="monthInput" name="month" class="form-control"
+                                value="{{ request('month') }}">
+                        </div>
+                        <div class="col-md-3">
+                            <label>Region</label>
+                            <select name="region" class="form-control">
+                                <!-- Default -->
+                                <option value="">Select a region</option>
+                                <option value="all" {{ request('region') == 'all' ? 'selected' : '' }}>All Regions
+                                </option>
+
+                                <!-- Only if regions exist -->
+                                @if($regions->isNotEmpty())
+                                    @foreach($regions as $region)
+                                        <option value="{{ $region }}" {{ request('region') == $region ? 'selected' : '' }}>
+                                            {{ $region }}
+                                        </option>
+                                    @endforeach
+                                @endif
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                                <label>Daily Branch Report</label>
+                                <select name="branch_office_name" class="form-control">
+                                    <option value="">-- Select Branch --</option>
+                                    <option value="all" {{ request('branch_office_name') == 'all' ? 'selected' : '' }}>All
+                                        Branches</option>
+                                    @foreach ($branches as $branch)
+                                        <option value="{{ $branch->branch_office_name }}"
+                                            {{ request('branch_office_name') == $branch->branch_office_name ? 'selected' : '' }}>
+                                            {{ $branch->branch_office_name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            
+                        <div class="col-md-2 mt-4">
+                            <button type="submit" class="btn btn-outline-light">
+                                <img src="https://cdn-icons-png.flaticon.com/128/18444/18444736.png" alt="" width="30px"
+                                    height="30px">
+                            </button>
+
+                        </div>
+                        </div>
+                </form>
+            </div>
+             <div class="tab-pane fade " id="Quotation" role="tabpanel" aria-labelledby="files-tab">
+
+            <form method="GET" action="{{ route('admin.quotation.report') }}">
+                <div class="row mb-4">
+                     <div class="col-md-3">
+                                <label>Report Date</label>
+                                <input type="date" name="quotation_report_date" class="form-control"
+                                    value="{{ request('quotation_report_date') }}">
+                            </div>
+                    <div class="col-md-2">
+                        <label>OR Month</label>
+                        <input type="month" name="month" class="form-control" value="{{ request('month') }}">
+                    </div>
+                    <div class="col-md-2">
+                        <label>Region</label>
+                        <select name="region" class="form-control">
+                            <option value="">Select a Region</option>
+                            <option value="all" {{ request('region') == 'all' ? 'selected' : '' }}>All Regions</option>
+                            @if(isset($regions))
+                                @foreach($regions as $region)
+                                    <option value="{{ $region }}" {{ request('region') == $region ? 'selected' : '' }}>
+                                        {{ $region }}
+                                    </option>
+                                @endforeach
+                            @endif
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label>Branch</label>
+                        <select name="branch" class="form-control">
+                            <option value="">Select a Branches</option>
+                            <option value="all" {{ request('branch') == 'all' ? 'selected' : '' }}>All Branches</option>
+                            @if(isset($branches))
+                                @foreach ($branches as $branch)
+                                    <option value="{{ $branch->branch_office_name }}" {{ request('branch') == $branch->branch_office_name ? 'selected' : '' }}>
+                                        {{ $branch->branch_office_name }}
+                                    </option>
+                                @endforeach
+                            @endif
+                        </select>
+                    </div>
+                    <div class="col-md-1 mt-4">
+                        <button type="submit" class="btn btn-outline-light">
+                            <img src="https://cdn-icons-png.flaticon.com/128/18444/18444736.png" alt="Search"
+                                width="30px" height="30px">
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+         <div class="tab-pane fade " id="Feedback" role="tabpanel" aria-labelledby="files-tab">
+
+            <form method="GET" action="{{ route('admin.feedback.report') }}">
+                <div class="row mb-4">
+                     <div class="col-md-3">
+                                <label>Report Date</label>
+                                <input type="date" name="feedback_report_date" class="form-control"
+                                    value="{{ request('feedback_report_date') }}">
+                            </div>
+                    <div class="col-md-3">
+                        <label>OR Select Month</label>
+                        <input type="month" name="month" class="form-control" value="{{ request('month') }}">
+                    </div>
+                    <div class="col-md-2">
+                        <label>Region</label>
+                        <select name="region" class="form-control">
+                            <option value="">Select a Region</option>
+                            <option value="all" {{ request('region') == 'all' ? 'selected' : '' }}>All Regions</option>
+                            @if(isset($regions))
+                                @foreach($regions as $region)
+                                    <option value="{{ $region }}" {{ request('region') == $region ? 'selected' : '' }}>
+                                        {{ $region }}
+                                    </option>
+                                @endforeach
+                            @endif
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label>Branch</label>
+                        <select name="branch" class="form-control">
+                            <option value="">Select a branch</option>
+                            <option value="all" {{ request('branch') == 'all' ? 'selected' : '' }}>All Branches
+                            </option>
+                            @foreach (App\Models\Admin::all() as $branch)
+                                <option value="{{ $branch->branch_office_name }}" {{ request('branch') == $branch->branch_office_name ? 'selected' : '' }}>
+                                    {{ $branch->branch_office_name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-2 mt-4">
+                        <button type="submit" class="btn btn-outline-light mt-2">
+                            <img src="https://cdn-icons-png.flaticon.com/128/18444/18444736.png" alt="Search"
+                                width="30px" height="30px">
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
             </div>
             <div class="table-responsive mt-2">
                 <div style="height: 380px; overflow-y: auto;">

@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Dompdf\Dompdf;
+use Dompdf\Dompdf; 
+ use Illuminate\Support\Facades\Validator;
 use App\Models\mpoc;
 use App\Models\Admin;
 use App\Models\Duties;
@@ -2954,4 +2955,80 @@ class CustomerController extends Controller
 
         return redirect()->back()->with('success', 'Notifications have been ' . $status . ' for this customer.');
     }
+
+public function update(Request $request, $id)
+{ 
+    $validator = Validator::make($request->all(), [
+        'inspection_emp_id' => 'required|string|max:255',
+        'inspection_no' => 'required|string|max:255',
+        'inspection_emp_name' => 'required|string|max:255',
+        'inspection_emp_cell' => 'required|string|max:20',
+        'inspection_emp_dept' => 'required|string|max:255',
+        'inspection_date' => 'required|date',
+        'inspection_rem_petr'=> 'required|string|max:255',
+        'inspection_note'=> 'required|string|max:255',
+
+        'inspection_pic' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+
+        'inspection_attach' => 'nullable|file|mimes:jpeg,png,jpg,gif,webp,mp4,avi,mov,pdf,doc,docx,xls,xlsx|max:51200', 
+    ],[
+        'inspection_attach.max' => 'Video/File is too large to upload. Maximum size allowed is 50MB.',
+    ]);
+ 
+    if ($validator->fails()) {
+        return redirect()->back()
+            ->withErrors($validator)
+            ->withInput()
+            ->with('error','Video is too large to upload.');
+    }
+
+    $inspection = CustomerInspection::findOrFail($id);
+    $data = $request->all();
+
+    $uploadPath = public_path('uploads/inspections');
+    if (!file_exists($uploadPath)) {
+        mkdir($uploadPath, 0777, true);
+    }
+
+    if ($request->hasFile('inspection_attach')) {
+
+        $file = $request->file('inspection_attach');
+
+        $file_name = time().'_'.uniqid().'_'.$file->getClientOriginalName();
+
+        $file->move($uploadPath, $file_name);
+
+        $data['inspection_attach'] = 'uploads/inspections/'.$file_name;
+    }
+
+    $inspection->update($data);
+
+    return redirect()->back()->with('success','Inspection updated successfully.');
 }
+
+public function destroy($id)
+{
+    try {
+        $inspection = CustomerInspection::findOrFail($id);
+
+        // Delete files
+        if ($inspection->inspection_pic && file_exists(public_path($inspection->inspection_pic))) {
+            unlink(public_path($inspection->inspection_pic));
+        }
+
+        if ($inspection->inspection_attach && file_exists(public_path($inspection->inspection_attach))) {
+            unlink(public_path($inspection->inspection_attach));
+        }
+
+        $inspection->delete();
+
+        return redirect()->back()->with('success', 'Inspection deleted successfully.');
+    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        return redirect()->back()->with('error', 'Inspection not found.');
+    } catch (\Exception $e) {
+        \Log::error('Error deleting inspection: '.$e->getMessage());
+        return redirect()->back()->with('error', 'An error occurred while deleting the inspection.');
+    }
+}
+}
+
