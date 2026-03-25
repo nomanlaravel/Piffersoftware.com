@@ -58,7 +58,7 @@ class RequirementController extends Controller
             // Handle file uploads
             $requirementImageFields = [
                 'visitingCardFront', 'visitingCardBack', 'supportingRfqAttach',
-                'rfqDocAttach', 'finPro', 'listComAttach', 'scanRecAttach',
+                'rfqDocAttach', 'finPro', 'email_attachment', 'listComAttach', 'scanRecAttach',
                 'grevAttach', 'bidAttach', 'competitorAttach',
             ];
 
@@ -1300,7 +1300,7 @@ class RequirementController extends Controller
             // Handle file uploads
             $requirementImageFields = [
                 'visitingCardFront', 'visitingCardBack', 'supportingRfqAttach',
-                'rfqDocAttach', 'finPro', 'listComAttach', 'scanRecAttach',
+                'rfqDocAttach', 'finPro', 'email_attachment', 'listComAttach', 'scanRecAttach',
                 'grevAttach', 'bidAttach', 'competitorAttach',
             ];
 

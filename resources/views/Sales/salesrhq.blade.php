@@ -7,7 +7,7 @@
 <div class="customer_form">
     <div>
         <h5 class="mt-3" style="font-weight: 700;">Add RHQ</h5>
-        <form action="{{ route('postsalescategory') }}" method="POST">
+        <form action="{{ route('postsalesrhq') }}" method="POST">
             @csrf
             <div class="row mb-2 mt-3">
                 <div class="col-lg-5 spacing-right">
