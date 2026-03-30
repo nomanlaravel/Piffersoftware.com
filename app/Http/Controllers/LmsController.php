@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\LmsApiService;
 use Illuminate\Http\Request;
 use App\Models\Hrm;
+use Log;
 
 class LmsController extends Controller
 {
@@ -31,6 +32,10 @@ class LmsController extends Controller
         ]);
 
         $response = $this->lmsApiService->register($request->only(['name','email', 'password', 'faculty_id']));
+        Log::info('LMS API Response', [
+            'response' => $response
+        ]);
+        // return $response;
         return response()->json($response);
     }
 

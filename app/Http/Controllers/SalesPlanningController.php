@@ -330,20 +330,42 @@ class SalesPlanningController extends Controller
     }
 
 
+    // public function search_compaign_report(Request $request)
+    // {
+    //     $query = Campaign::query();
+    //     $region = $request->region;
+    //     if ($region && $region !== 'all') {
+    //         $query->where('region', $region);
+    //     }
+    //     $compaigns = $query->get();
+    //     // return $compaign;
+    //     return view('searchresults.nationwide', [
+    //         'compaigns' => $compaigns,
+    //         'filters' => $request->all(),
+    //     ]);
+    // }
+
     public function search_compaign_report(Request $request)
-    {
-        $query = Campaign::query();
-        $region = $request->region;
-        if ($region && $region !== 'all') {
-            $query->where('region', $region);
-        }
-        $compaigns = $query->get();
-        // return $compaign;
-        return view('searchresults.nationwide', [
-            'compaigns' => $compaigns,
-            'filters' => $request->all(),
-        ]);
+{
+    $query = Campaign::query();
+
+    // Region Filter
+    if ($request->region && $request->region !== 'all') {
+        $query->where('region', $request->region);
     }
+
+    // Branch Filter ✅ (BEST WAY)
+    if ($request->branch && $request->branch !== 'all') {
+        $query->where('branch_id', $request->branch);
+    }
+
+    $compaigns = $query->with('branch')->get();
+
+    return view('searchresults.nationwide', [
+        'compaigns' => $compaigns,
+        'filters' => $request->all(),
+    ]);
+}
 
     public function search_sales_email_compaign(Request $request)
     {

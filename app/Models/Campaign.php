@@ -20,4 +20,9 @@ class Campaign extends Model
         'dispatch_by_name', 'dispatch_by_employee', 'dispatch_by_desig', 'dispatch_by_dept',
         'dispatch_by_notes', 'dispatch_by_attach','send_count','received_by','opended_by','customer_files','sedulous_files','training_files','guard_files','score_card'
     ];
+
+    public function branch()
+{
+    return $this->belongsTo(Admin::class, 'branch_id');
+}
 }

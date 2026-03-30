@@ -198,331 +198,331 @@
                     <div class="container my-1">
                         <div class="accordion" id="signatoryAccordion10">
                             @foreach ($admins->reports as $index => $report)
-                            <!-- Initial Accordion Item -->
-                            <div class="accordion-item signaccordion-item10" id="signatoryEntry10">
-                                <h2 class="accordion-header" id="signatoryHeading{{ $index + 1 }}" style="color: white">
-                                    <button class="accordion-button" style="background-color: #34005A; color:white"
-                                        type="button" data-toggle="collapse"
-                                        data-target="#signatoryCollapse{{ $index + 1 }}" aria-expanded="false"
-                                        aria-controls="signatoryCollapse{{ $index + 1 }}">
-                                        Report Entry {{ $index + 1 }} , Date: {{ $report->report_date }} ,
-                                        Branch ID: {{ $report->site_id }} , Location: {{ $report->location }}
-                                    </button>
-                                </h2>
-                                <div id="signatoryCollapse{{ $index + 1 }}" class="collapse"
-                                    aria-labelledby="signatoryHeading{{ $index + 1 }}">
-                                    <div class="accordion-body">
-                                        <input type="hidden" name="reports[{{ $index }}][r_id]"
-                                            value="{{ $report->id }}">
-                                        <!-- Your content for signatory entry goes here -->
-                                        <div class="row mb-2" id="signatoryDetailsContainer10">
-                                            <div class="col-lg-12" id="consultant_add_fields">
-                                                <div class=" row mb-2">
-                                                    <div class="col-lg-4 spacing-left"> Date
-                                                        <br>
-                                                        <input class="form-control" id=""
-                                                            name="reports[{{ $index }}][report_date]"
-                                                            value="{{ $report->report_date }}" type="date"
-                                                            placeholder="..." style="width: 103%;">
+                                <!-- Initial Accordion Item -->
+                                <div class="accordion-item signaccordion-item10" id="signatoryEntry10">
+                                    <h2 class="accordion-header" id="signatoryHeading{{ $index + 1 }}" style="color: white">
+                                        <button class="accordion-button" style="background-color: #34005A; color:white"
+                                            type="button" data-toggle="collapse"
+                                            data-target="#signatoryCollapse{{ $index + 1 }}" aria-expanded="false"
+                                            aria-controls="signatoryCollapse{{ $index + 1 }}">
+                                            Report Entry {{ $index + 1 }} , Date: {{ $report->report_date }} ,
+                                            Branch ID: {{ $report->site_id }} , Location: {{ $report->location }}
+                                        </button>
+                                    </h2>
+                                    <div id="signatoryCollapse{{ $index + 1 }}" class="collapse"
+                                        aria-labelledby="signatoryHeading{{ $index + 1 }}">
+                                        <div class="accordion-body">
+                                            <input type="hidden" name="reports[{{ $index }}][r_id]"
+                                                value="{{ $report->id }}">
+                                            <!-- Your content for signatory entry goes here -->
+                                            <div class="row mb-2" id="signatoryDetailsContainer10">
+                                                <div class="col-lg-12" id="consultant_add_fields">
+                                                    <div class=" row mb-2">
+                                                        <div class="col-lg-4 spacing-left"> Date
+                                                            <br>
+                                                            <input class="form-control" id=""
+                                                                name="reports[{{ $index }}][report_date]"
+                                                                value="{{ $report->report_date }}" type="date"
+                                                                placeholder="..." style="width: 103%;">
+                                                        </div>
+                                                        <div class="col-lg-4 spacing-left spacing-right"> Branch Name
+                                                            <br>
+                                                            <input class="form-control" id=""
+                                                                name="reports[{{ $index }}][branch]"
+                                                                value="{{ $report->branch }}" type="text" placeholder="..."
+                                                                style="width: 97%;">
+                                                        </div>
+                                                        <div class="col-lg-4 spacing-right"> Branch ID
+                                                            <br>
+                                                            <input class="form-control" id=""
+                                                                name="reports[{{ $index }}][site_id]"
+                                                                value="{{ $report->site_id }}" type="text" placeholder="..."
+                                                                style="width: 100%;">
+                                                        </div>
+                                                        <div class="col-lg-4 spacing-left"> Location
+                                                            <br>
+                                                            <input class="form-control" id=""
+                                                                name="reports[{{ $index }}][location]"
+                                                                value="{{ $report->location }}" type="text"
+                                                                placeholder="..." style="width: 103%;">
+                                                        </div>
+                                                        <div class="col-lg-4 spacing-right"> Authorized Guards
+                                                            <br>
+                                                            <input class="form-control" id=""
+                                                                name="reports[{{ $index }}][auth_guards]"
+                                                                value="{{ $report->auth_guards }}" type="text"
+                                                                placeholder="..." style="width: 100%;">
+                                                        </div>
+                                                        <div class="col-lg-4 spacing-left"> Army
+                                                            <br>
+                                                            <input class="form-control" id=""
+                                                                name="reports[{{ $index }}][army]"
+                                                                value="{{ $report->army }}" type="text" placeholder="..."
+                                                                style="width: 100%;">
+                                                        </div>
+                                                        <div class="col-lg-4 spacing-left"> SSG
+                                                            <br>
+                                                            <input class="form-control" id=""
+                                                                name="reports[{{ $index }}][ssg]" value="{{ $report->ssg }}"
+                                                                type="text" placeholder="..." style="width: 103%;">
+                                                        </div>
                                                     </div>
-                                                    <div class="col-lg-4 spacing-left spacing-right"> Branch Name
-                                                        <br>
-                                                        <input class="form-control" id=""
-                                                            name="reports[{{ $index }}][branch]"
-                                                            value="{{ $report->branch }}" type="text" placeholder="..."
-                                                            style="width: 97%;">
+                                                    <div class=" row mb-2">
+                                                        <div class="col-lg-4 spacing-right"> Civil
+                                                            <br>
+                                                            <input class="form-control" id=""
+                                                                name="reports[{{ $index }}][civil]"
+                                                                value="{{ $report->civil }}" type="text" placeholder="..."
+                                                                style="width: 100%;">
+                                                        </div>
+                                                        <div class="col-lg-4 spacing-left spacing-right"> Absentees
+                                                            <br>
+                                                            <input class="form-control" id=""
+                                                                name="reports[{{ $index }}][absente]"
+                                                                value="{{ $report->absente }}" type="text" placeholder="..."
+                                                                style="width: 100%;">
+                                                        </div>
+                                                        <div class="col-lg-4 spacing-left spacing-right"> Leave
+                                                            <br>
+                                                            <input class="form-control" id=""
+                                                                name="reports[{{ $index }}][leave]"
+                                                                value="{{ $report->leave }}" type="text" placeholder="..."
+                                                                style="width: 100%;">
+                                                        </div>
+                                                        <div class="col-lg-4 spacing-right"> Reason
+                                                            <br>
+                                                            <input class="form-control" id=""
+                                                                name="reports[{{ $index }}][reason]"
+                                                                value="{{ $report->reason }}" type="text" placeholder="..."
+                                                                style="width: 100%;">
+                                                        </div>
+                                                        <div class="col-lg-4 spacing-left spacing-right"> Reliver Provided
+                                                            <br>
+                                                            <input class="form-control" id=""
+                                                                name="reports[{{ $index }}][r_provided]"
+                                                                value="{{ $report->r_provided }}" type="text"
+                                                                placeholder="..." style="width: 100%;">
+                                                        </div>
+                                                        <div class="col-lg-4 spacing-left spacing-right"> Last Complaint
+                                                            Date
+                                                            <br>
+                                                            <input class="form-control" id=""
+                                                                name="reports[{{ $index }}][last_comp_date]"
+                                                                value="{{ $report->last_comp_date }}" type="date"
+                                                                placeholder="..." style="width: 100%;">
+                                                        </div>
                                                     </div>
-                                                    <div class="col-lg-4 spacing-right"> Branch ID
-                                                        <br>
-                                                        <input class="form-control" id=""
-                                                            name="reports[{{ $index }}][site_id]"
-                                                            value="{{ $report->site_id }}" type="text" placeholder="..."
-                                                            style="width: 100%;">
+                                                    <div class=" row mb-2">
+                                                        <div class="col-lg-4 spacing-right"> Any Incident & Report No
+                                                            <br>
+                                                            <input class="form-control" id=""
+                                                                name="reports[{{ $index }}][any_inc]"
+                                                                value="{{ $report->any_inc }}" type="text" placeholder="..."
+                                                                style="width: 100%;">
+                                                        </div>
+                                                        <div class="col-lg-4 spacing-right"> Pending Nadra Versys
+                                                            <br>
+                                                            <input class="form-control" id=""
+                                                                name="reports[{{ $index }}][pending_nadra]"
+                                                                value="{{ $report->pending_nadra }}" type="text"
+                                                                placeholder="..." style="width: 100%;">
+                                                        </div>
+                                                        <div class="col-lg-4 spacing-left spacing-right"> Unsent DPO Reports
+                                                            <br>
+                                                            <input class="form-control" id=""
+                                                                name="reports[{{ $index }}][unsent_dpo_rep]"
+                                                                value="{{ $report->unsent_dpo_rep }}" type="text"
+                                                                placeholder="..." style="width: 100%;"></input>
+                                                        </div>
+                                                        <div class="col-lg-4 spacing-left spacing-right"> No. of resigns
+                                                            <br>
+                                                            <input class="form-control" id=""
+                                                                name="reports[{{ $index }}][no_of_resigns]"
+                                                                value="{{ $report->no_of_resigns }}" type="text"
+                                                                placeholder="..." style="width: 100%;">
+                                                        </div>
+                                                        <div class="col-lg-4 spacing-right"> Guards without bank started
+                                                            <br>
+                                                            <input class="form-control" id=""
+                                                                name="reports[{{ $index }}][guards_wout_bank]"
+                                                                value="{{ $report->guards_wout_bank }}" type="text"
+                                                                placeholder="..." style="width: 100%;">
+                                                        </div>
+                                                        <div class="col-lg-4 spacing-left spacing-right"> Any new Site
+                                                            Started
+                                                            <br>
+                                                            <input class="form-control" id=""
+                                                                name="reports[{{ $index }}][any_new_site]"
+                                                                value="{{ $report->any_new_site }}" type="text"
+                                                                placeholder="..." style="width: 100%;">
+                                                        </div>
                                                     </div>
-                                                    <div class="col-lg-4 spacing-left"> Location
-                                                        <br>
-                                                        <input class="form-control" id=""
-                                                            name="reports[{{ $index }}][location]"
-                                                            value="{{ $report->location }}" type="text"
-                                                            placeholder="..." style="width: 103%;">
+                                                    <div class="row mb-2">
+                                                        <div class="col-lg-4 spacing-left spacing-right"> No. of Guards
+                                                            <br>
+                                                            <input class="form-control" id=""
+                                                                name="reports[{{ $index }}][no_of_guards]"
+                                                                value="{{ $report->no_of_guards }}" type="text"
+                                                                placeholder="..." style="width: 100%;">
+                                                        </div>
+                                                        <div class="col-lg-4 spacing-left spacing-right"> Any Site Closed
+                                                            <br>
+                                                            <input class="form-control" id=""
+                                                                name="reports[{{ $index }}][any_site_closed]"
+                                                                value="{{ $report->any_site_closed }}" type="text"
+                                                                placeholder="..." style="width: 100%;">
+                                                        </div>
+                                                        <div class="col-lg-4 spacing-left spacing-right"> No. of Guard of
+                                                            Closed Site
+                                                            <br>
+                                                            <input class="form-control" id=""
+                                                                name="reports[{{ $index }}][no_of_guards_of_closed_site]"
+                                                                value="{{ $report->no_of_guards_of_closed_site }}"
+                                                                type="text" placeholder="..." style="width: 100%;">
+                                                        </div>
+                                                        <div class="col-lg-4 spacing-right"> Details of Escort Duties
+                                                            <br>
+                                                            <textarea class="form-control" id=""
+                                                                name="reports[{{ $index }}][escort_duties]" type="text"
+                                                                placeholder="..."
+                                                                style="width: 100%;">{{ $report->escort_duties }}</textarea>
+                                                        </div>
+                                                        <div class="col-lg-4 spacing-right"> Details of Events
+                                                            <br>
+                                                            <textarea class="form-control" id=""
+                                                                name="reports[{{ $index }}][event_details]" type="text"
+                                                                placeholder="..."
+                                                                style="width: 100%;">{{ $report->event_details }}</textarea>
+                                                        </div>
+                                                        <div class="col-lg-4 spacing-left spacing-right"> Amount of pending
+                                                            Recoveries
+                                                            <br>
+                                                            <input class="form-control" id=""
+                                                                name="reports[{{ $index }}][pending_recoveries]"
+                                                                value="{{ $report->pending_recoveries }}" type="text"
+                                                                placeholder="..." style="width: 100%;">
+                                                        </div>
+                                                        <div class="col-lg-4 spacing-left spacing-right"> Signature of
+                                                            Manager Accounts
+                                                            <br>
+                                                            <input class="form-control" id=""
+                                                                name="reports[{{ $index }}][sign_manager]"
+                                                                value="{{ $report->sign_manager }}" type="text"
+                                                                placeholder="..." style="width: 100%;">
+                                                        </div>
+                                                        <div class="col-lg-4 spacing-right"> Any staff on annual leave
+                                                            <br>
+                                                            <input class="form-control" id=""
+                                                                name="reports[{{ $index }}][staff_on_leav]"
+                                                                value="{{ $report->staff_on_leav }}" type="text"
+                                                                placeholder="..." style="width: 100%;">
+                                                        </div>
+                                                        <div class="col-lg-4 spacing-left spacing-right"> Any short leave of
+                                                            staff with Name
+                                                            <br>
+                                                            <input class="form-control" id=""
+                                                                name="reports[{{ $index }}][short_leav]"
+                                                                value="{{ $report->short_leav }}" type="text"
+                                                                placeholder="..." style="width: 100%;">
+                                                        </div>
                                                     </div>
-                                                    <div class="col-lg-4 spacing-right"> Authorized Guards
-                                                        <br>
-                                                        <input class="form-control" id=""
-                                                            name="reports[{{ $index }}][auth_guards]"
-                                                            value="{{ $report->auth_guards }}" type="text"
-                                                            placeholder="..." style="width: 100%;">
+                                                    <h5>Checklist :</h5>
+                                                    <div class="row mb-2">
+                                                        <div class="col-lg-4 spacing-left spacing-right"> Utility Bills Paid
+                                                            <br>
+                                                            <input class="form-control" id=""
+                                                                name="reports[{{ $index }}][utility_bills]"
+                                                                value="{{ $report->utility_bills }}" type="text"
+                                                                placeholder="..." style="width: 100%;">
+                                                        </div>
+                                                        <div class="col-lg-4 spacing-right">Bio Matric Working
+                                                            <br>
+                                                            <input class="form-control" id=""
+                                                                name="reports[{{ $index }}][bio_matric]"
+                                                                value="{{ $report->bio_matric }}" type="text"
+                                                                placeholder="..." style="width: 100%;">
+                                                        </div>
+                                                        <div class="col-lg-4 spacing-right">Bio Register Maintained
+                                                            <br>
+                                                            <input class="form-control" id=""
+                                                                name="reports[{{ $index }}][bio_register]"
+                                                                value="{{ $report->bio_register }}" type="text"
+                                                                placeholder="..." style="width: 100%;">
+                                                        </div>
+                                                        <div class="col-lg-4 spacing-left spacing-right"> Office Rent Paid
+                                                            <br>
+                                                            <input class="form-control" id=""
+                                                                name="reports[{{ $index }}][office_rent]"
+                                                                value="{{ $report->office_rent }}" type="text"
+                                                                placeholder="..." style="width: 100%;">
+                                                        </div>
+                                                        <div class="col-lg-4 spacing-left spacing-right"> UPS Working
+                                                            <br>
+                                                            <input class="form-control" id=""
+                                                                name="reports[{{ $index }}][ups]" value="{{ $report->ups }}"
+                                                                type="text" placeholder="..." style="width: 100%;">
+                                                        </div>
+                                                        <div class="col-lg-4 spacing-right"> Guard File Maintained
+                                                            <br>
+                                                            <input class="form-control" id=""
+                                                                name="reports[{{ $index }}][guard_file]"
+                                                                value="{{ $report->guard_file }}" type="text"
+                                                                placeholder="..." style="width: 100%;">
+                                                        </div>
+                                                        <div class="col-lg-4 spacing-left spacing-right"> Guard Accomodation
+                                                            Rent Paid
+                                                            <br>
+                                                            <input class="form-control" id=""
+                                                                name="reports[{{ $index }}][guard_accomodation]"
+                                                                value="{{ $report->guard_accomodation }}" type="text"
+                                                                placeholder="..." style="width: 100%;">
+                                                        </div>
+                                                        <div class="col-lg-4 spacing-left spacing-right"> Any Maintainance
+                                                            Required
+                                                            <br>
+                                                            <input class="form-control" id=""
+                                                                name="reports[{{ $index }}][any_maintainence]"
+                                                                value="{{ $report->any_maintainence }}" type="text"
+                                                                placeholder="..." style="width: 100%;">
+                                                        </div>
+                                                        <div class="col-lg-4 spacing-left spacing-right"> Weapon Register
+                                                            Maintained
+                                                            <br>
+                                                            <input class="form-control" id=""
+                                                                name="reports[{{ $index }}][weapon_register]"
+                                                                value="{{ $report->weapon_register }}" type="text"
+                                                                placeholder="..." style="width: 100%;">
+                                                        </div>
+                                                        <div class="col-lg-4 spacing-right"> CCTV Working
+                                                            <br>
+                                                            <input class="form-control" id=""
+                                                                name="reports[{{ $index }}][cctv]"
+                                                                value="{{ $report->cctv }}" type="text" placeholder="..."
+                                                                style="width: 100%;">
+                                                        </div>
+                                                        <div class="col-lg-4 spacing-left spacing-right"> Attendance
+                                                            Register Maintained
+                                                            <br>
+                                                            <input class="form-control" id=""
+                                                                name="reports[{{ $index }}][attendance_register]"
+                                                                value="{{ $report->attendance_register }}" type="text"
+                                                                placeholder="..." style="width: 100%;">
+                                                        </div>
+                                                        <div class="col-lg-4 spacing-left spacing-right"> Kote Register
+                                                            Maintained
+                                                            <br>
+                                                            <input class="form-control" id=""
+                                                                name="reports[{{ $index }}][kote_register]"
+                                                                value="{{ $report->kote_register }}" type="text"
+                                                                placeholder="..." style="width: 100%;">
+                                                        </div>
                                                     </div>
-                                                    <div class="col-lg-4 spacing-left"> Army
-                                                        <br>
-                                                        <input class="form-control" id=""
-                                                            name="reports[{{ $index }}][army]"
-                                                            value="{{ $report->army }}" type="text" placeholder="..."
-                                                            style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-lg-4 spacing-left"> SSG
-                                                        <br>
-                                                        <input class="form-control" id=""
-                                                            name="reports[{{ $index }}][ssg]" value="{{ $report->ssg }}"
-                                                            type="text" placeholder="..." style="width: 103%;">
-                                                    </div>
-                                                </div>
-                                                <div class=" row mb-2">
-                                                    <div class="col-lg-4 spacing-right"> Civil
-                                                        <br>
-                                                        <input class="form-control" id=""
-                                                            name="reports[{{ $index }}][civil]"
-                                                            value="{{ $report->civil }}" type="text" placeholder="..."
-                                                            style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-lg-4 spacing-left spacing-right"> Absentees
-                                                        <br>
-                                                        <input class="form-control" id=""
-                                                            name="reports[{{ $index }}][absente]"
-                                                            value="{{ $report->absente }}" type="text" placeholder="..."
-                                                            style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-lg-4 spacing-left spacing-right"> Leave
-                                                        <br>
-                                                        <input class="form-control" id=""
-                                                            name="reports[{{ $index }}][leave]"
-                                                            value="{{ $report->leave }}" type="text" placeholder="..."
-                                                            style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-lg-4 spacing-right"> Reason
-                                                        <br>
-                                                        <input class="form-control" id=""
-                                                            name="reports[{{ $index }}][reason]"
-                                                            value="{{ $report->reason }}" type="text" placeholder="..."
-                                                            style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-lg-4 spacing-left spacing-right"> Reliver Provided
-                                                        <br>
-                                                        <input class="form-control" id=""
-                                                            name="reports[{{ $index }}][r_provided]"
-                                                            value="{{ $report->r_provided }}" type="text"
-                                                            placeholder="..." style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-lg-4 spacing-left spacing-right"> Last Complaint
-                                                        Date
-                                                        <br>
-                                                        <input class="form-control" id=""
-                                                            name="reports[{{ $index }}][last_comp_date]"
-                                                            value="{{ $report->last_comp_date }}" type="date"
-                                                            placeholder="..." style="width: 100%;">
-                                                    </div>
-                                                </div>
-                                                <div class=" row mb-2">
-                                                    <div class="col-lg-4 spacing-right"> Any Incident & Report No
-                                                        <br>
-                                                        <input class="form-control" id=""
-                                                            name="reports[{{ $index }}][any_inc]"
-                                                            value="{{ $report->any_inc }}" type="text" placeholder="..."
-                                                            style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-lg-4 spacing-right"> Pending Nadra Versys
-                                                        <br>
-                                                        <input class="form-control" id=""
-                                                            name="reports[{{ $index }}][pending_nadra]"
-                                                            value="{{ $report->pending_nadra }}" type="text"
-                                                            placeholder="..." style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-lg-4 spacing-left spacing-right"> Unsent DPO Reports
-                                                        <br>
-                                                        <input class="form-control" id=""
-                                                            name="reports[{{ $index }}][unsent_dpo_rep]"
-                                                            value="{{ $report->unsent_dpo_rep }}" type="text"
-                                                            placeholder="..." style="width: 100%;"></input>
-                                                    </div>
-                                                    <div class="col-lg-4 spacing-left spacing-right"> No. of resigns
-                                                        <br>
-                                                        <input class="form-control" id=""
-                                                            name="reports[{{ $index }}][no_of_resigns]"
-                                                            value="{{ $report->no_of_resigns }}" type="text"
-                                                            placeholder="..." style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-lg-4 spacing-right"> Guards without bank started
-                                                        <br>
-                                                        <input class="form-control" id=""
-                                                            name="reports[{{ $index }}][guards_wout_bank]"
-                                                            value="{{ $report->guards_wout_bank }}" type="text"
-                                                            placeholder="..." style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-lg-4 spacing-left spacing-right"> Any new Site
-                                                        Started
-                                                        <br>
-                                                        <input class="form-control" id=""
-                                                            name="reports[{{ $index }}][any_new_site]"
-                                                            value="{{ $report->any_new_site }}" type="text"
-                                                            placeholder="..." style="width: 100%;">
-                                                    </div>
-                                                </div>
-                                                <div class="row mb-2">
-                                                    <div class="col-lg-4 spacing-left spacing-right"> No. of Guards
-                                                        <br>
-                                                        <input class="form-control" id=""
-                                                            name="reports[{{ $index }}][no_of_guards]"
-                                                            value="{{ $report->no_of_guards }}" type="text"
-                                                            placeholder="..." style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-lg-4 spacing-left spacing-right"> Any Site Closed
-                                                        <br>
-                                                        <input class="form-control" id=""
-                                                            name="reports[{{ $index }}][any_site_closed]"
-                                                            value="{{ $report->any_site_closed }}" type="text"
-                                                            placeholder="..." style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-lg-4 spacing-left spacing-right"> No. of Guard of
-                                                        Closed Site
-                                                        <br>
-                                                        <input class="form-control" id=""
-                                                            name="reports[{{ $index }}][no_of_guards_of_closed_site]"
-                                                            value="{{ $report->no_of_guards_of_closed_site }}"
-                                                            type="text" placeholder="..." style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-lg-4 spacing-right"> Details of Escort Duties
-                                                        <br>
-                                                        <textarea class="form-control" id=""
-                                                            name="reports[{{ $index }}][escort_duties]" type="text"
-                                                            placeholder="..."
-                                                            style="width: 100%;">{{ $report->escort_duties }}</textarea>
-                                                    </div>
-                                                    <div class="col-lg-4 spacing-right"> Details of Events
-                                                        <br>
-                                                        <textarea class="form-control" id=""
-                                                            name="reports[{{ $index }}][event_details]" type="text"
-                                                            placeholder="..."
-                                                            style="width: 100%;">{{ $report->event_details }}</textarea>
-                                                    </div>
-                                                    <div class="col-lg-4 spacing-left spacing-right"> Amount of pending
-                                                        Recoveries
-                                                        <br>
-                                                        <input class="form-control" id=""
-                                                            name="reports[{{ $index }}][pending_recoveries]"
-                                                            value="{{ $report->pending_recoveries }}" type="text"
-                                                            placeholder="..." style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-lg-4 spacing-left spacing-right"> Signature of
-                                                        Manager Accounts
-                                                        <br>
-                                                        <input class="form-control" id=""
-                                                            name="reports[{{ $index }}][sign_manager]"
-                                                            value="{{ $report->sign_manager }}" type="text"
-                                                            placeholder="..." style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-lg-4 spacing-right"> Any staff on annual leave
-                                                        <br>
-                                                        <input class="form-control" id=""
-                                                            name="reports[{{ $index }}][staff_on_leav]"
-                                                            value="{{ $report->staff_on_leav }}" type="text"
-                                                            placeholder="..." style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-lg-4 spacing-left spacing-right"> Any short leave of
-                                                        staff with Name
-                                                        <br>
-                                                        <input class="form-control" id=""
-                                                            name="reports[{{ $index }}][short_leav]"
-                                                            value="{{ $report->short_leav }}" type="text"
-                                                            placeholder="..." style="width: 100%;">
-                                                    </div>
-                                                </div>
-                                                <h5>Checklist :</h5>
-                                                <div class="row mb-2">
-                                                    <div class="col-lg-4 spacing-left spacing-right"> Utility Bills Paid
-                                                        <br>
-                                                        <input class="form-control" id=""
-                                                            name="reports[{{ $index }}][utility_bills]"
-                                                            value="{{ $report->utility_bills }}" type="text"
-                                                            placeholder="..." style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-lg-4 spacing-right">Bio Matric Working
-                                                        <br>
-                                                        <input class="form-control" id=""
-                                                            name="reports[{{ $index }}][bio_matric]"
-                                                            value="{{ $report->bio_matric }}" type="text"
-                                                            placeholder="..." style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-lg-4 spacing-right">Bio Register Maintained
-                                                        <br>
-                                                        <input class="form-control" id=""
-                                                            name="reports[{{ $index }}][bio_register]"
-                                                            value="{{ $report->bio_register }}" type="text"
-                                                            placeholder="..." style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-lg-4 spacing-left spacing-right"> Office Rent Paid
-                                                        <br>
-                                                        <input class="form-control" id=""
-                                                            name="reports[{{ $index }}][office_rent]"
-                                                            value="{{ $report->office_rent }}" type="text"
-                                                            placeholder="..." style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-lg-4 spacing-left spacing-right"> UPS Working
-                                                        <br>
-                                                        <input class="form-control" id=""
-                                                            name="reports[{{ $index }}][ups]" value="{{ $report->ups }}"
-                                                            type="text" placeholder="..." style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-lg-4 spacing-right"> Guard File Maintained
-                                                        <br>
-                                                        <input class="form-control" id=""
-                                                            name="reports[{{ $index }}][guard_file]"
-                                                            value="{{ $report->guard_file }}" type="text"
-                                                            placeholder="..." style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-lg-4 spacing-left spacing-right"> Guard Accomodation
-                                                        Rent Paid
-                                                        <br>
-                                                        <input class="form-control" id=""
-                                                            name="reports[{{ $index }}][guard_accomodation]"
-                                                            value="{{ $report->guard_accomodation }}" type="text"
-                                                            placeholder="..." style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-lg-4 spacing-left spacing-right"> Any Maintainance
-                                                        Required
-                                                        <br>
-                                                        <input class="form-control" id=""
-                                                            name="reports[{{ $index }}][any_maintainence]"
-                                                            value="{{ $report->any_maintainence }}" type="text"
-                                                            placeholder="..." style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-lg-4 spacing-left spacing-right"> Weapon Register
-                                                        Maintained
-                                                        <br>
-                                                        <input class="form-control" id=""
-                                                            name="reports[{{ $index }}][weapon_register]"
-                                                            value="{{ $report->weapon_register }}" type="text"
-                                                            placeholder="..." style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-lg-4 spacing-right"> CCTV Working
-                                                        <br>
-                                                        <input class="form-control" id=""
-                                                            name="reports[{{ $index }}][cctv]"
-                                                            value="{{ $report->cctv }}" type="text" placeholder="..."
-                                                            style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-lg-4 spacing-left spacing-right"> Attendance
-                                                        Register Maintained
-                                                        <br>
-                                                        <input class="form-control" id=""
-                                                            name="reports[{{ $index }}][attendance_register]"
-                                                            value="{{ $report->attendance_register }}" type="text"
-                                                            placeholder="..." style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-lg-4 spacing-left spacing-right"> Kote Register
-                                                        Maintained
-                                                        <br>
-                                                        <input class="form-control" id=""
-                                                            name="reports[{{ $index }}][kote_register]"
-                                                            value="{{ $report->kote_register }}" type="text"
-                                                            placeholder="..." style="width: 100%;">
-                                                    </div>
-                                                </div>
 
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
                             @endforeach
 
                         </div>
@@ -542,57 +542,57 @@
                     <div class="container my-1">
                         <div class="accordion" id="signatoryAccordion11">
                             @foreach ($admins->inventories as $index => $inventory)
-                            <!-- Initial Accordion Item -->
-                            <div class="accordion-item signaccordion-item11" id="signatoryEntry11{{ $index }}">
-                                <h2 class="accordion-header" id="signatoryHeading11{{ $index }}" style="color: white">
-                                    <button class="accordion-button" style="background-color: #34005A; color:white"
-                                        type="button" data-toggle="collapse"
-                                        data-target="#signatoryCollapse11{{ $index }}" aria-expanded="false"
-                                        aria-controls="signatoryCollapse11{{ $index }}">
-                                        Office Equipment {{ $index + 1 }}
-                                    </button>
-                                </h2>
-                                <div id="signatoryCollapse11{{ $index }}" class="collapse"
-                                    aria-labelledby="signatoryHeading11{{ $index }}">
-                                    <div class="accordion-body">
-                                        <input type="hidden" name="inventories[{{ $index }}][i_id]"
-                                            value="{{ $inventory->id }}">
-                                        <!-- Your content for signatory entry goes here -->
-                                        <div class="col-lg-12" id="authority_add_fields">
-                                            <div class="row mb-2">
-                                                <div class="col-lg-4 spacing-right"> Equipment Name
-                                                    <br>
-                                                    <input class="form-control" id=""
-                                                        name="inventories[{{ $index }}][category]"
-                                                        value="{{ $inventory->category }}" type="text" placeholder="..."
-                                                        style="width: 100%;">
-                                                </div>
-                                                <div class="col-lg-4 spacing-left spacing-right"> Quantity
-                                                    <br>
-                                                    <input class="form-control" id=""
-                                                        name="inventories[{{ $index }}][quantity]"
-                                                        value="{{ $inventory->quantity }}" type="text" placeholder="..."
-                                                        style="width: 100%;">
-                                                </div>
-                                                <div class="col-lg-4 spacing-right"> Notes
-                                                    <br>
-                                                    <textarea class="form-control" id=""
-                                                        name="inventories[{{ $index }}][notes]" type="text"
-                                                        placeholder="..."
-                                                        style="width: 100%;">{{ $inventory->notes }}</textarea>
-                                                </div>
-                                                <div class="col-lg-4 spacing-right"> Attachments
-                                                    <br>
-                                                    <input class="form-control" id=""
-                                                        name="inventories[{{ $index }}][attachments]"
-                                                        value="{{ $inventory->attachments }}" type="file"
-                                                        placeholder="..." style="width: 90%;">
+                                <!-- Initial Accordion Item -->
+                                <div class="accordion-item signaccordion-item11" id="signatoryEntry11{{ $index }}">
+                                    <h2 class="accordion-header" id="signatoryHeading11{{ $index }}" style="color: white">
+                                        <button class="accordion-button" style="background-color: #34005A; color:white"
+                                            type="button" data-toggle="collapse"
+                                            data-target="#signatoryCollapse11{{ $index }}" aria-expanded="false"
+                                            aria-controls="signatoryCollapse11{{ $index }}">
+                                            Office Equipment {{ $index + 1 }}
+                                        </button>
+                                    </h2>
+                                    <div id="signatoryCollapse11{{ $index }}" class="collapse"
+                                        aria-labelledby="signatoryHeading11{{ $index }}">
+                                        <div class="accordion-body">
+                                            <input type="hidden" name="inventories[{{ $index }}][i_id]"
+                                                value="{{ $inventory->id }}">
+                                            <!-- Your content for signatory entry goes here -->
+                                            <div class="col-lg-12" id="authority_add_fields">
+                                                <div class="row mb-2">
+                                                    <div class="col-lg-4 spacing-right"> Equipment Name
+                                                        <br>
+                                                        <input class="form-control" id=""
+                                                            name="inventories[{{ $index }}][category]"
+                                                            value="{{ $inventory->category }}" type="text" placeholder="..."
+                                                            style="width: 100%;">
+                                                    </div>
+                                                    <div class="col-lg-4 spacing-left spacing-right"> Quantity
+                                                        <br>
+                                                        <input class="form-control" id=""
+                                                            name="inventories[{{ $index }}][quantity]"
+                                                            value="{{ $inventory->quantity }}" type="text" placeholder="..."
+                                                            style="width: 100%;">
+                                                    </div>
+                                                    <div class="col-lg-4 spacing-right"> Notes
+                                                        <br>
+                                                        <textarea class="form-control" id=""
+                                                            name="inventories[{{ $index }}][notes]" type="text"
+                                                            placeholder="..."
+                                                            style="width: 100%;">{{ $inventory->notes }}</textarea>
+                                                    </div>
+                                                    <div class="col-lg-4 spacing-right"> Attachments
+                                                        <br>
+                                                        <input class="form-control" id=""
+                                                            name="inventories[{{ $index }}][attachments]"
+                                                            value="{{ $inventory->attachments }}" type="file"
+                                                            placeholder="..." style="width: 90%;">
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
                             @endforeach
                         </div>
                         <!-- Add More and Remove Buttons -->
@@ -613,183 +613,183 @@
                     <div class="container my-1">
                         <div class="accordion" id="brandingAccordion">
                             @foreach ($admins->brandings as $index => $branding)
-                            <!-- Initial Accordion Item -->
-                            <div class="accordion-item brandingaccordion-item" id="brandingEntry{{ $index }}">
-                                <h2 class="accordion-header" id="brandingHeading{{ $index }}" style="color: white">
-                                    <button class="accordion-button" style="background-color: #34005A; color:white"
-                                        type="button" data-toggle="collapse" data-target="#brandingCollapse{{ $index }}"
-                                        aria-expanded="false" aria-controls="brandingCollapse{{ $index }}">
-                                        Office Branding {{ $index + 1 }}
-                                    </button>
-                                </h2>
-                                <div id="brandingCollapse{{ $index }}" class="collapse"
-                                    aria-labelledby="brandingHeading{{ $index }}">
-                                    <div class="accordion-body">
-                                        <input type="hidden" name="brandings[{{ $index }}][b_id]"
-                                            value="{{ $branding->id }}">
-                                        <!-- Your content for branding entry goes here -->
-                                        <div class="col-lg-12" id="branding_add_fields">
-                                            <div class="row mb-2">
-                                                <div class="col-lg-4 spacing-right"> Branding Type
-                                                    <br>
-                                                    <input class="form-control" id=""
-                                                        name="brandings[{{ $index }}][b_type]"
-                                                        value="{{ $branding->b_type }}" type="text" placeholder="..."
-                                                        style="width: 100%;">
+                                <!-- Initial Accordion Item -->
+                                <div class="accordion-item brandingaccordion-item" id="brandingEntry{{ $index }}">
+                                    <h2 class="accordion-header" id="brandingHeading{{ $index }}" style="color: white">
+                                        <button class="accordion-button" style="background-color: #34005A; color:white"
+                                            type="button" data-toggle="collapse" data-target="#brandingCollapse{{ $index }}"
+                                            aria-expanded="false" aria-controls="brandingCollapse{{ $index }}">
+                                            Office Branding {{ $index + 1 }}
+                                        </button>
+                                    </h2>
+                                    <div id="brandingCollapse{{ $index }}" class="collapse"
+                                        aria-labelledby="brandingHeading{{ $index }}">
+                                        <div class="accordion-body">
+                                            <input type="hidden" name="brandings[{{ $index }}][b_id]"
+                                                value="{{ $branding->id }}">
+                                            <!-- Your content for branding entry goes here -->
+                                            <div class="col-lg-12" id="branding_add_fields">
+                                                <div class="row mb-2">
+                                                    <div class="col-lg-4 spacing-right"> Branding Type
+                                                        <br>
+                                                        <input class="form-control" id=""
+                                                            name="brandings[{{ $index }}][b_type]"
+                                                            value="{{ $branding->b_type }}" type="text" placeholder="..."
+                                                            style="width: 100%;">
+                                                    </div>
+                                                    <div class="col-lg-4 spacing-left spacing-right"> Picture of Branding
+                                                        <br>
+                                                        <input class="form-control" id=""
+                                                            name="brandings[{{ $index }}][picture_of_b]"
+                                                            value="{{ $branding->picture_of_b }}" type="file"
+                                                            placeholder="..." style="width: 100%;">
+                                                    </div>
+                                                    <div class="col-lg-4 spacing-right"> Site of Branding
+                                                        <br>
+                                                        <input class="form-control" id=""
+                                                            name="brandings[{{ $index }}][site_of_b]"
+                                                            value="{{ $branding->site_of_b }}" type="text" placeholder="..."
+                                                            style="width: 100%;">
+                                                    </div>
+                                                    <div class="col-lg-4 spacing-right"> Branding Cost
+                                                        <br>
+                                                        <input class="form-control" id=""
+                                                            name="brandings[{{ $index }}][cost_of_b]"
+                                                            value="{{ $branding->cost_of_b }}" type="text" placeholder="..."
+                                                            style="width: 100%;">
+                                                    </div>
                                                 </div>
-                                                <div class="col-lg-4 spacing-left spacing-right"> Picture of Branding
-                                                    <br>
-                                                    <input class="form-control" id=""
-                                                        name="brandings[{{ $index }}][picture_of_b]"
-                                                        value="{{ $branding->picture_of_b }}" type="file"
-                                                        placeholder="..." style="width: 100%;">
+                                                <div class="row mb-2">
+                                                    <div class="col-lg-4 spacing-right">
+                                                        Periodical Maintenance
+                                                        <br>
+                                                        <input class="form-control" type="text" name="periodical_m[]"
+                                                            name="brandings[{{ $index }}][periodical_m]"
+                                                            value="{{ $branding->periodical_m }}" placeholder=""
+                                                            style="width: 100%;">
+                                                    </div>
                                                 </div>
-                                                <div class="col-lg-4 spacing-right"> Site of Branding
-                                                    <br>
-                                                    <input class="form-control" id=""
-                                                        name="brandings[{{ $index }}][site_of_b]"
-                                                        value="{{ $branding->site_of_b }}" type="text" placeholder="..."
-                                                        style="width: 100%;">
-                                                </div>
-                                                <div class="col-lg-4 spacing-right"> Branding Cost
-                                                    <br>
-                                                    <input class="form-control" id=""
-                                                        name="brandings[{{ $index }}][cost_of_b]"
-                                                        value="{{ $branding->cost_of_b }}" type="text" placeholder="..."
-                                                        style="width: 100%;">
-                                                </div>
-                                            </div>
-                                            <div class="row mb-2">
-                                                <div class="col-lg-4 spacing-right">
-                                                    Periodical Maintenance
-                                                    <br>
-                                                    <input class="form-control" type="text" name="periodical_m[]"
-                                                        name="brandings[{{ $index }}][periodical_m]"
-                                                        value="{{ $branding->periodical_m }}" placeholder=""
-                                                        style="width: 100%;">
-                                                </div>
-                                            </div>
 
-                                            <div class="col-lg-4 spacing-right" id="maintenanceDateField"
-                                                style="display: none;">
-                                                Maintenance Date
-                                                <br>
-                                                <input class="form-control" type="text" name="maintenance_date[]"
-                                                    name="brandings[{{ $index }}][maintenance_date]"
-                                                    value="{{ $branding->maintenance_date }}" placeholder="..."
-                                                    style="width: 100%;">
-                                            </div>
-                                            <div class="row mb-2">
-                                                <h5>Details of Vendor</h5>
-                                                <div class="col-lg-3 spacing-left">
-                                                    Vendor ID/No.
+                                                <div class="col-lg-4 spacing-right" id="maintenanceDateField"
+                                                    style="display: none;">
+                                                    Maintenance Date
                                                     <br>
-                                                    <input class="form-control" type="text"
-                                                        name="brandings[{{ $index }}][vendor_id]"
-                                                        value="{{ $branding->vendor_id }}" placeholder="..."
+                                                    <input class="form-control" type="text" name="maintenance_date[]"
+                                                        name="brandings[{{ $index }}][maintenance_date]"
+                                                        value="{{ $branding->maintenance_date }}" placeholder="..."
                                                         style="width: 100%;">
                                                 </div>
-                                                <div class="col-lg-3 spacing-right">
-                                                    Vendor Name
-                                                    <br>
-                                                    <input class="form-control" id="inpFile2" type="text"
-                                                        name="brandings[{{ $index }}][v_name]"
-                                                        value="{{ $branding->v_name }}" placeholder="..."
-                                                        style="width: 100%;">
-                                                    </textarea>
-                                                </div>
-                                                <div class="col-lg-3 spacing-left">
-                                                    Vendor Cell Number.
-                                                    <br>
-                                                    <input class="form-control" type="text"
-                                                        name="brandings[{{ $index }}][v_cell]"
-                                                        value="{{ $branding->v_cell }}" placeholder="..."
-                                                        style="width: 100%;">
-                                                </div>
-                                                <div class="col-lg-3 spacing-right">
-                                                    Office Number
-                                                    <br>
-                                                    <input class="form-control" id="inpFile2" type="text"
-                                                        name="brandings[{{ $index }}][v_office]"
-                                                        value="{{ $branding->v_office }}" placeholder="..."
-                                                        style="width: 100%;">
-                                                </div>
-                                                <div class="col-lg-3 spacing-left">
-                                                    Floor
-                                                    <br>
-                                                    <input class="form-control" type="text"
-                                                        name="brandings[{{ $index }}][v_floor]"
-                                                        value="{{ $branding->v_floor }}" placeholder="..."
-                                                        style="width: 100%;">
-                                                </div>
-                                                <div class="col-lg-3 spacing-right">
-                                                    Building
-                                                    <br>
-                                                    <input class="form-control" id="inpFile2" type="text"
-                                                        name="brandings[{{ $index }}][v_building]"
-                                                        value="{{ $branding->v_building }}" placeholder="..."
-                                                        style="width: 100%;">
-                                                </div>
-                                                <div class="col-lg-3 spacing-left">
-                                                    Block
-                                                    <br>
-                                                    <input class="form-control" type="text"
-                                                        name="brandings[{{ $index }}][v_block]"
-                                                        value="{{ $branding->v_block }}" placeholder="..."
-                                                        style="width: 100%;">
-                                                </div>
-                                                <div class="col-lg-3 spacing-right">
-                                                    Area
-                                                    <br>
-                                                    <input class="form-control" id="inpFile2" type="text"
-                                                        name="brandings[{{ $index }}][v_area]"
-                                                        value="{{ $branding->v_area }}" placeholder="..."
-                                                        style="width: 100%;">
-                                                </div>
-                                                <div class="col-lg-3 spacing-left">
-                                                    City
-                                                    <br>
-                                                    <input class="form-control" type="text"
-                                                        name="brandings[{{ $index }}][v_city]"
-                                                        value="{{ $branding->v_city }}" placeholder="..."
-                                                        style="width: 100%;">
-                                                </div>
-                                                <div class="col-lg-3 spacing-right">
-                                                    Photograph of Building
-                                                    <br>
-                                                    <input class="form-control" id="inpFile2" type="text"
-                                                        name="brandings[{{ $index }}][v_photo_b]"
-                                                        value="{{ $branding->v_photo_b }}" placeholder="..."
-                                                        style="width: 100%;">
-                                                </div>
-                                                <div class="col-lg-3 spacing-left">
-                                                    Pin Location
-                                                    <br>
-                                                    <input class="form-control" type="text"
-                                                        name="brandings[{{ $index }}][v_pin]"
-                                                        value="{{ $branding->v_pin }}" placeholder="..."
-                                                        style="width: 100%;">
-                                                </div>
-                                                <div class="col-lg-3 spacing-right">
-                                                    Notes
-                                                    <br>
-                                                    <textarea class="form-control" id="inpFile2" type="text"
-                                                        name="brandings[{{ $index }}][v_notes]" placeholder="..."
-                                                        style="width: 100%;">{{ $branding->v_notes }}</textarea>
-                                                </div>
-                                                <div class="col-lg-3 spacing-left">
-                                                    Attachments
-                                                    <br>
-                                                    <input class="form-control" type="file"
-                                                        name="brandings[{{ $index }}][v_attach]"
-                                                        value="{{ $branding->v_attach }}" placeholder="..."
-                                                        style="width: 100%;">
+                                                <div class="row mb-2">
+                                                    <h5>Details of Vendor</h5>
+                                                    <div class="col-lg-3 spacing-left">
+                                                        Vendor ID/No.
+                                                        <br>
+                                                        <input class="form-control" type="text"
+                                                            name="brandings[{{ $index }}][vendor_id]"
+                                                            value="{{ $branding->vendor_id }}" placeholder="..."
+                                                            style="width: 100%;">
+                                                    </div>
+                                                    <div class="col-lg-3 spacing-right">
+                                                        Vendor Name
+                                                        <br>
+                                                        <input class="form-control" id="inpFile2" type="text"
+                                                            name="brandings[{{ $index }}][v_name]"
+                                                            value="{{ $branding->v_name }}" placeholder="..."
+                                                            style="width: 100%;">
+                                                        </textarea>
+                                                    </div>
+                                                    <div class="col-lg-3 spacing-left">
+                                                        Vendor Cell Number.
+                                                        <br>
+                                                        <input class="form-control" type="text"
+                                                            name="brandings[{{ $index }}][v_cell]"
+                                                            value="{{ $branding->v_cell }}" placeholder="..."
+                                                            style="width: 100%;">
+                                                    </div>
+                                                    <div class="col-lg-3 spacing-right">
+                                                        Office Number
+                                                        <br>
+                                                        <input class="form-control" id="inpFile2" type="text"
+                                                            name="brandings[{{ $index }}][v_office]"
+                                                            value="{{ $branding->v_office }}" placeholder="..."
+                                                            style="width: 100%;">
+                                                    </div>
+                                                    <div class="col-lg-3 spacing-left">
+                                                        Floor
+                                                        <br>
+                                                        <input class="form-control" type="text"
+                                                            name="brandings[{{ $index }}][v_floor]"
+                                                            value="{{ $branding->v_floor }}" placeholder="..."
+                                                            style="width: 100%;">
+                                                    </div>
+                                                    <div class="col-lg-3 spacing-right">
+                                                        Building
+                                                        <br>
+                                                        <input class="form-control" id="inpFile2" type="text"
+                                                            name="brandings[{{ $index }}][v_building]"
+                                                            value="{{ $branding->v_building }}" placeholder="..."
+                                                            style="width: 100%;">
+                                                    </div>
+                                                    <div class="col-lg-3 spacing-left">
+                                                        Block
+                                                        <br>
+                                                        <input class="form-control" type="text"
+                                                            name="brandings[{{ $index }}][v_block]"
+                                                            value="{{ $branding->v_block }}" placeholder="..."
+                                                            style="width: 100%;">
+                                                    </div>
+                                                    <div class="col-lg-3 spacing-right">
+                                                        Area
+                                                        <br>
+                                                        <input class="form-control" id="inpFile2" type="text"
+                                                            name="brandings[{{ $index }}][v_area]"
+                                                            value="{{ $branding->v_area }}" placeholder="..."
+                                                            style="width: 100%;">
+                                                    </div>
+                                                    <div class="col-lg-3 spacing-left">
+                                                        City
+                                                        <br>
+                                                        <input class="form-control" type="text"
+                                                            name="brandings[{{ $index }}][v_city]"
+                                                            value="{{ $branding->v_city }}" placeholder="..."
+                                                            style="width: 100%;">
+                                                    </div>
+                                                    <div class="col-lg-3 spacing-right">
+                                                        Photograph of Building
+                                                        <br>
+                                                        <input class="form-control" id="inpFile2" type="text"
+                                                            name="brandings[{{ $index }}][v_photo_b]"
+                                                            value="{{ $branding->v_photo_b }}" placeholder="..."
+                                                            style="width: 100%;">
+                                                    </div>
+                                                    <div class="col-lg-3 spacing-left">
+                                                        Pin Location
+                                                        <br>
+                                                        <input class="form-control" type="text"
+                                                            name="brandings[{{ $index }}][v_pin]"
+                                                            value="{{ $branding->v_pin }}" placeholder="..."
+                                                            style="width: 100%;">
+                                                    </div>
+                                                    <div class="col-lg-3 spacing-right">
+                                                        Notes
+                                                        <br>
+                                                        <textarea class="form-control" id="inpFile2" type="text"
+                                                            name="brandings[{{ $index }}][v_notes]" placeholder="..."
+                                                            style="width: 100%;">{{ $branding->v_notes }}</textarea>
+                                                    </div>
+                                                    <div class="col-lg-3 spacing-left">
+                                                        Attachments
+                                                        <br>
+                                                        <input class="form-control" type="file"
+                                                            name="brandings[{{ $index }}][v_attach]"
+                                                            value="{{ $branding->v_attach }}" placeholder="..."
+                                                            style="width: 100%;">
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
                             @endforeach
                         </div>
                         <!-- Add More and Remove Buttons -->
@@ -809,109 +809,109 @@
                         <div class="container my-1">
                             <div class="accordion" id="signatoryAccordion13">
                                 @foreach ($admins->moveables as $index => $moveable)
-                                <!-- Initial Accordion Item -->
-                                <div class="accordion-item signaccordion-item13" id="signatoryEntry13{{ $index }}">
-                                    <h2 class="accordion-header" id="signatoryHeading13{{ $index }}"
-                                        style="color: white">
-                                        <button class="accordion-button" style="background-color: #34005A; color:white"
-                                            type="button" data-toggle="collapse"
-                                            data-target="#signatoryCollapse13{{ $index }}" aria-expanded="false"
-                                            aria-controls="signatoryCollapse13{{ $index }}">
-                                            Vehicle {{ $index + 1 }}
-                                        </button>
-                                    </h2>
-                                    <div id="signatoryCollapse13{{ $index }}" class="collapse"
-                                        aria-labelledby="signatoryHeading13{{ $index }}">
-                                        <div class="accordion-body">
-                                            <input type="hidden" name="moveables[{{ $index }}][m_id]"
-                                                value="{{ $moveable->id }}">
-                                            <div class="col-lg-12">
-                                                <div class="row mb-2">
-                                                    <div class="col-lg-3 spacing-left spacing-right">
-                                                        Type of Vehicle
-                                                        <br>
-                                                        <input class="form-control"
-                                                            name="moveables[{{ $index }}][type_of_vehicle]"
-                                                            value="{{ $moveable->type_of_vehicle }}" type="text"
-                                                            placeholder="..." style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-lg-3 spacing-left spacing-right">
-                                                        Vehicle No
-                                                        <br>
-                                                        <input class="form-control"
-                                                            name="moveables[{{ $index }}][vehicle_no]"
-                                                            value="{{ $moveable->vehicle_no }}" type="text"
-                                                            placeholder="..." style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-lg-3 spacing-left spacing-right">
-                                                        Vehicle Model
-                                                        <br>
-                                                        <input class="form-control"
-                                                            name="moveables[{{ $index }}][vehicle_model]"
-                                                            value="{{ $moveable->vehicle_model }}" type="text"
-                                                            placeholder="..." style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-lg-3 spacing-right">
-                                                        Vehicle Picture
-                                                        <br>
-                                                        <input class="form-control"
-                                                            name="moveables[{{ $index }}][vehicle_pic]"
-                                                            value="{{ $moveable->vehicle_pic }}" type="file"
-                                                            placeholder="..." style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-lg-3 spacing-left spacing-right">
-                                                        Vehicle Book Picture
-                                                        <br>
-                                                        <input class="form-control"
-                                                            name="moveables[{{ $index }}][vehicle_book_pic]"
-                                                            value="{{ $moveable->vehicle_book_pic }}" type="file"
-                                                            placeholder="..." style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-lg-3 spacing-left">
-                                                        Payment Type
-                                                        <br>
-                                                        <input class="form-control"
-                                                            name="moveables[{{ $index }}][payment_type]"
-                                                            value="{{ $moveable->payment_type }}" type="text"
-                                                            placeholder="..." style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-lg-3 spacing-left spacing-right">
-                                                        Vehicle Name
-                                                        <br>
-                                                        <input class="form-control"
-                                                            name="moveables[{{ $index }}][vehicle_name]"
-                                                            value="{{ $moveable->vehicle_name }}" type="text"
-                                                            placeholder="..." style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-lg-3 spacing-left spacing-right">
-                                                        Engine No.
-                                                        <br>
-                                                        <input class="form-control"
-                                                            name="moveables[{{ $index }}][engine_no]"
-                                                            value="{{ $moveable->engine_no }}" type="text"
-                                                            placeholder="..." style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-lg-3 spacing-right">
-                                                        Chasis No.
-                                                        <br>
-                                                        <input class="form-control"
-                                                            name="moveables[{{ $index }}][chasis_no]"
-                                                            value="{{ $moveable->chasis_no }}" type="text"
-                                                            placeholder="..." style="width: 100%;">
-                                                    </div>
-                                                    <div class="col-lg-3 spacing-left spacing-right">
-                                                        Vehicle Color
-                                                        <br>
-                                                        <input class="form-control"
-                                                            name="moveables[{{ $index }}][vehicle_color]"
-                                                            value="{{ $moveable->vehicle_color }}" type="text"
-                                                            placeholder="..." style="width: 100%;">
+                                    <!-- Initial Accordion Item -->
+                                    <div class="accordion-item signaccordion-item13" id="signatoryEntry13{{ $index }}">
+                                        <h2 class="accordion-header" id="signatoryHeading13{{ $index }}"
+                                            style="color: white">
+                                            <button class="accordion-button" style="background-color: #34005A; color:white"
+                                                type="button" data-toggle="collapse"
+                                                data-target="#signatoryCollapse13{{ $index }}" aria-expanded="false"
+                                                aria-controls="signatoryCollapse13{{ $index }}">
+                                                Vehicle {{ $index + 1 }}
+                                            </button>
+                                        </h2>
+                                        <div id="signatoryCollapse13{{ $index }}" class="collapse"
+                                            aria-labelledby="signatoryHeading13{{ $index }}">
+                                            <div class="accordion-body">
+                                                <input type="hidden" name="moveables[{{ $index }}][m_id]"
+                                                    value="{{ $moveable->id }}">
+                                                <div class="col-lg-12">
+                                                    <div class="row mb-2">
+                                                        <div class="col-lg-3 spacing-left spacing-right">
+                                                            Type of Vehicle
+                                                            <br>
+                                                            <input class="form-control"
+                                                                name="moveables[{{ $index }}][type_of_vehicle]"
+                                                                value="{{ $moveable->type_of_vehicle }}" type="text"
+                                                                placeholder="..." style="width: 100%;">
+                                                        </div>
+                                                        <div class="col-lg-3 spacing-left spacing-right">
+                                                            Vehicle No
+                                                            <br>
+                                                            <input class="form-control"
+                                                                name="moveables[{{ $index }}][vehicle_no]"
+                                                                value="{{ $moveable->vehicle_no }}" type="text"
+                                                                placeholder="..." style="width: 100%;">
+                                                        </div>
+                                                        <div class="col-lg-3 spacing-left spacing-right">
+                                                            Vehicle Model
+                                                            <br>
+                                                            <input class="form-control"
+                                                                name="moveables[{{ $index }}][vehicle_model]"
+                                                                value="{{ $moveable->vehicle_model }}" type="text"
+                                                                placeholder="..." style="width: 100%;">
+                                                        </div>
+                                                        <div class="col-lg-3 spacing-right">
+                                                            Vehicle Picture
+                                                            <br>
+                                                            <input class="form-control"
+                                                                name="moveables[{{ $index }}][vehicle_pic]"
+                                                                value="{{ $moveable->vehicle_pic }}" type="file"
+                                                                placeholder="..." style="width: 100%;">
+                                                        </div>
+                                                        <div class="col-lg-3 spacing-left spacing-right">
+                                                            Vehicle Book Picture
+                                                            <br>
+                                                            <input class="form-control"
+                                                                name="moveables[{{ $index }}][vehicle_book_pic]"
+                                                                value="{{ $moveable->vehicle_book_pic }}" type="file"
+                                                                placeholder="..." style="width: 100%;">
+                                                        </div>
+                                                        <div class="col-lg-3 spacing-left">
+                                                            Payment Type
+                                                            <br>
+                                                            <input class="form-control"
+                                                                name="moveables[{{ $index }}][payment_type]"
+                                                                value="{{ $moveable->payment_type }}" type="text"
+                                                                placeholder="..." style="width: 100%;">
+                                                        </div>
+                                                        <div class="col-lg-3 spacing-left spacing-right">
+                                                            Vehicle Name
+                                                            <br>
+                                                            <input class="form-control"
+                                                                name="moveables[{{ $index }}][vehicle_name]"
+                                                                value="{{ $moveable->vehicle_name }}" type="text"
+                                                                placeholder="..." style="width: 100%;">
+                                                        </div>
+                                                        <div class="col-lg-3 spacing-left spacing-right">
+                                                            Engine No.
+                                                            <br>
+                                                            <input class="form-control"
+                                                                name="moveables[{{ $index }}][engine_no]"
+                                                                value="{{ $moveable->engine_no }}" type="text"
+                                                                placeholder="..." style="width: 100%;">
+                                                        </div>
+                                                        <div class="col-lg-3 spacing-right">
+                                                            Chasis No.
+                                                            <br>
+                                                            <input class="form-control"
+                                                                name="moveables[{{ $index }}][chasis_no]"
+                                                                value="{{ $moveable->chasis_no }}" type="text"
+                                                                placeholder="..." style="width: 100%;">
+                                                        </div>
+                                                        <div class="col-lg-3 spacing-left spacing-right">
+                                                            Vehicle Color
+                                                            <br>
+                                                            <input class="form-control"
+                                                                name="moveables[{{ $index }}][vehicle_color]"
+                                                                value="{{ $moveable->vehicle_color }}" type="text"
+                                                                placeholder="..." style="width: 100%;">
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
                                 @endforeach
                             </div>
                             <!-- Add More and Remove Buttons -->
@@ -975,88 +975,88 @@
                                     <div class="container  my-1" id="armourContainer">
                                         <div class="accordion" id="armourAccordion">
                                             @foreach ($admins->tokens as $index => $token)
-                                            <!-- Initial Accordion Item -->
-                                            <div class="accordion-item armouraccordion-item"
-                                                id="armourEntry1{{ $index }}">
-                                                <h2 class="accordion-header" id="armourHeading1{{ $index }}"
-                                                    style="color: white">
-                                                    <button class="accordion-button"
-                                                        style="background-color: #34005A; color:white" type="button"
-                                                        data-toggle="collapse"
-                                                        data-target="#armourCollapse1{{ $index }}" aria-expanded="false"
-                                                        aria-controls="armourCollapse1{{ $index }}">
-                                                        Token Entry {{ $index + 1 }}
-                                                    </button>
-                                                </h2>
-                                                <div id="armourCollapse1{{ $index }}" class="collapse"
-                                                    aria-labelledby="armourHeading1{{ $index }}">
-                                                    <div class="accordion-body">
-                                                        <input type="hidden" name="tokens[{{ $index }}][t_id]"
-                                                            value="{{ $token->id }}">
-                                                        <div id="cleaningInfo">
-                                                            <div class="row col-lg-12">
-                                                                <div class="col-lg-4 spacing-right">
-                                                                    Amount Paid
-                                                                    <br>
-                                                                    <input class="form-control" type="text"
-                                                                        name="tokens[{{ $index }}][amount_paid]"
-                                                                        value="{{ $token->amount_paid }}"
-                                                                        placeholder="..." style="width: 100%;">
-                                                                </div>
-                                                                <div class="col-lg-4 spacing-right">
-                                                                    Type of Payment
-                                                                    <br>
-                                                                    <input class="form-control" type="text"
-                                                                        name="tokens[{{ $index }}][type_of_payment]"
-                                                                        value="{{ $token->type_of_payment }}"
-                                                                        placeholder="..." style="width: 100%;">
-                                                                </div>
-                                                                <div class="col-lg-4 spacing-right">
-                                                                    Instrument Number
-                                                                    <br>
-                                                                    <input class="form-control" type="text"
-                                                                        name="tokens[{{ $index }}][ins_no]"
-                                                                        value="{{ $token->ins_no }}" placeholder="..."
-                                                                        style="width: 100%;">
-                                                                </div>
-                                                                <div class="col-lg-4 spacing-right">
-                                                                    Voucher No.
-                                                                    <br>
-                                                                    <input class="form-control" type="text"
-                                                                        name="tokens[{{ $index }}][voucher_no]"
-                                                                        value="{{ $token->voucher_no }}"
-                                                                        placeholder="..." style="width: 100%;">
-                                                                </div>
-                                                                <div class="col-lg-4 spacing-right">
-                                                                    Payment Date
-                                                                    <br>
-                                                                    <input class="form-control" type="date"
-                                                                        name="tokens[{{ $index }}][payment_date]"
-                                                                        value="{{ $token->payment_date }}"
-                                                                        placeholder="..." style="width: 100%;">
-                                                                </div>
-                                                                <div class="col-lg-4 spacing-right">
-                                                                    Notes
-                                                                    <br>
-                                                                    <textarea class="form-control" type="text"
-                                                                        name="tokens[{{ $index }}][token_note]"
-                                                                        placeholder="..."
-                                                                        style="width: 100%;">{{ $token->token_note }}</textarea>
-                                                                </div>
-                                                                <div class="col-lg-4 spacing-right">
-                                                                    Attachment
-                                                                    <br>
-                                                                    <input class="form-control" type="file"
-                                                                        name="tokens[{{ $index }}][token_attach]"
-                                                                        value="{{ $token->token_attach }}"
-                                                                        placeholder="..." style="width: 100%;">
+                                                <!-- Initial Accordion Item -->
+                                                <div class="accordion-item armouraccordion-item"
+                                                    id="armourEntry1{{ $index }}">
+                                                    <h2 class="accordion-header" id="armourHeading1{{ $index }}"
+                                                        style="color: white">
+                                                        <button class="accordion-button"
+                                                            style="background-color: #34005A; color:white" type="button"
+                                                            data-toggle="collapse"
+                                                            data-target="#armourCollapse1{{ $index }}" aria-expanded="false"
+                                                            aria-controls="armourCollapse1{{ $index }}">
+                                                            Token Entry {{ $index + 1 }}
+                                                        </button>
+                                                    </h2>
+                                                    <div id="armourCollapse1{{ $index }}" class="collapse"
+                                                        aria-labelledby="armourHeading1{{ $index }}">
+                                                        <div class="accordion-body">
+                                                            <input type="hidden" name="tokens[{{ $index }}][t_id]"
+                                                                value="{{ $token->id }}">
+                                                            <div id="cleaningInfo">
+                                                                <div class="row col-lg-12">
+                                                                    <div class="col-lg-4 spacing-right">
+                                                                        Amount Paid
+                                                                        <br>
+                                                                        <input class="form-control" type="text"
+                                                                            name="tokens[{{ $index }}][amount_paid]"
+                                                                            value="{{ $token->amount_paid }}"
+                                                                            placeholder="..." style="width: 100%;">
+                                                                    </div>
+                                                                    <div class="col-lg-4 spacing-right">
+                                                                        Type of Payment
+                                                                        <br>
+                                                                        <input class="form-control" type="text"
+                                                                            name="tokens[{{ $index }}][type_of_payment]"
+                                                                            value="{{ $token->type_of_payment }}"
+                                                                            placeholder="..." style="width: 100%;">
+                                                                    </div>
+                                                                    <div class="col-lg-4 spacing-right">
+                                                                        Instrument Number
+                                                                        <br>
+                                                                        <input class="form-control" type="text"
+                                                                            name="tokens[{{ $index }}][ins_no]"
+                                                                            value="{{ $token->ins_no }}" placeholder="..."
+                                                                            style="width: 100%;">
+                                                                    </div>
+                                                                    <div class="col-lg-4 spacing-right">
+                                                                        Voucher No.
+                                                                        <br>
+                                                                        <input class="form-control" type="text"
+                                                                            name="tokens[{{ $index }}][voucher_no]"
+                                                                            value="{{ $token->voucher_no }}"
+                                                                            placeholder="..." style="width: 100%;">
+                                                                    </div>
+                                                                    <div class="col-lg-4 spacing-right">
+                                                                        Payment Date
+                                                                        <br>
+                                                                        <input class="form-control" type="date"
+                                                                            name="tokens[{{ $index }}][payment_date]"
+                                                                            value="{{ $token->payment_date }}"
+                                                                            placeholder="..." style="width: 100%;">
+                                                                    </div>
+                                                                    <div class="col-lg-4 spacing-right">
+                                                                        Notes
+                                                                        <br>
+                                                                        <textarea class="form-control" type="text"
+                                                                            name="tokens[{{ $index }}][token_note]"
+                                                                            placeholder="..."
+                                                                            style="width: 100%;">{{ $token->token_note }}</textarea>
+                                                                    </div>
+                                                                    <div class="col-lg-4 spacing-right">
+                                                                        Attachment
+                                                                        <br>
+                                                                        <input class="form-control" type="file"
+                                                                            name="tokens[{{ $index }}][token_attach]"
+                                                                            value="{{ $token->token_attach }}"
+                                                                            placeholder="..." style="width: 100%;">
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
 
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
                                             @endforeach
                                         </div>
                                         <!-- Add More and Remove Buttons -->
@@ -1102,202 +1102,202 @@
                                     <div class="container  my-1" id="auditContainer">
                                         <div class="accordion" id="auditAccordion">
                                             @foreach ($admins->insurrances as $index => $insurrance)
-                                            <!-- Initial Accordion Item -->
-                                            <div class="accordion-item auditaccordion-item"
-                                                id="auditEntry1{{ $index }}">
-                                                <h2 class="accordion-header" id="auditHeading1{{ $index }}"
-                                                    style="color: white">
-                                                    <button class="accordion-button"
-                                                        style="background-color: #34005A; color:white" type="button"
-                                                        data-toggle="collapse" data-target="#auditCollapse1{{ $index }}"
-                                                        aria-expanded="false"
-                                                        aria-controls="auditCollapse1{{ $index }}">
-                                                        Insurance Company Details {{ $index + 1 }}
-                                                    </button>
-                                                </h2>
-                                                <div id="auditCollapse1{{ $index }}" class="collapse"
-                                                    aria-labelledby="auditHeading1{{ $index }}">
-                                                    <div class="accordion-body">
-                                                        <input type="hidden" name="insurrances[{{ $index }}][ins_id]"
-                                                            value="{{ $insurrance->id }}">
-                                                        <div class=" row main-content div" id="auditsInfo">
-                                                            <div class="col-lg-12">
-                                                                <h5>POC :</h5>
+                                                <!-- Initial Accordion Item -->
+                                                <div class="accordion-item auditaccordion-item"
+                                                    id="auditEntry1{{ $index }}">
+                                                    <h2 class="accordion-header" id="auditHeading1{{ $index }}"
+                                                        style="color: white">
+                                                        <button class="accordion-button"
+                                                            style="background-color: #34005A; color:white" type="button"
+                                                            data-toggle="collapse" data-target="#auditCollapse1{{ $index }}"
+                                                            aria-expanded="false"
+                                                            aria-controls="auditCollapse1{{ $index }}">
+                                                            Insurance Company Details {{ $index + 1 }}
+                                                        </button>
+                                                    </h2>
+                                                    <div id="auditCollapse1{{ $index }}" class="collapse"
+                                                        aria-labelledby="auditHeading1{{ $index }}">
+                                                        <div class="accordion-body">
+                                                            <input type="hidden" name="insurrances[{{ $index }}][ins_id]"
+                                                                value="{{ $insurrance->id }}">
+                                                            <div class=" row main-content div" id="auditsInfo">
+                                                                <div class="col-lg-12">
+                                                                    <h5>POC :</h5>
+                                                                    <div class="row mb-2">
+                                                                        <div class="col-lg-3 spacing-right">
+                                                                            Company Name :
+                                                                            <br>
+                                                                            <input class="form-control"
+                                                                                name="insurrances[{{ $index }}][company_name]"
+                                                                                value="{{ $insurrance->company_name }}"
+                                                                                type="text" placeholder="..."
+                                                                                style="width: 100%;">
+                                                                        </div>
+                                                                        <div class="col-lg-3 spacing-left spacing-right">
+                                                                            Name
+                                                                            <br>
+                                                                            <input class="form-control"
+                                                                                name="insurrances[{{ $index }}][i_poc_name]"
+                                                                                value="{{ $insurrance->i_poc_name }}"
+                                                                                type="text" placeholder="..."
+                                                                                style="width: 100%;">
+                                                                        </div>
+                                                                        <div class="col-lg-3 spacing-right">
+                                                                            Web
+                                                                            <br>
+                                                                            <input class="form-control"
+                                                                                name="insurrances[{{ $index }}][i_poc_web]"
+                                                                                value="{{ $insurrance->i_poc_web }}"
+                                                                                type="text" placeholder="..."
+                                                                                style="width: 100%;">
+                                                                        </div>
+                                                                        <div class="col-lg-3 spacing-right">
+                                                                            Email
+                                                                            <br>
+                                                                            <input class="form-control"
+                                                                                name="insurrances[{{ $index }}][i_poc_email]"
+                                                                                value="{{ $insurrance->i_poc_email }}"
+                                                                                type="text" placeholder="..."
+                                                                                style="width: 100%;">
+                                                                        </div>
+                                                                        <div class="col-lg-3 spacing-right">
+                                                                            Cell Number :
+                                                                            <br>
+                                                                            <input class="form-control"
+                                                                                name="insurrances[{{ $index }}][i_poc_cell]"
+                                                                                value="{{ $insurrance->i_poc_cell }}"
+                                                                                type="text" placeholder="..."
+                                                                                style="width: 100%;">
+                                                                        </div>
+                                                                        <div class="col-lg-3 spacing-left spacing-right">
+                                                                            Value of Sum Insured
+                                                                            <br>
+                                                                            <input class="form-control"
+                                                                                name="insurrances[{{ $index }}][value_of_sum]"
+                                                                                value="{{ $insurrance->value_of_sum }}"
+                                                                                type="text" placeholder="..."
+                                                                                style="width: 100%;">
+                                                                        </div>
+                                                                        <div class="col-lg-3 spacing-right">
+                                                                            Insurance Policy Attachment
+                                                                            <br>
+                                                                            <input class="form-control"
+                                                                                name="insurrances[{{ $index }}][ins_p_pic]"
+                                                                                value="{{ $insurrance->ins_p_pic }}"
+                                                                                type="file" placeholder="..."
+                                                                                style="width: 100%;">
+                                                                        </div>
+                                                                        <div class="col-lg-3 spacing-right">
+                                                                            Certificate of Insurrance
+                                                                            <br>
+                                                                            <input class="form-control"
+                                                                                name="insurrances[{{ $index }}][c_of_ins]"
+                                                                                value="{{ $insurrance->c_of_ins }}"
+                                                                                type="file" placeholder="..."
+                                                                                style="width: 100%;">
+                                                                        </div>
+                                                                        <h5>Address</h5>
+                                                                        <div class="col-lg-3 spacing-right">
+                                                                            Office No. :
+                                                                            <br>
+                                                                            <input class="form-control"
+                                                                                name="insurrances[{{ $index }}][i_poc_office]"
+                                                                                value="{{ $insurrance->i_poc_office }}"
+                                                                                type="text" placeholder="..."
+                                                                                style="width: 100%;">
+                                                                        </div>
+                                                                        <div class="col-lg-3 spacing-left spacing-right">
+                                                                            Floor No.
+                                                                            <br>
+                                                                            <input class="form-control"
+                                                                                name="insurrances[{{ $index }}][i_poc_floor]"
+                                                                                value="{{ $insurrance->i_poc_floor }}"
+                                                                                type="text" placeholder="..."
+                                                                                style="width: 100%;">
+                                                                        </div>
+                                                                        <div class="col-lg-3 spacing-right">
+                                                                            Building
+                                                                            <br>
+                                                                            <input class="form-control"
+                                                                                name="insurrances[{{ $index }}][i_poc_building]"
+                                                                                value="{{ $insurrance->i_poc_building }}"
+                                                                                type="text" placeholder="..."
+                                                                                style="width: 100%;">
+                                                                        </div>
+                                                                        <div class="col-lg-3 spacing-right">
+                                                                            Block
+                                                                            <br>
+                                                                            <input class="form-control"
+                                                                                name="insurrances[{{ $index }}][i_poc_block]"
+                                                                                value="{{ $insurrance->i_poc_block }}"
+                                                                                type="text" placeholder="..."
+                                                                                style="width: 100%;">
+                                                                        </div>
+                                                                        <div class="col-lg-3 spacing-right">
+                                                                            Area
+                                                                            <br>
+                                                                            <input class="form-control"
+                                                                                name="insurrances[{{ $index }}][i_poc_area]"
+                                                                                value="{{ $insurrance->i_poc_area }}"
+                                                                                type="text" placeholder="..."
+                                                                                style="width: 100%;">
+                                                                        </div>
+                                                                        <div class="col-lg-3 spacing-left spacing-right">
+                                                                            City
+                                                                            <br>
+                                                                            <input class="form-control"
+                                                                                name="insurrances[{{ $index }}][i_poc_city]"
+                                                                                value="{{ $insurrance->i_poc_city }}"
+                                                                                type="text" placeholder="..."
+                                                                                style="width: 100%;">
+                                                                        </div>
+                                                                        <div class="col-lg-3 spacing-right">
+                                                                            Photograph of Location
+                                                                            <br>
+                                                                            <input class="form-control"
+                                                                                name="insurrances[{{ $index }}][i_poc_loc]"
+                                                                                value="{{ $insurrance->i_poc_loc }}"
+                                                                                type="file" placeholder="..."
+                                                                                style="width: 100%;">
+                                                                        </div>
+                                                                        <div class="col-lg-3 spacing-right">
+                                                                            Pin Location
+                                                                            <br>
+                                                                            <input class="form-control"
+                                                                                name="insurrances[{{ $index }}][i_poc_pin]"
+                                                                                value="{{ $insurrance->i_poc_pin }}"
+                                                                                type="text" placeholder="..."
+                                                                                style="width: 100%;">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
                                                                 <div class="row mb-2">
-                                                                    <div class="col-lg-3 spacing-right">
-                                                                        Company Name :
+                                                                    <div class="col-lg-6 spacing-right mt-2">
+                                                                        Notes
                                                                         <br>
-                                                                        <input class="form-control"
-                                                                            name="insurrances[{{ $index }}][company_name]"
-                                                                            value="{{ $insurrance->company_name }}"
-                                                                            type="text" placeholder="..."
-                                                                            style="width: 100%;">
+                                                                        <textarea id="w3review12"
+                                                                            onclick="moveCursorToStart12()"
+                                                                            oninput="trimSpaces12()" class="form-control"
+                                                                            name="insurrances[{{ $index }}][ins_note]"
+                                                                            rows="2" cols="38">
+                                                                            {{ $insurrance->ins_note }}
+                                                                        </textarea>
                                                                     </div>
-                                                                    <div class="col-lg-3 spacing-left spacing-right">
-                                                                        Name
+                                                                    <div class="col-lg-6 spacing-left spacing-right mt-2">
+                                                                        Attachments
                                                                         <br>
                                                                         <input class="form-control"
-                                                                            name="insurrances[{{ $index }}][i_poc_name]"
-                                                                            value="{{ $insurrance->i_poc_name }}"
-                                                                            type="text" placeholder="..."
-                                                                            style="width: 100%;">
-                                                                    </div>
-                                                                    <div class="col-lg-3 spacing-right">
-                                                                        Web
-                                                                        <br>
-                                                                        <input class="form-control"
-                                                                            name="insurrances[{{ $index }}][i_poc_web]"
-                                                                            value="{{ $insurrance->i_poc_web }}"
-                                                                            type="text" placeholder="..."
-                                                                            style="width: 100%;">
-                                                                    </div>
-                                                                    <div class="col-lg-3 spacing-right">
-                                                                        Email
-                                                                        <br>
-                                                                        <input class="form-control"
-                                                                            name="insurrances[{{ $index }}][i_poc_email]"
-                                                                            value="{{ $insurrance->i_poc_email }}"
-                                                                            type="text" placeholder="..."
-                                                                            style="width: 100%;">
-                                                                    </div>
-                                                                    <div class="col-lg-3 spacing-right">
-                                                                        Cell Number :
-                                                                        <br>
-                                                                        <input class="form-control"
-                                                                            name="insurrances[{{ $index }}][i_poc_cell]"
-                                                                            value="{{ $insurrance->i_poc_cell }}"
-                                                                            type="text" placeholder="..."
-                                                                            style="width: 100%;">
-                                                                    </div>
-                                                                    <div class="col-lg-3 spacing-left spacing-right">
-                                                                        Value of Sum Insured
-                                                                        <br>
-                                                                        <input class="form-control"
-                                                                            name="insurrances[{{ $index }}][value_of_sum]"
-                                                                            value="{{ $insurrance->value_of_sum }}"
-                                                                            type="text" placeholder="..."
-                                                                            style="width: 100%;">
-                                                                    </div>
-                                                                    <div class="col-lg-3 spacing-right">
-                                                                        Insurance Policy Attachment
-                                                                        <br>
-                                                                        <input class="form-control"
-                                                                            name="insurrances[{{ $index }}][ins_p_pic]"
-                                                                            value="{{ $insurrance->ins_p_pic }}"
+                                                                            name="insurrances[{{ $index }}][ins_attach]"
+                                                                            value="{{ $insurrance->ins_attach }}"
                                                                             type="file" placeholder="..."
-                                                                            style="width: 100%;">
-                                                                    </div>
-                                                                    <div class="col-lg-3 spacing-right">
-                                                                        Certificate of Insurrance
-                                                                        <br>
-                                                                        <input class="form-control"
-                                                                            name="insurrances[{{ $index }}][c_of_ins]"
-                                                                            value="{{ $insurrance->c_of_ins }}"
-                                                                            type="file" placeholder="..."
-                                                                            style="width: 100%;">
-                                                                    </div>
-                                                                    <h5>Address</h5>
-                                                                    <div class="col-lg-3 spacing-right">
-                                                                        Office No. :
-                                                                        <br>
-                                                                        <input class="form-control"
-                                                                            name="insurrances[{{ $index }}][i_poc_office]"
-                                                                            value="{{ $insurrance->i_poc_office }}"
-                                                                            type="text" placeholder="..."
-                                                                            style="width: 100%;">
-                                                                    </div>
-                                                                    <div class="col-lg-3 spacing-left spacing-right">
-                                                                        Floor No.
-                                                                        <br>
-                                                                        <input class="form-control"
-                                                                            name="insurrances[{{ $index }}][i_poc_floor]"
-                                                                            value="{{ $insurrance->i_poc_floor }}"
-                                                                            type="text" placeholder="..."
-                                                                            style="width: 100%;">
-                                                                    </div>
-                                                                    <div class="col-lg-3 spacing-right">
-                                                                        Building
-                                                                        <br>
-                                                                        <input class="form-control"
-                                                                            name="insurrances[{{ $index }}][i_poc_building]"
-                                                                            value="{{ $insurrance->i_poc_building }}"
-                                                                            type="text" placeholder="..."
-                                                                            style="width: 100%;">
-                                                                    </div>
-                                                                    <div class="col-lg-3 spacing-right">
-                                                                        Block
-                                                                        <br>
-                                                                        <input class="form-control"
-                                                                            name="insurrances[{{ $index }}][i_poc_block]"
-                                                                            value="{{ $insurrance->i_poc_block }}"
-                                                                            type="text" placeholder="..."
-                                                                            style="width: 100%;">
-                                                                    </div>
-                                                                    <div class="col-lg-3 spacing-right">
-                                                                        Area
-                                                                        <br>
-                                                                        <input class="form-control"
-                                                                            name="insurrances[{{ $index }}][i_poc_area]"
-                                                                            value="{{ $insurrance->i_poc_area }}"
-                                                                            type="text" placeholder="..."
-                                                                            style="width: 100%;">
-                                                                    </div>
-                                                                    <div class="col-lg-3 spacing-left spacing-right">
-                                                                        City
-                                                                        <br>
-                                                                        <input class="form-control"
-                                                                            name="insurrances[{{ $index }}][i_poc_city]"
-                                                                            value="{{ $insurrance->i_poc_city }}"
-                                                                            type="text" placeholder="..."
-                                                                            style="width: 100%;">
-                                                                    </div>
-                                                                    <div class="col-lg-3 spacing-right">
-                                                                        Photograph of Location
-                                                                        <br>
-                                                                        <input class="form-control"
-                                                                            name="insurrances[{{ $index }}][i_poc_loc]"
-                                                                            value="{{ $insurrance->i_poc_loc }}"
-                                                                            type="file" placeholder="..."
-                                                                            style="width: 100%;">
-                                                                    </div>
-                                                                    <div class="col-lg-3 spacing-right">
-                                                                        Pin Location
-                                                                        <br>
-                                                                        <input class="form-control"
-                                                                            name="insurrances[{{ $index }}][i_poc_pin]"
-                                                                            value="{{ $insurrance->i_poc_pin }}"
-                                                                            type="text" placeholder="..."
-                                                                            style="width: 100%;">
+                                                                            style="width: 70%;" multiple>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="row mb-2">
-                                                                <div class="col-lg-6 spacing-right mt-2">
-                                                                    Notes
-                                                                    <br>
-                                                                    <textarea id="w3review12"
-                                                                        onclick="moveCursorToStart12()"
-                                                                        oninput="trimSpaces12()" class="form-control"
-                                                                        name="insurrances[{{ $index }}][ins_note]"
-                                                                        rows="2" cols="38">
-                                                                        {{ $insurrance->ins_note }}
-                                                                    </textarea>
-                                                                </div>
-                                                                <div class="col-lg-6 spacing-left spacing-right mt-2">
-                                                                    Attachments
-                                                                    <br>
-                                                                    <input class="form-control"
-                                                                        name="insurrances[{{ $index }}][ins_attach]"
-                                                                        value="{{ $insurrance->ins_attach }}"
-                                                                        type="file" placeholder="..."
-                                                                        style="width: 70%;" multiple>
-                                                                </div>
-                                                            </div>
-                                                        </div>
 
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
                                             @endforeach
                                         </div>
 
@@ -1339,162 +1339,162 @@
                                 <div class="accordion" id="promactAccordion">
                                     <!-- Initial Accordion Item -->
                                     @foreach ($admins->trackers as $index => $tracker)
-                                    <div class="accordion-item promactaccordion-item" id="promactEntry1{{ $index }}">
-                                        <h2 class="accordion-header" id="promactHeading1{{ $index }}"
-                                            style="color: white">
-                                            <button class="accordion-button"
-                                                style="background-color: #34005A; color:white" type="button"
-                                                data-toggle="collapse" data-target="#promactCollapse1{{ $index }}"
-                                                aria-expanded="false" aria-controls="promactCollapse1{{ $index }}">
-                                                Tracker Details {{ $index + 1 }}
-                                            </button>
-                                        </h2>
-                                        <div id="promactCollapse1{{ $index }}" class="collapse"
-                                            aria-labelledby="promactHeading1{{ $index }}">
-                                            <div class="accordion-body">
-                                                <input type="hidden" name="trackers[{{ $index }}][tr_id]"
-                                                    value="{{ $tracker->id }}">
-                                                <div class=" row main-content div" id="">
+                                        <div class="accordion-item promactaccordion-item" id="promactEntry1{{ $index }}">
+                                            <h2 class="accordion-header" id="promactHeading1{{ $index }}"
+                                                style="color: white">
+                                                <button class="accordion-button"
+                                                    style="background-color: #34005A; color:white" type="button"
+                                                    data-toggle="collapse" data-target="#promactCollapse1{{ $index }}"
+                                                    aria-expanded="false" aria-controls="promactCollapse1{{ $index }}">
+                                                    Tracker Details {{ $index + 1 }}
+                                                </button>
+                                            </h2>
+                                            <div id="promactCollapse1{{ $index }}" class="collapse"
+                                                aria-labelledby="promactHeading1{{ $index }}">
+                                                <div class="accordion-body">
+                                                    <input type="hidden" name="trackers[{{ $index }}][tr_id]"
+                                                        value="{{ $tracker->id }}">
+                                                    <div class=" row main-content div" id="">
 
-                                                    <div class="col-lg-12">
-                                                        <h5>POC :</h5>
+                                                        <div class="col-lg-12">
+                                                            <h5>POC :</h5>
+                                                            <div class="row mb-2">
+                                                                <div class="col-lg-3 spacing-right">
+                                                                    Company Name :
+                                                                    <br>
+                                                                    <input class="form-control"
+                                                                        name="trackers[{{ $index }}][tracker_company_name]"
+                                                                        value="{{ $tracker->tracker_company_name }}"
+                                                                        type="text" placeholder="..." style="width: 100%;">
+                                                                </div>
+                                                                <div class="col-lg-3 spacing-left spacing-right">
+                                                                    Name
+                                                                    <br>
+                                                                    <input class="form-control"
+                                                                        name="trackers[{{ $index }}][t_poc_name]"
+                                                                        value="{{ $tracker->t_poc_name }}" type="text"
+                                                                        placeholder="..." style="width: 100%;">
+                                                                </div>
+                                                                <div class="col-lg-3 spacing-right">
+                                                                    Web
+                                                                    <br>
+                                                                    <input class="form-control"
+                                                                        name="trackers[{{ $index }}][t_poc_web]"
+                                                                        value="{{ $tracker->t_poc_web }}" type="text"
+                                                                        placeholder="..." style="width: 100%;">
+                                                                </div>
+                                                                <div class="col-lg-3 spacing-right">
+                                                                    Email
+                                                                    <br>
+                                                                    <input class="form-control"
+                                                                        name="trackers[{{ $index }}][t_poc_email]"
+                                                                        value="{{ $tracker->t_poc_email }}" type="text"
+                                                                        placeholder="..." style="width: 100%;">
+                                                                </div>
+
+                                                                <div class="col-lg-3 spacing-right">
+                                                                    Cell Number :
+                                                                    <br>
+                                                                    <input class="form-control"
+                                                                        name="trackers[{{ $index }}][t_poc_cell]"
+                                                                        value="{{ $tracker->t_poc_cell }}" type="text"
+                                                                        placeholder="..." style="width: 100%;">
+                                                                </div>
+                                                                <h5>Address</h5>
+                                                                <div class="col-lg-3 spacing-right">
+                                                                    Office No. :
+                                                                    <br>
+                                                                    <input class="form-control"
+                                                                        name="trackers[{{ $index }}][t_poc_office]"
+                                                                        value="{{ $tracker->t_poc_office }}" type="text"
+                                                                        placeholder="..." style="width: 100%;">
+                                                                </div>
+                                                                <div class="col-lg-3 spacing-left spacing-right">
+                                                                    Floor No.
+                                                                    <br>
+                                                                    <input class="form-control"
+                                                                        name="trackers[{{ $index }}][t_poc_floor]"
+                                                                        value="{{ $tracker->t_poc_floor }}" type="text"
+                                                                        placeholder="..." style="width: 100%;">
+                                                                </div>
+                                                                <div class="col-lg-3 spacing-right">
+                                                                    Building
+                                                                    <br>
+                                                                    <input class="form-control"
+                                                                        name="trackers[{{ $index }}][t_poc_building]"
+                                                                        value="{{ $tracker->t_poc_building }}" type="text"
+                                                                        placeholder="..." style="width: 100%;">
+                                                                </div>
+                                                                <div class="col-lg-3 spacing-right">
+                                                                    Block
+                                                                    <br>
+                                                                    <input class="form-control"
+                                                                        name="trackers[{{ $index }}][t_poc_block]"
+                                                                        value="{{ $tracker->t_poc_block }}" type="text"
+                                                                        placeholder="..." style="width: 100%;">
+                                                                </div>
+
+                                                                <div class="col-lg-3 spacing-right">
+                                                                    Area
+                                                                    <br>
+                                                                    <input class="form-control"
+                                                                        name="trackers[{{ $index }}][t_poc_area]"
+                                                                        value="{{ $tracker->t_poc_area }}" type="text"
+                                                                        placeholder="..." style="width: 100%;">
+                                                                </div>
+                                                                <div class="col-lg-3 spacing-left spacing-right">
+                                                                    City
+                                                                    <br>
+                                                                    <input class="form-control"
+                                                                        name="trackers[{{ $index }}][t_poc_city]"
+                                                                        value="{{ $tracker->t_poc_city }}" type="text"
+                                                                        placeholder="..." style="width: 100%;">
+                                                                </div>
+                                                                <div class="col-lg-3 spacing-right">
+                                                                    Photograph of Location
+                                                                    <br>
+                                                                    <input class="form-control"
+                                                                        name="trackers[{{ $index }}][t_poc_loc]"
+                                                                        value="{{ $tracker->t_poc_loc }}" type="file"
+                                                                        placeholder="..." style="width: 100%;">
+                                                                </div>
+                                                                <div class="col-lg-3 spacing-right">
+                                                                    Pin Location
+                                                                    <br>
+                                                                    <input class="form-control"
+                                                                        name="trackers[{{ $index }}][t_poc_pin]"
+                                                                        value="{{ $tracker->t_poc_pin }}" type="text"
+                                                                        placeholder="..." style="width: 100%;">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
                                                         <div class="row mb-2">
-                                                            <div class="col-lg-3 spacing-right">
-                                                                Company Name :
+                                                            <div class="col-lg-6 spacing-right mt-2">
+                                                                Notes
                                                                 <br>
-                                                                <input class="form-control"
-                                                                    name="trackers[{{ $index }}][tracker_company_name]"
-                                                                    value="{{ $tracker->tracker_company_name }}"
-                                                                    type="text" placeholder="..." style="width: 100%;">
+                                                                <textarea id="w3review12" onclick="moveCursorToStart12()"
+                                                                    oninput="trimSpaces12()" class="form-control"
+                                                                    name="trackers[{{ $index }}][tracker_note]" rows="2"
+                                                                    cols="38">
+                                                                    {{ $tracker->tracker_note }}
+                                                                </textarea>
                                                             </div>
-                                                            <div class="col-lg-3 spacing-left spacing-right">
-                                                                Name
+                                                            <div class="col-lg-6 spacing-left spacing-right mt-2">
+                                                                Attachments
                                                                 <br>
                                                                 <input class="form-control"
-                                                                    name="trackers[{{ $index }}][t_poc_name]"
-                                                                    value="{{ $tracker->t_poc_name }}" type="text"
-                                                                    placeholder="..." style="width: 100%;">
-                                                            </div>
-                                                            <div class="col-lg-3 spacing-right">
-                                                                Web
-                                                                <br>
-                                                                <input class="form-control"
-                                                                    name="trackers[{{ $index }}][t_poc_web]"
-                                                                    value="{{ $tracker->t_poc_web }}" type="text"
-                                                                    placeholder="..." style="width: 100%;">
-                                                            </div>
-                                                            <div class="col-lg-3 spacing-right">
-                                                                Email
-                                                                <br>
-                                                                <input class="form-control"
-                                                                    name="trackers[{{ $index }}][t_poc_email]"
-                                                                    value="{{ $tracker->t_poc_email }}" type="text"
-                                                                    placeholder="..." style="width: 100%;">
-                                                            </div>
-
-                                                            <div class="col-lg-3 spacing-right">
-                                                                Cell Number :
-                                                                <br>
-                                                                <input class="form-control"
-                                                                    name="trackers[{{ $index }}][t_poc_cell]"
-                                                                    value="{{ $tracker->t_poc_cell }}" type="text"
-                                                                    placeholder="..." style="width: 100%;">
-                                                            </div>
-                                                            <h5>Address</h5>
-                                                            <div class="col-lg-3 spacing-right">
-                                                                Office No. :
-                                                                <br>
-                                                                <input class="form-control"
-                                                                    name="trackers[{{ $index }}][t_poc_office]"
-                                                                    value="{{ $tracker->t_poc_office }}" type="text"
-                                                                    placeholder="..." style="width: 100%;">
-                                                            </div>
-                                                            <div class="col-lg-3 spacing-left spacing-right">
-                                                                Floor No.
-                                                                <br>
-                                                                <input class="form-control"
-                                                                    name="trackers[{{ $index }}][t_poc_floor]"
-                                                                    value="{{ $tracker->t_poc_floor }}" type="text"
-                                                                    placeholder="..." style="width: 100%;">
-                                                            </div>
-                                                            <div class="col-lg-3 spacing-right">
-                                                                Building
-                                                                <br>
-                                                                <input class="form-control"
-                                                                    name="trackers[{{ $index }}][t_poc_building]"
-                                                                    value="{{ $tracker->t_poc_building }}" type="text"
-                                                                    placeholder="..." style="width: 100%;">
-                                                            </div>
-                                                            <div class="col-lg-3 spacing-right">
-                                                                Block
-                                                                <br>
-                                                                <input class="form-control"
-                                                                    name="trackers[{{ $index }}][t_poc_block]"
-                                                                    value="{{ $tracker->t_poc_block }}" type="text"
-                                                                    placeholder="..." style="width: 100%;">
-                                                            </div>
-
-                                                            <div class="col-lg-3 spacing-right">
-                                                                Area
-                                                                <br>
-                                                                <input class="form-control"
-                                                                    name="trackers[{{ $index }}][t_poc_area]"
-                                                                    value="{{ $tracker->t_poc_area }}" type="text"
-                                                                    placeholder="..." style="width: 100%;">
-                                                            </div>
-                                                            <div class="col-lg-3 spacing-left spacing-right">
-                                                                City
-                                                                <br>
-                                                                <input class="form-control"
-                                                                    name="trackers[{{ $index }}][t_poc_city]"
-                                                                    value="{{ $tracker->t_poc_city }}" type="text"
-                                                                    placeholder="..." style="width: 100%;">
-                                                            </div>
-                                                            <div class="col-lg-3 spacing-right">
-                                                                Photograph of Location
-                                                                <br>
-                                                                <input class="form-control"
-                                                                    name="trackers[{{ $index }}][t_poc_loc]"
-                                                                    value="{{ $tracker->t_poc_loc }}" type="file"
-                                                                    placeholder="..." style="width: 100%;">
-                                                            </div>
-                                                            <div class="col-lg-3 spacing-right">
-                                                                Pin Location
-                                                                <br>
-                                                                <input class="form-control"
-                                                                    name="trackers[{{ $index }}][t_poc_pin]"
-                                                                    value="{{ $tracker->t_poc_pin }}" type="text"
-                                                                    placeholder="..." style="width: 100%;">
+                                                                    name="trackers[{{ $index }}][tracker_attach]"
+                                                                    value="{{ $tracker->tracker_attach }}" type="file"
+                                                                    placeholder="..." style="width: 70%;" multiple>
                                                             </div>
                                                         </div>
-                                                    </div>
 
-                                                    <div class="row mb-2">
-                                                        <div class="col-lg-6 spacing-right mt-2">
-                                                            Notes
-                                                            <br>
-                                                            <textarea id="w3review12" onclick="moveCursorToStart12()"
-                                                                oninput="trimSpaces12()" class="form-control"
-                                                                name="trackers[{{ $index }}][tracker_note]" rows="2"
-                                                                cols="38">
-                                                                {{ $tracker->tracker_note }}
-                                                            </textarea>
-                                                        </div>
-                                                        <div class="col-lg-6 spacing-left spacing-right mt-2">
-                                                            Attachments
-                                                            <br>
-                                                            <input class="form-control"
-                                                                name="trackers[{{ $index }}][tracker_attach]"
-                                                                value="{{ $tracker->tracker_attach }}" type="file"
-                                                                placeholder="..." style="width: 70%;" multiple>
-                                                        </div>
                                                     </div>
 
                                                 </div>
-
                                             </div>
                                         </div>
-                                    </div>
                                     @endforeach
                                 </div>
 
@@ -1533,221 +1533,221 @@
                             <div class="accordion" id="notificationAccordion">
                                 <!-- Initial Accordion Item -->
                                 @foreach ($admins->repairs as $index => $repair)
-                                <div class="accordion-item notificationaccordion-item"
-                                    id="notificationEntry1{{ $index }}">
-                                    <h2 class="accordion-header" id="notificationHeading1{{ $index }}"
-                                        style="color: white">
-                                        <button class="accordion-button" style="background-color: #34005A; color:white"
-                                            type="button" data-toggle="collapse"
-                                            data-target="#notificationCollapse1{{ $index }}" aria-expanded="false"
-                                            aria-controls="notificationCollapse1{{ $index }}">
-                                            Repair & Maintenance {{ $index + 1 }}
-                                        </button>
-                                    </h2>
-                                    <div id="notificationCollapse1{{ $index }}" class="collapse"
-                                        aria-labelledby="notificationHeading1{{ $index }}">
-                                        <div class="accordion-body">
-                                            <input type="hidden" name="repairs[{{ $index }}][r_id]"
-                                                value="{{ $repair->id }}">
-                                            <div class=" row main-content div" id="">
-                                                <div class="col-lg-12">
+                                    <div class="accordion-item notificationaccordion-item"
+                                        id="notificationEntry1{{ $index }}">
+                                        <h2 class="accordion-header" id="notificationHeading1{{ $index }}"
+                                            style="color: white">
+                                            <button class="accordion-button" style="background-color: #34005A; color:white"
+                                                type="button" data-toggle="collapse"
+                                                data-target="#notificationCollapse1{{ $index }}" aria-expanded="false"
+                                                aria-controls="notificationCollapse1{{ $index }}">
+                                                Repair & Maintenance {{ $index + 1 }}
+                                            </button>
+                                        </h2>
+                                        <div id="notificationCollapse1{{ $index }}" class="collapse"
+                                            aria-labelledby="notificationHeading1{{ $index }}">
+                                            <div class="accordion-body">
+                                                <input type="hidden" name="repairs[{{ $index }}][r_id]"
+                                                    value="{{ $repair->id }}">
+                                                <div class=" row main-content div" id="">
+                                                    <div class="col-lg-12">
+                                                        <div class="row mb-2">
+                                                            <div class="col-lg-3 spacing-right">
+                                                                Serial No.
+                                                                <br>
+                                                                <input class="form-control"
+                                                                    name="repairs[{{ $index }}][serial_no]"
+                                                                    value="{{ $repair->serial_no }}" type="text"
+                                                                    placeholder="..." style="width: 100%;">
+                                                            </div>
+                                                            <div class="col-lg-3 spacing-left spacing-right">
+                                                                Description
+                                                                <br>
+                                                                <input class="form-control"
+                                                                    name="repairs[{{ $index }}][r_desc]"
+                                                                    value="{{ $repair->r_desc }}" type="text"
+                                                                    placeholder="..." style="width: 100%;">
+                                                            </div>
+                                                            <div class="col-lg-3 spacing-right">
+                                                                Amount of Bill
+                                                                <br>
+                                                                <input class="form-control"
+                                                                    name="repairs[{{ $index }}][r_amount]"
+                                                                    value="{{ $repair->r_amount }}" type="text"
+                                                                    placeholder="..." style="width: 100%;">
+                                                            </div>
+                                                            <div class="col-lg-3 spacing-right">
+                                                                Payment Made By
+                                                                <br>
+                                                                <input class="form-control"
+                                                                    name="repairs[{{ $index }}][r_pay_by]"
+                                                                    value="{{ $repair->r_pay_by }}" type="text"
+                                                                    placeholder="..." style="width: 100%;">
+                                                            </div>
+                                                            <div class="col-lg-3 spacing-right">
+                                                                Date
+                                                                <br>
+                                                                <input class="form-control"
+                                                                    name="repairs[{{ $index }}][r_date]"
+                                                                    value="{{ $repair->r_date }}" type="date"
+                                                                    placeholder="..." style="width: 100%;">
+                                                            </div>
+                                                            <h5>Vendor Details :</h5>
+                                                            <div class="col-lg-3 spacing-right">
+                                                                Company Name :
+                                                                <br>
+                                                                <input class="form-control"
+                                                                    name="repairs[{{ $index }}][repair_company_name]"
+                                                                    value="{{ $repair->repair_company_name }}" type="text"
+                                                                    placeholder="..." style="width: 100%;">
+                                                            </div>
+                                                            <div class="col-lg-3 spacing-left spacing-right">
+                                                                Name
+                                                                <br>
+                                                                <input class="form-control"
+                                                                    name="repairs[{{ $index }}][r_poc_name]"
+                                                                    value="{{ $repair->r_poc_name }}" type="text"
+                                                                    placeholder="..." style="width: 100%;">
+                                                            </div>
+                                                            <div class="col-lg-3 spacing-right">
+                                                                Web
+                                                                <br>
+                                                                <input class="form-control"
+                                                                    name="repairs[{{ $index }}][r_poc_web]"
+                                                                    value="{{ $repair->r_poc_web }}" type="text"
+                                                                    placeholder="..." style="width: 100%;">
+                                                            </div>
+                                                            <div class="col-lg-3 spacing-right">
+                                                                Email
+                                                                <br>
+                                                                <input class="form-control"
+                                                                    name="repairs[{{ $index }}][r_poc_email]"
+                                                                    value="{{ $repair->r_poc_email }}" type="text"
+                                                                    placeholder="..." style="width: 100%;">
+                                                            </div>
+                                                            <div class="col-lg-3 spacing-right">
+                                                                Cell Number :
+                                                                <br>
+                                                                <input class="form-control"
+                                                                    name="repairs[{{ $index }}][r_poc_cell]"
+                                                                    value="{{ $repair->r_poc_cell }}" type="text"
+                                                                    placeholder="..." style="width: 100%;">
+                                                            </div>
+                                                            <h5>Address</h5>
+                                                            <div class="col-lg-3 spacing-right">
+                                                                Office No. :
+                                                                <br>
+                                                                <input class="form-control"
+                                                                    name="repairs[{{ $index }}][r_poc_office]"
+                                                                    value="{{ $repair->r_poc_office }}" type="text"
+                                                                    placeholder="..." style="width: 100%;">
+                                                            </div>
+                                                            <div class="col-lg-3 spacing-left spacing-right">
+                                                                Floor No.
+                                                                <br>
+                                                                <input class="form-control"
+                                                                    name="repairs[{{ $index }}][r_poc_floor]"
+                                                                    value="{{ $repair->r_poc_floor }}" type="text"
+                                                                    placeholder="..." style="width: 100%;">
+                                                            </div>
+                                                            <div class="col-lg-3 spacing-right">
+                                                                Building
+                                                                <br>
+                                                                <input class="form-control"
+                                                                    name="repairs[{{ $index }}][r_poc_building]"
+                                                                    value="{{ $repair->r_poc_building }}" type="text"
+                                                                    placeholder="..." style="width: 100%;">
+                                                            </div>
+                                                            <div class="col-lg-3 spacing-right">
+                                                                Block
+                                                                <br>
+                                                                <input class="form-control"
+                                                                    name="repairs[{{ $index }}][r_poc_block]"
+                                                                    value="{{ $repair->r_poc_block }}" type="text"
+                                                                    placeholder="..." style="width: 100%;">
+                                                            </div>
+
+                                                            <div class="col-lg-3 spacing-right">
+                                                                Area
+                                                                <br>
+                                                                <input class="form-control"
+                                                                    name="repairs[{{ $index }}][r_poc_area]"
+                                                                    value="{{ $repair->r_poc_area }}" type="text"
+                                                                    placeholder="..." style="width: 100%;">
+                                                            </div>
+                                                            <div class="col-lg-3 spacing-left spacing-right">
+                                                                City
+                                                                <br>
+                                                                <input class="form-control"
+                                                                    name="repairs[{{ $index }}][r_poc_city]"
+                                                                    value="{{ $repair->r_poc_city }}" type="text"
+                                                                    placeholder="..." style="width: 100%;">
+                                                            </div>
+                                                            <div class="col-lg-3 spacing-right">
+                                                                Photograph of Location
+                                                                <br>
+                                                                <input class="form-control"
+                                                                    name="repairs[{{ $index }}][r_poc_loc]"
+                                                                    value="{{ $repair->r_poc_loc }}" type="file"
+                                                                    placeholder="..." style="width: 100%;">
+                                                            </div>
+                                                            <div class="col-lg-3 spacing-right">
+                                                                Pin Location
+                                                                <br>
+                                                                <input class="form-control"
+                                                                    name="repairs[{{ $index }}][r_poc_pin]"
+                                                                    value="{{ $repair->r_poc_pin }}" type="text"
+                                                                    placeholder="..." style="width: 100%;">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <h5>Any Warranty :</h5>
                                                     <div class="row mb-2">
-                                                        <div class="col-lg-3 spacing-right">
-                                                            Serial No.
+                                                        <div class="col-lg-6 spacing-left spacing-right mt-2">
+                                                            Any Warranty
                                                             <br>
                                                             <input class="form-control"
-                                                                name="repairs[{{ $index }}][serial_no]"
-                                                                value="{{ $repair->serial_no }}" type="text"
-                                                                placeholder="..." style="width: 100%;">
+                                                                name="repairs[{{ $index }}][r_warranty]"
+                                                                value="{{ $repair->r_warranty }}" type="file"
+                                                                placeholder="..." style="width: 70%;">
                                                         </div>
-                                                        <div class="col-lg-3 spacing-left spacing-right">
-                                                            Description
+                                                        <div class="col-lg-6 spacing-right mt-2">
+                                                            Notes
                                                             <br>
-                                                            <input class="form-control"
-                                                                name="repairs[{{ $index }}][r_desc]"
-                                                                value="{{ $repair->r_desc }}" type="text"
-                                                                placeholder="..." style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-lg-3 spacing-right">
-                                                            Amount of Bill
-                                                            <br>
-                                                            <input class="form-control"
-                                                                name="repairs[{{ $index }}][r_amount]"
-                                                                value="{{ $repair->r_amount }}" type="text"
-                                                                placeholder="..." style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-lg-3 spacing-right">
-                                                            Payment Made By
-                                                            <br>
-                                                            <input class="form-control"
-                                                                name="repairs[{{ $index }}][r_pay_by]"
-                                                                value="{{ $repair->r_pay_by }}" type="text"
-                                                                placeholder="..." style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-lg-3 spacing-right">
-                                                            Date
-                                                            <br>
-                                                            <input class="form-control"
-                                                                name="repairs[{{ $index }}][r_date]"
-                                                                value="{{ $repair->r_date }}" type="date"
-                                                                placeholder="..." style="width: 100%;">
-                                                        </div>
-                                                        <h5>Vendor Details :</h5>
-                                                        <div class="col-lg-3 spacing-right">
-                                                            Company Name :
-                                                            <br>
-                                                            <input class="form-control"
-                                                                name="repairs[{{ $index }}][repair_company_name]"
-                                                                value="{{ $repair->repair_company_name }}" type="text"
-                                                                placeholder="..." style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-lg-3 spacing-left spacing-right">
-                                                            Name
-                                                            <br>
-                                                            <input class="form-control"
-                                                                name="repairs[{{ $index }}][r_poc_name]"
-                                                                value="{{ $repair->r_poc_name }}" type="text"
-                                                                placeholder="..." style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-lg-3 spacing-right">
-                                                            Web
-                                                            <br>
-                                                            <input class="form-control"
-                                                                name="repairs[{{ $index }}][r_poc_web]"
-                                                                value="{{ $repair->r_poc_web }}" type="text"
-                                                                placeholder="..." style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-lg-3 spacing-right">
-                                                            Email
-                                                            <br>
-                                                            <input class="form-control"
-                                                                name="repairs[{{ $index }}][r_poc_email]"
-                                                                value="{{ $repair->r_poc_email }}" type="text"
-                                                                placeholder="..." style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-lg-3 spacing-right">
-                                                            Cell Number :
-                                                            <br>
-                                                            <input class="form-control"
-                                                                name="repairs[{{ $index }}][r_poc_cell]"
-                                                                value="{{ $repair->r_poc_cell }}" type="text"
-                                                                placeholder="..." style="width: 100%;">
-                                                        </div>
-                                                        <h5>Address</h5>
-                                                        <div class="col-lg-3 spacing-right">
-                                                            Office No. :
-                                                            <br>
-                                                            <input class="form-control"
-                                                                name="repairs[{{ $index }}][r_poc_office]"
-                                                                value="{{ $repair->r_poc_office }}" type="text"
-                                                                placeholder="..." style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-lg-3 spacing-left spacing-right">
-                                                            Floor No.
-                                                            <br>
-                                                            <input class="form-control"
-                                                                name="repairs[{{ $index }}][r_poc_floor]"
-                                                                value="{{ $repair->r_poc_floor }}" type="text"
-                                                                placeholder="..." style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-lg-3 spacing-right">
-                                                            Building
-                                                            <br>
-                                                            <input class="form-control"
-                                                                name="repairs[{{ $index }}][r_poc_building]"
-                                                                value="{{ $repair->r_poc_building }}" type="text"
-                                                                placeholder="..." style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-lg-3 spacing-right">
-                                                            Block
-                                                            <br>
-                                                            <input class="form-control"
-                                                                name="repairs[{{ $index }}][r_poc_block]"
-                                                                value="{{ $repair->r_poc_block }}" type="text"
-                                                                placeholder="..." style="width: 100%;">
+                                                            <textarea id="w3review12" class="form-control"
+                                                                name="repairs[{{ $index }}][warranty_note]" rows="2"
+                                                                cols="38">
+                                                                {{ $repair->warranty_note }}
+                                                            </textarea>
                                                         </div>
 
-                                                        <div class="col-lg-3 spacing-right">
-                                                            Area
+                                                    </div>
+
+                                                    <div class="row mb-2">
+                                                        <div class="col-lg-6 spacing-right mt-2">
+                                                            Notes
                                                             <br>
-                                                            <input class="form-control"
-                                                                name="repairs[{{ $index }}][r_poc_area]"
-                                                                value="{{ $repair->r_poc_area }}" type="text"
-                                                                placeholder="..." style="width: 100%;">
+                                                            <textarea id="w3review12" onclick="moveCursorToStart12()"
+                                                                oninput="trimSpaces12()" class="form-control"
+                                                                name="repairs[{{ $index }}][repair_note]" rows="2"
+                                                                cols="38">
+                                                                {{ $repair->repair_note }}
+                                                            </textarea>
                                                         </div>
-                                                        <div class="col-lg-3 spacing-left spacing-right">
-                                                            City
+                                                        <div class="col-lg-6 spacing-left spacing-right mt-2">
+                                                            Attachments
                                                             <br>
                                                             <input class="form-control"
-                                                                name="repairs[{{ $index }}][r_poc_city]"
-                                                                value="{{ $repair->r_poc_city }}" type="text"
-                                                                placeholder="..." style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-lg-3 spacing-right">
-                                                            Photograph of Location
-                                                            <br>
-                                                            <input class="form-control"
-                                                                name="repairs[{{ $index }}][r_poc_loc]"
-                                                                value="{{ $repair->r_poc_loc }}" type="file"
-                                                                placeholder="..." style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-lg-3 spacing-right">
-                                                            Pin Location
-                                                            <br>
-                                                            <input class="form-control"
-                                                                name="repairs[{{ $index }}][r_poc_pin]"
-                                                                value="{{ $repair->r_poc_pin }}" type="text"
-                                                                placeholder="..." style="width: 100%;">
+                                                                name="repairs[{{ $index }}][repair_attach]"
+                                                                value="{{ $repair->repair_attach }}" type="file"
+                                                                placeholder="..." style="width: 70%;" multiple>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <h5>Any Warranty :</h5>
-                                                <div class="row mb-2">
-                                                    <div class="col-lg-6 spacing-left spacing-right mt-2">
-                                                        Any Warranty
-                                                        <br>
-                                                        <input class="form-control"
-                                                            name="repairs[{{ $index }}][r_warranty]"
-                                                            value="{{ $repair->r_warranty }}" type="file"
-                                                            placeholder="..." style="width: 70%;">
-                                                    </div>
-                                                    <div class="col-lg-6 spacing-right mt-2">
-                                                        Notes
-                                                        <br>
-                                                        <textarea id="w3review12" class="form-control"
-                                                            name="repairs[{{ $index }}][warranty_note]" rows="2"
-                                                            cols="38">
-                                                            {{ $repair->warranty_note }}
-                                                        </textarea>
-                                                    </div>
 
-                                                </div>
-
-                                                <div class="row mb-2">
-                                                    <div class="col-lg-6 spacing-right mt-2">
-                                                        Notes
-                                                        <br>
-                                                        <textarea id="w3review12" onclick="moveCursorToStart12()"
-                                                            oninput="trimSpaces12()" class="form-control"
-                                                            name="repairs[{{ $index }}][repair_note]" rows="2"
-                                                            cols="38">
-                                                            {{ $repair->repair_note }}
-                                                        </textarea>
-                                                    </div>
-                                                    <div class="col-lg-6 spacing-left spacing-right mt-2">
-                                                        Attachments
-                                                        <br>
-                                                        <input class="form-control"
-                                                            name="repairs[{{ $index }}][repair_attach]"
-                                                            value="{{ $repair->repair_attach }}" type="file"
-                                                            placeholder="..." style="width: 70%;" multiple>
-                                                    </div>
-                                                </div>
                                             </div>
-
                                         </div>
                                     </div>
-                                </div>
                                 @endforeach
                             </div>
 
@@ -1789,147 +1789,147 @@
                             <div class="container my-5" id="ItemAccordionContainer">
                                 <div class="accordion" id="itemAccordion">
                                     @foreach ($admins->usages as $index => $usage)
-                                    <!-- Initial Accordion Item -->
-                                    <div class="accordion-item itemAccordion-item" id="itemEntry1{{ $index }}">
-                                        <h2 class="accordion-header" id="itemHeading1{{ $index }}" style="color: white">
-                                            <button class="accordion-button"
-                                                style="background-color: #34005A; color:white" type="button"
-                                                data-toggle="collapse" data-target="#collapseItem1{{ $index }}"
-                                                aria-expanded="false" aria-controls="collapseItem1{{ $index }}">
-                                                Usage/Movement {{ $index + 1 }}
-                                            </button>
-                                        </h2>
-                                        <div id="collapseItem1{{ $index }}" class="collapse"
-                                            aria-labelledby="itemHeading1{{ $index }}">
-                                            <div class="accordion-body">
-                                                <input type="hidden" name="usages[{{ $index }}][u_id]"
-                                                    value="{{ $usage->id }}">
-                                                <div id="vendorDetailsContainer">
-                                                    <div class="form-type col-lg-12 spacing-right">
-                                                        <div class="d-flex mt-2">
-                                                            <div class="col-lg-6 spacing-right">
-                                                                Vehicle No.
-                                                                <br>
-                                                                <input class="form-control" type="text"
-                                                                    name="usages[{{ $index }}][usage_vehicle_no]"
-                                                                    value="{{ $usage->usage_vehicle_no }}"
-                                                                    placeholder="..." style="width: 100%;">
+                                        <!-- Initial Accordion Item -->
+                                        <div class="accordion-item itemAccordion-item" id="itemEntry1{{ $index }}">
+                                            <h2 class="accordion-header" id="itemHeading1{{ $index }}" style="color: white">
+                                                <button class="accordion-button"
+                                                    style="background-color: #34005A; color:white" type="button"
+                                                    data-toggle="collapse" data-target="#collapseItem1{{ $index }}"
+                                                    aria-expanded="false" aria-controls="collapseItem1{{ $index }}">
+                                                    Usage/Movement {{ $index + 1 }}
+                                                </button>
+                                            </h2>
+                                            <div id="collapseItem1{{ $index }}" class="collapse"
+                                                aria-labelledby="itemHeading1{{ $index }}">
+                                                <div class="accordion-body">
+                                                    <input type="hidden" name="usages[{{ $index }}][u_id]"
+                                                        value="{{ $usage->id }}">
+                                                    <div id="vendorDetailsContainer">
+                                                        <div class="form-type col-lg-12 spacing-right">
+                                                            <div class="d-flex mt-2">
+                                                                <div class="col-lg-6 spacing-right">
+                                                                    Vehicle No.
+                                                                    <br>
+                                                                    <input class="form-control" type="text"
+                                                                        name="usages[{{ $index }}][usage_vehicle_no]"
+                                                                        value="{{ $usage->usage_vehicle_no }}"
+                                                                        placeholder="..." style="width: 100%;">
+                                                                </div>
+                                                                <div class="col-lg-6 spacing-left spacing-right">
+                                                                    Average Per Liter:
+                                                                    <br>
+                                                                    <input class="form-control" type="text"
+                                                                        name="usages[{{ $index }}][avg_per_liter]"
+                                                                        value="{{ $usage->avg_per_liter }}" placeholder=""
+                                                                        style="width: 100%;">
+                                                                </div>
                                                             </div>
-                                                            <div class="col-lg-6 spacing-left spacing-right">
-                                                                Average Per Liter:
-                                                                <br>
+                                                            <div class="d-flex mt-2">
+                                                                <div class="col-md-3">
+                                                                    Date
+                                                                    <br>
+                                                                    <input class="form-control"
+                                                                        name="usages[{{ $index }}][date_of_m]"
+                                                                        value="{{ $usage->date_of_m }}" type="date"
+                                                                        placeholder="..." style="width: 100%;">
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    Time From
+                                                                    <br>
+                                                                    <input class="form-control"
+                                                                        name="usages[{{ $index }}][time_from]"
+                                                                        value="{{ $usage->time_from }}" type="time"
+                                                                        placeholder="..." style="width: 100%;">
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    Time To
+                                                                    <br>
+                                                                    <input class="form-control"
+                                                                        name="usages[{{ $index }}][time_to]"
+                                                                        value="{{ $usage->time_to }}" type="time"
+                                                                        placeholder="..." style="width: 100%;">
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    Details Of Journey
+                                                                    <br>
+                                                                    <textarea class="form-control"
+                                                                        name="usages[{{ $index }}][details_of_j]"
+                                                                        type="text" placeholder="..."
+                                                                        style="width: 100%;">{{ $usage->details_of_j }}</textarea>
+                                                                </div>
+                                                            </div>
+                                                            <div class="d-flex mt-2">
+                                                                <div class="col-md-3">
+                                                                    Purpose Of Journey
+                                                                    <br>
+                                                                    <input class="form-control loi-price"
+                                                                        name="usages[{{ $index }}][purpose_of_j]"
+                                                                        value="{{ $usage->purpose_of_j }}" type="text"
+                                                                        placeholder="..." style="width: 100%;">
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    Name of Officer
+                                                                    <br>
+                                                                    <input class="form-control"
+                                                                        name="usages[{{ $index }}][name_of_officer]"
+                                                                        value="{{ $usage->name_of_officer }}" type="text"
+                                                                        placeholder="..." style="width: 100%;">
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    Meter Reading to
+                                                                    <br>
+                                                                    <input class="form-control"
+                                                                        name="usages[{{ $index }}][meter_reading_to]"
+                                                                        value="{{ $usage->meter_reading_to }}" type="text"
+                                                                        placeholder="..." style="width: 100%;">
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    Meter Reading From
+                                                                    <br>
+                                                                    <input class="form-control"
+                                                                        name="usages[{{ $index }}][meter_reading_from]"
+                                                                        value="{{ $usage->meter_reading_from }}" type="text"
+                                                                        placeholder="..." style="width: 100%;">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="d-flex">
+                                                            <div class="col-md-3 spacing-left">
+                                                                Distance Covered
                                                                 <input class="form-control" type="text"
-                                                                    name="usages[{{ $index }}][avg_per_liter]"
-                                                                    value="{{ $usage->avg_per_liter }}" placeholder=""
+                                                                    name="usages[{{ $index }}][distance_covered]"
+                                                                    value="{{ $usage->distance_covered }}" placeholder="..."
                                                                     style="width: 100%;">
                                                             </div>
-                                                        </div>
-                                                        <div class="d-flex mt-2">
                                                             <div class="col-md-3">
-                                                                Date
+                                                                Signature
                                                                 <br>
                                                                 <input class="form-control"
-                                                                    name="usages[{{ $index }}][date_of_m]"
-                                                                    value="{{ $usage->date_of_m }}" type="date"
+                                                                    name="usages[{{ $index }}][signature]"
+                                                                    value="{{ $usage->signature }}" type="text"
                                                                     placeholder="..." style="width: 100%;">
                                                             </div>
                                                             <div class="col-md-3">
-                                                                Time From
+                                                                P.O.L Drawn
                                                                 <br>
                                                                 <input class="form-control"
-                                                                    name="usages[{{ $index }}][time_from]"
-                                                                    value="{{ $usage->time_from }}" type="time"
+                                                                    name="usages[{{ $index }}][p_o_l]"
+                                                                    value="{{ $usage->p_o_l }}" type="text"
                                                                     placeholder="..." style="width: 100%;">
                                                             </div>
                                                             <div class="col-md-3">
-                                                                Time To
+                                                                Remarks
                                                                 <br>
                                                                 <input class="form-control"
-                                                                    name="usages[{{ $index }}][time_to]"
-                                                                    value="{{ $usage->time_to }}" type="time"
+                                                                    name="usages[{{ $index }}][remarks]"
+                                                                    value="{{ $usage->remarks }}" type="text"
                                                                     placeholder="..." style="width: 100%;">
                                                             </div>
-                                                            <div class="col-md-3">
-                                                                Details Of Journey
-                                                                <br>
-                                                                <textarea class="form-control"
-                                                                    name="usages[{{ $index }}][details_of_j]"
-                                                                    type="text" placeholder="..."
-                                                                    style="width: 100%;">{{ $usage->details_of_j }}</textarea>
-                                                            </div>
-                                                        </div>
-                                                        <div class="d-flex mt-2">
-                                                            <div class="col-md-3">
-                                                                Purpose Of Journey
-                                                                <br>
-                                                                <input class="form-control loi-price"
-                                                                    name="usages[{{ $index }}][purpose_of_j]"
-                                                                    value="{{ $usage->purpose_of_j }}" type="text"
-                                                                    placeholder="..." style="width: 100%;">
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                Name of Officer
-                                                                <br>
-                                                                <input class="form-control"
-                                                                    name="usages[{{ $index }}][name_of_officer]"
-                                                                    value="{{ $usage->name_of_officer }}" type="text"
-                                                                    placeholder="..." style="width: 100%;">
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                Meter Reading to
-                                                                <br>
-                                                                <input class="form-control"
-                                                                    name="usages[{{ $index }}][meter_reading_to]"
-                                                                    value="{{ $usage->meter_reading_to }}" type="text"
-                                                                    placeholder="..." style="width: 100%;">
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                Meter Reading From
-                                                                <br>
-                                                                <input class="form-control"
-                                                                    name="usages[{{ $index }}][meter_reading_from]"
-                                                                    value="{{ $usage->meter_reading_from }}" type="text"
-                                                                    placeholder="..." style="width: 100%;">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="d-flex">
-                                                        <div class="col-md-3 spacing-left">
-                                                            Distance Covered
-                                                            <input class="form-control" type="text"
-                                                                name="usages[{{ $index }}][distance_covered]"
-                                                                value="{{ $usage->distance_covered }}" placeholder="..."
-                                                                style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-md-3">
-                                                            Signature
-                                                            <br>
-                                                            <input class="form-control"
-                                                                name="usages[{{ $index }}][signature]"
-                                                                value="{{ $usage->signature }}" type="text"
-                                                                placeholder="..." style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-md-3">
-                                                            P.O.L Drawn
-                                                            <br>
-                                                            <input class="form-control"
-                                                                name="usages[{{ $index }}][p_o_l]"
-                                                                value="{{ $usage->p_o_l }}" type="text"
-                                                                placeholder="..." style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-md-3">
-                                                            Remarks
-                                                            <br>
-                                                            <input class="form-control"
-                                                                name="usages[{{ $index }}][remarks]"
-                                                                value="{{ $usage->remarks }}" type="text"
-                                                                placeholder="..." style="width: 100%;">
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
                                     @endforeach
                                 </div>
 
@@ -1975,71 +1975,71 @@
                         <div class="accordion" id="signatoryAccordion12">
                             <!-- Initial Accordion Item -->
                             @foreach ($admins->notifications as $index => $notification)
-                            <div class="accordion-item signaccordion-item12" id="signatoryEntry12{{ $index }}">
-                                <h2 class="accordion-header" id="signatoryHeading12{{ $index }}" style="color: white">
-                                    <button class="accordion-button" style="background-color: #34005A; color:white"
-                                        type="button" data-toggle="collapse"
-                                        data-target="#signatoryCollapse12{{ $index }}" aria-expanded="false"
-                                        aria-controls="signatoryCollapse12{{ $index }}">
-                                        Notification Entry {{ $index + 1 }}
-                                    </button>
-                                </h2>
-                                <div id="signatoryCollapse12{{ $index }}" class="collapse"
-                                    aria-labelledby="signatoryHeading12{{ $index }}">
-                                    <div class="accordion-body">
-                                        <input type="hidden" name="notifications[{{ $index }}][n_id]"
-                                            value="{{ $notification->id }}">
-                                        <div class="col-lg-12 spacing-right">
-                                            <div class="row mb-2">
-                                                <div class="col-lg-3 spacing-right">
-                                                    Notification No.
-                                                    <br>
-                                                    <input class="form-control" type="text"
-                                                        name="notifications[{{ $index }}][notification_no]"
-                                                        value="{{ $notification->notification_no }}" placeholder="..."
-                                                        style="width: 100%;">
-                                                </div>
-                                                <div class="col-lg-3 spacing-right">
-                                                    Notification Related to.
-                                                    <br>
-                                                    <input class="form-control" type="text"
-                                                        name="notifications[{{ $index }}][notification_related]"
-                                                        value="{{ $notification->notification_related }}"
-                                                        placeholder="..." style="width: 100%;">
-                                                </div>
+                                <div class="accordion-item signaccordion-item12" id="signatoryEntry12{{ $index }}">
+                                    <h2 class="accordion-header" id="signatoryHeading12{{ $index }}" style="color: white">
+                                        <button class="accordion-button" style="background-color: #34005A; color:white"
+                                            type="button" data-toggle="collapse"
+                                            data-target="#signatoryCollapse12{{ $index }}" aria-expanded="false"
+                                            aria-controls="signatoryCollapse12{{ $index }}">
+                                            Notification Entry {{ $index + 1 }}
+                                        </button>
+                                    </h2>
+                                    <div id="signatoryCollapse12{{ $index }}" class="collapse"
+                                        aria-labelledby="signatoryHeading12{{ $index }}">
+                                        <div class="accordion-body">
+                                            <input type="hidden" name="notifications[{{ $index }}][n_id]"
+                                                value="{{ $notification->id }}">
+                                            <div class="col-lg-12 spacing-right">
+                                                <div class="row mb-2">
+                                                    <div class="col-lg-3 spacing-right">
+                                                        Notification No.
+                                                        <br>
+                                                        <input class="form-control" type="text"
+                                                            name="notifications[{{ $index }}][notification_no]"
+                                                            value="{{ $notification->notification_no }}" placeholder="..."
+                                                            style="width: 100%;">
+                                                    </div>
+                                                    <div class="col-lg-3 spacing-right">
+                                                        Notification Related to.
+                                                        <br>
+                                                        <input class="form-control" type="text"
+                                                            name="notifications[{{ $index }}][notification_related]"
+                                                            value="{{ $notification->notification_related }}"
+                                                            placeholder="..." style="width: 100%;">
+                                                    </div>
 
-                                                <div class="col-lg-3">
-                                                    Notes.
-                                                    <br>
-                                                    <textarea class="form-control" type="text"
-                                                        name="notifications[{{ $index }}][notification_notes]"
-                                                        placeholder="..."
-                                                        style="width: 100%;">{{ $notification->notification_notes }}</textarea>
+                                                    <div class="col-lg-3">
+                                                        Notes.
+                                                        <br>
+                                                        <textarea class="form-control" type="text"
+                                                            name="notifications[{{ $index }}][notification_notes]"
+                                                            placeholder="..."
+                                                            style="width: 100%;">{{ $notification->notification_notes }}</textarea>
+                                                    </div>
+                                                    <div class="col-lg-4 spacing-left">
+                                                        Attachment.
+                                                        <br>
+                                                        <input class="form-control" type="file"
+                                                            name="notifications[{{ $index }}][notification_attach]"
+                                                            value="{{ $notification->notification_attach }}"
+                                                            placeholder="..." style="width: 100%;">
+                                                    </div>
                                                 </div>
-                                                <div class="col-lg-4 spacing-left">
-                                                    Attachment.
-                                                    <br>
-                                                    <input class="form-control" type="file"
-                                                        name="notifications[{{ $index }}][notification_attach]"
-                                                        value="{{ $notification->notification_attach }}"
-                                                        placeholder="..." style="width: 100%;">
-                                                </div>
-                                            </div>
-                                            <h5>Notification To :</h5>
-                                            <div class="row">
-                                                <div class="col-lg-4 spacing-left">
-                                                    Notification Shared with .
-                                                    <br>
-                                                    <input class="form-control" type="text"
-                                                        name="notifications[{{ $index }}][notification_to]"
-                                                        value="{{ $notification->notification_to }}" placeholder="..."
-                                                        style="width: 100%;">
+                                                <h5>Notification To :</h5>
+                                                <div class="row">
+                                                    <div class="col-lg-4 spacing-left">
+                                                        Notification Shared with .
+                                                        <br>
+                                                        <input class="form-control" type="text"
+                                                            name="notifications[{{ $index }}][notification_to]"
+                                                            value="{{ $notification->notification_to }}" placeholder="..."
+                                                            style="width: 100%;">
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
                             @endforeach
                         </div>
 
@@ -2136,39 +2136,39 @@
                                             </thead>
                                             <tbody>
                                                 @foreach ($compaigns as $index => $compaign)
-                                                <tr>
+                                                                                            <tr>
 
-                                                    <td>{{ $compaign->region }}</td>
-                                                    <td>
-                                                        <input type="text" name="customer_files"
-                                                            class="form-control autosave" data-id="{{ $compaign->id }}"
-                                                            value="{{ $compaign->customer_files }}">
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" name="sedulous_files"
-                                                            class="form-control autosave" data-id="{{ $compaign->id }}"
-                                                            value="{{ $compaign->sedulous_files }}">
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" name="training_files"
-                                                            class="form-control autosave" data-id="{{ $compaign->id }}"
-                                                            value="{{ $compaign->training_files }}">
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" name="guard_files"
-                                                            class="form-control autosave" data-id="{{ $compaign->id }}"
-                                                            value="{{ $compaign->guard_files }}">
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" name="score_card"
-                                                            class="form-control autosave" data-id="{{ $compaign->id }}"
-                                                            value="{{ $compaign->score_card }}">
-                                                    </td>
+                                                                                                <td>{{ $compaign->region }}</td>
+                                                                                                <td>
+                                                                                                    <input type="text" name="customer_files"
+                                                                                                        class="form-control autosave" data-id="{{ $compaign->id }}"
+                                                                                                        value="{{ $compaign->customer_files }}">
+                                                                                                </td>
+                                                                                                <td>
+                                                                                                    <input type="text" name="sedulous_files"
+                                                                                                        class="form-control autosave" data-id="{{ $compaign->id }}"
+                                                                                                        value="{{ $compaign->sedulous_files }}">
+                                                                                                </td>
+                                                                                                <td>
+                                                                                                    <input type="text" name="training_files"
+                                                                                                        class="form-control autosave" data-id="{{ $compaign->id }}"
+                                                                                                        value="{{ $compaign->training_files }}">
+                                                                                                </td>
+                                                                                                <td>
+                                                                                                    <input type="text" name="guard_files"
+                                                                                                        class="form-control autosave" data-id="{{ $compaign->id }}"
+                                                                                                        value="{{ $compaign->guard_files }}">
+                                                                                                </td>
+                                                                                                <td>
+                                                                                                    <input type="text" name="score_card"
+                                                                                                        class="form-control autosave" data-id="{{ $compaign->id }}"
+                                                                                                        value="{{ $compaign->score_card }}">
+                                                                                                </td>
 
-                                                    <td>Update: {{
-                                                        \Carbon\Carbon::parse($compaign->updated_at)->format('d-M-Y') }}
-                                                    </td>
-                                                </tr>
+                                                                                                <td>Update: {{
+                                                    \Carbon\Carbon::parse($compaign->updated_at)->format('d-M-Y') }}
+                                                                                                </td>
+                                                                                            </tr>
                                                 @endforeach
                                             </tbody>
                                         </table>
@@ -2177,22 +2177,22 @@
                             </div>
                             <script>
                                 document.querySelectorAll('.autosave').forEach(input => {
-                                    input.addEventListener('change', function() {
+                                    input.addEventListener('change', function () {
                                         const id = this.getAttribute('data-id');
                                         const field = this.getAttribute('name');
                                         const value = this.value;
                                         fetch("{{ route('campaign.autosave') }}", {
-                                                method: 'POST',
-                                                headers: {
-                                                    'Content-Type': 'application/json',
-                                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                                                },
-                                                body: JSON.stringify({
-                                                    id,
-                                                    field,
-                                                    value
-                                                })
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                            },
+                                            body: JSON.stringify({
+                                                id,
+                                                field,
+                                                value
                                             })
+                                        })
                                             .then(response => response.json())
                                             .then(data => {
                                                 if (data.status === 'success') {
@@ -2209,7 +2209,8 @@
                             aria-labelledby="pills-contact-tab">
                             <div class="container-fluid">
                                 <h3 class="text-center text-light bg-dark">Weekly Handbook Nationwide Report -
-                                    {{ \Carbon\Carbon::now()->format('d F Y') }}</h3>
+                                    {{ \Carbon\Carbon::now()->format('d F Y') }}
+                                </h3>
 
                                 <table class="table table-bordered table-striped">
                                     <thead>
@@ -2265,7 +2266,7 @@
                                                     onclick="saveNationwide()">Save</button>
                                             </td>
                                         </tr>
-                                         @foreach ($wnationswide as $item)
+                                        @foreach ($wnationswide as $item)
                                             <tr>
                                                 <td>{{ $item->branch_id }}</td>
                                                 <td>{{ $item->admin->branch_office_name ?? 'N/A' }}</td>
@@ -2278,7 +2279,7 @@
                                                 <td>{{ $item->remarks }}</td>
                                                 <td><span class="badge bg-success">Saved</span></td>
                                             </tr>
-                                            @endforeach
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -2297,13 +2298,13 @@
                                     };
 
                                     fetch("{{ route('wnationwide.store') }}", {
-                                            method: "POST",
-                                            headers: {
-                                                "Content-Type": "application/json",
-                                                "X-CSRF-TOKEN": "{{ csrf_token() }}"
-                                            },
-                                            body: JSON.stringify(data)
-                                        })
+                                        method: "POST",
+                                        headers: {
+                                            "Content-Type": "application/json",
+                                            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                                        },
+                                        body: JSON.stringify(data)
+                                    })
                                         .then(response => response.json())
                                         .then(res => {
                                             if (res.status === 'success') {
@@ -2386,47 +2387,47 @@
                                 </table>
                                 <script>
                                     document.getElementById('uploadButton').addEventListener('click', function () {
-                                            const fileInput = document.getElementById('dailyFile');
-                                            const startDateInput = document.getElementById('startDate');
-                                            const endDateInput = document.getElementById('endDate');
-                                            const branchId = document.getElementById('branch_id').value;
-                                            const reportName = document.getElementById('report_name').value;
+                                        const fileInput = document.getElementById('dailyFile');
+                                        const startDateInput = document.getElementById('startDate');
+                                        const endDateInput = document.getElementById('endDate');
+                                        const branchId = document.getElementById('branch_id').value;
+                                        const reportName = document.getElementById('report_name').value;
 
-                                            const file = fileInput.files[0];
-                                            const startDate = startDateInput.value;
-                                            const endDate = endDateInput.value;
+                                        const file = fileInput.files[0];
+                                        const startDate = startDateInput.value;
+                                        const endDate = endDateInput.value;
 
-                                            if (!file || !startDate || !endDate) {
-                                                alert("Please select start date, end date and a file.");
-                                                return;
-                                            }
+                                        if (!file || !startDate || !endDate) {
+                                            alert("Please select start date, end date and a file.");
+                                            return;
+                                        }
 
-                                            const formData = new FormData();
-                                            formData.append('branch_id', branchId);
-                                            formData.append('start_date', startDate);
-                                            formData.append('end_date', endDate);
-                                            formData.append('report_name', reportName);
-                                            formData.append('attachment', file);
+                                        const formData = new FormData();
+                                        formData.append('branch_id', branchId);
+                                        formData.append('start_date', startDate);
+                                        formData.append('end_date', endDate);
+                                        formData.append('report_name', reportName);
+                                        formData.append('attachment', file);
 
-                                            fetch("{{ route('sales.register.report') }}", {
-                                                method: 'POST',
-                                                headers: {
-                                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                                                },
-                                                body: formData
+                                        fetch("{{ route('sales.register.report') }}", {
+                                            method: 'POST',
+                                            headers: {
+                                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                            },
+                                            body: formData
+                                        })
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                alert(data.message || 'File uploaded!');
+                                                fileInput.value = '';
+                                                startDateInput.value = '';
+                                                endDateInput.value = '';
                                             })
-                                                .then(response => response.json())
-                                                .then(data => {
-                                                    alert(data.message || 'File uploaded!');
-                                                    fileInput.value = '';
-                                                    startDateInput.value = '';
-                                                    endDateInput.value = '';
-                                                })
-                                                .catch(error => {
-                                                    console.error(error);
-                                                    alert('Failed to upload file.');
-                                                });
-                                        });
+                                            .catch(error => {
+                                                console.error(error);
+                                                alert('Failed to upload file.');
+                                            });
+                                    });
                                 </script>
                                 <table class="table table-bordered" id="salesReportTable">
                                     <thead>
@@ -2556,48 +2557,48 @@
 
                                 <script>
                                     document.getElementById('uploadQuotationButton').addEventListener('click', function () {
-                                    const fileInput = document.getElementById('quotationFile');
-                                    const qutestartDateInput = document.getElementById('quotationstartDate');
-                                    const quteendDateInput = document.getElementById('quotationendDate');
-                                    const branchId = document.getElementById('quotationBranchId').value;
-                                    const reportName = document.getElementById('quotationReportName').value;
+                                        const fileInput = document.getElementById('quotationFile');
+                                        const qutestartDateInput = document.getElementById('quotationstartDate');
+                                        const quteendDateInput = document.getElementById('quotationendDate');
+                                        const branchId = document.getElementById('quotationBranchId').value;
+                                        const reportName = document.getElementById('quotationReportName').value;
 
-                                    const file = fileInput.files[0];
-                                    const qstartDate = qutestartDateInput.value;
-                                    const qendDate = quteendDateInput.value;
+                                        const file = fileInput.files[0];
+                                        const qstartDate = qutestartDateInput.value;
+                                        const qendDate = quteendDateInput.value;
 
-                                    if (!file || !qstartDate || !qendDate) {
-                                        alert("Please select start date, end date and a file.");
-                                        return;
-                                    }
+                                        if (!file || !qstartDate || !qendDate) {
+                                            alert("Please select start date, end date and a file.");
+                                            return;
+                                        }
 
-                                    const formData = new FormData();
-                                    formData.append('branch_id', branchId);
-                                    formData.append('start_date', qstartDate);
-                                    formData.append('end_date', qendDate);
-                                    formData.append('report_name', reportName);
-                                    formData.append('attachment', file);
+                                        const formData = new FormData();
+                                        formData.append('branch_id', branchId);
+                                        formData.append('start_date', qstartDate);
+                                        formData.append('end_date', qendDate);
+                                        formData.append('report_name', reportName);
+                                        formData.append('attachment', file);
 
-                                    fetch("{{ route('sales.register.report') }}", {
-                                        method: 'POST',
-                                        headers: {
-                                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                                        },
-                                        body: formData
-                                    })
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        alert(data.message || 'Quotation uploaded!');
-                                        fileInput.value = '';
-                                        qutestartDateInput.value = '';
-                                        quteendDateInput.value = '';
-                                        location.reload(); // Or update the table dynamically
-                                    })
-                                    .catch(error => {
-                                        console.error(error);
-                                        alert('Failed to upload quotation.');
+                                        fetch("{{ route('sales.register.report') }}", {
+                                            method: 'POST',
+                                            headers: {
+                                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                            },
+                                            body: formData
+                                        })
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                alert(data.message || 'Quotation uploaded!');
+                                                fileInput.value = '';
+                                                qutestartDateInput.value = '';
+                                                quteendDateInput.value = '';
+                                                location.reload(); // Or update the table dynamically
+                                            })
+                                            .catch(error => {
+                                                console.error(error);
+                                                alert('Failed to upload quotation.');
+                                            });
                                     });
-                                });
 
                                 </script>
 
@@ -2679,7 +2680,7 @@
                             </div>
 
                             <script>
-                                document.getElementById('uploadFeedbackButton').addEventListener('click', function() {
+                                document.getElementById('uploadFeedbackButton').addEventListener('click', function () {
                                     const fileInput = document.getElementById('feedbackFile');
                                     const feedstartDateInput = document.getElementById('feedbackstartDate');
                                     const feedendDateInput = document.getElementById('feedbackendDate');
@@ -2709,18 +2710,18 @@
                                         },
                                         body: formData
                                     })
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        alert(data.message || 'Quotation uploaded!');
-                                        fileInput.value = '';
-                                        feedstartDateInput.value = '';
-                                        feedendDateInput.value = '';
-                                        location.reload(); // Or update the table dynamically
-                                    })
-                                    .catch(error => {
-                                        console.error(error);
-                                        alert('Failed to upload quotation.');
-                                    });
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            alert(data.message || 'Quotation uploaded!');
+                                            fileInput.value = '';
+                                            feedstartDateInput.value = '';
+                                            feedendDateInput.value = '';
+                                            location.reload(); // Or update the table dynamically
+                                        })
+                                        .catch(error => {
+                                            console.error(error);
+                                            alert('Failed to upload quotation.');
+                                        });
                                 });
                             </script>
 
@@ -2747,7 +2748,7 @@
                                                 <td><input type="date" class="form-control" id="date">
                                                     <input type="hidden" class="form-control" value="{{ $admins->id }}"
                                                         id="sales_branch_id">
-                                                </td> 
+                                                </td>
                                                 <td><input type="text" class="form-control" id="profile"></td>
                                                 <td><input type="text" class="form-control" id="quotations"></td>
                                                 <td><input type="text" class="form-control" id="visiting_cards"></td>
@@ -2755,7 +2756,7 @@
                                                 <td><input type="text" class="form-control" id="contractual_value"></td>
                                                 <td><button class="btn btn-primary" id="saveBtn">Save</button></td>
                                             </tr>
-                                             @foreach ($contractDetail as $item)
+                                            @foreach ($contractDetail as $item)
                                                 <tr>
                                                     <td>{{ \Carbon\Carbon::parse($item->date)->format('d-m-Y') }}</td>
                                                     <td>{{ $item->profile }}</td>
@@ -2771,31 +2772,31 @@
 
                                     <script>
                                         $('#saveBtn').on('click', function () {
-                                        let data = {
-                                            date: $('#date').val(),
-                                            branch_id: $('#sales_branch_id').val(),
-                                            profile: $('#profile').val(),
-                                            quotations: $('#quotations').val(),
-                                            visiting_cards: $('#visiting_cards').val(),
-                                            guards: $('#guards').val(),
-                                            contractual_value: $('#contractual_value').val(),
-                                            _token: '{{ csrf_token() }}' // Laravel CSRF token
-                                        };
+                                            let data = {
+                                                date: $('#date').val(),
+                                                branch_id: $('#sales_branch_id').val(),
+                                                profile: $('#profile').val(),
+                                                quotations: $('#quotations').val(),
+                                                visiting_cards: $('#visiting_cards').val(),
+                                                guards: $('#guards').val(),
+                                                contractual_value: $('#contractual_value').val(),
+                                                _token: '{{ csrf_token() }}' // Laravel CSRF token
+                                            };
 
-                                        $.ajax({
-                                            url: "{{ route('weekly.sales.record') }}", // Replace with your actual route
-                                            method: "POST",
-                                            data: data,
-                                            success: function (response) {
-                                                alert('Data saved successfully!');
-                                                console.log(response);
-                                            },
-                                            error: function (xhr) {
-                                                alert('Something went wrong!');
-                                                console.log(xhr.responseText);
-                                            }
+                                            $.ajax({
+                                                url: "{{ route('weekly.sales.record') }}", // Replace with your actual route
+                                                method: "POST",
+                                                data: data,
+                                                success: function (response) {
+                                                    alert('Data saved successfully!');
+                                                    console.log(response);
+                                                },
+                                                error: function (xhr) {
+                                                    alert('Something went wrong!');
+                                                    console.log(xhr.responseText);
+                                                }
+                                            });
                                         });
-                                    });
                                     </script>
                                 </div>
                             </div>
@@ -2859,10 +2860,9 @@
                                         <span class="text-end" style="letter-spacing: 2px;">Mon Tue Wed Thu Fri
                                             Sat</span>
                                     </div>
-
-                                    {{-- ✅ Task Record Section (acts as form) --}}
                                     <div id="taskRecordSection" class="mt-3">
                                         @csrf
+                                        {{-- CSRF meta already in layouts/header.blade.php --}}
                                         <table class="table table-bordered" style="border: 4px solid black;">
                                             <thead>
                                                 <tr>
@@ -2926,7 +2926,7 @@
                                     </div>
                                     <div class="mt-4">
                                         <h5>Task Diary Records</h5>
-                                    
+
                                         @if($taskdeiry->count() > 0)
                                             <table class="table table-bordered table-striped">
                                                 <thead class="table-dark">
@@ -2942,21 +2942,23 @@
                                                 </thead>
                                                 <tbody>
                                                     @foreach ($taskdeiry as $index => $task)
-                                                    <tr>
-                                                        <td>{{ $index + 1 }}</td>
-                                                        <td>{{ $task->description_task }}</td>
-                                                        <td>{{ $task->dependence_department_organization }}</td>
-                                                        <td>{{ $task->task_assigned_by }}</td>
-                                                        <td>{{ $task->review_date ? \Carbon\Carbon::parse($task->review_date)->format('d-m-Y') : '--' }}</td>
-                                                        <td>{{ $task->completion_date ? \Carbon\Carbon::parse($task->completion_date)->format('d-m-Y') : '--' }}</td>
-                                                        <td>
-                                                        @if($task->signature)
-                                                        {{ $task->signature }}
-                                                        @else
-                                                          --
-                                                        @endif
-                                                        </td>
-                                                    </tr>
+                                                        <tr>
+                                                            <td>{{ $index + 1 }}</td>
+                                                            <td>{{ $task->description_task }}</td>
+                                                            <td>{{ $task->dependence_department_organization }}</td>
+                                                            <td>{{ $task->task_assigned_by }}</td>
+                                                            <td>{{ $task->review_date ? \Carbon\Carbon::parse($task->review_date)->format('d-m-Y') : '--' }}
+                                                            </td>
+                                                            <td>{{ $task->completion_date ? \Carbon\Carbon::parse($task->completion_date)->format('d-m-Y') : '--' }}
+                                                            </td>
+                                                            <td>
+                                                                @if($task->signature)
+                                                                    {{ $task->signature }}
+                                                                @else
+                                                                    --
+                                                                @endif
+                                                            </td>
+                                                        </tr>
                                                     @endforeach
                                                 </tbody>
                                             </table>
@@ -2968,61 +2970,92 @@
                                 </div>
                             </div>
                             <script>
-                                document.getElementById('saveTaskBtn').addEventListener('click', function() {
-                            let section = document.getElementById('taskRecordSection');
-                            let inputs = section.querySelectorAll('input, textarea');
-                            let formData = new FormData();
+                                document.getElementById('saveTaskBtn').addEventListener('click', function () {
+                                    let section = document.getElementById('taskRecordSection');
+                                    let inputs = section.querySelectorAll('input, textarea');
+                                    let formData = new FormData();
 
-                            inputs.forEach(input => {
-                                formData.append(input.name, input.value);
-                            });
+                                    // Check required fields
+                                    const requiredFields = ['description_task', 'dependence_department_organization', 'task_assigned_by', 'review_date', 'completion_date', 'signature'];
+                                    let isValid = true;
+                                    let errorMsg = '';
 
-                            formData.append('_token', document.querySelector('meta[name="csrf-token"]').content);
+                                    requiredFields.forEach(fieldName => {
+                                        const field = section.querySelector(`[name="${fieldName}"]`);
+                                        if (!field.value.trim()) {
+                                            isValid = false;
+                                            errorMsg += `Please fill ${field.placeholder || fieldName}\n`;
+                                        }
+                                    });
 
-                            let messageBox = document.getElementById('responseMessage');
-                            const saveButton = document.getElementById('saveTaskBtn');
-                            const originalText = saveButton.textContent;
+                                    if (!isValid) {
+                                        alert(errorMsg);
+                                        return;
+                                    }
 
-                            saveButton.textContent = 'Saving...';
-                            saveButton.disabled = true;
+                                    inputs.forEach(input => {
+                                        formData.append(input.name, input.value);
+                                    });
 
-                            fetch("{{ route('admin.task_record_dairy') }}", {
-                                method: 'POST',
-                                body: formData
-                            })
-                            .then(res => res.json())
-                            .then(data => {
-                                if (data.success) {
-                                    messageBox.innerHTML = `<div class="alert alert-success">${data.message}</div>`;
+                                    // Use global CSRF meta from layout
+                                    formData.append('_token', document.querySelector('meta[name="csrf-token"]').content);
 
-                                    // ✅ Add new record to table
-                                    const tbody = document.getElementById('savedTasksTableBody');
-                                    const newRow = document.createElement('tr');
-                                    newRow.innerHTML = `
-                                        <td>${data.data.sr_no}</td>
-                                        <td>${data.data.description_task}</td>
-                                        <td>${data.data.dependence_department_organization}</td>
-                                        <td>${data.data.task_assigned_by}</td>
-                                        <td>${new Date(data.data.review_date).toLocaleDateString('en-GB')}</td>
-                                        <td>${new Date(data.data.completion_date).toLocaleDateString('en-GB')}</td>
-                                        <td>${data.data.signature}</td>
-                                    `;
-                                    tbody.prepend(newRow);
+                                    let messageBox = document.getElementById('responseMessage');
+                                    const saveButton = document.getElementById('saveTaskBtn');
+                                    const originalText = saveButton.textContent;
 
-                                    // ✅ Clear inputs
-                                    inputs.forEach(input => input.value = '');
-                                } else {
-                                    messageBox.innerHTML = `<div class="alert alert-danger">${data.message}</div>`;
-                                }
-                            })
-                            .catch(() => {
-                                messageBox.innerHTML = `<div class="alert alert-danger">Something went wrong!</div>`;
-                            })
-                            .finally(() => {
-                                saveButton.textContent = originalText;
-                                saveButton.disabled = false;
-                            });
-                        });
+                                    saveButton.textContent = 'Saving...';
+                                    saveButton.disabled = true;
+
+                                    fetch("{{ route('admin.task_record_dairy') }}", {
+                                        method: 'POST',
+                                        body: formData
+                                    })
+                                        .then(res => {
+                                            if (!res.ok) {
+                                                throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+                                            }
+                                            return res.json();
+                                        })
+                                        .then(data => {
+                                            console.log('Response:', data); // Debug log
+                                            if (data.success) {
+                                                messageBox.innerHTML = `<div class="alert alert-success">${data.message}</div>`;
+
+                                                // Add new record to table - FIXED selector and all fields
+                                                const tbody = document.getElementById('taskRecordsTableBody');
+                                                if (tbody) {
+                                                    const newRow = document.createElement('tr');
+                                                    newRow.innerHTML = `
+                                                    <td>${data.data.sr_no}</td>
+                                                    <td>${data.data.description_task}</td>
+                                                    <td>${data.data.dependence_department_organization}</td>
+                                                    <td>${data.data.task_assigned_by}</td>
+                                                    <td>${data.data.review_date ? new Date(data.data.review_date).toLocaleDateString('en-GB') : '--'}</td>
+                                                    <td>${data.data.completion_date ? new Date(data.data.completion_date).toLocaleDateString('en-GB') : '--'}</td>
+                                                    <td>${data.data.signature || '--'}</td>
+                                                `;
+                                                    tbody.insertBefore(newRow, tbody.firstChild);
+                                                }
+
+                                                // Clear inputs
+                                                inputs.forEach(input => input.value = '');
+
+                                                // Reset sr_no
+                                                document.getElementById('srNo').value = '';
+                                            } else {
+                                                messageBox.innerHTML = `<div class="alert alert-danger">${data.message || 'Unknown error'}</div>`;
+                                            }
+                                        })
+                                        .catch(error => {
+                                            console.error('Fetch error:', error);
+                                            messageBox.innerHTML = `<div class="alert alert-danger">Error: ${error.message}. Check console.</div>`;
+                                        })
+                                        .finally(() => {
+                                            saveButton.textContent = originalText;
+                                            saveButton.disabled = false;
+                                        });
+                                });
                             </script>
                         </div>
                         <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
@@ -3100,51 +3133,52 @@
                                             </tr>
                                         </tbody>
                                     </table>
-                                    <table class="table table-bordered" id="noticeReportTable">
-                                        <thead>
-                                            <tr>
-                                                <th>#</th>
-                                                <th>Regulator Name</th>
-                                                <th>Notice Date</th>
-                                                <th>Received On</th>
-                                                <th>Reporting Date</th>
-                                                <th>Concern Department</th>
-                                                <th>Description</th>
-                                                <th>Attachment</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
+                                    <table class="table table-bordered" id="taskRecordsTable">
+                                        <tbody id="taskRecordsTableBody">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Regulator Name</th>
+                                                    <th>Notice Date</th>
+                                                    <th>Received On</th>
+                                                    <th>Reporting Date</th>
+                                                    <th>Concern Department</th>
+                                                    <th>Description</th>
+                                                    <th>Attachment</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
                                         <tbody>
                                             @foreach ($notices as $index => $notice)
-                                            <tr>
-                                                <td>{{ $index + 1 }}</td>
-                                                <td>{{ $notice->regulator_name }}</td>
-                                                <td>{{ \Carbon\Carbon::parse($notice->notice_date)->format('d M Y') }}
-                                                </td>
-                                                <td>{{ \Carbon\Carbon::parse($notice->notice_received_on)->format('d M
-                                                    Y') }}</td>
-                                                <td>{{ \Carbon\Carbon::parse($notice->reporting_date)->format('d M Y')
-                                                    }}</td>
-                                                <td>{{ $notice->concern_department }}</td>
-                                                <td>{{ $notice->notice_description }}</td>
-                                                <td>
-                                                    @if ($notice->attachment)
-                                                    <a href="{{ asset('storage/' . $notice->attachment) }}"
-                                                        target="_blank">
-                                                        <img src="{{ asset('storage/' . $notice->attachment) }}"
-                                                            width="40" height="40" alt="file">
-                                                    </a>
-                                                    @else
-                                                    N/A
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    <a href="{{ route('notice.delete', $notice->id) }}"
-                                                        class="btn btn-danger btn-sm">
-                                                        <i class="fa fa-trash"></i>
-                                                    </a>
-                                                </td>
-                                            </tr>
+                                                <tr>
+                                                    <td>{{ $index + 1 }}</td>
+                                                    <td>{{ $notice->regulator_name }}</td>
+                                                    <td>{{ \Carbon\Carbon::parse($notice->notice_date)->format('d M Y') }}
+                                                    </td>
+                                                    <td>{{ \Carbon\Carbon::parse($notice->notice_received_on)->format('d M
+                                                        Y') }}</td>
+                                                    <td>{{ \Carbon\Carbon::parse($notice->reporting_date)->format('d M Y')
+                                                        }}</td>
+                                                    <td>{{ $notice->concern_department }}</td>
+                                                    <td>{{ $notice->notice_description }}</td>
+                                                    <td>
+                                                        @if ($notice->attachment)
+                                                            <a href="{{ asset('storage/' . $notice->attachment) }}"
+                                                                target="_blank">
+                                                                <img src="{{ asset('storage/' . $notice->attachment) }}"
+                                                                    width="40" height="40" alt="file">
+                                                            </a>
+                                                        @else
+                                                            N/A
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        <a href="{{ route('notice.delete', $notice->id) }}"
+                                                            class="btn btn-danger btn-sm">
+                                                            <i class="fa fa-trash"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
                                             @endforeach
                                         </tbody>
                                     </table>
@@ -3182,25 +3216,25 @@
                                             method: 'POST',
                                             body: formData
                                         })
-                                        .then(response => {
-                                            if (!response.ok) {
-                                                return response.json().then(err => { throw err });
-                                            }
-                                            return response.json();
-                                        })
-                                        .then(data => {
-                                            alert(data.message || 'Notice uploaded!');
-                                            location.reload();
-                                        })
-                                        .catch(error => {
-                                            console.error(error);
-                                            if (error.errors) {
-                                                let messages = Object.values(error.errors).flat().join("\n");
-                                                alert("Validation Errors:\n" + messages);
-                                            } else {
-                                                alert('Upload failed.');
-                                            }
-                                        });
+                                            .then(response => {
+                                                if (!response.ok) {
+                                                    return response.json().then(err => { throw err });
+                                                }
+                                                return response.json();
+                                            })
+                                            .then(data => {
+                                                alert(data.message || 'Notice uploaded!');
+                                                location.reload();
+                                            })
+                                            .catch(error => {
+                                                console.error(error);
+                                                if (error.errors) {
+                                                    let messages = Object.values(error.errors).flat().join("\n");
+                                                    alert("Validation Errors:\n" + messages);
+                                                } else {
+                                                    alert('Upload failed.');
+                                                }
+                                            });
                                     });
                                 </script>
                             </div>
@@ -3208,11 +3242,11 @@
                         <div class="tab-pane fade" id="Weapon-Record" role="tabpanel"
                             aria-labelledby="Weapon-Record-tab">
                             @if (auth()->check() && auth()->user()->role !== 'client')
-                            <div class=" mt-5 mb-5 d-flex justify-content-end">
-                                <a class="btn btn-primary btn-sm" href="{{ route('post.weakly.recordes') }}">
-                                    + New Record
-                                </a>
-                            </div>
+                                <div class=" mt-5 mb-5 d-flex justify-content-end">
+                                    <a class="btn btn-primary btn-sm" href="{{ route('post.weakly.recordes') }}">
+                                        + New Record
+                                    </a>
+                                </div>
                             @endif
                             <div class="row align-items-center">
                                 <div class="col-lg-2">
@@ -3230,8 +3264,7 @@
                             </div>
 
                             <div class="table-responsive mt-4">
-                                <table class="table table-bordered table-hover exportable"
-                                    style="width:100%">
+                                <table class="table table-bordered table-hover exportable" style="width:100%">
                                     <thead class="gm-header">
                                         <tr>
                                             <th colspan="2" class="text-center">Weekly Weapon Record</th>
@@ -3279,43 +3312,43 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($records as $record)
-                                        <tr>
-                                            <td>{{ $record->date ?? 'N/A' }}</td>
-                                            <td>{{ $record->Wbranch->branch_office_name ?? 'N/A' }}</td>
-                                            <td>{{ $record->repeater ?? 'N/A' }}</td>
-                                            <td>{{ $record->body_guard ?? 'N/A' }}</td>
-                                            <td>{{ $record->wooden_body ?? 'N/A' }}</td>
-                                            <td>{{ $record->g3_style ?? 'N/A' }}</td>
-                                            <td>{{ $record->bore12_total_bullets ?? 'N/A' }}</td>
-                                            <td>{{ $record->bore12_total ?? 'N/A' }}</td>
-                                            <td>{{ $record->seven_shots ?? 'N/A' }}</td>
-                                            <td>{{ $record->fourteen_shots ?? 'N/A' }}</td>
-                                            <td>{{ $record->mp5 ?? 'N/A' }}</td>
-                                            <td>{{ $record->kalakov ?? 'N/A' }}</td>
-                                            <td>{{ $record->bore30_total_bullets ?? 'N/A' }}</td>
-                                            <td>{{ $record->bore30_total ?? 'N/A' }}</td>
-                                            <td>{{ $record->mp_5 ?? 'N/A' }}</td>
-                                            <td>{{ $record->zagana ?? 'N/A' }}</td>
-                                            <td>{{ $record->breta ?? 'N/A' }}</td>
-                                            <td>{{ $record->glock ?? 'N/A' }}</td>
-                                            <td>{{ $record->mm9_total_bullets ?? 'N/A' }}</td>
-                                            <td>{{ $record->mm9_total ?? 'N/A' }}</td>
-                                            <td>{{ $record->mm7_standard ?? 'N/A' }}</td>
-                                            <td>{{ $record->mm7_total_bullets ?? 'N/A' }}</td>
-                                            <td>{{ $record->rifle_222 ?? 'N/A' }}</td>
-                                            <td>{{ $record->rifle_222_bullets ?? 'N/A' }}</td>
-                                            <td>{{ $record->rifle_44 ?? 'N/A' }}</td>
-                                            <td>{{ $record->rifle_44_bullets ?? 'N/A' }}</td>
-                                            <td>{{ $record->rifle_223 ?? 'N/A' }}</td>
-                                            <td>{{ $record->rifle_223_bullets ?? 'N/A' }}</td>
-                                            <td>{{ $record->rifle_223_m4 ?? 'N/A' }}</td>
-                                            <td>{{ $record->rifle_223_m4_bullets ?? 'N/A' }}</td>
-                                        </tr>
-                                        @if (!$loop->last)
-                                        <tr>
-                                            <td colspan="30" class="bg-light"></td>
-                                        </tr>
-                                        @endif
+                                            <tr>
+                                                <td>{{ $record->date ?? 'N/A' }}</td>
+                                                <td>{{ $record->Wbranch->branch_office_name ?? 'N/A' }}</td>
+                                                <td>{{ $record->repeater ?? 'N/A' }}</td>
+                                                <td>{{ $record->body_guard ?? 'N/A' }}</td>
+                                                <td>{{ $record->wooden_body ?? 'N/A' }}</td>
+                                                <td>{{ $record->g3_style ?? 'N/A' }}</td>
+                                                <td>{{ $record->bore12_total_bullets ?? 'N/A' }}</td>
+                                                <td>{{ $record->bore12_total ?? 'N/A' }}</td>
+                                                <td>{{ $record->seven_shots ?? 'N/A' }}</td>
+                                                <td>{{ $record->fourteen_shots ?? 'N/A' }}</td>
+                                                <td>{{ $record->mp5 ?? 'N/A' }}</td>
+                                                <td>{{ $record->kalakov ?? 'N/A' }}</td>
+                                                <td>{{ $record->bore30_total_bullets ?? 'N/A' }}</td>
+                                                <td>{{ $record->bore30_total ?? 'N/A' }}</td>
+                                                <td>{{ $record->mp_5 ?? 'N/A' }}</td>
+                                                <td>{{ $record->zagana ?? 'N/A' }}</td>
+                                                <td>{{ $record->breta ?? 'N/A' }}</td>
+                                                <td>{{ $record->glock ?? 'N/A' }}</td>
+                                                <td>{{ $record->mm9_total_bullets ?? 'N/A' }}</td>
+                                                <td>{{ $record->mm9_total ?? 'N/A' }}</td>
+                                                <td>{{ $record->mm7_standard ?? 'N/A' }}</td>
+                                                <td>{{ $record->mm7_total_bullets ?? 'N/A' }}</td>
+                                                <td>{{ $record->rifle_222 ?? 'N/A' }}</td>
+                                                <td>{{ $record->rifle_222_bullets ?? 'N/A' }}</td>
+                                                <td>{{ $record->rifle_44 ?? 'N/A' }}</td>
+                                                <td>{{ $record->rifle_44_bullets ?? 'N/A' }}</td>
+                                                <td>{{ $record->rifle_223 ?? 'N/A' }}</td>
+                                                <td>{{ $record->rifle_223_bullets ?? 'N/A' }}</td>
+                                                <td>{{ $record->rifle_223_m4 ?? 'N/A' }}</td>
+                                                <td>{{ $record->rifle_223_m4_bullets ?? 'N/A' }}</td>
+                                            </tr>
+                                            @if (!$loop->last)
+                                                <tr>
+                                                    <td colspan="30" class="bg-light"></td>
+                                                </tr>
+                                            @endif
                                         @endforeach
                                         <tr class="table-secondary">
                                             <td colspan="2" class="text-center"><strong>Total of Branch</strong></td>
@@ -3356,107 +3389,110 @@
 
                         <div class="tab-pane fade" id="Uniform-Record" role="tabpanel"
                             aria-labelledby="Uniform-Record-tab">
-                                    @if (auth()->check() && auth()->user()->role !== 'client')
-                                    <div class=" mt-5 mb-5 d-flex justify-content-end">
-                                        <a class="btn btn-primary btn-sm" href="{{ route('post.weakly.recordes') }}">
-                                            + New Record
-                                        </a>
-                                    </div>
-                                    @endif
-                                <div class="row align-items-center">
-                                    <div class="col-lg-2">
-                                        <img src="https://piffersoftware.com/images/piffer-logo1.png" alt="Piffer Logo" style="max-height: 80px;">
-                                    </div>
-                                    <div class="col-lg-8 text-center">
-                                        <h1 class="mb-0" style="font-family: 'Stencil', sans-serif; font-size: 2rem;">Weekly Uniform Record Report</h1>
-                                    </div>
-                                    <div class="col-lg-2">
-                                        <img src="{{ asset('https://piffersoftware.com/images/piffer-logo1.png') }}" alt="Secondary Logo" style="max-height: 80px;">
-                                    </div>
+                            @if (auth()->check() && auth()->user()->role !== 'client')
+                                <div class=" mt-5 mb-5 d-flex justify-content-end">
+                                    <a class="btn btn-primary btn-sm" href="{{ route('post.weakly.recordes') }}">
+                                        + New Record
+                                    </a>
                                 </div>
-                                <div class="table-responsive mt-4">
-                                    <table class="table table-bordered table-hover exportable" >
-                                        <thead class="gm-header" >
+                            @endif
+                            <div class="row align-items-center">
+                                <div class="col-lg-2">
+                                    <img src="https://piffersoftware.com/images/piffer-logo1.png" alt="Piffer Logo"
+                                        style="max-height: 80px;">
+                                </div>
+                                <div class="col-lg-8 text-center">
+                                    <h1 class="mb-0" style="font-family: 'Stencil', sans-serif; font-size: 2rem;">Weekly
+                                        Uniform Record Report</h1>
+                                </div>
+                                <div class="col-lg-2">
+                                    <img src="{{ asset('https://piffersoftware.com/images/piffer-logo1.png') }}"
+                                        alt="Secondary Logo" style="max-height: 80px;">
+                                </div>
+                            </div>
+                            <div class="table-responsive mt-4">
+                                <table class="table table-bordered table-hover exportable">
+                                    <thead class="gm-header">
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Date</th>
+                                            <th>Branch</th>
+                                            <th>Standard Uniform</th>
+                                            <th>White Sleeves</th>
+                                            <th>Ssg Uniform</th>
+                                            <th>T Shirt</th>
+                                            <th>Lady Gown</th>
+                                            <th>Suit</th>
+                                            <th>Dms</th>
+                                            <th>Standard Shows</th>
+                                            <th>Beige Color Shoes</th>
+                                            <th>Whistile N Dory</th>
+                                            <th>Employee Card</th>
+                                            <th>P Gap</th>
+                                            <th>Barret Cap</th>
+                                            <th>White Belt</th>
+                                            <th>Black Belt</th>
+                                            <th>Sash</th>
+                                            <th>Qamar Barand</th>
+                                            <th>White Gloves</th>
+                                            <th>White Arm Sleves</th>
+                                            <th>Arm Band</th>
+                                            <th>Scarf</th>
+                                            <th>Winter Jacket</th>
+                                            <th>High Visibility Jacket</th>
+                                            <th>Jarsee</th>
+                                            <th>Rain Coat</th>
+                                            <th>Umbrella</th>
+                                            <th>Torch</th>
+                                            <th>Others</th>
+                                            <th>Supervisor Signature</th>
+                                            <th>Manager Operation Signature</th>
+                                            <th>Gm Signature</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($uniformbranches as $index => $record)
                                             <tr>
-                                                <th>#</th>
-                                                <th>Date</th>
-                                                <th>Branch</th>
-                                                <th>Standard Uniform</th>
-                                                <th>White Sleeves</th>
-                                                <th>Ssg Uniform</th>
-                                                <th>T Shirt</th>
-                                                <th>Lady Gown</th>
-                                                <th>Suit</th>
-                                                <th>Dms</th>
-                                                <th>Standard Shows</th>
-                                                <th>Beige Color Shoes</th>
-                                                <th>Whistile N Dory</th>
-                                                <th>Employee Card</th>
-                                                <th>P Gap</th>
-                                                <th>Barret Cap</th>
-                                                <th>White Belt</th>
-                                                <th>Black Belt</th>
-                                                <th>Sash</th>
-                                                <th>Qamar Barand</th>
-                                                <th>White Gloves</th>
-                                                <th>White Arm Sleves</th>
-                                                <th>Arm Band</th>
-                                                <th>Scarf</th>
-                                                <th>Winter Jacket</th>
-                                                <th>High Visibility Jacket</th>
-                                                <th>Jarsee</th>
-                                                <th>Rain Coat</th>
-                                                <th>Umbrella</th>
-                                                <th>Torch</th>
-                                                <th>Others</th>
-                                                <th>Supervisor Signature</th>
-                                                <th>Manager Operation Signature</th>
-                                                <th>Gm Signature</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($uniformbranches as $index=>$record)
-                                                <tr>
-                                                    <td>{{ $index+1 }}</td>
-                                                    <td>{{ $record->uni_date ?? 'N/A' }}</td>
-                                                    <td>{{ $record->Ubranch->branch_office_name ?? 'N/A' }}</td>
+                                                <td>{{ $index + 1 }}</td>
+                                                <td>{{ $record->uni_date ?? 'N/A' }}</td>
+                                                <td>{{ $record->Ubranch->branch_office_name ?? 'N/A' }}</td>
 
-                                                    <td>{{ $record->stand_uniform ?? 'N/A' }}</td>
-                                                    <td>{{ $record->white_sleeves ?? 'N/A' }}</td>
-                                                    <td>{{ $record->ssg_uniform ?? 'N/A' }}</td>
-                                                    <td>{{ $record->t_shirt ?? 'N/A' }}</td>
-                                                    <td>{{ $record->lady_gown ?? 'N/A' }}</td>
-                                                    <td>{{ $record->suit ?? 'N/A' }}</td>
-                                                    <td>{{ $record->dms ?? 'N/A' }}</td>
-                                                    <td>{{ $record->standard_shows ?? 'N/A' }}</td>
-                                                    <td>{{ $record->beige_color_shoes ?? 'N/A' }}</td>
-                                                    <td>{{ $record->whistile_n_dory ?? 'N/A' }}</td>
-                                                    <td>{{ $record->employee_card ?? 'N/A' }}</td>
-                                                    <td>{{ $record->p_gap ?? 'N/A' }}</td>
-                                                    <td>{{ $record->barret_cap ?? 'N/A' }}</td>
-                                                    <td>{{ $record->white_belt ?? 'N/A' }}</td>
-                                                    <td>{{ $record->black_belt ?? 'N/A' }}</td>
-                                                    <td>{{ $record->sash ?? 'N/A' }}</td>
-                                                    <td>{{ $record->qamar_barand ?? 'N/A' }}</td>
-                                                    <td>{{ $record->white_gloves ?? 'N/A' }}</td>
-                                                    <td>{{ $record->white_arm_sleves ?? 'N/A' }}</td>
-                                                    <td>{{ $record->arm_band ?? 'N/A' }}</td>
-                                                    <td>{{ $record->scarf ?? 'N/A' }}</td>
-                                                    <td>{{ $record->winter_jacket ?? 'N/A' }}</td>
-                                                    <td>{{ $record->high_visibility_jacket ?? 'N/A' }}</td>
-                                                    <td>{{ $record->jarsee ?? 'N/A' }}</td>
-                                                    <td>{{ $record->rain_coat ?? 'N/A' }}</td>
-                                                    <td>{{ $record->umbrella ?? 'N/A' }}</td>
-                                                    <td>{{ $record->torch ?? 'N/A' }}</td>
-                                                    <td>{{ $record->others ?? 'N/A' }}</td>
-                                                    <td>{{ $record->supervisor_signature ?? 'N/A' }}</td>
-                                                    <td>{{ $record->manager_operation_signature ?? 'N/A' }}</td>
-                                                    <td>{{ $record->gm_signature ?? 'N/A' }}</td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
+                                                <td>{{ $record->stand_uniform ?? 'N/A' }}</td>
+                                                <td>{{ $record->white_sleeves ?? 'N/A' }}</td>
+                                                <td>{{ $record->ssg_uniform ?? 'N/A' }}</td>
+                                                <td>{{ $record->t_shirt ?? 'N/A' }}</td>
+                                                <td>{{ $record->lady_gown ?? 'N/A' }}</td>
+                                                <td>{{ $record->suit ?? 'N/A' }}</td>
+                                                <td>{{ $record->dms ?? 'N/A' }}</td>
+                                                <td>{{ $record->standard_shows ?? 'N/A' }}</td>
+                                                <td>{{ $record->beige_color_shoes ?? 'N/A' }}</td>
+                                                <td>{{ $record->whistile_n_dory ?? 'N/A' }}</td>
+                                                <td>{{ $record->employee_card ?? 'N/A' }}</td>
+                                                <td>{{ $record->p_gap ?? 'N/A' }}</td>
+                                                <td>{{ $record->barret_cap ?? 'N/A' }}</td>
+                                                <td>{{ $record->white_belt ?? 'N/A' }}</td>
+                                                <td>{{ $record->black_belt ?? 'N/A' }}</td>
+                                                <td>{{ $record->sash ?? 'N/A' }}</td>
+                                                <td>{{ $record->qamar_barand ?? 'N/A' }}</td>
+                                                <td>{{ $record->white_gloves ?? 'N/A' }}</td>
+                                                <td>{{ $record->white_arm_sleves ?? 'N/A' }}</td>
+                                                <td>{{ $record->arm_band ?? 'N/A' }}</td>
+                                                <td>{{ $record->scarf ?? 'N/A' }}</td>
+                                                <td>{{ $record->winter_jacket ?? 'N/A' }}</td>
+                                                <td>{{ $record->high_visibility_jacket ?? 'N/A' }}</td>
+                                                <td>{{ $record->jarsee ?? 'N/A' }}</td>
+                                                <td>{{ $record->rain_coat ?? 'N/A' }}</td>
+                                                <td>{{ $record->umbrella ?? 'N/A' }}</td>
+                                                <td>{{ $record->torch ?? 'N/A' }}</td>
+                                                <td>{{ $record->others ?? 'N/A' }}</td>
+                                                <td>{{ $record->supervisor_signature ?? 'N/A' }}</td>
+                                                <td>{{ $record->manager_operation_signature ?? 'N/A' }}</td>
+                                                <td>{{ $record->gm_signature ?? 'N/A' }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
 
@@ -3480,14 +3516,14 @@
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
     integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
-</script>
+    </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
     integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
-</script>
+    </script>
 <!-- script for add more consultant details -->
 
 <script>
-    $('.editable-like').on('blur', function() {
+    $('.editable-like').on('blur', function () {
         let newValue = $(this).text().trim();
         let id = $(this).data('id'); // like 'facebook_morning_post'
         let parts = id.split('_');
@@ -3502,10 +3538,10 @@
                 post_type: post_type,
                 value: newValue
             },
-            success: function(response) {
+            success: function (response) {
                 console.log('Updated successfully');
             },
-            error: function(err) {
+            error: function (err) {
                 alert('Update failed');
             }
         });
@@ -3513,10 +3549,10 @@
 </script>
 
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         var openAccordions = []; // Array to store IDs of open accordion items
         // Add More Button Click Event
-        $('#addSignatory10').on('click', function() {
+        $('#addSignatory10').on('click', function () {
             var SignatoryAccordionCount10 = $('#signatoryAccordion10 .signaccordion-item10').length + 1;
             var newSignAccordion10 = `
             <div class="accordion-item signaccordion-item10">
@@ -3597,7 +3633,7 @@
             $('#signatoryAccordion10').append(newSignAccordion10);
         });
         // Remove Accordion Button Click Event
-        $(document).on('click', '.removeSignAccordion10', function() {
+        $(document).on('click', '.removeSignAccordion10', function () {
             var accordionItem = $(this).closest('.accordion-item');
             var accordionId = accordionItem.find('.collapse').attr('id');
             var index = openAccordions.indexOf(accordionId);
@@ -3607,7 +3643,7 @@
             accordionItem.remove();
         });
         // Accordion Button Click Event
-        $(document).on('click', '.accordion-button', function() {
+        $(document).on('click', '.accordion-button', function () {
             var accordionItem = $(this).closest('.accordion-item');
             var accordionId = accordionItem.find('.collapse').attr('id');
             var isOpen = openAccordions.includes(accordionId);
@@ -3626,13 +3662,13 @@
 </script>
 
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         // Function to update summary table for Vehicle entries
         function updateSignatorySummaryTable10() {
             // Clear existing rows
             $('#signatorySummaryTable10 tbody').empty();
             // Iterate through each guard accordion item and update the summary table
-            $('.signaccordion-item10').each(function(index) {
+            $('.signaccordion-item10').each(function (index) {
                 var site_id = $(this).find('[name="site_id[]"]').val();
                 var branch = $(this).find('[name="branch[]"]').val();
                 var location = $(this).find('[name="location[]"]').val();
@@ -3659,7 +3695,7 @@
             });
         }
         // Add More Signatory Button Click Event
-        $('#addSignatory10').on('click', function() {
+        $('#addSignatory10').on('click', function () {
             var signatoryEntryCount10 = $('#signatoryAccordion10 .signaccordion-item10').length + 1;
             var newSignatoryEntry10 = `
                        <!-- Your existing signatory accordion HTML goes here -->
@@ -3669,35 +3705,35 @@
             $('#signatoryAccordion10').append(newSignatoryEntry10);
         });
         // Update Signatory Table Button Click Event
-        $('#updateSignatoryTable10').on('click', function() {
+        $('#updateSignatoryTable10').on('click', function () {
             // Update the signatory summary table
             console.log("clicked save");
             updateSignatorySummaryTable10();
         });
         // View Signatory Button Click Event
-        $(document).on('click', '.view-signatory-button', function() {
+        $(document).on('click', '.view-signatory-button', function () {
             var index = $(this).data('index');
             var accordionItem = $('.signaccordion-item10').eq(index);
             // Toggle the collapse state of the accordion item
             accordionItem.find('.collapse').collapse('toggle');
         });
         // Remove Signatory Entry Button Click Event
-        $(document).on('click', '.removeSignatoryAccordion', function() {
+        $(document).on('click', '.removeSignatoryAccordion', function () {
             $(this).closest('.signaccordion-item10').remove();
             // Update the signatory summary table
             updateSignatorySummaryTable10();
         });
         // Prevent the default behavior of the Add More Signatory button
-        $('#addSignatory10').on('click', function(event) {
+        $('#addSignatory10').on('click', function (event) {
             event.preventDefault();
         });
     });
 </script>
 <!-- script for add more Issuing Authority -->
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         // Add More Button Click Event
-        $('#addSignatory11').on('click', function() {
+        $('#addSignatory11').on('click', function () {
             var SignatoryAccordionCount11 = $('#signatoryAccordion11 .signaccordion-item11').length + 1;
             var newSignAccordion11 = `
                 <div class="accordion-item signaccordion-item11" id="signatoryEntry11${SignatoryAccordionCount11}">
@@ -3729,20 +3765,20 @@
             $('#signatoryAccordion11').append(newSignAccordion11);
         });
         // Remove Accordion Button Click Event
-        $(document).on('click', '.removeSignAccordion11', function() {
+        $(document).on('click', '.removeSignAccordion11', function () {
             $(this).closest('.signaccordion-item11').remove();
         });
     });
 </script>
 
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         // Function to update summary table for Vehicle entries
         function updateSignatorySummaryTable11() {
             // Clear existing rows
             $('#signatorySummaryTable11 tbody').empty();
             // Iterate through each guard accordion item and update the summary table
-            $('.signaccordion-item11').each(function(index) {
+            $('.signaccordion-item11').each(function (index) {
                 var category = $(this).find('[name="category[]"]').val();
                 var quantity = $(this).find('[name="quantity[]"]').val();
                 var notes = $(this).find('[name="notes[]"]').val();
@@ -3763,7 +3799,7 @@
             });
         }
         // Add More Signatory Button Click Event
-        $('#addSignatory11').on('click', function() {
+        $('#addSignatory11').on('click', function () {
             var signatoryEntryCount11 = $('#signatoryAccordion11 .signaccordion-item11').length + 1;
             var newSignatoryEntry11 = `
                        <!-- Your existing signatory accordion HTML goes here -->
@@ -3773,26 +3809,26 @@
             $('#signatoryAccordion11').append(newSignatoryEntry11);
         });
         // Update Signatory Table Button Click Event
-        $('#updateSignatoryTable11').on('click', function() {
+        $('#updateSignatoryTable11').on('click', function () {
             // Update the signatory summary table
             console.log("clicked save");
             updateSignatorySummaryTable11();
         });
         // View Signatory Button Click Event
-        $(document).on('click', '.view-signatory-button', function() {
+        $(document).on('click', '.view-signatory-button', function () {
             var index = $(this).data('index');
             var accordionItem = $('.signaccordion-item11').eq(index);
             // Toggle the collapse state of the accordion item
             accordionItem.find('.collapse').collapse('toggle');
         });
         // Remove Signatory Entry Button Click Event
-        $(document).on('click', '.removeSignatoryAccordion', function() {
+        $(document).on('click', '.removeSignatoryAccordion', function () {
             $(this).closest('.signaccordion-item11').remove();
             // Update the signatory summary table
             updateSignatorySummaryTable11();
         });
         // Prevent the default behavior of the Add More Signatory button
-        $('#addSignatory11').on('click', function(event) {
+        $('#addSignatory11').on('click', function (event) {
             event.preventDefault();
         });
     });
@@ -3800,9 +3836,9 @@
 
 {{-- Office Branding --}}
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         // Add More Button Click Event
-        $('#addSignatory13').on('click', function() {
+        $('#addSignatory13').on('click', function () {
             var SignatoryAccordionCount13 = $('#signatoryAccordion13 .signaccordion-item13').length + 1;
             var newSignAccordion13 = `
                 <div class="accordion-item signaccordion-item13" id="signatoryEntry13${SignatoryAccordionCount13}">
@@ -3878,23 +3914,23 @@
             $('#signatoryAccordion13').append(newSignAccordion13);
         });
         // Remove Accordion Button Click Event
-        $(document).on('click', '.removeSignAccordion13', function() {
+        $(document).on('click', '.removeSignAccordion13', function () {
             $(this).closest('.signaccordion-item13').remove();
         });
     });
 </script>
 <!-- Script for Issuing Authority in Table -->
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         // Function to update summary table for Vehicle entries
         function updateSignatorySummaryTable13() {
             // Clear existing rows
             $('#signatorySummaryTable13 tbody').empty();
             // Iterate through each accordion item and update the summary table
-            $('.signaccordion-item13').each(function(index) {
+            $('.signaccordion-item13').each(function (index) {
                 var selectedOption = $(this).find('[name="type_of_vehicle[]"] option:selected');
                 var typeOfVehicleText = selectedOption
-            .text(); // Fetch the text content of the selected option
+                    .text(); // Fetch the text content of the selected option
                 var vehicleNo = $(this).find('[name="vehicle_no[]"]').val();
                 var vehicleModel = $(this).find('[name="vehicle_model[]"]').val();
                 // Check if any relevant data is entered
@@ -3914,7 +3950,7 @@
             });
         }
         // Add More Signatory Button Click Event
-        $('#addSignatory13').on('click', function() {
+        $('#addSignatory13').on('click', function () {
             var signatoryEntryCount13 = $('#signatoryAccordion13 .signaccordion-item13').length + 1;
             var newSignatoryEntry13 = `
             <!-- Your existing signatory accordion HTML goes here -->
@@ -3925,19 +3961,19 @@
             updateSignatorySummaryTable13();
         });
         // Update Signatory Table Button Click Event
-        $('#updateSignatoryTable13').on('click', function() {
+        $('#updateSignatoryTable13').on('click', function () {
             // Update the signatory summary table
             updateSignatorySummaryTable13();
         });
         // View Signatory Button Click Event
-        $(document).on('click', '.view-signatory-button', function() {
+        $(document).on('click', '.view-signatory-button', function () {
             var index = $(this).data('index');
             var accordionItem = $('.signaccordion-item13').eq(index);
             // Toggle the collapse state of the accordion item
             accordionItem.find('.collapse').collapse('toggle');
         });
         // Remove Signatory Entry Button Click Event
-        $(document).on('click', '.removeSignatoryAccordion', function() {
+        $(document).on('click', '.removeSignatoryAccordion', function () {
             $(this).closest('.signaccordion-item13').remove();
             // Update the signatory summary table after removing a signatory entry
             updateSignatorySummaryTable13();
@@ -3946,9 +3982,9 @@
 </script>
 
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         // Add More Button Click Event
-        $('#addBranding').on('click', function() {
+        $('#addBranding').on('click', function () {
             var brandingAccordionCount = $('#brandingAccordion .brandingaccordion-item').length + 1;
             var newBrandingAccordion = `
             <div class="accordion-item brandingaccordion-item" id="brandingEntry${brandingAccordionCount}">
@@ -4046,20 +4082,20 @@
             $('#brandingAccordion').append(newBrandingAccordion);
         });
         // Remove Accordion Button Click Event
-        $(document).on('click', '.removeBrandingAccordion', function() {
+        $(document).on('click', '.removeBrandingAccordion', function () {
             $(this).closest('.brandingaccordion-item').remove();
         });
     });
 </script>
 
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         // Function to update summary table for inspection entries
         function updateInspectionSummaryTable() {
             // Clear existing rows
             $('#inspectionSummaryTable tbody').empty();
             // Iterate through each inspection accordion item and update the summary table
-            $('.inspectionaccordion-item').each(function(index) {
+            $('.inspectionaccordion-item').each(function (index) {
                 var btype = $(this).find('[name="b_type[]"]').val();
                 var siteofB = $(this).find('[name="site_of_b[]"]').val();
                 var costofB = $(this).find('[name="cost_of_b[]"]').val();
@@ -4080,7 +4116,7 @@
             });
         }
         // Add More Inspection Button Click Event
-        $('#addInspection').on('click', function() {
+        $('#addInspection').on('click', function () {
             var inspectionEntryCount = $('#inspectionAccordion .inspectionaccordion-item').length + 1;
             var newInspectionEntry = `
               <!-- Your existing inspection accordion HTML goes here -->
@@ -4089,28 +4125,28 @@
             $('#inspectionAccordion').append(newInspectionEntry);
         });
         // Update Inspection Table Button Click Event
-        $('#updateInspectionTable').on('click', function() {
+        $('#updateInspectionTable').on('click', function () {
             // Update the inspection summary table
             updateInspectionSummaryTable();
         });
         // View Inspection Button Click Event
-        $(document).on('click', '.view-inspection-button', function() {
+        $(document).on('click', '.view-inspection-button', function () {
             var index = $(this).data('index');
             var accordionItem = $('.inspectionaccordion-item').eq(index);
             // Toggle the collapse state of the accordion item
             accordionItem.find('.collapse').collapse('toggle');
         });
         // Prevent the default behavior of the Add More Inspection button
-        $('#addInspection').on('click', function(event) {
+        $('#addInspection').on('click', function (event) {
             event.preventDefault();
         });
     });
 </script>
 
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         // Add More Button Click Event
-        $('#addArmour').on('click', function() {
+        $('#addArmour').on('click', function () {
             var ArmourAccordionCount = $('#armourAccordion .armouraccordion-item').length + 1;
             var newArmourAccordion = `
               <div class="accordion-item armouraccordion-item" id="armourEntry${ArmourAccordionCount}">
@@ -4158,7 +4194,7 @@
             $('#armourAccordion').append(newArmourAccordion);
         });
         // Remove Accordion Button Click Event
-        $(document).on('click', '.removeArmourAccordion', function() {
+        $(document).on('click', '.removeArmourAccordion', function () {
             $(this).closest('.armouraccordion-item').remove();
         });
     });
@@ -4166,13 +4202,13 @@
 
 <!-- JavaScript code -->
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         // Function to update summary table for armour entries
         function updateArmourSummaryTable() {
             // Clear existing rows
             $('#armourSummaryTable tbody').empty();
             // Iterate through each armour accordion item and update the summary table
-            $('.armouraccordion-item').each(function(index) {
+            $('.armouraccordion-item').each(function (index) {
                 var amountPaid = $(this).find('[name="amount_paid[]"]').val();
                 var typeOfPayment = $(this).find('[name="type_of_payment[]"]').val();
                 var insNo = $(this).find('[name="ins_no[]"]').val();
@@ -4195,7 +4231,7 @@
             });
         }
         // Add More Armour Button Click Event
-        $('#addArmour').on('click', function() {
+        $('#addArmour').on('click', function () {
             var armourEntryCount = $('#armourAccordion .armouraccordion-item').length + 1;
             var newArmourEntry = `
               <!-- Your existing armour accordion HTML goes here -->
@@ -4204,19 +4240,19 @@
             $('#armourAccordion').append(newArmourEntry);
         });
         // Update Armour Table Button Click Event
-        $('#updateArmourTable').on('click', function() {
+        $('#updateArmourTable').on('click', function () {
             // Update the armour summary table
             updateArmourSummaryTable();
         });
         // View Armour Button Click Event
-        $(document).on('click', '.view-armour-button', function() {
+        $(document).on('click', '.view-armour-button', function () {
             var index = $(this).data('index');
             var accordionItem = $('.armouraccordion-item').eq(index);
             // Toggle the collapse state of the accordion item
             accordionItem.find('.collapse').collapse('toggle');
         });
         // Prevent the default behavior of the Add More Armour button
-        $('#addArmour').on('click', function(event) {
+        $('#addArmour').on('click', function (event) {
             event.preventDefault();
         });
     });
@@ -4224,9 +4260,9 @@
 {{-- Insurance Company Details --}}
 
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         // Add More Button Click Event
-        $('#addAudit').on('click', function() {
+        $('#addAudit').on('click', function () {
             var AuditAccordionCount = $('#auditAccordion .auditaccordion-item').length + 1;
             var newAuditAccordion = `
               <div class="accordion-item auditaccordion-item" id="auditEntry${AuditAccordionCount}">
@@ -4318,20 +4354,20 @@
             $('#auditAccordion').append(newAuditAccordion);
         });
         // Remove Accordion Button Click Event
-        $(document).on('click', '.removeAuditAccordion', function() {
+        $(document).on('click', '.removeAuditAccordion', function () {
             $(this).closest('.auditaccordion-item').remove();
         });
     });
 </script>
 
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         // Function to update audit summary table for audit entries
         function updateAuditSummaryTable() {
             // Clear existing rows
             $('#auditSummaryTable tbody').empty();
             // Iterate through each audit accordion item and update the summary table
-            $('.auditaccordion-item').each(function(index) {
+            $('.auditaccordion-item').each(function (index) {
                 var companyName = $(this).find('[name="company_name[]"]').val();
                 var iPocName = $(this).find('[name="i_poc_name[]"]').val();
                 var iPocCell = $(this).find('[name="i_poc_cell[]"]').val();
@@ -4352,7 +4388,7 @@
             });
         }
         // Add More Audit Button Click Event
-        $('#addAudit').on('click', function() {
+        $('#addAudit').on('click', function () {
             var auditEntryCount = $('#auditAccordion .auditaccordion-item').length + 1;
             var newAuditEntry = `
               <!-- Your existing audit accordion HTML goes here -->
@@ -4361,19 +4397,19 @@
             $('#auditAccordion').append(newAuditEntry);
         });
         // Update Audit Table Button Click Event
-        $('#updateAuditTable').on('click', function() {
+        $('#updateAuditTable').on('click', function () {
             // Update the audit summary table
             updateAuditSummaryTable();
         });
         // View Audit Button Click Event
-        $(document).on('click', '.view-audit-button', function() {
+        $(document).on('click', '.view-audit-button', function () {
             var index = $(this).data('index');
             var accordionItem = $('.auditaccordion-item').eq(index);
             // Toggle the collapse state of the accordion item
             accordionItem.find('.collapse').collapse('toggle');
         });
         // Prevent the default behavior of the Add More Audit button
-        $('#addAudit').on('click', function(event) {
+        $('#addAudit').on('click', function (event) {
             event.preventDefault();
         });
     });
@@ -4381,9 +4417,9 @@
 
 {{-- Tracker Tab Accordion --}}
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         // Add More Button Click Event
-        $('#addPromact').on('click', function() {
+        $('#addPromact').on('click', function () {
             var PromactAccordionCount = $('#promactAccordion .promactaccordion-item').length + 1;
             var newPromactAccordion = `
                 <div class="accordion-item promactaccordion-item" id="promactEntry${PromactAccordionCount}">
@@ -4466,7 +4502,7 @@
             $('#promactAccordion').append(newPromactAccordion);
         });
         // Remove Accordion Button Click Event
-        $(document).on('click', '.removePromactAccordion', function() {
+        $(document).on('click', '.removePromactAccordion', function () {
             $(this).closest('.promactaccordion-item').remove();
         });
     });
@@ -4474,13 +4510,13 @@
 
 <!-- JavaScript Function to Update Summary Table -->
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         // Function to update promotional activity summary table
         function updatePromactSummaryTable() {
             // Clear existing rows
             $('#promactSummaryTable tbody').empty();
             // Iterate through each promotional activity accordion item and update the summary table
-            $('.promactaccordion-item').each(function(index) {
+            $('.promactaccordion-item').each(function (index) {
                 // Extract relevant information
                 var trackerCompanyName = $(this).find('[name="tracker_company_name[]"]').val();
                 var tPocName = $(this).find('[name="t_poc_name[]"]').val();
@@ -4502,7 +4538,7 @@
             });
         }
         // Add More Promotional Button Click Event
-        $('#addPromact').on('click', function() {
+        $('#addPromact').on('click', function () {
             var promactEntryCount = $('#promactAccordion .promactaccordion-item').length + 1;
             var newPromactEntry = `
                 <!-- Your existing promotional activity accordion HTML goes here -->
@@ -4511,19 +4547,19 @@
             $('#promactAccordion').append(newPromactEntry);
         });
         // Update Promotional Activity Table Button Click Event
-        $('#updatePromactTable').on('click', function() {
+        $('#updatePromactTable').on('click', function () {
             // Update the promotional activity summary table
             updatePromactSummaryTable();
         });
         // View Promotional Activity Button Click Event
-        $(document).on('click', '.view-promact-button', function() {
+        $(document).on('click', '.view-promact-button', function () {
             var index = $(this).data('index');
             var accordionItem = $('.promactaccordion-item').eq(index);
             // Toggle the collapse state of the accordion item
             accordionItem.find('.collapse').collapse('toggle');
         });
         // Prevent the default behavior of the Add More Promotional button
-        $('#addPromact').on('click', function(event) {
+        $('#addPromact').on('click', function (event) {
             event.preventDefault();
         });
     });
@@ -4531,9 +4567,9 @@
 
 {{-- Repair & Maintenance Accordion --}}
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         // Add More Button Click Event
-        $('#addNotification').on('click', function() {
+        $('#addNotification').on('click', function () {
             var NotificationAccordionCount = $('#notificationAccordion .notificationaccordion-item')
                 .length + 1;
             var newNotificationAccordion = `
@@ -4644,20 +4680,20 @@
             $('#notificationAccordion').append(newNotificationAccordion);
         });
         // Remove Accordion Button Click Event
-        $(document).on('click', '.removeNotificationAccordion', function() {
+        $(document).on('click', '.removeNotificationAccordion', function () {
             $(this).closest('.notificationaccordion-item').remove();
         });
     });
 </script>
 
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         // Function to update the notification summary table
         function updateNotificationSummaryTable() {
             // Clear existing rows
             $('#notificationSummaryTable tbody').empty();
             // Iterate through each notification accordion item and update the summary table
-            $('.notificationaccordion-item').each(function(index) {
+            $('.notificationaccordion-item').each(function (index) {
                 var serialNo = $(this).find('[name="serial_no[]"]').val();
                 var rdesc = $(this).find('[name="r_desc[]"]').val();
                 var rAmount = $(this).find('[name="r_amount[]"]').val();
@@ -4678,7 +4714,7 @@
             });
         }
         // Add More Notification Button Click Event
-        $('#addNotification').on('click', function() {
+        $('#addNotification').on('click', function () {
             var notificationEntryCount = $('#notificationAccordion .notificationaccordion-item')
                 .length + 1;
             var newNotificationEntry = `
@@ -4688,19 +4724,19 @@
             $('#notificationAccordion').append(newNotificationEntry);
         });
         // Update Notification Table Button Click Event
-        $('#updateNotificationTable').on('click', function() {
+        $('#updateNotificationTable').on('click', function () {
             // Update the notification summary table
             updateNotificationSummaryTable();
         });
         // View Notification Button Click Event
-        $(document).on('click', '.view-notification-button', function() {
+        $(document).on('click', '.view-notification-button', function () {
             var index = $(this).data('index');
             var accordionItem = $('.notificationaccordion-item').eq(index);
             // Toggle the collapse state of the accordion item
             accordionItem.find('.collapse').collapse('toggle');
         });
         // Prevent the default behavior of the Add More Notification button
-        $('#addNotification').on('click', function(event) {
+        $('#addNotification').on('click', function (event) {
             event.preventDefault();
         });
     });
@@ -4709,9 +4745,9 @@
 {{-- /////// Usage Movement \\\\\ --}}
 
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         // Add More Button Click Event
-        $('#addAccItem').on('click', function() {
+        $('#addAccItem').on('click', function () {
             var itemAccordionCount = $('#itemAccordion .itemAccordion-item').length + 1;
             var newItemAccordion = `
                 <div class="accordion-item itemAccordion-item" id="itemEntry${itemAccordionCount}">
@@ -4790,7 +4826,7 @@
             $('#itemAccordion').append(newItemAccordion);
         });
         // Remove Accordion Button Click Event
-        $(document).on('click', '.removeItemAccordion', function() {
+        $(document).on('click', '.removeItemAccordion', function () {
             $(this).closest('.itemAccordion-item').remove();
         });
     });
@@ -4798,11 +4834,11 @@
 
 {{-- /////// Item Accordion Summary \\\\\\\ --}}
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         function updateItemSummaryTableAndCalculateSum() {
             $('#itemSummaryTable tbody').empty();
             var totalAmountSum = 0;
-            $('.itemAccordion-item').each(function(index) {
+            $('.itemAccordion-item').each(function (index) {
                 var dateOfM = $(this).find('[name="date_of_m[]"]').val();
                 var nameOfOfficer = $(this).find('[name="name_of_officer[]"]').val();
                 var distanceCovered = $(this).find('[name="distance_covered[]"]').val();
@@ -4823,16 +4859,16 @@
             });
             $('[name="estimated_amount_loi"]').val(totalAmountSum.toFixed(2));
         }
-        $('#addToItemTable').on('click', function() {
+        $('#addToItemTable').on('click', function () {
             updateItemSummaryTableAndCalculateSum();
         });
         // View Button Click Event
-        $(document).on('click', '.view-button-1', function() {
+        $(document).on('click', '.view-button-1', function () {
             var targetId = $(this).data('target');
             $(targetId).collapse('toggle');
         });
         // Prevent the default behavior of the Add More button
-        $('#addAccItem').on('click', function(event) {
+        $('#addAccItem').on('click', function (event) {
             event.preventDefault();
         });
     });
@@ -4840,9 +4876,9 @@
 
 <!-- Script for renewal  -->
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         // Add More Button Click Event
-        $('#addSignatory12').on('click', function() {
+        $('#addSignatory12').on('click', function () {
             var SignatoryAccordionCount12 = $('#signatoryAccordion12 .signaccordion-item12').length + 1;
             var newSignAccordion12 = `
                 <div class="accordion-item signaccordion-item12" id="signatoryEntry12${SignatoryAccordionCount12}">
@@ -4888,27 +4924,27 @@
             $('#signatoryAccordion12').append(newSignAccordion12);
         });
         // Remove Accordion Button Click Event
-        $(document).on('click', '.removeSignAccordion12', function() {
+        $(document).on('click', '.removeSignAccordion12', function () {
             $(this).closest('.signaccordion-item12').remove();
         });
     });
 </script>
 <!-- Script for show data for renewal in table  -->
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         // Function to update summary table for Vehicle entries
         // Function to update summary table for Vehicle entries
         function updateSignatorySummaryTable12() {
             // Clear existing rows
             $('#signatorySummaryTable12 tbody').empty();
             // Iterate through each guard accordion item and update the summary table
-            $('.signaccordion-item12').each(function(index) {
+            $('.signaccordion-item12').each(function (index) {
                 var notificationNo = $(this).find('[name="notification_no[]"]').val();
                 var notificationRelated = $(this).find(
                     '[name="notification_related[]"] option:selected')
-            .text(); // Retrieve selected option text
+                    .text(); // Retrieve selected option text
                 var notificationTo = $(this).find('[name="notification_to[]"] option:selected')
-            .text(); // Retrieve selected option text
+                    .text(); // Retrieve selected option text
                 // Check if any relevant data is entered
                 if (notificationNo || notificationRelated || notificationTo) {
                     // Add a new row to the summary table
@@ -4925,9 +4961,9 @@
                 }
             });
         }
-        $(document).ready(function() {
+        $(document).ready(function () {
             // Add More Signatory Button Click Event
-            $('#addSignatory12').on('click', function() {
+            $('#addSignatory12').on('click', function () {
                 var signatoryEntryCount12 = $('#signatoryAccordion12 .signaccordion-item12')
                     .length + 1;
                 var newSignatoryEntry12 = `
@@ -4939,26 +4975,26 @@
                 updateSignatorySummaryTable12();
             });
             // Update Signatory Table Button Click Event
-            $('#updateSignatoryTable12').on('click', function() {
+            $('#updateSignatoryTable12').on('click', function () {
                 // Update the signatory summary table
                 console.log("clicked save");
                 updateSignatorySummaryTable12();
             });
             // View Signatory Button Click Event
-            $(document).on('click', '.view-signatory-button', function() {
+            $(document).on('click', '.view-signatory-button', function () {
                 var index = $(this).data('index');
                 var accordionItem = $('.signaccordion-item12').eq(index);
                 // Toggle the collapse state of the accordion item
                 accordionItem.find('.collapse').collapse('toggle');
             });
             // Remove Signatory Entry Button Click Event
-            $(document).on('click', '.removeSignAccordion12', function() {
+            $(document).on('click', '.removeSignAccordion12', function () {
                 $(this).closest('.signaccordion-item12').remove();
                 // Update the signatory summary table
                 updateSignatorySummaryTable12();
             });
             // Prevent the default behavior of the Add More Signatory button
-            $('#addSignatory12').on('click', function(event) {
+            $('#addSignatory12').on('click', function (event) {
                 event.preventDefault();
             });
         });
