@@ -129,11 +129,11 @@
                                 </div>
                             <div class="row mb-2 mt-3">
                                 <div class="col-lg-5 spacing-right">
-                                    Phone/Cell no <br>  <input class="form-control vldphone"  type="text" id="phone" name="phone" placeholder="..." style="width: 100%;" autocomplete="off">
+                                    Phone/Cell no <br>  <input class="form-control vldphone"  type="text" id="phone" name="phone" oninput="updateClientPhone(this.value)" placeholder="..." style="width: 100%;" autocomplete="off">
                                     <div id="phoneError" class="phoneError" style="color: red"></div>
                                 </div>
                                 <div class="col-lg-6 spacing-left input-group">
-                                    Email <br> <input class="form-control vldemail "  name="email" id="email" type="email" placeholder="..." style="width: 100%;" autocomplete="off">
+                                    Email <br> <input class="form-control vldemail "  name="email" id="email" type="email" placeholder="..." oninput="updateClientEmail(this.value)" style="width: 100%;" autocomplete="off">
                                     <div id="emailError" class="emailError" style="color: red"></div>
                                 </div>
 
@@ -454,7 +454,7 @@
                                                                         Name <br> <input class="form-control" name="sign_name[]" type="text" placeholder="..." style="width: 100%;">
                                                                     </div>
                                                                     <div class="col-lg-5 spacing-right">
-                                                                        Designation <br> <input class="form-control" name="sign_desig[]" type="text" placeholder="..." style="width: 100%;">
+                                                                        Designation <br> <input class="form-control" name="sign_desig[]" oninput="updateClientDesig(this.value)" type="text" placeholder="..." style="width: 100%;">
                                                                     </div>
                                                                     <div class="col-lg-5 spacing-right">
                                                                         Cell No <br> <input class="form-control vldphone"  type="text" name="sign_cell[]" placeholder="..." style="width: 100%;">
@@ -2214,11 +2214,11 @@
                                                                     Client ID <br> <input class="form-control" type="text" name="client_id[]" placeholder="..." style="width: 100%;">
                                                                 </div>
                                                                 <div class="col-lg-5 spacing-left spacing-right">
-                                                                    Site ID <br> <input class="form-control" type="text" name="client_site_id[]" placeholder="..." style="width: 100%;">
+                                                                    Site ID <br> <input class="form-control" type="text" name="client_site_id[]" oninput="updateClientSiteID(this.value)" placeholder="..." style="width: 100%;">
                                                                 </div>
                                                                 <div class="col-lg-3 spacing-right">
                                                                     Client POC Name <br>
-                                                                    <input class="form-control" type="text" name="client_poc[]" placeholder="..." style="width: 100%;">
+                                                                    <input class="form-control" type="text" name="client_poc[]" oninput="updateClientPoc(this.value)" placeholder="..." style="width: 100%;">
                                                                 </div>
                                                                 <div class="col-lg-3 spacing-left spacing-right">
                                                                     Cell <br> <input class="form-control vldphone" type="text" name="client_cell[]" placeholder="..." style="width: 100%;">
@@ -3043,10 +3043,10 @@
                                                                         Client Name: <br> <input class="form-control" id="client_name" name="feed_client_name[]" type="text" placeholder="..." style="width: 100%;">
                                                                     </div>
                                                                     <div class="col-lg-11 spacing-right">
-                                                                        Client POC Name: <br> <input class="form-control" name="feed_client_poc_name[]" type="text" placeholder="..." style="width: 100%;">
+                                                                        Client POC Name: <br> <input class="form-control" id="client_poc" name="feed_client_poc_name[]" type="text" placeholder="..." style="width: 100%;">
                                                                     </div>
                                                                     <div class="col-lg-11 spacing-right">
-                                                                        Email: <br> <input class="form-control vldemail" name="feed_client_email[]" type="date" placeholder="..." style="width: 100%;">
+                                                                        Email: <br> <input class="form-control vldemail" id="client_email" name="feed_client_email[]" type="email" placeholder="..." style="width: 100%;">
                                                                         <div id="emailError" class="emailError" style="color: red"></div>
                                                                     </div>
 
@@ -3060,15 +3060,15 @@
                                                                         Client ID: <br> <input class="form-control" id="client_id" name="feed_client_id[]" type="text" placeholder="..." style="width: 100%;">
                                                                     </div>
                                                                     <div class="col-lg-5 spacing-right">
-                                                                        Site ID: <br> <input class="form-control" name="feed_client_site_id[]" type="text" placeholder="..." style="width: 100%;">
+                                                                        Site ID: <br> <input class="form-control" id="client_site_id" name="feed_client_site_id[]" type="text" placeholder="..." style="width: 100%;">
                                                                     </div>
                                                                 </div>
                                                                 <div class="row mb-5">
                                                                     <div class="col-lg-11 spacing-left spacing-right">
-                                                                        Designation: <br> <input class="form-control" name="feed_desig[]" type="text" placeholder="..." style="width: 100%;">
+                                                                        Designation: <br> <input class="form-control" id="desig" name="feed_desig[]" type="text" placeholder="..." style="width: 100%;">
                                                                     </div>
                                                                     <div class="col-lg-11 spacing-left spacing-right">
-                                                                        Cell: <br> <input class="form-control vldphone" type="text" name="feed_cell[]" placeholder="..." style="width: 100%;">
+                                                                        Cell: <br> <input class="form-control vldphone" id="client_cell" type="text" name="feed_cell[]" placeholder="..." style="width: 100%;">
                                                                         <div id="phoneError" class="phoneError" style="color: red"></div>
                                                                     </div>
 
@@ -4110,6 +4110,7 @@
 
                                     </div>
                                 </div>
+                                <button type="button" class="btn btn-primary saveButton" data-next-tab="#intelligence">Save and Next</button>
                             </div>
                         </div>
                         <div class="footer" style="position: fixed; bottom: 0; width: 100%; background-color: #320056; padding: 10px; display: flex; justify-content: space-between; align-items: center;">
@@ -7593,6 +7594,36 @@ function removeBusinessSection(room) {
 <script>
     function updateClientID(value) {
         document.getElementById('client_id').value = value;
+    }
+</script>
+
+<script>
+    function updateClientPoc(value) {
+        document.getElementById('client_poc').value = value;
+    }
+</script>
+
+<script>
+    function updateClientSiteID(value) {
+        document.getElementById('client_site_id').value = value;
+    }
+</script>
+
+<script>
+    function updateClientDesig(value) {
+        document.getElementById('desig').value = value;
+    }
+</script>
+
+<script>
+    function updateClientEmail(value) {
+        document.getElementById('client_email').value = value;
+    }
+</script>
+
+<script>
+    function updateClientPhone(value) {
+        document.getElementById('client_cell').value = value;
     }
 </script>
 

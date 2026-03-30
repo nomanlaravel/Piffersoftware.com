@@ -128,5 +128,9 @@ public function WeaponBranch()
         return $this->hasMany(InternalDispatch::class, 'cro_id');
     }
 
+    public function campaigns()
+{
+    return $this->hasMany(Campaign::class, 'branch_id');
+}
 
 }

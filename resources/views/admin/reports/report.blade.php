@@ -9,7 +9,7 @@
             <li class="nav-item active" role="presentation">
                 <button class="nav-link" id="mailchimp-tab" data-bs-toggle="tab" data-bs-target="#mailchimp"
                     type="button" role="tab" aria-controls="mailchimp" aria-selected="false">
-                    Log Of Sales Email Campaign Report (Mailchimp)
+                    Log of sales Campaign
                 </button>
             </li>
             <li class="nav-item" role="presentation">
@@ -142,6 +142,24 @@
                                 @foreach (App\Models\Region::all() as $region)
                                     <option value="{{ $region->region_name }}">{{ $region->region_name }}</option>
                                 @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label>Branch</label>
+                            <select name="branch" class="form-control">
+                                <!-- Default -->
+                                <option value="">Select a branch</option>
+                                <option value="all" {{ request('branch') == 'all' ? 'selected' : '' }}>All Branches
+                                </option>
+
+                                <!-- Only if branches exist -->
+                                @if($branches->isNotEmpty())
+                                    @foreach($branches as $branch)
+                                        <option value="{{ $branch }}" {{ request('branch') == $branch ? 'selected' : '' }}>
+                                            {{ $branch }}
+                                        </option>
+                                    @endforeach
+                                @endif
                             </select>
                         </div>
                         <div class="col-md-2 mt-4">
