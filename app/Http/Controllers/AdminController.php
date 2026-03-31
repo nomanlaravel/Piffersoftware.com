@@ -48,7 +48,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 class AdminController extends Controller
 {
 
-
+    
     public function admin_moveable_assets(Request $request)
     {
         // $query  = Admin::with('moveables');
@@ -295,7 +295,7 @@ class AdminController extends Controller
 
         return view('admin.editadmin', compact('socials'));
     }
-    public function admin()
+public function admin()
     {
         $branches = Admin::with('reports')->get();
         $regions_city = Admin::whereNotNull('branch_city')
@@ -308,8 +308,11 @@ class AdminController extends Controller
 
         // Merge & unique
         $regions = $regions_city->merge($regions_area)->unique()->values();
-        // return 
-        return view('admin.admin', ['branches' => $branches, 'regions' => $regions]);
+
+        // Fix: Add requirements for RHQ dropdowns in admin.blade.php
+        $requirements = \App\Models\Requirement::select('rhq')->distinct()->get();
+
+        return view('admin.admin', ['branches' => $branches, 'regions' => $regions, 'requirements' => $requirements]);
     }
 
     public function filterQuotationReports(Request $request)

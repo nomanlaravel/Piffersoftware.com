@@ -74,7 +74,17 @@
                     role="tab" aria-controls="Feedback" aria-selected="false">
                     Daily Feedback
                 </button>
-            </li>
+                </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="rfq-security-tab" data-bs-toggle="tab" data-bs-target="#rfq-security" type="button" role="tab" aria-controls="rfq-security" aria-selected="false">
+                            Active RFQ/Tender Log Register For Piffers Security
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="rfq-sedulous-tab" data-bs-toggle="tab" data-bs-target="#rfq-sedulous" type="button" role="tab" aria-controls="rfq-sedulous" aria-selected="false">
+                            Active RFQ/Tender Log Register For Piffers Sedulous
+                        </button>
+                    </li>
                 </ul>
                 <div class="tab-content mt-3" id="myTabContent">
                 <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
@@ -290,7 +300,74 @@
                 </div>
             </form>
         </div>
+          
+
+            <!-- New RFQ/Tender Security Tab -->
+            <div class="tab-pane fade" id="rfq-security" role="tabpanel" aria-labelledby="rfq-security-tab">
+                <form method="GET" action="{{ route('search.requirement.report') }}">
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <label>Region</label>
+                            <select name="rhq" class="form-control">
+                                <option value="">-- Select Region --</option>
+                                <option value="all" {{ request('rhq') == 'all' ? 'selected' : '' }}>All Branches</option>
+                                @foreach ($branches as $branch)
+                                    <option value="{{ $branch->branch_office_name }}" {{ request('rhq') == $branch->branch_office_name ? 'selected' : '' }}>
+                                        {{ $branch->branch_office_name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label>Start Date</label>
+                            <input type="date" name="s_date" class="form-control" value="{{ request('s_date') }}">
+                        </div>
+                        <div class="col-md-3">
+                            <label>End Date</label>
+                            <input type="date" name="e_date" class="form-control" value="{{ request('e_date') }}">
+                        </div>
+                        <div class="col-md-2 mt-4">
+                            <button type="submit" class="btn btn-outline-light">
+                                <img src="https://cdn-icons-png.flaticon.com/128/18444/18444736.png" alt="" width="30px" height="30px">
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
+
+            <!-- New RFQ/Tender Sedulous Tab -->
+            <div class="tab-pane fade" id="rfq-sedulous" role="tabpanel" aria-labelledby="rfq-sedulous-tab">
+                <form method="GET" action="{{ route('search.active.requirement.report') }}">
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <label>Region</label>
+                            <select name="rhq" class="form-control">
+                                <option value="">-- Select Region --</option>
+                                <option value="all" {{ request('rhq') == 'all' ? 'selected' : '' }}>All Branches</option>
+                                @foreach ($branches as $branch)
+                                    <option value="{{ $branch->branch_office_name }}" {{ request('rhq') == $branch->branch_office_name ? 'selected' : '' }}>
+                                        {{ $branch->branch_office_name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label>Start Date</label>
+                            <input type="date" name="s_date" class="form-control" value="{{ request('s_date') }}">
+                        </div>
+                        <div class="col-md-3">
+                            <label>End Date</label>
+                            <input type="date" name="e_date" class="form-control" value="{{ request('e_date') }}">
+                        </div>
+                        <div class="col-md-2 mt-4">
+                            <button type="submit" class="btn btn-outline-light">
+                                <img src="https://cdn-icons-png.flaticon.com/128/18444/18444736.png" alt="" width="30px" height="30px">
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+  </div>
             <div class="table-responsive mt-2">
                 <div style="height: 380px; overflow-y: auto;">
                     <table class="table table-bordered table-striped table-fixed">

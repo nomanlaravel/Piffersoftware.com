@@ -728,7 +728,7 @@ Route::get('/admin/reminders', function () {
 });
 
 Route::get('/latestlicenseattachment/{id}', [ImageController::class, 'latestlicenseattachment'])->name('latestlicenseattachment');
-Route::get('/delete-image/{id}/{column}', [ImageController::class, 'deleteImage'])->name('admin.deleteImage');
+Route::get('/delete-images/{id}/{column}', [ImageController::class, 'deleteImage'])->name('admin.deleteImage');
 Route::get('/delete-image/{id}/{column}/{file}', [ImageController::class, 'deleteRentalImage'])->name('admin.deleteRentalImage');
 Route::get('/delete-image/{id}/{column}', [ImageController::class, 'deleteCustomerImage'])->name('admin.deleteCustomerImage');
 
