@@ -47,7 +47,8 @@ class Admin extends Model
         'branch_city',
         'branch_photo',
         'branch_pin',
-        'branch_gps'
+        'branch_gps',
+        'status'
     ];
 public function nationwides()
 {

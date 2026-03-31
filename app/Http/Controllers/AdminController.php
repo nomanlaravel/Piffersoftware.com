@@ -176,42 +176,33 @@ class AdminController extends Controller
 
         return view('feedbackreport.task-record-dairy', compact('data'));
     }
-    //     public function wnationwide_store(Request $request)
-    // {
-    //   $validated = $request->validate([
-    //         'branch_id' => 'required|string',
-    //         'new_profiles' => 'nullable|string',
-    //         'old_profiles' => 'nullable|string',
-    //         'sedulous_profiles' => 'nullable|string',
-    //         'handbooks' => 'nullable|string',
-    //         'kay_chains' => 'nullable|string',
-    //         'calenders' => 'nullable|string',
-    //         'remarks' => 'nullable|string',
-    //         'nationenddate' => 'nullable|string',
-    //     ]);
 
-    //     // Check if this branch_id already exists
-    //     $existing = Wnationwide::where('branch_id', $validated['branch_id'])->first();
+    public function clientReport(Request $request)
+{
+    $query = Admin::query();
 
-    //     if ($existing) {
-    //         // Update existing record
-    //         $existing->update($validated);
-    //         return response()->json([
-    //             'status' => 'success',
-    //             'message' => 'Data updated successfully.',
-    //             'data' => $existing
-    //         ]);
-    //     } else {
-    //         // Create new record
-    //         $entry = Wnationwide::create($validated);
-    //         return response()->json([
-    //             'status' => 'success',
-    //             'message' => 'Data saved successfully.',
-    //             'data' => $entry
-    //         ]);
-    //     }
-    // }
+    if ($request->status == 'active') {
+        $query->where('status', 'active');
+    }
 
+    if ($request->status == 'terminated') {
+        $query->where('status', 'terminated');
+    }
+
+    $clients = $query->get();
+
+    return view('admin.client', compact('clients'));
+}
+
+public function getBranches($category)
+{
+    $branches = Admin::where('branch_category', $category)
+        ->select('id', 'branch_office_name')
+        ->distinct()
+        ->get();
+
+    return response()->json($branches);
+}
 
     public function wnationwide_store(Request $request)
     {

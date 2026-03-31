@@ -94,6 +94,8 @@ Route::get('/admin/search', [AdminController::class, 'search'])->name('search.ad
 Route::get('/admin/search_baranceshes', [AdminController::class, 'search_baranceshes'])->name('search_baranceshes.admins');
 Route::post('/upload-sales-register-report', [AdminController::class, 'upload_sales_register_report'])->name('sales.register.report');
 Route::get('/admin/moveable/assets', [AdminController::class, 'admin_moveable_assets'])->name('admin.moveable.assets');
+Route::get('/client-report', [AdminController::class, 'clientReport'])->name('admin.client');
+Route::get('/get-branches/{category}', [AdminController::class, 'getBranches']);
 
 // Admin Office Equipments
 Route::get('adminequipments', [AdminController::class, 'adminequipments'])->name('adminequipments');

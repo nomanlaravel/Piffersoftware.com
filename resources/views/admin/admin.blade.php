@@ -85,6 +85,12 @@
                             Active RFQ/Tender Log Register For Piffers Sedulous
                         </button>
                     </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="client-report-tab" data-bs-toggle="tab"
+                            data-bs-target="#client-report" type="button" role="tab">
+                            Reports like Closed/Terminated Client List
+                        </button>
+                    </li>
                 </ul>
                 <div class="tab-content mt-3" id="myTabContent">
                 <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
@@ -300,7 +306,37 @@
                 </div>
             </form>
         </div>
-          
+         <div class="tab-pane fade" id="client-report" role="tabpanel">
+
+    <form method="GET" action="{{ route('admin.client') }}" class="mt-3">
+        <div class="row mb-4">
+
+            <!-- Status Filter -->
+            <div class="col-md-3">
+                <label>Status</label>
+                <select name="status" class="form-control">
+                    <option value="">Select Status</option>
+                    <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>
+                        Active
+                    </option>
+                    <option value="terminated" {{ request('status') == 'terminated' ? 'selected' : '' }}>
+                        Terminated
+                    </option>
+                </select>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="col-md-2 mt-4">
+                <button type="submit" class="btn btn-outline-light mt-2">
+                    <img src="https://cdn-icons-png.flaticon.com/128/18444/18444736.png"
+                        alt="Search" width="30px" height="30px">
+                </button>
+            </div>
+
+        </div>
+    </form>
+
+</div>
 
             <!-- New RFQ/Tender Security Tab -->
             <div class="tab-pane fade" id="rfq-security" role="tabpanel" aria-labelledby="rfq-security-tab">

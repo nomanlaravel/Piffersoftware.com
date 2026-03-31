@@ -58,43 +58,31 @@
             <div class="col-lg-4 form-group">
                RHQ :<br>
                <div class="input-group" style="width: 100%;">
-                  <select id="category" class="form-control mt-1" name="rhq"
-                     style="width: 70%; border-radius: 4px 0 0 4px; ">
-                     <option value=""></option>
-                     @foreach ($salesrhq as $rhq)
-                        <option value="{{ $rhq->salesRhq }}">{{ $rhq->salesRhq }}</option>
+                  <select id="rhq" class="form-control mt-1" name="rhq">
+                     <option value="">Select RHQ</option>
+
+                     @foreach ($admin as $item)
+                        <option value="{{ $item->branch_category }}">
+                           {{ $item->branch_category }}
+                        </option>
                      @endforeach
+
                   </select>
-                  <div class="input-group-append" style="width: 30%;">
-                     <a href="{{ route('salesrhq') }}">
-                        <button class="btn btn-primary" id="submit-category" type="button"
-                           style="width: 100%; height: 38px; border-radius: 0 4px 4px 0; margin-top:4px;">Add</button>
-                     </a>
-                  </div>
                </div>
             </div>
             <div class="col-lg-4 form-group">
                Branch Name:<br>
                <div class="input-group" style="width: 100%;">
-                  <select id="category" class="form-control mt-1" name="branch_name"
-                     style="width: 70%; border-radius: 4px 0 0 4px; ">
-                     <option value=""></option>
-                     @foreach ($admin as $admin)
-                        <option value="{{ $admin->branch_office_name }}">{{ $admin->branch_office_name }}</option>
-                     @endforeach
+                  <select id="branch_name" class="form-control mt-1" name="branch_name">
+                     <option value="">Select Branch</option>
                   </select>
-                  <div class="input-group-append" style="width: 30%;">
-                     <a href="{{ route('admin') }}">
-                        <button class="btn btn-primary" id="submit-category" type="button"
-                           style="width: 100%; height: 38px; border-radius: 0 4px 4px 0; margin-top:4px;">Add</button>
-                     </a>
-                  </div>
                </div>
             </div>
             <div class="col-lg-4">
-               Branch Code <br> <input class="form-control" name="branch_code" type="text" placeholder="..."
-                  style="width: 88%;">
-            </div>
+    Branch Code <br>
+    <input class="form-control" id="branch_code" name="branch_code" type="text" placeholder="..."
+        style="width: 88%;">
+</div>
             <div class="col-lg-4 form-group">
                List of Giveaways:<br>
                <div class="input-group" style="width: 100%;">
@@ -903,7 +891,8 @@
                                                    <option value=""></option>
                                                    @foreach (App\Models\Dropdown::whereNotNull('comercial_category')->get() as $com_category)
                                                       <option value="{{  $com_category->comercial_category }}">
-                                                         {{  $com_category->comercial_category }}</option>
+                                                         {{  $com_category->comercial_category }}
+                                                      </option>
                                                    @endforeach
                                                 </select>
                                                 <div class="input-group-append" style="width: 30%;">
@@ -976,7 +965,8 @@
                                                    <option value=""></option>
                                                    @foreach (App\Models\Dropdown::whereNotNull('commercial_region')->get() as $com_region)
                                                       <option value="{{  $com_region->commercial_region }}">
-                                                         {{  $com_region->commercial_region }}</option>
+                                                         {{  $com_region->commercial_region }}
+                                                      </option>
                                                    @endforeach
                                                 </select>
                                                 <div class="input-group-append" style="width: 30%;">
@@ -1327,7 +1317,8 @@
                                                    <option value=""></option>
                                                    @foreach (App\Models\Dropdown::whereNotNull('comaplains_category')->get() as $com_com_category)
                                                       <option value="{{  $com_com_category->comaplains_category }}">
-                                                         {{  $com_com_category->comaplains_category }}</option>
+                                                         {{  $com_com_category->comaplains_category }}
+                                                      </option>
                                                    @endforeach
                                                 </select>
                                                 <div class="input-group-append" style="width: 30%;">
@@ -1971,7 +1962,8 @@
                                                    <option value=""></option>
                                                    @foreach (App\Models\Dropdown::whereNotNull('lumsumshown_category')->get() as $lumsumshowncategory)
                                                       <option value="{{  $lumsumshowncategory->lumsumshown_category }}">
-                                                         {{  $lumsumshowncategory->lumsumshown_category }}</option>
+                                                         {{  $lumsumshowncategory->lumsumshown_category }}
+                                                      </option>
                                                    @endforeach
                                                 </select>
                                                 <div class="input-group-append" style="width: 30%;">
@@ -2299,7 +2291,8 @@
                                                    <option value=""></option>
                                                    @foreach (App\Models\Dropdown::whereNotNull('lumsumhidden_category')->get() as $lumsumhiddencategory)
                                                       <option value="{{  $lumsumhiddencategory->lumsumhidden_category }}">
-                                                         {{  $lumsumhiddencategory->lumsumhidden_category }}</option>
+                                                         {{  $lumsumhiddencategory->lumsumhidden_category }}
+                                                      </option>
                                                    @endforeach
                                                 </select>
                                                 <div class="input-group-append" style="width: 30%;">
@@ -2565,7 +2558,8 @@
                                        <option value=""></option>
                                        @foreach (App\Models\Dropdown::whereNotNull('comercial_reverse_category')->get() as $com_rev_category)
                                           <option value="{{  $com_rev_category->comercial_reverse_category }}">
-                                             {{  $com_rev_category->comercial_reverse_category }}</option>
+                                             {{  $com_rev_category->comercial_reverse_category }}
+                                          </option>
                                        @endforeach
                                     </select>
                                     <div class="input-group-append" style="width: 30%;">
@@ -3118,7 +3112,8 @@
                                                          <option value=""></option>
                                                          @foreach ($salesguard as $guard)
                                                             <option value="{{ $guard->salesGuard }}">
-                                                               {{ $guard->salesGuard }}</option>
+                                                               {{ $guard->salesGuard }}
+                                                            </option>
                                                          @endforeach
                                                       </select>
                                                       <div class="input-group-append" style="width: 30%;">
@@ -3806,7 +3801,8 @@
                                                                <option value=""></option>
                                                                @foreach ($salesvehicle as $vehicle)
                                                                   <option value="{{ $vehicle->salesVehicle }}">
-                                                                     {{ $vehicle->salesVehicle }}</option>
+                                                                     {{ $vehicle->salesVehicle }}
+                                                                  </option>
                                                                @endforeach
                                                             </select>
                                                             <div class="input-group-append" style="width: 30%;">
@@ -3827,7 +3823,8 @@
                                                                <option value="">Select a type</option>
                                                                @foreach (App\Models\VehicalType::all() as $vtype)
                                                                   <option value="{{ $vtype->v_type_name }}">
-                                                                     {{ $vtype->v_type_name }}</option>
+                                                                     {{ $vtype->v_type_name }}
+                                                                  </option>
                                                                @endforeach
                                                             </select>
                                                             <div class="input-group-append" style="width: 30%;">
@@ -3848,7 +3845,8 @@
                                                                <option value="">Select a type</option>
                                                                @foreach (App\Models\Vehicalcategory::all() as $vtype)
                                                                   <option value="{{ $vtype->v_category_name }}">
-                                                                     {{ $vtype->v_category_name }}</option>
+                                                                     {{ $vtype->v_category_name }}
+                                                                  </option>
                                                                @endforeach
                                                             </select>
                                                             <div class="input-group-append" style="width: 30%;">
@@ -4559,7 +4557,8 @@
                                                                <option value=""></option>
                                                                @foreach ($salescanine as $canine)
                                                                   <option value="{{ $canine->salesCanine }}">
-                                                                     {{ $canine->salesCanine }}</option>
+                                                                     {{ $canine->salesCanine }}
+                                                                  </option>
                                                                @endforeach
                                                             </select>
                                                             <div class="input-group-append" style="width: 30%;">
@@ -6784,7 +6783,8 @@
                                                                <option value=""></option>
                                                                @foreach ($salesconsultancy as $consultancy)
                                                                   <option value="{{ $consultancy->salesConsultancy }}">
-                                                                     {{ $consultancy->salesConsultancy }}</option>
+                                                                     {{ $consultancy->salesConsultancy }}
+                                                                  </option>
                                                                @endforeach
                                                             </select>
                                                             <div class="input-group-append" style="width: 30%;">
@@ -7868,7 +7868,8 @@
                                                                <option value=""></option>
                                                                @foreach (\App\Models\SecurityEqupCate::all() as $equpc)
                                                                   <option value="{{ $equpc->security_equ_cate_name }}">
-                                                                     {{ $equpc->security_equ_cate_name }}</option>
+                                                                     {{ $equpc->security_equ_cate_name }}
+                                                                  </option>
                                                                @endforeach
                                                             </select>
                                                             <div class="input-group-append" style="width: 30%;">
@@ -8110,7 +8111,8 @@
                                                                   <option value=""></option>
                                                                   @foreach (App\Models\BarrierOwnership::all() as $barriero)
                                                                      <option value="{{ $barriero->bo_name }}">
-                                                                        {{ $barriero->bo_name }}</option>
+                                                                        {{ $barriero->bo_name }}
+                                                                     </option>
                                                                   @endforeach
                                                                </select>
                                                                <div class="input-group-append" style="width: 30%;">
@@ -8131,7 +8133,8 @@
                                                                   <option value=""></option>
                                                                   @foreach (App\Models\BarrierRental::all() as $barrierrental)
                                                                      <option value="{{ $barrierrental->br_name }}">
-                                                                        {{ $barrierrental->br_name }}</option>
+                                                                        {{ $barrierrental->br_name }}
+                                                                     </option>
                                                                   @endforeach
                                                                </select>
                                                                <div class="input-group-append" style="width: 30%;">
@@ -9232,7 +9235,8 @@
                                                                   <option value=""></option>
                                                                   @foreach (App\Models\CctvCategory::all() as $cctvcategory)
                                                                      <option value="{{  $cctvcategory->cc_name }}">
-                                                                        {{  $cctvcategory->cc_name }}</option>
+                                                                        {{  $cctvcategory->cc_name }}
+                                                                     </option>
                                                                   @endforeach
                                                                </select>
                                                                <div class="input-group-append" style="width: 30%;">
@@ -9253,7 +9257,8 @@
                                                                   <option value=""></option>
                                                                   @foreach (App\Models\CctvBrand::all() as $cctvbrand)
                                                                      <option value="{{  $cctvbrand->cb_name }}">
-                                                                        {{  $cctvbrand->cb_name }}</option>
+                                                                        {{  $cctvbrand->cb_name }}
+                                                                     </option>
                                                                   @endforeach
                                                                </select>
                                                                <div class="input-group-append" style="width: 30%;">
@@ -9274,7 +9279,8 @@
                                                                   <option value=""></option>
                                                                   @foreach (App\Models\CctvModel::all() as $cctvmodel)
                                                                      <option value="{{  $cctvmodel->cm_name }}">
-                                                                        {{  $cctvmodel->cm_name }}</option>
+                                                                        {{  $cctvmodel->cm_name }}
+                                                                     </option>
                                                                   @endforeach
                                                                </select>
                                                                <div class="input-group-append" style="width: 30%;">
@@ -9300,7 +9306,8 @@
                                                                   <option value=""></option>
                                                                   @foreach (App\Models\CctvPixels::all() as $cctvpixel)
                                                                      <option value="{{  $cctvpixel->cp_name }}">
-                                                                        {{  $cctvpixel->cp_name }}</option>
+                                                                        {{  $cctvpixel->cp_name }}
+                                                                     </option>
                                                                   @endforeach
                                                                </select>
                                                                <div class="input-group-append" style="width: 30%;">
@@ -9329,7 +9336,8 @@
                                                                   <option value=""></option>
                                                                   @foreach (App\Models\Dropdown::whereNotNull('cctv_type')->get() as $cctvtype)
                                                                      <option value="{{  $cctvtype->cctv_type }}">
-                                                                        {{  $cctvtype->cctv_type }}</option>
+                                                                        {{  $cctvtype->cctv_type }}
+                                                                     </option>
                                                                   @endforeach
                                                                </select>
                                                                <div class="input-group-append" style="width: 30%;">
@@ -9351,7 +9359,8 @@
                                                                   @foreach (App\Models\Dropdown::whereNotNull('cctv_backup_storage')->get() as $cctvbackup)
                                                                      <option
                                                                         value="{{  $cctvbackup->cctv_backup_storage }}">
-                                                                        {{  $cctvbackup->cctv_backup_storage }}</option>
+                                                                        {{  $cctvbackup->cctv_backup_storage }}
+                                                                     </option>
                                                                   @endforeach
                                                                </select>
                                                                <div class="input-group-append" style="width: 30%;">
@@ -9372,7 +9381,8 @@
                                                                   <option value=""></option>
                                                                   @foreach (App\Models\Dropdown::whereNotNull('cctv_nvr')->get() as $cctvnvr)
                                                                      <option value="{{  $cctvnvr->cctv_nvr }}">
-                                                                        {{  $cctvnvr->cctv_nvr }}</option>
+                                                                        {{  $cctvnvr->cctv_nvr }}
+                                                                     </option>
                                                                   @endforeach
                                                                </select>
                                                                <div class="input-group-append" style="width: 30%;">
@@ -9401,7 +9411,8 @@
                                                                   <option value=""></option>
                                                                   @foreach (App\Models\Dropdown::whereNotNull('cctv_poe_switch')->get() as $cctvpoes)
                                                                      <option value="{{  $cctvpoes->cctv_poe_switch }}">
-                                                                        {{  $cctvpoes->cctv_poe_switch }}</option>
+                                                                        {{  $cctvpoes->cctv_poe_switch }}
+                                                                     </option>
                                                                   @endforeach
                                                                </select>
                                                                <div class="input-group-append" style="width: 30%;">
@@ -18513,6 +18524,45 @@
          });
       });
    </script>
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   <script>
+$(document).ready(function () {
+
+    $('#rhq').on('change', function () {
+        let category = $(this).val();
+
+        $('#branch_name').html('<option value="">Loading...</option>');
+
+        if (category) {
+            $.ajax({
+                url: '/get-branches/' + category,
+                type: 'GET',
+                success: function (data) {
+
+                    let options = '<option value="">Select Branch</option>';
+
+                    $.each(data, function (key, value) {
+                        options += `<option value="${value.id}">
+                                        ${value.branch_office_name}
+                                    </option>`;
+                    });
+
+                    $('#branch_name').html(options);
+                }
+            });
+        }
+    });
+
+
+    // 👉 When branch selected → fill branch code
+    $('#branch_name').on('change', function () {
+        let branchId = $(this).val();
+
+        $('#branch_code').val(branchId);
+    });
+
+});
+</script>
    <!-- Script for automatically total admin cost text field updated -->
    <!-- <script>
    $(document).on('input', '#hiddenAdminCostField', function() {
