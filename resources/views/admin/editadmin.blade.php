@@ -1280,8 +1280,8 @@
                                                                             oninput="trimSpaces12()" class="form-control"
                                                                             name="insurrances[{{ $index }}][ins_note]"
                                                                             rows="2" cols="38">
-                                                                            {{ $insurrance->ins_note }}
-                                                                        </textarea>
+                                                                                {{ $insurrance->ins_note }}
+                                                                            </textarea>
                                                                     </div>
                                                                     <div class="col-lg-6 spacing-left spacing-right mt-2">
                                                                         Attachments
@@ -1477,8 +1477,8 @@
                                                                     oninput="trimSpaces12()" class="form-control"
                                                                     name="trackers[{{ $index }}][tracker_note]" rows="2"
                                                                     cols="38">
-                                                                    {{ $tracker->tracker_note }}
-                                                                </textarea>
+                                                                        {{ $tracker->tracker_note }}
+                                                                    </textarea>
                                                             </div>
                                                             <div class="col-lg-6 spacing-left spacing-right mt-2">
                                                                 Attachments
@@ -1717,8 +1717,8 @@
                                                             <textarea id="w3review12" class="form-control"
                                                                 name="repairs[{{ $index }}][warranty_note]" rows="2"
                                                                 cols="38">
-                                                                {{ $repair->warranty_note }}
-                                                            </textarea>
+                                                                    {{ $repair->warranty_note }}
+                                                                </textarea>
                                                         </div>
 
                                                     </div>
@@ -1731,8 +1731,8 @@
                                                                 oninput="trimSpaces12()" class="form-control"
                                                                 name="repairs[{{ $index }}][repair_note]" rows="2"
                                                                 cols="38">
-                                                                {{ $repair->repair_note }}
-                                                            </textarea>
+                                                                    {{ $repair->repair_note }}
+                                                                </textarea>
                                                         </div>
                                                         <div class="col-lg-6 spacing-left spacing-right mt-2">
                                                             Attachments
@@ -2971,41 +2971,57 @@
                             </div>
                             <script>
                                 document.getElementById('saveTaskBtn').addEventListener('click', function () {
+
                                     let section = document.getElementById('taskRecordSection');
                                     let inputs = section.querySelectorAll('input, textarea');
                                     let formData = new FormData();
 
-                                    // Check required fields
-                                    const requiredFields = ['description_task', 'dependence_department_organization', 'task_assigned_by', 'review_date', 'completion_date', 'signature'];
-                                    let isValid = true;
-                                    let errorMsg = '';
+                                    const requiredFields = [
+                                        'description_task',
+                                        'dependence_department_organization',
+                                        'task_assigned_by',
+                                        'review_date',
+                                        'completion_date',
+                                        'signature'
+                                    ];
 
+                                    let isValid = true;
+
+                                    // 🔴 Validation with Toastr
                                     requiredFields.forEach(fieldName => {
                                         const field = section.querySelector(`[name="${fieldName}"]`);
                                         if (!field.value.trim()) {
                                             isValid = false;
-                                            errorMsg += `Please fill ${field.placeholder || fieldName}\n`;
+
+                                            toastr.error(`Please fill ${field.placeholder || fieldName}`, '', {
+                                                positionClass: "toast-top-right",
+                                                progressBar: true,
+                                                timeOut: 3000
+                                            });
                                         }
                                     });
 
-                                    if (!isValid) {
-                                        alert(errorMsg);
-                                        return;
-                                    }
+                                    if (!isValid) return;
 
+                                    // Append data
                                     inputs.forEach(input => {
                                         formData.append(input.name, input.value);
                                     });
 
-                                    // Use global CSRF meta from layout
                                     formData.append('_token', document.querySelector('meta[name="csrf-token"]').content);
 
-                                    let messageBox = document.getElementById('responseMessage');
                                     const saveButton = document.getElementById('saveTaskBtn');
                                     const originalText = saveButton.textContent;
 
                                     saveButton.textContent = 'Saving...';
                                     saveButton.disabled = true;
+
+                                    // 🔵 Loading Toast
+                                    toastr.info('Saving task...', '', {
+                                        positionClass: "toast-top-right",
+                                        progressBar: true,
+                                        timeOut: 2000
+                                    });
 
                                     fetch("{{ route('admin.task_record_dairy') }}", {
                                         method: 'POST',
@@ -3013,48 +3029,65 @@
                                     })
                                         .then(res => {
                                             if (!res.ok) {
-                                                throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+                                                throw new Error(`HTTP ${res.status}`);
                                             }
                                             return res.json();
                                         })
                                         .then(data => {
-                                            console.log('Response:', data); // Debug log
-                                            if (data.success) {
-                                                messageBox.innerHTML = `<div class="alert alert-success">${data.message}</div>`;
 
-                                                // Add new record to table - FIXED selector and all fields
+                                            if (data.success) {
+
+                                                // ✅ Success Toast
+                                                toastr.success(data.message, '', {
+                                                    positionClass: "toast-top-right",
+                                                    progressBar: true,
+                                                    timeOut: 3000
+                                                });
+
+                                                // ✅ Add new row dynamically
                                                 const tbody = document.getElementById('taskRecordsTableBody');
                                                 if (tbody) {
                                                     const newRow = document.createElement('tr');
+
                                                     newRow.innerHTML = `
-                                                    <td>${data.data.sr_no}</td>
-                                                    <td>${data.data.description_task}</td>
-                                                    <td>${data.data.dependence_department_organization}</td>
-                                                    <td>${data.data.task_assigned_by}</td>
-                                                    <td>${data.data.review_date ? new Date(data.data.review_date).toLocaleDateString('en-GB') : '--'}</td>
-                                                    <td>${data.data.completion_date ? new Date(data.data.completion_date).toLocaleDateString('en-GB') : '--'}</td>
-                                                    <td>${data.data.signature || '--'}</td>
-                                                `;
-                                                    tbody.insertBefore(newRow, tbody.firstChild);
+                    <td>${data.data.sr_no}</td>
+                    <td>${data.data.description_task}</td>
+                    <td>${data.data.dependence_department_organization}</td>
+                    <td>${data.data.task_assigned_by}</td>
+                    <td>${data.data.review_date ? new Date(data.data.review_date).toLocaleDateString('en-GB') : '--'}</td>
+                    <td>${data.data.completion_date ? new Date(data.data.completion_date).toLocaleDateString('en-GB') : '--'}</td>
+                    <td>${data.data.signature || '--'}</td>
+                `;
+
+                                                    tbody.prepend(newRow); // add on top
                                                 }
 
-                                                // Clear inputs
+                                                // ✅ Clear form
                                                 inputs.forEach(input => input.value = '');
-
-                                                // Reset sr_no
                                                 document.getElementById('srNo').value = '';
+
                                             } else {
-                                                messageBox.innerHTML = `<div class="alert alert-danger">${data.message || 'Unknown error'}</div>`;
+                                                toastr.error(data.message || 'Something went wrong', '', {
+                                                    positionClass: "toast-top-right",
+                                                    progressBar: true,
+                                                    timeOut: 3000
+                                                });
                                             }
                                         })
                                         .catch(error => {
-                                            console.error('Fetch error:', error);
-                                            messageBox.innerHTML = `<div class="alert alert-danger">Error: ${error.message}. Check console.</div>`;
+                                            console.error(error);
+
+                                            toastr.error('Failed to save task. Please try again.', '', {
+                                                positionClass: "toast-top-right",
+                                                progressBar: true,
+                                                timeOut: 3000
+                                            });
                                         })
                                         .finally(() => {
                                             saveButton.textContent = originalText;
                                             saveButton.disabled = false;
                                         });
+
                                 });
                             </script>
                         </div>
@@ -3156,9 +3189,9 @@
                                                     <td>{{ \Carbon\Carbon::parse($notice->notice_date)->format('d M Y') }}
                                                     </td>
                                                     <td>{{ \Carbon\Carbon::parse($notice->notice_received_on)->format('d M
-                                                        Y') }}</td>
+                                                            Y') }}</td>
                                                     <td>{{ \Carbon\Carbon::parse($notice->reporting_date)->format('d M Y')
-                                                        }}</td>
+                                                            }}</td>
                                                     <td>{{ $notice->concern_department }}</td>
                                                     <td>{{ $notice->notice_description }}</td>
                                                     <td>

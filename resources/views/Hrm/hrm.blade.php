@@ -43,6 +43,11 @@
             </div>
         @endif
     </div>
+    <div class="mb-4" style="width:100%;">
+                @if (Auth::user()->role != 'customer' && Auth::user()->role != 'client')
+                    <a class="btn btn-primary float-end mb-4" href="{{ url('posthrm') }}">+ New Staff</a>
+                @endif
+            </div>
     <div class="tab-content" id="myTabContent">
          <div class="tab-pane fade show active" id="staff" role="tabpanel" aria-labelledby="staff-tab">
 <div class="modal-header border-0">
@@ -53,11 +58,7 @@
                     <h5 class="mt-3" style="font-weight: 700;"> Human Resource Management: </h5>
                 </div>
             </div>
-            <div class="mb-4" style="width:100%;">
-                @if (Auth::user()->role != 'customer' && Auth::user()->role != 'client')
-                    <a class="btn btn-primary float-end mb-4" href="{{ url('posthrm') }}">+ New Staff</a>
-                @endif
-            </div>
+            
 
             <form method="GET" action="{{ route('staff.details.search') }}">
                 <div class="row">

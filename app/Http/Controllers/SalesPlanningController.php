@@ -247,14 +247,14 @@ class SalesPlanningController extends Controller
         if ($request->filled('e_date')) {
             $query->whereDate('e_date', $request->e_date);
         }
-        $requirements = $query->where('type', 'security')->get();
-        // Get unique RHQs for the select dropdown
-        $all_rhqs = Requirement::select('rhq')->distinct()->pluck('rhq');
+$requirements = $query->where('type', 'security')->get();
+        // Get unique RHQs for the select dropdown - formatted for blade template
+        $all_rhqs_requirements = Requirement::select('rhq')->distinct()->get();
 
         return view('requirement.index', [
             'requirements' => $requirements,
             'filters' => $request->all(),
-            'all_rhqs' => $all_rhqs,
+            'all_rhqs' => $all_rhqs_requirements,
         ]);
     }
 
@@ -274,13 +274,14 @@ class SalesPlanningController extends Controller
             $query->whereDate('e_date', $request->e_date);
         }
 
-        $requirements = $query->where('type', 'sedulous')->get();
-        // Get unique RHQs for the select dropdown
-        $all_rhqs = Requirement::select('rhq')->distinct()->pluck('rhq');
+$requirements = $query->where('type', 'sedulous')->get();
+        // Get unique RHQs for the select dropdown - formatted for blade template
+        $all_rhqs_requirements = Requirement::select('rhq')->distinct()->get();
+
         return view('requirement.active', [
             'requirements' => $requirements,
             'filters' => $request->all(),
-            'all_rhqs' => $all_rhqs,
+            'all_rhqs' => $all_rhqs_requirements,
         ]);
     }
 
