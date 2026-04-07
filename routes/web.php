@@ -124,7 +124,7 @@ Route::get('/get-next-task-number/{section_number}', [AdminController::class, 'g
 Route::delete('/delete/cro/task/{id}', [AdminController::class, 'deletecro_task'])->name('deletecro_tasks');
 Route::put('/cro_tasks/update/{id}', [AdminController::class, 'update_crotask'])->name('updatecro_tasks');
 
-// Route::get('/register', [AdminController::class, 'showRegister'])->name('register.index');
+Route::get('/register', [AdminController::class, 'showRegister'])->name('register.index');
 Route::post('/crotask/{id}/save', [AdminController::class, 'storeTaskAssignments'])->name('store.task.assignments');
 Route::get('/search/crotask', [AdminController::class, 'search_crotask'])->name('searchcrotask');
 
@@ -641,12 +641,12 @@ Route::post('/send-pdf-email/campaign', [SalesPlanningController::class, 'sendPD
 Route::get('/report/delete/{id}', [SalesPlanningController::class, 'deletereports'])->name('report.delete');
 
 //  region
-Route::get('/region/add', [RegionController::class, 'addregion'])->name('region.add');
-Route::post('/region/store', [RegionController::class, 'storeregion'])->name('region.store');
-Route::delete('/region/delete/{id}', [RegionController::class, 'deleteeregion'])->name('region.delete');
+Route::get('/region', [RegionController::class, 'addregion'])->name('admin.region.index');
+Route::post('/region/store', [RegionController::class, 'storeregion'])->name('admin.region.store');
+Route::delete('/region/delete/{id}', [RegionController::class, 'deleteeregion'])->name('admin.region.delete');
+Route::put('/region/update/{id}', [RegionController::class, 'updateRegion'])->name('admin.region.update');
 
 // segment
-
 Route::get('/segment/add', [RegionController::class, 'addsegment'])->name('segment.add');
 Route::post('/segment/store', [RegionController::class, 'storesegment'])->name('segment.store');
 Route::delete('/segment/delete/{id}', [RegionController::class, 'deleteesegment'])->name('segment.delete');

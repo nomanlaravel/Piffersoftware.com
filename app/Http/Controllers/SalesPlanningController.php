@@ -75,14 +75,15 @@ class SalesPlanningController extends Controller
     {
         $cros = Cro::orderBy('id')->get();
         $branches = Admin::orderBy('branch_office_name')->get();
-        $query = Allreport::with('cro', 'branch')->where('report_name', 'quotation_register_report');
+        $query = Allreport::with(['cro', 'branch'])->where('report_name', 'quotation_register_report');
         $regions = Cro::select('region')->distinct()->pluck('region');
 
-        // Branch Filter
-        if ($request->filled('branch')) {
-            $query->whereHas('branch', function ($q) use ($request) {
-                $q->where('branch_office_name', $request->region);
-            });
+        // Branch Filter - FIXED
+        if ($request->filled('branch') && $request->branch !== 'all') {
+            $branch = Admin::where('branch_office_name', $request->branch)->first();
+            if ($branch) {
+                $query->where('branch_id', $branch->id);
+            }
         }
         // Region Filter
         if ($request->filled('region')) {
@@ -121,20 +122,26 @@ class SalesPlanningController extends Controller
     public function feedback_register_report(Request $request)
     {
         $cros = Cro::whereNotIn('region', ['Central-2', 'Central-3'])->orderBy('id')->get();
-        $query = Allreport::with('cro')->where('report_name', 'feedback_register_report');
+        $query = Allreport::with(['cro', 'branch'])->where('report_name', 'feedback_register_report');
         $branches = Admin::orderBy('branch_office_name')->get();
-        $regions = Cro::select('region')->distinct()->pluck('region');
 
-        // Branch Filter
-        if ($request->filled('branch')) {
-            $query->whereHas('branch', function ($q) use ($request) {
-                $q->where('branch_office_name', $request->region);
-            });
+        // Branch Filter - FIXED
+        if ($request->filled('branch') && $request->branch !== 'all') {
+            $branch = Admin::where('branch_office_name', $request->branch)->first();
+            if ($branch) {
+                $query->where('branch_id', $branch->id);
+            }
         }
         // Region Filter
-        if ($request->filled('region')) {
+        if ($request->filled('region') && $request->region !== 'all') {
             $query->whereHas('cro', function ($q) use ($request) {
                 $q->where('region', $request->region);
+            });
+        }
+        // Customer Name Filter (client_name)
+        if ($request->filled('client_name') && $request->client_name !== 'all') {
+            $query->whereHas('cro', function ($q) use ($request) {
+                $q->where('name', $request->client_name);
             });
         }
         // Filtering logic
@@ -161,7 +168,7 @@ class SalesPlanningController extends Controller
                 return Carbon::parse($report->start_date)->format('Y-m-d');
             });
 
-        return view('feedbackreport.index', compact('cros', 'feedbackreport'));
+        return view('feedbackreport.index', compact('cros', 'feedbackreport', 'branches'));
     }
 
     public function nationwide_report(Request $request)

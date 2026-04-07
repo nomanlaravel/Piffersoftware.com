@@ -20,6 +20,7 @@ class Requirement extends Model
         'lis_of_give',
         'orgName',
         'orgType',
+        'cash_or_taxable',
         'leadBy',
         'typeLead',
         'srcLead',

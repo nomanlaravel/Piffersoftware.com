@@ -384,7 +384,7 @@ public function admin()
         // Merge & unique
         $regions = $regions_city->merge($regions_area)->unique()->values();
 
-        $query = Allreport::where('report_name', 'quotation_register_report');
+        $query = Allreport::where('report_name', 'feedback_register_report');
 
         // Date Filter  
         if ($request->filled('feedback_report_date')) {
@@ -422,10 +422,10 @@ public function admin()
         $feedbackreport = [];
         foreach ($allReports as $report) {
             $dateKey = $report->created_at->format('Y-m-d');
-            if (!isset($quotationreport[$dateKey])) {
-                $quotationreport[$dateKey] = collect();
+            if (!isset($feedbackreport[$dateKey])) {
+                $feedbackreport[$dateKey] = collect();
             }
-            $quotationreport[$dateKey]->push($report);
+            $feedbackreport[$dateKey]->push($report);
         }
 
         return view('feedbackreport.index', compact('feedbackreport', 'cros', 'branches', 'regions'));
@@ -1186,7 +1186,6 @@ public function admin()
             return redirect()->back()->with('error', 'An error occurred while saving data.');
         }
     }
-
     public function editadmin(Request $request, $id)
     {
 
@@ -1216,6 +1215,10 @@ public function admin()
         $taskdeiry = TaskRecordDairy::all();
         $wnationswide = Wnationwide::all();
         $contractDetail = ContractDetail::all();
+
+        $northBranches = Admin::where('branch_category', 'like', '%North%')->get();
+        $centralBranches = Admin::where('branch_category', 'like', '%Central%')->get();
+        $southBranches = Admin::where('branch_category', 'like', '%South%')->get();
 
         $totals = [
             'repeater' => $records->sum('repeater'),
@@ -1248,7 +1251,7 @@ public function admin()
             'rifle_223_m4_bullets' => $records->sum('rifle_223_m4_bullets'),
         ];
         $uniformbranches = UniformRecord::with('Ubranch')->get();
-        return view('admin.editadmin', compact('admins', 'feedbackReports', 'compaigns', 'analytics', 'salesreports', 'quotationReports', 'wnationswide', 'taskdeiry', 'notices', 'records', 'contractDetail', 'totals', 'uniformbranches'));
+        return view('admin.editadmin', compact('admins', 'feedbackReports', 'compaigns', 'analytics', 'salesreports', 'quotationReports', 'wnationswide', 'taskdeiry', 'notices', 'records', 'contractDetail', 'totals', 'uniformbranches', 'northBranches', 'centralBranches', 'southBranches'));
     }
 
     public function autoSave(Request $request)
