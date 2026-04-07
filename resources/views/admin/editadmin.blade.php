@@ -2111,6 +2111,24 @@
                                 aria-controls="pills-dailysalesreport" aria-selected="false">Daily Sales Report
                             </button>
                         </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="pills-northregionalesreport-tab" data-bs-toggle="pill"
+                                data-bs-target="#pills-northregionalesreport" type="button" role="tab"
+                                aria-controls="pills-northregionalesreport" aria-selected="false">North Region Sales Report
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="pills-centralregionalesreport-tab" data-bs-toggle="pill"
+                                data-bs-target="#pills-centralregionalesreport" type="button" role="tab"
+                                aria-controls="pills-centralregionalesreport" aria-selected="false">Central Region Sales Report
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="pills-southregionalesreport-tab" data-bs-toggle="pill"
+                                data-bs-target="#pills-southregionalesreport" type="button" role="tab"
+                                aria-controls="pills-southregionalesreport" aria-selected="false">South Region Sales Report
+                            </button>
+                        </li>
                     </ul>
                     <div class="tab-content" id="pills-tabContent">
 
@@ -2125,7 +2143,7 @@
                                         <table id="clientReportTable" class="table table-bordered table-striped">
                                             <thead style="position: sticky; top: 0; background: #fff; z-index: 1;">
                                                 <tr>
-                                                    <th>Region</th>
+                                                    <th>Branches</th>
                                                     <th>Customers Files</th>
                                                     <th>Sedulous Files</th>
                                                     <th>Training Files</th>
@@ -2139,6 +2157,7 @@
                                                                                             <tr>
 
                                                                                                 <td>{{ $compaign->region }}</td>
+                                                                                                
                                                                                                 <td>
                                                                                                     <input type="text" name="customer_files"
                                                                                                         class="form-control autosave" data-id="{{ $compaign->id }}"
@@ -3530,7 +3549,93 @@
                     </div>
 
                 </div>
+  <div class="tab-content mt-3" id="pills-tabContent">
 
+    {{-- NORTH --}}
+    <div class="tab-pane fade show active"
+        id="pills-northregionalesreport"
+        role="tabpanel">
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Branch Name</th>
+                    <th>City</th>
+                    <th>Category</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($northBranches as $key => $branch)
+                <tr>
+                    <td>{{ $key + 1 }}</td>
+                    <td>{{ $branch->branch_office_name }}</td>
+                    <td>{{ $branch->branch_city }}</td>
+                    <td>{{ $branch->branch_category }}</td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+
+    </div>
+
+    {{-- CENTRAL --}}
+    <div class="tab-pane fade"
+        id="pills-centralregionalesreport"
+        role="tabpanel">
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Branch Name</th>
+                    <th>City</th>
+                    <th>Category</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($centralBranches as $key => $branch)
+                <tr>
+                    <td>{{ $key + 1 }}</td>
+                    <td>{{ $branch->branch_office_name }}</td>
+                    <td>{{ $branch->branch_city }}</td>
+                    <td>{{ $branch->branch_category }}</td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+
+    </div>
+
+    {{-- SOUTH --}}
+    <div class="tab-pane fade"
+        id="pills-southregionalesreport"
+        role="tabpanel">
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Branch Name</th>
+                    <th>City</th>
+                    <th>Category</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($southBranches as $key => $branch)
+                <tr>
+                    <td>{{ $key + 1 }}</td>
+                    <td>{{ $branch->branch_office_name }}</td>
+                    <td>{{ $branch->branch_city }}</td>
+                    <td>{{ $branch->branch_category }}</td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
                 <div class="tab-pane fade m-3" style="opacity: 90%;" id="internal_dispatches" role="tabpanel"
                     aria-labelledby="nav-home-tab">
 

@@ -56,24 +56,6 @@
             </div>
         </div>
          <div class="row">
-            @php
-            function getFilePreview($filePath) {
-                $extension = pathinfo($filePath, PATHINFO_EXTENSION);
-
-                if (in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
-                    return '<img src="' . asset($filePath) . '" width="100px" height="100px">';
-                } elseif ($extension === 'pdf') {
-                    return '<img src="https://img.icons8.com/color/48/000000/pdf.png" width="100px" height="100px">';
-                } elseif (in_array($extension, ['xlsx', 'xls'])) {
-                    return '<img src="https://img.icons8.com/color/48/000000/ms-excel.png" width="100px" height="100px">';
-                } elseif (in_array($extension, ['zip', 'rar'])) {
-                    return '<img src="https://img.icons8.com/color/48/000000/zip.png" width="100px" height="100px">';
-                } else {
-                    return '<p>File Preview Not Available</p>';
-                }
-            }
-            @endphp
-
             <div class="row mb-2" style="margin-left: 20px;">
                 <div class="col d-flex flex-column align-items-end" style="margin-right: 53px;">
                   <h5>Employee Activation Status</h5>

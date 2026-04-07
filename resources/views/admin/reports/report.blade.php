@@ -443,11 +443,11 @@
                         <label>End Date</label>
                         <input type="date" name="end_date" class="form-control" value="{{ request('end_date') }}">
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <label>OR Select Month</label>
                         <input type="month" name="month" class="form-control" value="{{ request('month') }}">
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <label>Region</label>
                         <select name="region" class="form-control" value="{{ request('region') }}">
                             <option value="">Select a region</option>
@@ -458,7 +458,7 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <label>Branch</label>
                         <select name="branch" class="form-control">
                             <option value="">Select a branch</option>
@@ -471,7 +471,24 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-2 mt-4">
+                    <div class="col-md-2">
+                        <label>Customer Name</label>
+                        <select name="client_name" class="form-control">
+                            <option value="">Select Customer</option>
+                            <option value="all" {{ request('name') == 'all' ? 'selected' : '' }}>All Customers</option>
+                            @foreach(\App\Models\Cro::select('name')->distinct()->get() as $customer)
+                                <option value="{{ $customer->name }}" {{ request('name') == $customer->name ? 'selected' : '' }}>
+                                    {{ $customer->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-1 mt-4">
+                        <label>Client ID</label>
+                        <select  class="form-control">
+                        </select>
+                    </div>
+                    <div class="col-md-1 mt-4">
                         <button type="submit" class="btn btn-outline-light mt-2">
                             <img src="https://cdn-icons-png.flaticon.com/128/18444/18444736.png" alt="Search"
                                 width="30px" height="30px">
@@ -625,8 +642,37 @@
             <form method="GET" action="{{ route('search.weeklly.sales.reports') }}">
                 <div class="row mb-4">
                     <div class="col-md-3">
-                        <label>Date</label>
+                        <label>Deployment Date</label>
                         <input type="date" name="date" class="form-control" value="{{ request('date') }}" />
+                    </div>
+                    <!-- Region -->
+                    <div class="col-md-3">
+                        <label class="form-label">Region</label>
+                        <select name="region" class="form-control">
+                            <option value="">Select a region</option>
+                            <option value="all" {{ request('region') == 'all' ? 'selected' : '' }}>All Regions</option>
+
+                            @foreach (App\Models\Admin::select('branch_category')->distinct()->get() as $region)
+                                <option value="{{ $region->branch_category }}" 
+                                    {{ request('region') == $region->branch_category ? 'selected' : '' }}>
+                                    {{ $region->branch_category }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <!-- Branch -->
+                    <div class="col-md-3">
+                        <label class="form-label">Branch</label>
+                        <select name="branch" class="form-control">
+                            <option value="">Select a branch</option>
+                            <option value="all" {{ request('branch') == 'all' ? 'selected' : '' }}>All Branches
+                            </option>
+                            @foreach (App\Models\Admin::all() as $branch)
+                                <option value="{{ $branch->branch_id }}" {{ request('branch') == $branch->branch_id ? 'selected' : '' }}>
+                                    {{ $branch->branch_office_name }}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="col-md-2 mt-4">
                         <button type="submit" class="btn btn-outline-light">

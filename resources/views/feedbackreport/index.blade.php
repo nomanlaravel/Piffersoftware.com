@@ -25,9 +25,14 @@
 <body>
 <div class="container-fluid mt-4">
         <h3 class="text-center text-light bg-secondary ">PIFFERS Security Services</h3>
-                <h3 class="text-center text-light bg-dark">
-                Feedback Register Report - {{ \Carbon\Carbon::now()->format('F Y') }}
-            </h3>
+@php
+            $keys = collect($feedbackreport ?? [])->keys();
+            $dates = $keys->map(fn($d) => \Carbon\Carbon::parse($d));
+            $range = $dates->isEmpty() ? '' : $dates->min()->format('d M Y') . ' to ' . $dates->max()->format('d M Y');
+        @endphp
+        <h3 class="text-center text-light bg-dark">
+            Feedback Register Report - {{ $range ?: \Carbon\Carbon::now()->format('F Y') }}
+        </h3>
 
     <div class="card">
         <div class="card-body">

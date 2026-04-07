@@ -545,7 +545,7 @@
             @endcanany
 
             {{-- Admin --}}
-            @canany(['view_branche', 'add_branche', 'update_branche', 'delete_branche', 'view_rental', 'add_rental', 'update_rental', 'delete_rental'])
+            @canany(['view_branche', 'add_branche', 'update_branche', 'delete_branche','view_region', 'add_region', 'update_region', 'delete_region', 'view_rental', 'add_rental', 'update_rental', 'delete_rental'])
               <li class="nav-item">
                 <a class="nav-link" data-toggle="collapse" href="#companiesSubMenu" aria-expanded="false"
                   aria-controls="companiesSubMenu">
@@ -557,6 +557,9 @@
                     @can('view_branche')
                       <li class="nav-item"><a class="nav-link" href="{{ url('admin') }}">Branches</a></li>
                     @endcan
+                    
+                      <li class="nav-item"><a class="nav-link" href="{{ url('region') }}">Regions</a></li>
+                    
                     @can('view_rental')
                       <li class="nav-item"><a class="nav-link" href="{{ url('rental') }}">Rental</a></li>
                     @endcan
@@ -629,7 +632,7 @@
                     {{-- Attendance sub-menu --}}
                     {{-- Attendance sub-menu --}}
                     @auth
-                      @if(auth()->user()->role === 'superadmin')
+                      @if(auth()->user()->role === 'Super Admin')
                         <li class="nav-item">
                           <a class="nav-link" data-toggle="collapse" href="#attendanceSubMenu" aria-expanded="false"
                             aria-controls="attendanceSubMenu">Attendance Management</a>

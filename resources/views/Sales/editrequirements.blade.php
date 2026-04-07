@@ -24,94 +24,101 @@
     <section>
 
 
-    <div id="emailModal" class="modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
-        <div class="modal-content" style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 40%; border-radius: 10px; text-align: center; margin-top:4%;">
-        <span class="close" style="color: #aaa; float: right; font-size: 28px; font-weight: bold; position: relative; left: 49%;" >&times;</span>
-        <label for="emailInput">Email To:</label>
-        <input type="email" id="emailInput" placeholder="Email">
+        <div id="emailModal" class="modal"
+            style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+            <div class="modal-content"
+                style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 40%; border-radius: 10px; text-align: center; margin-top:4%;">
+                <span class="close"
+                    style="color: #aaa; float: right; font-size: 28px; font-weight: bold; position: relative; left: 49%;">&times;</span>
+                <label for="emailInput">Email To:</label>
+                <input type="email" id="emailInput" placeholder="Email">
 
-        <label for="ccInput">CC Recipient:</label>
-        <input type="email" id="ccInput" placeholder=" Enter CC Recipient">
+                <label for="ccInput">CC Recipient:</label>
+                <input type="email" id="ccInput" placeholder=" Enter CC Recipient">
 
-        <label for="bccInput">BCC Recipient:</label>
-        <input type="email" id="bccInput" placeholder="Enter BCC Recipient">
+                <label for="bccInput">BCC Recipient:</label>
+                <input type="email" id="bccInput" placeholder="Enter BCC Recipient">
 
-        <label for="subjectInput">Subject:</label>
-        <input type="text" id="subjectInput" placeholder="Subject" autocomplete="off">
+                <label for="subjectInput">Subject:</label>
+                <input type="text" id="subjectInput" placeholder="Subject" autocomplete="off">
 
-        <label for="bodyInput">Body:</label>
-        <textarea id="bodyInput" rows="8" placeholder="Body" autocomplete="off"></textarea>
+                <label for="bodyInput">Body:</label>
+                <textarea id="bodyInput" rows="8" placeholder="Body" autocomplete="off"></textarea>
 
-        <button id="sendEmailBtn" class="mt-2" style="width: 20%; display: block; margin: 0 auto;">Send</button>
-        </div>
-    </div>
-
-    <div id="hiddenBootstrapAlert" class="alert alert-danger alert-dismissible fade" role="alert" style="display: hidden;">
-        <span id="hiddenAlertContent"></span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    <div id="hiddenRenewalAlert" class="alert alert-success alert-dismissible fade" role="alert">
-        <span id="hiddenRenewalAlertContent"></span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    <h5 style="text-align:center;"><b><u>Prospect Details</u></b></h5>
-    <form   id="sales_form" action="{{ route('requirements.update',$requirements->id) }}"  enctype="multipart/form-data" method="POST">
-    @csrf
-    @method('put')
-        <div class="mb-2 d-flex justify-content-end gap-4">
-            <div class="d-flex align-items-center">
-                <input class="" name="type" value="security" id="Security" type="radio"
-                    {{ $requirements->type === 'security' ? 'checked' : '' }} />
-                <label class="form-check-label" for="Security" style="margin-left: 5px;">
-                    Security
-                </label>
-            </div>
-            <div class="d-flex align-items-center">
-                <input class="" name="type" value="sedulous" id="Sedulous" type="radio"
-                    {{ $requirements->type === 'sedulous' ? 'checked' : '' }} />
-                <label class="form-check-label" for="Sedulous" style="margin-left: 5px;">
-                    Sedulous
-                </label>
+                <button id="sendEmailBtn" class="mt-2" style="width: 20%; display: block; margin: 0 auto;">Send</button>
             </div>
         </div>
 
-        <div>
-            <div class="row mb-2">
-                <div class="col-lg-4 spacing-right">
-                    Prospect No <br> <input class="form-control mt-2" name="prospectNo" value="{{ $requirements->prospectNo }}"  id="prospectNo" type="text" placeholder="..."
-                        style="width: 84%;">
+        <div id="hiddenBootstrapAlert" class="alert alert-danger alert-dismissible fade" role="alert"
+            style="display: hidden;">
+            <span id="hiddenAlertContent"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <div id="hiddenRenewalAlert" class="alert alert-success alert-dismissible fade" role="alert">
+            <span id="hiddenRenewalAlertContent"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <h5 style="text-align:center;"><b><u>Prospect Details</u></b></h5>
+        <form id="sales_form" action="{{ route('requirements.update', $requirements->id) }}"
+            enctype="multipart/form-data" method="POST">
+            @csrf
+            @method('put')
+            <div class="mb-2 d-flex justify-content-end gap-4">
+                <div class="d-flex align-items-center">
+                    <input class="" name="type" value="security" id="Security" type="radio" {{ $requirements->type === 'security' ? 'checked' : '' }} />
+                    <label class="form-check-label" for="Security" style="margin-left: 5px;">
+                        Security
+                    </label>
                 </div>
-                <div class="col-lg-4 form-group">
-                    Category:<br>
-                    <div class="input-group" style="width: 88%;">
-                        <input class="form-control mt-2" name="category"  value="{{ $requirements->category }}" type="text" placeholder="..."
-                        style="width: 84%;">
-
-                    </div>
-                </div>
-                <div class="col-lg-4 form-group">
-                    RHQ :<br>
-                    <div class="input-group" style="width: 88%;">
-                        <input class="form-control mt-2" name="rhq" value="{{ $requirements->rhq }}" type="text" placeholder="..."
-                        style="width: 84%;">
-                    </div>
-                </div>
-                <div class="col-lg-4 form-group">
-                    Branch Name  <br> <input class="form-control" name="branch_name" value="{{ $requirements->branch_name }}" type="text" placeholder="..." style="width: 88%;">
-
-                </div>
-                <div class="col-lg-4">
-                    Branch Code <br> <input class="form-control" name="branch_code" value="{{ $requirements->branch_code }}" type="text" placeholder="..." style="width: 88%;">
-                </div>
-                <div class="col-lg-4">
-                    List of Giveaways <br> <input class="form-control" name="lis_of_give" value="{{ $requirements->lis_of_give }}" type="text" placeholder="..." style="width: 88%;">
+                <div class="d-flex align-items-center">
+                    <input class="" name="type" value="sedulous" id="Sedulous" type="radio" {{ $requirements->type === 'sedulous' ? 'checked' : '' }} />
+                    <label class="form-check-label" for="Sedulous" style="margin-left: 5px;">
+                        Sedulous
+                    </label>
                 </div>
             </div>
-            <div class="mt-3 mb-3">
-                <!-- Promotional Activities Dropdown -->
+
+            <div>
+                <div class="row mb-2">
+                    <div class="col-lg-4 spacing-right">
+                        Prospect No <br> <input class="form-control mt-2" name="prospectNo"
+                            value="{{ $requirements->prospectNo }}" id="prospectNo" type="text" placeholder="..."
+                            style="width: 84%;">
+                    </div>
+                    <div class="col-lg-4 form-group">
+                        Category:<br>
+                        <div class="input-group" style="width: 88%;">
+                            <input class="form-control mt-2" name="category" value="{{ $requirements->category }}"
+                                type="text" placeholder="..." style="width: 84%;">
+
+                        </div>
+                    </div>
+                    <div class="col-lg-4 form-group">
+                        RHQ :<br>
+                        <div class="input-group" style="width: 88%;">
+                            <input class="form-control mt-2" name="rhq" value="{{ $requirements->rhq }}" type="text"
+                                placeholder="..." style="width: 84%;">
+                        </div>
+                    </div>
+                    <div class="col-lg-4 form-group">
+                        Branch Name <br> <input class="form-control" name="branch_name"
+                            value="{{ $requirements->branch_name }}" type="text" placeholder="..." style="width: 88%;">
+
+                    </div>
+                    <div class="col-lg-4">
+                        Branch Code <br> <input class="form-control" name="branch_code"
+                            value="{{ $requirements->branch_code }}" type="text" placeholder="..." style="width: 88%;">
+                    </div>
+                    <div class="col-lg-4">
+                        List of Giveaways <br> <input class="form-control" name="lis_of_give"
+                            value="{{ $requirements->lis_of_give }}" type="text" placeholder="..." style="width: 88%;">
+                    </div>
+                </div>
+                <div class="mt-3 mb-3">
+                    <!-- Promotional Activities Dropdown -->
 
 
-                <!-- <h5 class="mt-2">List of Promotional Activities</h5>
+                    <!-- <h5 class="mt-2">List of Promotional Activities</h5>
                             <div class="form-check form-check-inline spacing-left">
                             <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="negative">
                             <label class="form-check-label" for="inlineCheckbox1">Calenders</label>
@@ -147,182 +154,242 @@
                                         <label class="form-check-label" for="addMoreCheckbox">Add More</label>
                                 </div>
                             </div> -->
-            </div>
-            <div class="row mb-2">
-                <div class="col-lg-3 mt-1">
-                    Organization Name <br> <input class="form-control" name="orgName" value="{{ $requirements->orgName }}" type="text" placeholder="..." style="width: 100%;">
                 </div>
-                <div class="col-lg-3 mt-1">
-                    Organization Type <br> <input class="form-control" name="orgType" value="{{ $requirements->orgType }}" type="text" placeholder="..." style="width: 100%;">
-                </div>
+                <div class="row mb-2">
+                    <div class="col-lg-3 mt-1">
+                        Organization Name <br> <input class="form-control" name="orgName"
+                            value="{{ $requirements->orgName }}" type="text" placeholder="..." style="width: 100%;">
+                    </div>
+                    <div class="col-lg-3 mt-1">
+                        Organization Type <br> <input class="form-control" name="orgType"
+                            value="{{ $requirements->orgType }}" type="text" placeholder="..." style="width: 100%;">
+                    </div>
                     <div class="col-lg-3">
-                    <label>Start Date</label> <input class="form-control" name="s_date" type="date" value="{{ $requirements->s_date }}" placeholder="..." />
+                        <label>Start Date</label> <input class="form-control" name="s_date" type="date"
+                            value="{{ $requirements->s_date }}" placeholder="..." />
                     </div>
 
                     <div class="col-lg-3">
-                        <label>End Date</label> <input class="form-control" name="e_date" type="date" value="{{ $requirements->e_date }}" placeholder="..." />
+                        <label>End Date</label> <input class="form-control" name="e_date" type="date"
+                            value="{{ $requirements->e_date }}" placeholder="..." />
                     </div>
-                    
-                <div class="col-lg-3 mt-1">
-                    Lead Generated By <br> <input class="form-control" name="leadBy" value="{{ $requirements->leadBy }}" type="text" placeholder="..." style="width: 100%;">
+
+                    <div class="col-lg-3 mt-1">
+                        Lead Generated By <br> <input class="form-control" name="leadBy"
+                            value="{{ $requirements->leadBy }}" type="text" placeholder="..." style="width: 100%;">
+                    </div>
+                    <div class="col-lg-3 mt-1">
+                        Lead Type: <br> <input class="form-control" name="leadType"
+                            value="{{ $requirements->leadType }}" type="text" placeholder="..." style="width: 100%;">
+                    </div>
                 </div>
-                <div class="col-lg-3 mt-1">
-                    Lead Type: <br> <input class="form-control" name="leadType" value="{{ $requirements->leadType }}" type="text" placeholder="..." style="width: 100%;">
+                <div class="row mb-2">
+                    <div class="col-lg-4 mt-1">
+                        <label>Cash or Taxable</label>
+                        <select name="cash_or_taxable" class="form-control">
+                            <option value="cash" {{ $requirements->cash_or_taxable == 'cash' ? 'selected' : '' }}>Cash
+                            </option>
+                            <option value="taxable" {{ $requirements->cash_or_taxable == 'taxable' ? 'selected' : '' }}>
+                                Taxable</option>
+                        </select>
+                    </div>
                 </div>
-            </div>
-            <h5><b>Lead Generated By:</b></h5>
-            <div class="row mb-2">
-                <div class="col-lg-4 spacing-right">
-                    Lead Agent Name <br> <input class="form-control" name="leadBy" value="{{ $requirements->leadBy }}" type="text" placeholder="..." style="width: 100%;">
-                </div>
-                <div class="col-lg-4 spacing-right">
-                    Type of Lead : <br> <input class="form-control" name="typeLead" value="{{ $requirements->typeLead }}" type="text" placeholder="..." style="width: 100%;">
-                </div>
-                <div class="col-lg-4 spacing-right">
-                    Source of Lead : <br> <input class="form-control" name="srcLead" value="{{ $requirements->srcLead }}" type="text" placeholder="..." style="width: 100%;">
-                </div>
+                <h5><b>Lead Generated By:</b></h5>
+                <div class="row mb-2">
+                    <div class="col-lg-4 spacing-right">
+                        Lead Agent Name <br> <input class="form-control" name="leadBy"
+                            value="{{ $requirements->leadBy }}" type="text" placeholder="..." style="width: 100%;">
+                    </div>
+                    <div class="col-lg-4 spacing-right">
+                        Type of Lead : <br> <input class="form-control" name="typeLead"
+                            value="{{ $requirements->typeLead }}" type="text" placeholder="..." style="width: 100%;">
+                    </div>
+                    <div class="col-lg-4 spacing-right">
+                        Source of Lead : <br> <input class="form-control" name="srcLead"
+                            value="{{ $requirements->srcLead }}" type="text" placeholder="..." style="width: 100%;">
+                    </div>
 
 
-                <div class="container my-1">
-                    <div class="accordion" id="departmentAccordion">
-                        @if($requirements->requirementpocs && $requirements->requirementpocs->isNotEmpty())
-                            @foreach ($requirements->requirementpocs as $index => $poc)
-                                <div class="accordion-item departmentaccordion-item" id="departmentEntry{{ $index + 1 }}">
-                                    <h2 class="accordion-header" id="departmentHeading{{ $index + 1 }}" style="color: white">
-                                        <button class="accordion-button" style="background-color: #34005A; color:white" type="button" data-toggle="collapse" data-target="#departmentCollapse{{ $index + 1 }}" aria-expanded="false" aria-controls="departmentCollapse{{ $index + 1 }}">
-                                            POC Details {{ $index + 1 }}
-                                        </button>
-                                    </h2>
-                                    <div id="departmentCollapse{{ $index + 1 }}" class="collapse show" aria-labelledby="departmentHeading{{ $index + 1 }}" data-parent="#departmentAccordion">
-                                        <div class="accordion-body">
-                                            <input type="hidden" name="requirementpocs[{{ $index }}][p_id]" value="{{ $poc->id }}">
-                                            <div class="row mb-2">
-                                                <div class="col-lg-4 spacing-right">
-                                                    POC Name <br>
-                                                    <input class="form-control" name="req_poc_name[]" value="{{ $poc->req_poc_name }}" type="text" placeholder="..." style="width: 100%;">
-                                                </div>
-                                                <div class="col-lg-4 spacing-right">
-                                                    POC Contact Number <br>
-                                                    <input class="form-control" name="req_poc_num[]" value="{{ $poc->req_poc_num }}" type="text" placeholder="..." style="width: 100%;">
-                                                </div>
-                                                <div class="col-lg-4 spacing-right">
-                                                    POC Designation <br>
-                                                    <input class="form-control" name="req_poc_desig[]" value="{{ $poc->req_poc_desig }}" type="text" placeholder="..." style="width: 100%;">
-                                                </div>
-                                                <div class="col-lg-4 spacing-right">
-                                                    Visiting Card (Front) <br>
-                                                    <input class="form-control" name="req_poc_visiting_front[]" id="inpFile1" type="file" style="width: 100%;">
-                                                </div>
-                                                <div class="col-lg-4 spacing-right">
-                                                    Visiting Card (Back) <br>
-                                                    <input class="form-control" name="req_poc_visiting_back[]" id="inpFile2" type="file" style="width: 100%;">
-                                                </div>
-                                                <div class="col-lg-4 spacing-right">
-                                                    Email <br>
-                                                    <input class="form-control" name="req_poc_email[]" value="{{ $poc->req_poc_email }}" type="text" placeholder="..." style="width: 100%;">
-                                                </div>
-                                                <div class="col-lg-4 spacing-right">
-                                                    POC Organization Name <br>
-                                                    <input class="form-control" name="req_poc_org_name[]" value="{{ $poc->req_poc_org_name }}" type="text" placeholder="..." style="width: 100%;">
-                                                </div>
-                                                <h5>POC Address</h5>
+                    <div class="container my-1">
+                        <div class="accordion" id="departmentAccordion">
+                            @if($requirements->requirementpocs && $requirements->requirementpocs->isNotEmpty())
+                                @foreach ($requirements->requirementpocs as $index => $poc)
+                                    <div class="accordion-item departmentaccordion-item" id="departmentEntry{{ $index + 1 }}">
+                                        <h2 class="accordion-header" id="departmentHeading{{ $index + 1 }}"
+                                            style="color: white">
+                                            <button class="accordion-button" style="background-color: #34005A; color:white"
+                                                type="button" data-toggle="collapse"
+                                                data-target="#departmentCollapse{{ $index + 1 }}" aria-expanded="false"
+                                                aria-controls="departmentCollapse{{ $index + 1 }}">
+                                                POC Details {{ $index + 1 }}
+                                            </button>
+                                        </h2>
+                                        <div id="departmentCollapse{{ $index + 1 }}" class="collapse show"
+                                            aria-labelledby="departmentHeading{{ $index + 1 }}"
+                                            data-parent="#departmentAccordion">
+                                            <div class="accordion-body">
+                                                <input type="hidden" name="requirementpocs[{{ $index }}][p_id]"
+                                                    value="{{ $poc->id }}">
+                                                <div class="row mb-2">
+                                                    <div class="col-lg-4 spacing-right">
+                                                        POC Name <br>
+                                                        <input class="form-control" name="req_poc_name[]"
+                                                            value="{{ $poc->req_poc_name }}" type="text" placeholder="..."
+                                                            style="width: 100%;">
+                                                    </div>
+                                                    <div class="col-lg-4 spacing-right">
+                                                        POC Contact Number <br>
+                                                        <input class="form-control" name="req_poc_num[]"
+                                                            value="{{ $poc->req_poc_num }}" type="text" placeholder="..."
+                                                            style="width: 100%;">
+                                                    </div>
+                                                    <div class="col-lg-4 spacing-right">
+                                                        POC Designation <br>
+                                                        <input class="form-control" name="req_poc_desig[]"
+                                                            value="{{ $poc->req_poc_desig }}" type="text" placeholder="..."
+                                                            style="width: 100%;">
+                                                    </div>
+                                                    <div class="col-lg-4 spacing-right">
+                                                        Visiting Card (Front) <br>
+                                                        <input class="form-control" name="req_poc_visiting_front[]"
+                                                            id="inpFile1" type="file" style="width: 100%;">
+                                                    </div>
+                                                    <div class="col-lg-4 spacing-right">
+                                                        Visiting Card (Back) <br>
+                                                        <input class="form-control" name="req_poc_visiting_back[]" id="inpFile2"
+                                                            type="file" style="width: 100%;">
+                                                    </div>
+                                                    <div class="col-lg-4 spacing-right">
+                                                        Email <br>
+                                                        <input class="form-control" name="req_poc_email[]"
+                                                            value="{{ $poc->req_poc_email }}" type="text" placeholder="..."
+                                                            style="width: 100%;">
+                                                    </div>
+                                                    <div class="col-lg-4 spacing-right">
+                                                        POC Organization Name <br>
+                                                        <input class="form-control" name="req_poc_org_name[]"
+                                                            value="{{ $poc->req_poc_org_name }}" type="text" placeholder="..."
+                                                            style="width: 100%;">
+                                                    </div>
+                                                    <h5>POC Address</h5>
 
-                                                <div class="col-lg-4 spacing-right">
-                                                    Office No <br> <input class="form-control" id="" name="req_poc_office_no[]" value="{{  $poc->req_poc_office_no }}"
-                                                        type="text" placeholder="..." style="width: 100%;">
-                                                </div>
-                                                <div class="col-lg-4 spacing-right">
-                                                    Floor <br> <input class="form-control" id="" name="req_poc_floor[]" value="{{  $poc->req_poc_floor }}" type="text" placeholder="..."
-                                                        style="width: 100%;">
-                                                </div>
+                                                    <div class="col-lg-4 spacing-right">
+                                                        Office No <br> <input class="form-control" id=""
+                                                            name="req_poc_office_no[]" value="{{  $poc->req_poc_office_no }}"
+                                                            type="text" placeholder="..." style="width: 100%;">
+                                                    </div>
+                                                    <div class="col-lg-4 spacing-right">
+                                                        Floor <br> <input class="form-control" id="" name="req_poc_floor[]"
+                                                            value="{{  $poc->req_poc_floor }}" type="text" placeholder="..."
+                                                            style="width: 100%;">
+                                                    </div>
 
 
-                                                <div class="col-lg-4 spacing-right">
-                                                    Building <br> <input class="form-control" id="" name="req_poc_building[]" value="{{  $poc->req_poc_building }}"
-                                                        type="text" placeholder="..." style="width: 100%;">
-                                                </div>
-                                                <div class="col-lg-4 spacing-right">
-                                                    Block <br> <input class="form-control" id="" name="req_poc_block[]" value="{{  $poc->req_poc_block }}"
-                                                        type="text" placeholder="..." style="width: 100%;">
-                                                </div>
+                                                    <div class="col-lg-4 spacing-right">
+                                                        Building <br> <input class="form-control" id=""
+                                                            name="req_poc_building[]" value="{{  $poc->req_poc_building }}"
+                                                            type="text" placeholder="..." style="width: 100%;">
+                                                    </div>
+                                                    <div class="col-lg-4 spacing-right">
+                                                        Block <br> <input class="form-control" id="" name="req_poc_block[]"
+                                                            value="{{  $poc->req_poc_block }}" type="text" placeholder="..."
+                                                            style="width: 100%;">
+                                                    </div>
 
 
-                                                <div class="col-lg-4 spacing-right">
-                                                    Area <br> <input class="form-control" id="" name="req_poc_area[]" value="{{  $poc->req_poc_area }}"
-                                                        type="text" placeholder="..." style="width: 100%;">
-                                                </div>
-                                                <div class="col-lg-4 spacing-right">
-                                                    City <br> <input class="form-control" id="" name="req_poc_city[]" type="text" value="{{  $poc->req_poc_city }}"
-                                                        placeholder="..." style="width: 100%;">
-                                                </div>
-                                                <div class="col-lg-4 spacing-right">
-                                                    Photograph of Building <br> <input class="form-control" id="" name="req_poc_building_attach[]" value="{{  $poc->req_poc_building_attach }}" type="file"
-                                                        placeholder="..." style="width: 100%;">
-                                                </div>
-                                                <!-- <div class="col-lg-6 spacing-right">
-                                                        Email <br> <input class="form-control" id="" name="c_pin" type="text" placeholder="..." style="width: 100%;">
-                                                    </div> -->
-                                                <div class="col-lg-4 spacing-right">
-                                                    Pin location <br> <input class="form-control" id="" name="req_poc_pin[]" type="text" value="{{  $poc->req_poc_pin }}" placeholder="..."
-                                                        style="width: 100%;">
-                                                </div>
+                                                    <div class="col-lg-4 spacing-right">
+                                                        Area <br> <input class="form-control" id="" name="req_poc_area[]"
+                                                            value="{{  $poc->req_poc_area }}" type="text" placeholder="..."
+                                                            style="width: 100%;">
+                                                    </div>
+                                                    <div class="col-lg-4 spacing-right">
+                                                        City <br> <input class="form-control" id="" name="req_poc_city[]"
+                                                            type="text" value="{{  $poc->req_poc_city }}" placeholder="..."
+                                                            style="width: 100%;">
+                                                    </div>
+                                                    <div class="col-lg-4 spacing-right">
+                                                        Photograph of Building <br> <input class="form-control" id=""
+                                                            name="req_poc_building_attach[]"
+                                                            value="{{  $poc->req_poc_building_attach }}" type="file"
+                                                            placeholder="..." style="width: 100%;">
+                                                    </div>
+                                                    <!-- <div class="col-lg-6 spacing-right">
+                                                                Email <br> <input class="form-control" id="" name="c_pin" type="text" placeholder="..." style="width: 100%;">
+                                                            </div> -->
+                                                    <div class="col-lg-4 spacing-right">
+                                                        Pin location <br> <input class="form-control" id="" name="req_poc_pin[]"
+                                                            type="text" value="{{  $poc->req_poc_pin }}" placeholder="..."
+                                                            style="width: 100%;">
+                                                    </div>
 
-                                                <!-- <div class="row mb-2">
-                                                        <div class="col-lg-6 spacing-left">
-                                                            Website <br> <input class="form-control" id="" name="c_pin" type="text" placeholder="..." style="width: 100%;">
-                                                        </div>
-                                                        <div class="col-lg-6 spacing-left">
-                                                            Google Map <br> <input class="form-control" id="" name="c_pin" type="text" placeholder="..." style="width: 100%;">
-                                                        </div>
-                                                </div> -->
+                                                    <!-- <div class="row mb-2">
+                                                                <div class="col-lg-6 spacing-left">
+                                                                    Website <br> <input class="form-control" id="" name="c_pin" type="text" placeholder="..." style="width: 100%;">
+                                                                </div>
+                                                                <div class="col-lg-6 spacing-left">
+                                                                    Google Map <br> <input class="form-control" id="" name="c_pin" type="text" placeholder="..." style="width: 100%;">
+                                                                </div>
+                                                        </div> -->
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            @endforeach
-                        @else
-                            <p>No POC details found.</p>
-                        @endif
+                                @endforeach
+                            @else
+                                <p>No POC details found.</p>
+                            @endif
+                        </div>
+                    </div>
+
+
+                    <h5><b>Lead Assigned By:</b></h5>
+                    <div class="col-lg-3 spacing-right">
+                        Name <br> <input class="form-control" id="leadAssignedByName"
+                            value="{{ $requirements->leadAssignedByName }}" name="leadAssignedByName" type="text"
+                            placeholder="..." style="width: 100%;">
+                    </div>
+                    <div class="col-lg-3 spacing-right">
+                        Phone Number <br> <input class="form-control" value="{{ $requirements->leadAssignedByphoneNo }}"
+                            name="leadAssignedByphoneNo" type="text" placeholder="..." style="width: 100%;">
+                    </div>
+                    <div class="col-lg-3 spacing-right">
+                        Email <br> <input class="form-control" value="{{ $requirements->leadAssignedByemail }}"
+                            name="leadAssignedByemail" type="text" placeholder="..." style="width: 100%;">
+                    </div>
+                    <div class="col-lg-3 spacing-right">
+                        Employee ID <br> <input class="form-control" value="{{ $requirements->leadAssignedById }}"
+                            name="leadAssignedById" type="text" placeholder="..." style="width: 100%;">
+                    </div>
+
+                    <h5><b>Lead Assigned To:</b></h5>
+                    <div class="col-lg-3 spacing-right">
+                        Name <br> <input class="form-control" value="{{ $requirements->leadAssignedToName }}"
+                            name="leadAssignedToName" type="text" placeholder="..." style="width: 100%;">
+                    </div>
+                    <div class="col-lg-3 spacing-right">
+                        Phone Number <br> <input class="form-control" value="{{ $requirements->leadAssignedTophoneNo }}"
+                            name="leadAssignedTophoneNo" type="text" placeholder="..." style="width: 100%;">
+                    </div>
+                    <div class="col-lg-3 spacing-right">
+                        Email <br> <input class="form-control" value="{{ $requirements->leadAssignedToEmail }}"
+                            name="leadAssignedToEmail" type="text" placeholder="..." style="width: 100%;">
+                    </div>
+                    <div class="col-lg-3 spacing-right">
+                        Employee ID <br> <input class="form-control" value="{{ $requirements->leadAssignedToId }}"
+                            name="leadAssignedToId" type="text" placeholder="..." style="width: 100%;">
+                    </div>
+                    <div class="col-lg-3 spacing-right">
+                        Estimated Quantity <br> <input class="form-control"
+                            value="{{ $requirements->leadAssignedToEstdQuan }}" name="leadAssignedToEstdQuan"
+                            type="text" placeholder="..." style="width: 100%;">
+                    </div>
+                    <div class="col-lg-3 spacing-right">
+                        Backend Calculation <br> <input class="form-control"
+                            value="{{ $requirements->backendCalculation }}" name="backendCalculation" type="text"
+                            placeholder="..." style="width: 100%;">
                     </div>
                 </div>
-
-
-                <h5><b>Lead Assigned By:</b></h5>
-                <div class="col-lg-3 spacing-right">
-                    Name <br> <input class="form-control" id="leadAssignedByName" value="{{ $requirements->leadAssignedByName }}" name="leadAssignedByName" type="text" placeholder="..."
-                        style="width: 100%;">
-                </div>
-                <div class="col-lg-3 spacing-right">
-                    Phone Number <br> <input class="form-control" value="{{ $requirements->leadAssignedByphoneNo }}" name="leadAssignedByphoneNo" type="text" placeholder="..." style="width: 100%;">
-                </div>
-                <div class="col-lg-3 spacing-right">
-                    Email <br> <input class="form-control" value="{{ $requirements->leadAssignedByemail }}" name="leadAssignedByemail" type="text" placeholder="..." style="width: 100%;">
-                </div>
-                <div class="col-lg-3 spacing-right">
-                    Employee ID <br> <input class="form-control" value="{{ $requirements->leadAssignedById }}" name="leadAssignedById" type="text" placeholder="..." style="width: 100%;">
-                </div>
-
-                <h5><b>Lead Assigned To:</b></h5>
-                <div class="col-lg-3 spacing-right">
-                    Name <br> <input class="form-control" value="{{ $requirements->leadAssignedToName }}" name="leadAssignedToName" type="text" placeholder="..." style="width: 100%;">
-                </div>
-                <div class="col-lg-3 spacing-right">
-                    Phone Number <br> <input class="form-control" value="{{ $requirements->leadAssignedTophoneNo }}" name="leadAssignedTophoneNo" type="text" placeholder="..." style="width: 100%;">
-                </div>
-                <div class="col-lg-3 spacing-right">
-                    Email <br> <input class="form-control" value="{{ $requirements->leadAssignedToEmail }}" name="leadAssignedToEmail" type="text" placeholder="..." style="width: 100%;">
-                </div>
-                <div class="col-lg-3 spacing-right">
-                    Employee ID <br> <input class="form-control" value="{{ $requirements->leadAssignedToId }}" name="leadAssignedToId" type="text" placeholder="..." style="width: 100%;">
-                </div>
-                <div class="col-lg-3 spacing-right">
-                    Estimated Quantity <br> <input class="form-control" value="{{ $requirements->leadAssignedToEstdQuan }}" name="leadAssignedToEstdQuan" type="text" placeholder="..." style="width: 100%;">
-                </div>
-                <div class="col-lg-3 spacing-right">
-                    Backend Calculation <br> <input class="form-control" value="{{ $requirements->backendCalculation }}" name="backendCalculation" type="text" placeholder="..." style="width: 100%;">
-                </div>
-            </div>
-            <!--Tabs forDetails-->
+                <!--Tabs forDetails-->
                 <!--address-info-->
 
                 <div class="container my-1">
@@ -331,9 +398,9 @@
                             @foreach ($requirements->requirementaddress as $index => $address)
                                 <div class="accordion-item emergencyaccordion-item" id="emergencyEntry{{ $index + 1 }}">
                                     <h2 class="accordion-header" id="emergencyHeading{{ $index + 1 }}" style="color: white">
-                                        <button class="accordion-button" style="background-color: #34005A; color:white" type="button"
-                                            data-toggle="collapse" data-target="#emergencyCollapse{{ $index + 1 }}"
-                                            aria-expanded="false"
+                                        <button class="accordion-button" style="background-color: #34005A; color:white"
+                                            type="button" data-toggle="collapse"
+                                            data-target="#emergencyCollapse{{ $index + 1 }}" aria-expanded="false"
                                             aria-controls="emergencyCollapse{{ $index + 1 }}">
                                             Address Entry {{ $index + 1 }}
                                         </button>
@@ -349,49 +416,64 @@
                                                         <div class="row mb-1">
                                                             <div class="col-lg-5 spacing-right">
                                                                 Office No <br>
-                                                                <input class="form-control" id="" name="requirementaddress[{{ $index }}][office_no]"
-                                                                    type="text" value="{{ $address->office_no }}" placeholder="..." style="width: 100%;">
+                                                                <input class="form-control" id=""
+                                                                    name="requirementaddress[{{ $index }}][office_no]"
+                                                                    type="text" value="{{ $address->office_no }}"
+                                                                    placeholder="..." style="width: 100%;">
                                                             </div>
                                                             <div class="col-lg-5 spacing-right">
                                                                 Floor <br>
-                                                                <input class="form-control" id="" name="requirementaddress[{{ $index }}][floor]"
-                                                                    type="text" value="{{ $address->floor }}" placeholder="..." style="width: 100%;">
+                                                                <input class="form-control" id=""
+                                                                    name="requirementaddress[{{ $index }}][floor]" type="text"
+                                                                    value="{{ $address->floor }}" placeholder="..."
+                                                                    style="width: 100%;">
                                                             </div>
                                                         </div>
                                                         <div class="row mb-1">
                                                             <div class="col-lg-5 spacing-right">
                                                                 Building <br>
-                                                                <input class="form-control" id="" name="requirementaddress[{{ $index }}][building]"
-                                                                    type="text" value="{{ $address->building }}" placeholder="..." style="width: 100%;">
+                                                                <input class="form-control" id=""
+                                                                    name="requirementaddress[{{ $index }}][building]"
+                                                                    type="text" value="{{ $address->building }}"
+                                                                    placeholder="..." style="width: 100%;">
                                                             </div>
                                                             <div class="col-lg-5 spacing-right">
                                                                 Block <br>
-                                                                <input class="form-control" id="" name="requirementaddress[{{ $index }}][block]"
-                                                                    type="text" value="{{ $address->block }}" placeholder="..." style="width: 100%;">
+                                                                <input class="form-control" id=""
+                                                                    name="requirementaddress[{{ $index }}][block]" type="text"
+                                                                    value="{{ $address->block }}" placeholder="..."
+                                                                    style="width: 100%;">
                                                             </div>
                                                         </div>
                                                         <div class="row mb-1">
                                                             <div class="col-lg-5 spacing-right">
                                                                 Area <br>
-                                                                <input class="form-control" id="" name="requirementaddress[{{ $index }}][area]"
-                                                                    type="text" value="{{ $address->area }}" placeholder="..." style="width: 100%;">
+                                                                <input class="form-control" id=""
+                                                                    name="requirementaddress[{{ $index }}][area]" type="text"
+                                                                    value="{{ $address->area }}" placeholder="..."
+                                                                    style="width: 100%;">
                                                             </div>
                                                             <div class="col-lg-5 spacing-right">
                                                                 City <br>
-                                                                <input class="form-control" id="" name="requirementaddress[{{ $index }}][city]"
-                                                                    type="text" value="{{ $address->city }}" placeholder="..." style="width: 100%;">
+                                                                <input class="form-control" id=""
+                                                                    name="requirementaddress[{{ $index }}][city]" type="text"
+                                                                    value="{{ $address->city }}" placeholder="..."
+                                                                    style="width: 100%;">
                                                             </div>
                                                         </div>
                                                         <div class="row mb-1">
                                                             <div class="col-lg-5 spacing-right">
                                                                 Photograph of Building <br>
-                                                                <input class="form-control" id="" name="requirementaddress[{{ $index }}][builidng_attach]"
+                                                                <input class="form-control" id=""
+                                                                    name="requirementaddress[{{ $index }}][builidng_attach]"
                                                                     type="file" placeholder="..." style="width: 100%;">
                                                             </div>
                                                             <div class="col-lg-5 spacing-right">
                                                                 Pin location <br>
-                                                                <input class="form-control" id="" name="requirementaddress[{{ $index }}][pin_location]"
-                                                                    type="text" value="{{ $address->pin_location }}" placeholder="..." style="width: 100%;">
+                                                                <input class="form-control" id=""
+                                                                    name="requirementaddress[{{ $index }}][pin_location]"
+                                                                    type="text" value="{{ $address->pin_location }}"
+                                                                    placeholder="..." style="width: 100%;">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -399,34 +481,42 @@
                                                         <div class="row mb-1">
                                                             <div class="col-lg-10 spacing-right">
                                                                 Company <br>
-                                                                <input class="form-control" type="text" name="requirementaddress[{{ $index }}][company]"
-                                                                    value="{{ $address->company }}" placeholder="..." style="width: 100%;">
+                                                                <input class="form-control" type="text"
+                                                                    name="requirementaddress[{{ $index }}][company]"
+                                                                    value="{{ $address->company }}" placeholder="..."
+                                                                    style="width: 100%;">
                                                             </div>
                                                         </div>
                                                         <div class="row mb-1">
                                                             <div class="col-lg-10 spacing-right">
                                                                 Email <br>
-                                                                <input class="form-control" type="text" name="requirementaddress[{{ $index }}][email]"
-                                                                    value="{{ $address->email }}" placeholder="..." style="width: 100%;">
+                                                                <input class="form-control" type="text"
+                                                                    name="requirementaddress[{{ $index }}][email]"
+                                                                    value="{{ $address->email }}" placeholder="..."
+                                                                    style="width: 100%;">
                                                             </div>
                                                         </div>
                                                         <div class="row mb-1">
                                                             <div class="col-lg-10 spacing-right">
                                                                 Website <br>
-                                                                <input class="form-control" type="text" name="requirementaddress[{{ $index }}][website]"
-                                                                    value="{{ $address->website }}" placeholder="..." style="width: 100%;">
+                                                                <input class="form-control" type="text"
+                                                                    name="requirementaddress[{{ $index }}][website]"
+                                                                    value="{{ $address->website }}" placeholder="..."
+                                                                    style="width: 100%;">
                                                             </div>
                                                             <div class="col-lg-10 spacing-right">
                                                                 Attachments <br>
-                                                                <input class="form-control" type="file" name="requirementaddress[{{ $index }}][attachments]"
+                                                                <input class="form-control" type="file"
+                                                                    name="requirementaddress[{{ $index }}][attachments]"
                                                                     placeholder="..." style="width: 100%;">
                                                             </div>
                                                         </div>
                                                         <div class="row mb-1">
                                                             <div class="col-lg-10 spacing-right">
                                                                 Notes & Remarks <br>
-                                                                <textarea style="width: 100%;" id="" name="requirementaddress[{{ $index }}][notes]"
-                                                                    cols="15" rows="4">{{ $address->notes }}</textarea>
+                                                                <textarea style="width: 100%;" id=""
+                                                                    name="requirementaddress[{{ $index }}][notes]" cols="15"
+                                                                    rows="4">{{ $address->notes }}</textarea>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -448,21 +538,18 @@
                     <div class="accordion" id="signatoryAccordion">
                         <!-- Initial Accordion Item -->
                         <div class="accordion-item signaccordion-item" id="GuardEntry1">
-                            <h2 class="accordion-header" id="signatoryHeading1"
-                                style="color: white">
-                                <button class="accordion-button"
-                                    style="background-color: #34005A; color:white" type="button"
-                                    data-toggle="collapse" data-target="#signatoryCollapse1"
+                            <h2 class="accordion-header" id="signatoryHeading1" style="color: white">
+                                <button class="accordion-button" style="background-color: #34005A; color:white"
+                                    type="button" data-toggle="collapse" data-target="#signatoryCollapse1"
                                     aria-expanded="false" aria-controls="signatoryCollapse1">
                                     Guard Entry 1
                                 </button>
                             </h2>
-                            <div id="signatoryCollapse1" class="collapse"
-                                aria-labelledby="signatoryHeading1">
+                            <div id="signatoryCollapse1" class="collapse" aria-labelledby="signatoryHeading1">
                                 <div class="row row-fluid mx-2 mt-2 mb-2">
                                     <div class="col-lg-4 form-group spacing-left">
-                                        Category:<br> <input class="form-control" name="guard_category[]" type="text" placeholder="..."
-                                        style="width: 100%;">
+                                        Category:<br> <input class="form-control" name="guard_category[]" type="text"
+                                            placeholder="..." style="width: 100%;">
                                     </div>
                                     <div class="col-lg-6 spacing-right">
                                         Quantity : <br>
@@ -519,25 +606,24 @@
                                             </div> -->
                                     <div class="col-lg-6 spacing-right">
                                         Transportation by Client : <br>
-                                        <select id="leadcategory" name="guard_transportation[]" class="form-control mt-1"
-                                            style="width: 100%;">
+                                        <select id="leadcategory" name="guard_transportation[]"
+                                            class="form-control mt-1" style="width: 100%;">
                                             <option value="">Yes</option>
                                             <option value="">No</option>
                                         </select>
                                     </div>
                                     <div class="col-lg-6 spacing-left">
                                         Required on monthly basis : <br>
-                                        <select id="monthlyRequirement" name="guard_required_monthly[]" class="form-control mt-1"
-                                            style="width: 100%;">
+                                        <select id="monthlyRequirement" name="guard_required_monthly[]"
+                                            class="form-control mt-1" style="width: 100%;">
                                             <option value="Yes">Yes</option>
                                             <option value="No">No</option>
                                         </select>
                                     </div>
-                                    <div class="col-lg-6 spacing-right"
-                                        id="dailyRequirementSection">
+                                    <div class="col-lg-6 spacing-right" id="dailyRequirementSection">
                                         Required on dialy basis : <br>
-                                        <select id="dailyRequirement" name="guard_required_dialy[]" type="text" class="form-control mt-1"
-                                            style="width: 100%;">
+                                        <select id="dailyRequirement" name="guard_required_dialy[]" type="text"
+                                            class="form-control mt-1" style="width: 100%;">
                                             <option value=""></option>
                                             <option value="Yes">Yes</option>
                                             <option value="No">No</option>
@@ -545,33 +631,32 @@
                                     </div>
                                     <div class="col-lg-6 mt-1" id="noOfDays">
                                         No. of days Security Staff required for <br>
-                                        <input class="form-control" name="no_of_days_guard_required[]" type="text" placeholder="..."
-                                            style="width: 100%;">
+                                        <input class="form-control" name="no_of_days_guard_required[]" type="text"
+                                            placeholder="..." style="width: 100%;">
                                     </div>
                                     <div class="col-lg-6">
                                         Financial Working Excel Sheet <br> <input class="form-control mt-1"
-                                            id="head_office_email" name="financial_working_excel_attach[]"  type="file"
+                                            id="head_office_email" name="financial_working_excel_attach[]" type="file"
                                             placeholder="..." style="width: 100%;">
                                     </div>
                                     <div class="col-lg-6">
                                         Financial Working Word Sheet <br> <input class="form-control mt-1"
-                                            id="head_office_email" name="financial_working_word_attach[]"  type="file"
+                                            id="head_office_email" name="financial_working_word_attach[]" type="file"
                                             placeholder="..." style="width: 100%;">
                                     </div>
                                     <div class="col-lg-6">
                                         Financial Working PDF Sheet <br> <input class="form-control mt-1"
-                                            id="head_office_email" name="financial_working_pdf_attach[]"  type="file"
+                                            id="head_office_email" name="financial_working_pdf_attach[]" type="file"
                                             placeholder="..." style="width: 100%;">
                                     </div>
                                     <div class="col-lg-6">
-                                        Notes <br> <textarea class="form-control mt-1"
-                                            id="head_office_name" name="guard_notes[]" type="text"
-                                            placeholder="..." style="width: 100%;"></textarea>
+                                        Notes <br> <textarea class="form-control mt-1" id="head_office_name"
+                                            name="guard_notes[]" type="text" placeholder="..."
+                                            style="width: 100%;"></textarea>
                                     </div>
                                     <div class="col-lg-6">
-                                        Attachments <br> <input class="form-control mt-1"
-                                            id="head_office_email" name="guard_attach[]" type="file"
-                                            placeholder="..." style="width: 100%;">
+                                        Attachments <br> <input class="form-control mt-1" id="head_office_email"
+                                            name="guard_attach[]" type="file" placeholder="..." style="width: 100%;">
                                     </div>
                                 </div>
                             </div>
@@ -587,69 +672,94 @@
                             @foreach ($requirements->requirementguard as $index => $guard)
                                 <div class="accordion-item signaccordion-item" id="GuardEntry{{ $index + 1 }}">
                                     <h2 class="accordion-header" id="signatoryHeading{{ $index + 1 }}" style="color: white">
-                                        <button class="accordion-button" style="background-color: #34005A; color:white" type="button"
-                                            data-toggle="collapse" data-target="#signatoryCollapse{{ $index + 1 }}"
-                                            aria-expanded="false" aria-controls="signatoryCollapse{{ $index + 1 }}">
+                                        <button class="accordion-button" style="background-color: #34005A; color:white"
+                                            type="button" data-toggle="collapse"
+                                            data-target="#signatoryCollapse{{ $index + 1 }}" aria-expanded="false"
+                                            aria-controls="signatoryCollapse{{ $index + 1 }}">
                                             Guard Entry {{ $index + 1 }}
                                         </button>
                                     </h2>
-                                    <div id="signatoryCollapse{{ $index + 1 }}" class="collapse" aria-labelledby="signatoryHeading{{ $index + 1 }}">
+                                    <div id="signatoryCollapse{{ $index + 1 }}" class="collapse"
+                                        aria-labelledby="signatoryHeading{{ $index + 1 }}">
                                         <div class="row row-fluid mx-2 mt-2 mb-2">
                                             <div class="col-lg-4 form-group spacing-left">
                                                 Category:<br>
-                                                <input class="form-control" name="guard_category[{{ $index }}]" type="text" value="{{ $guard->guard_category }}" placeholder="..." style="width: 100%;">
+                                                <input class="form-control" name="guard_category[{{ $index }}]" type="text"
+                                                    value="{{ $guard->guard_category }}" placeholder="..." style="width: 100%;">
                                             </div>
                                             <div class="col-lg-6 spacing-right">
                                                 Quantity :<br>
-                                                <input class="form-control" name="guard_quantity[{{ $index }}]" type="text" value="{{ $guard->guard_quantity }}" placeholder="..." style="width: 100%;">
+                                                <input class="form-control" name="guard_quantity[{{ $index }}]" type="text"
+                                                    value="{{ $guard->guard_quantity }}" placeholder="..." style="width: 100%;">
                                             </div>
                                             <div class="col-lg-6 spacing-left">
                                                 Shift Timing :<br>
-                                                <input class="form-control" name="guard_shift_timing[{{ $index }}]" type="text" value="{{ $guard->guard_shift_timing }}" placeholder="..." style="width: 100%;">
+                                                <input class="form-control" name="guard_shift_timing[{{ $index }}]" type="text"
+                                                    value="{{ $guard->guard_shift_timing }}" placeholder="..."
+                                                    style="width: 100%;">
                                             </div>
                                             <div class="col-lg-6 spacing-right">
                                                 Food by Client :<br>
-                                                <input class="form-control" name="guard_food[{{ $index }}]" type="text" value="{{ $guard->guard_food }}" placeholder="..." style="width: 100%;">
+                                                <input class="form-control" name="guard_food[{{ $index }}]" type="text"
+                                                    value="{{ $guard->guard_food }}" placeholder="..." style="width: 100%;">
                                             </div>
                                             <div class="col-lg-6 spacing-left">
                                                 Accommodation by Client :<br>
-                                                <input class="form-control" name="guard_accommodation[{{ $index }}]" type="text" value="{{ $guard->guard_accommodation }}" placeholder="..." style="width: 100%;">
+                                                <input class="form-control" name="guard_accommodation[{{ $index }}]" type="text"
+                                                    value="{{ $guard->guard_accommodation }}" placeholder="..."
+                                                    style="width: 100%;">
                                             </div>
                                             <div class="col-lg-6 spacing-right">
                                                 Transportation by Client :<br>
-                                                <input class="form-control" name="guard_transportation[{{ $index }}]" type="text" value="{{ $guard->guard_transportation }}" placeholder="..." style="width: 100%;">
+                                                <input class="form-control" name="guard_transportation[{{ $index }}]"
+                                                    type="text" value="{{ $guard->guard_transportation }}" placeholder="..."
+                                                    style="width: 100%;">
                                             </div>
                                             <div class="col-lg-6 spacing-left">
                                                 Required on Monthly Basis :<br>
-                                                <input class="form-control" name="guard_required_monthly[{{ $index }}]" type="text" value="{{ $guard->guard_required_monthly }}" placeholder="..." style="width: 100%;">
+                                                <input class="form-control" name="guard_required_monthly[{{ $index }}]"
+                                                    type="text" value="{{ $guard->guard_required_monthly }}" placeholder="..."
+                                                    style="width: 100%;">
                                             </div>
                                             <div class="col-lg-6 spacing-right" id="dailyRequirementSection">
                                                 Required on Daily Basis :<br>
-                                                <input class="form-control" name="guard_required_daily[{{ $index }}]" type="text" value="{{ $guard->guard_required_daily }}" placeholder="..." style="width: 100%;">
+                                                <input class="form-control" name="guard_required_daily[{{ $index }}]"
+                                                    type="text" value="{{ $guard->guard_required_daily }}" placeholder="..."
+                                                    style="width: 100%;">
                                             </div>
                                             <div class="col-lg-6 mt-1" id="noOfDays">
                                                 No. of Days Security Staff Required :<br>
-                                                <input class="form-control" name="no_of_days_guard_required[{{ $index }}]" type="text" value="{{ $guard->no_of_days_guard_required }}" placeholder="..." style="width: 100%;">
+                                                <input class="form-control" name="no_of_days_guard_required[{{ $index }}]"
+                                                    type="text" value="{{ $guard->no_of_days_guard_required }}"
+                                                    placeholder="..." style="width: 100%;">
                                             </div>
                                             <div class="col-lg-6">
                                                 Financial Working Excel Sheet :<br>
-                                                <input class="form-control mt-1" name="financial_working_excel_attach[{{ $index }}]" type="file" style="width: 100%;">
+                                                <input class="form-control mt-1"
+                                                    name="financial_working_excel_attach[{{ $index }}]" type="file"
+                                                    style="width: 100%;">
                                             </div>
                                             <div class="col-lg-6">
                                                 Financial Working Word Sheet :<br>
-                                                <input class="form-control mt-1" name="financial_working_word_attach[{{ $index }}]" type="file" style="width: 100%;">
+                                                <input class="form-control mt-1"
+                                                    name="financial_working_word_attach[{{ $index }}]" type="file"
+                                                    style="width: 100%;">
                                             </div>
                                             <div class="col-lg-6">
                                                 Financial Working PDF Sheet :<br>
-                                                <input class="form-control mt-1" name="financial_working_pdf_attach[{{ $index }}]" type="file" style="width: 100%;">
+                                                <input class="form-control mt-1"
+                                                    name="financial_working_pdf_attach[{{ $index }}]" type="file"
+                                                    style="width: 100%;">
                                             </div>
                                             <div class="col-lg-6">
                                                 Notes :<br>
-                                                <textarea class="form-control mt-1" name="guard_notes[{{ $index }}]" placeholder="..." style="width: 100%;">{{ $guard->guard_notes }}</textarea>
+                                                <textarea class="form-control mt-1" name="guard_notes[{{ $index }}]"
+                                                    placeholder="..." style="width: 100%;">{{ $guard->guard_notes }}</textarea>
                                             </div>
                                             <div class="col-lg-6">
                                                 Attachments :<br>
-                                                <input class="form-control mt-1" name="guard_attach[{{ $index }}]" type="file" style="width: 100%;">
+                                                <input class="form-control mt-1" name="guard_attach[{{ $index }}]" type="file"
+                                                    style="width: 100%;">
                                             </div>
                                         </div>
                                     </div>
@@ -668,301 +778,320 @@
                             @foreach ($requirements->requirementvehicle as $index => $vehicle)
                                 <!-- Initial Accordion Item -->
                                 <div class="accordion-item signaccordion-item2" id="signatoryEntry2{{ $index + 1 }}">
-                                    <h2 class="accordion-header" id="signatoryHeading2"
-                                        style="color: white">
-                                        <button class="accordion-button"
-                                            style="background-color: #34005A; color:white" type="button"
-                                            data-toggle="collapse" data-target="#signatoryCollapse2{{ $index + 1 }}"
-                                            aria-expanded="false" aria-controls="signatoryCollapse2{{ $index + 1 }}">
+                                    <h2 class="accordion-header" id="signatoryHeading2" style="color: white">
+                                        <button class="accordion-button" style="background-color: #34005A; color:white"
+                                            type="button" data-toggle="collapse"
+                                            data-target="#signatoryCollapse2{{ $index + 1 }}" aria-expanded="false"
+                                            aria-controls="signatoryCollapse2{{ $index + 1 }}">
                                             Vehical Entry {{ $index + 1 }}
                                         </button>
                                     </h2>
                                     <div id="signatoryCollapse2{{ $index + 1 }}" class="collapse"
                                         aria-labelledby="signatoryHeading2{{ $index + 1 }}">
                                         <div class="accordion-body">
-                                             <!--Your content for signatory entry goes here -->
+                                            <!--Your content for signatory entry goes here -->
                                             <div class="row mb-2" id="signatoryDetailsContainer">
                                                 <div class="col-lg-6 form-group spacing-left">
-                                                    Ownership Status:<br> <input
-                                                    class="form-control"  name="vehicle_ownership[{{ $index }}]" value="{{ $vehicle->vehicle_ownership }}" type="text"
-                                                    placeholder="..." style="width: 100%;">
+                                                    Ownership Status:<br> <input class="form-control"
+                                                        name="vehicle_ownership[{{ $index }}]"
+                                                        value="{{ $vehicle->vehicle_ownership }}" type="text" placeholder="..."
+                                                        style="width: 100%;">
 
                                                 </div>
                                                 <div class="col-lg-6 form-group spacing-left">
-                                                    Types:<br> <input
-                                                    class="form-control" name="vehicle_type[]"  value="{{ $vehicle->vehicle_type }}"  type="text"
-                                                    placeholder="..." style="width: 100%;">
+                                                    Types:<br> <input class="form-control" name="vehicle_type[]"
+                                                        value="{{ $vehicle->vehicle_type }}" type="text" placeholder="..."
+                                                        style="width: 100%;">
                                                 </div>
                                                 <div class="col-lg-6 form-group spacing-left">
-                                                    Category:<br> <input
-                                                    class="form-control" name="vehicle_category[]"  value="{{ $vehicle->vehicle_category }}"  type="text"
-                                                    placeholder="..." style="width: 100%;">
+                                                    Category:<br> <input class="form-control" name="vehicle_category[]"
+                                                        value="{{ $vehicle->vehicle_category }}" type="text" placeholder="..."
+                                                        style="width: 100%;">
                                                 </div>
                                                 <div class="col-lg-6 spacing-right">
-                                                    Required for : <br> <input
-                                                    class="form-control" name="vehicle_required[]" value="{{ $vehicle->vehicle_required }}" type="text"
-                                                    placeholder="..." style="width: 100%;">
+                                                    Required for : <br> <input class="form-control" name="vehicle_required[]"
+                                                        value="{{ $vehicle->vehicle_required }}" type="text" placeholder="..."
+                                                        style="width: 100%;">
 
                                                 </div>
                                                 <div class="col-lg-6 mt-1">
-                                                    Monthly Maintenance Cost <br> <input
-                                                        class="form-control" name="vehicle_mantenance[]" value="{{ $vehicle->vehicle_mantenance }}" type="text"
-                                                        placeholder="..." style="width: 100%;">
+                                                    Monthly Maintenance Cost <br> <input class="form-control"
+                                                        name="vehicle_mantenance[]" value="{{ $vehicle->vehicle_mantenance }}"
+                                                        type="text" placeholder="..." style="width: 100%;">
                                                 </div>
                                                 <div class="col-lg-6 mt-1 spacing-right">
-                                                    Fuel <br> <input
-                                                    class="form-control" name="vehicle_fuel[]" value="{{ $vehicle->vehicle_fuel }}" type="text"
-                                                    placeholder="..." style="width: 100%;">
+                                                    Fuel <br> <input class="form-control" name="vehicle_fuel[]"
+                                                        value="{{ $vehicle->vehicle_fuel }}" type="text" placeholder="..."
+                                                        style="width: 100%;">
 
 
                                                 </div>
                                                 <div>
-                                                    <div class="col-lg-6 mt-1 " id="fuel_rate_km"
-                                                        >
+                                                    <div class="col-lg-6 mt-1 " id="fuel_rate_km">
                                                     </div>
-                                                    <div class="col-lg-6 mt-1 " id="fuel_rate_km_req"
-                                                        ">
-                                                        Rate Per Kilometer <br> <input
-                                                            class="form-control" name="vehicle_rate_per_km[]" value="{{ $vehicle->vehicle_rate_per_km }}" type="text"
-                                                            placeholder="..." style="width: 100%;">
+                                                    <div class="col-lg-6 mt-1 " id="fuel_rate_km_req" ">
+                                                                Rate Per Kilometer <br> <input
+                                                                    class=" form-control" name="vehicle_rate_per_km[]"
+                                                        value="{{ $vehicle->vehicle_rate_per_km }}" type="text"
+                                                        placeholder="..." style="width: 100%;">
 
-                                                        Kilometer Required <br> <input
-                                                            class="form-control" name="vehicle_km_required[]" value="{{ $vehicle->vehicle_km_required }}" type="text"
+                                                        Kilometer Required <br> <input class="form-control"
+                                                            name="vehicle_km_required[]"
+                                                            value="{{ $vehicle->vehicle_km_required }}" type="text"
                                                             placeholder="..." style="width: 100%;">
                                                     </div>
                                                 </div>
 
                                                 <div class="col-lg-6 mt-1 spacing-right">
-                                                    Toll Tax & Parking Charges <br> <input
-                                                    class="form-control" name="vehicle_toll[]" value="{{ $vehicle->vehicle_toll }}" type="text"
-                                                    placeholder="..." style="width: 100%;">
+                                                    Toll Tax & Parking Charges <br> <input class="form-control"
+                                                        name="vehicle_toll[]" value="{{ $vehicle->vehicle_toll }}" type="text"
+                                                        placeholder="..." style="width: 100%;">
 
 
                                                 </div>
-                                                <div class="col-lg-6 mt-1 " id="tooltax1"
-                                                   >
+                                                <div class="col-lg-6 mt-1 " id="tooltax1">
                                                 </div>
-                                                <div class="col-lg-6 mt-1 " id="tooltax2"
-                                                    >
-                                                    Toll Tax & Parking Charges: <br> <input
-                                                        class="form-control" name="vehicle_tol[]" value="{{ $vehicle->vehicle_tol }}" type="text"
+                                                <div class="col-lg-6 mt-1 " id="tooltax2">
+                                                    Toll Tax & Parking Charges: <br> <input class="form-control"
+                                                        name="vehicle_tol[]" value="{{ $vehicle->vehicle_tol }}" type="text"
                                                         placeholder="..." style="width: 100%;">
                                                 </div>
 
                                                 <div class="col-lg-6 mt-1">
-                                                    Meter Reading at the start of the duty <br> <input
-                                                        class="form-control" name="vehicle_meter_reading[]" value="{{ $vehicle->vehicle_meter_reading }}" type="file"
+                                                    Meter Reading at the start of the duty <br> <input class="form-control"
+                                                        name="vehicle_meter_reading[]"
+                                                        value="{{ $vehicle->vehicle_meter_reading }}" type="file"
                                                         placeholder="..." style="width: 100%;">
                                                 </div>
                                                 <div class="col-lg-6 mt-1">
-                                                    Picture of Meter Reading before duty <br> <input
-                                                        class="form-control" name="vehicle_meter_picture[]" value="{{ $vehicle->vehicle_meter_picture }}" type="file"
+                                                    Picture of Meter Reading before duty <br> <input class="form-control"
+                                                        name="vehicle_meter_picture[]"
+                                                        value="{{ $vehicle->vehicle_meter_picture }}" type="file"
                                                         placeholder="..." style="width: 100%;">
                                                 </div>
                                                 <div class="col-lg-6 mt-1">
-                                                    Reporting Time <br> <input class="form-control"
-                                                        type="time" name="vehicle_reporting_time[]" value="{{ $vehicle->vehicle_reporting_time }}" placeholder="..."
+                                                    Reporting Time <br> <input class="form-control" type="time"
+                                                        name="vehicle_reporting_time[]"
+                                                        value="{{ $vehicle->vehicle_reporting_time }}" placeholder="..."
                                                         style="width: 100%;">
                                                 </div>
-                                                 <div class="col-lg-6 mt-1 " id="reporting_address">
-                                        Reporting Address   <br>  <input class="form-control" type="text" placeholder="..." style="width: 100%;">
-                                    </div> -->
+                                                <div class="col-lg-6 mt-1 " id="reporting_address">
+                                                    Reporting Address <br> <input class="form-control" type="text"
+                                                        placeholder="..." style="width: 100%;">
+                                                </div> -->
 
                                                 <div class="col-lg-6 mt-2 ml-3 ">
-                                                    <input class="form-check-input" name="vehicle_reporting_address[]"  type="checkbox" {{ $vehicle->vehicle_reporting_address ? 'checked' : '' }}
-                                                        id="reporting_address_check">
-                                                    <label class="form-check-label"
-                                                        for="check">Reporting Address</label>
+                                                    <input class="form-check-input" name="vehicle_reporting_address[]"
+                                                        type="checkbox" {{ $vehicle->vehicle_reporting_address ? 'checked' : '' }} id="reporting_address_check">
+                                                    <label class="form-check-label" for="check">Reporting Address</label>
                                                 </div>
 
-                                                 Address Form
-                                                <div class="container " id="reporting_address_form"
-                                                    style="display: none;">
+                                                Address Form
+                                                <div class="container " id="reporting_address_form" style="display: none;">
                                                     <div class="row row-cols-2">
                                                         <div class="col-lg-6 mt-1">
-                                                            Office No <br> <input class="form-control"
-                                                                id="" name="vehicle_rep_office_no[]" value="{{ $vehicle->vehicle_rep_office_no }}" type="text"
+                                                            Office No <br> <input class="form-control" id=""
+                                                                name="vehicle_rep_office_no[]"
+                                                                value="{{ $vehicle->vehicle_rep_office_no }}" type="text"
                                                                 placeholder="..." style="width: 100%;">
                                                         </div>
                                                         <div class="col-lg-6 mt-1">
-                                                            Floor <br> <input class="form-control" id=""
-                                                                type="text" name="vehicle_rep_floor[]" value="{{ $vehicle->vehicle_rep_floor }}" placeholder="..."
+                                                            Floor <br> <input class="form-control" id="" type="text"
+                                                                name="vehicle_rep_floor[]"
+                                                                value="{{ $vehicle->vehicle_rep_floor }}" placeholder="..."
                                                                 style="width: 100%;">
                                                         </div>
                                                         <div class="col-lg-6 mt-1">
-                                                            Building <br> <input class="form-control"
-                                                                id="" name="vehicle_rep_building[]" value="{{ $vehicle->vehicle_rep_building }}"  type="text"
+                                                            Building <br> <input class="form-control" id=""
+                                                                name="vehicle_rep_building[]"
+                                                                value="{{ $vehicle->vehicle_rep_building }}" type="text"
                                                                 placeholder="..." style="width: 100%;">
                                                         </div>
                                                         <div class="col-lg-6 mt-1">
-                                                            Block <br> <input class="form-control" id=""
-                                                                type="text" name="vehicle_rep_block[]" value="{{ $vehicle->vehicle_rep_block }}" placeholder="..."
+                                                            Block <br> <input class="form-control" id="" type="text"
+                                                                name="vehicle_rep_block[]"
+                                                                value="{{ $vehicle->vehicle_rep_block }}" placeholder="..."
                                                                 style="width: 100%;">
                                                         </div>
                                                         <div class="col-lg-6 mt-1">
-                                                            Area <br> <input class="form-control" id=""
-                                                                type="text" name="vehicle_rep_area[]" value="{{ $vehicle->vehicle_rep_area }}" placeholder="..."
+                                                            Area <br> <input class="form-control" id="" type="text"
+                                                                name="vehicle_rep_area[]"
+                                                                value="{{ $vehicle->vehicle_rep_area }}" placeholder="..."
                                                                 style="width: 100%;">
                                                         </div>
                                                         <div class="col-lg-6 mt-1">
-                                                            City <br> <input class="form-control" id=""
-                                                                type="text" name="vehicle_rep_city[]" value="{{ $vehicle->vehicle_rep_city }}" placeholder="..."
+                                                            City <br> <input class="form-control" id="" type="text"
+                                                                name="vehicle_rep_city[]"
+                                                                value="{{ $vehicle->vehicle_rep_city }}" placeholder="..."
                                                                 style="width: 100%;">
                                                         </div>
                                                         <div class="col-lg-6 mt-1">
-                                                            Photograph of Building <br> <input
-                                                                class="form-control" name="vehicle_rep_picture[]" value="{{ $vehicle->vehicle_rep_picture }}" id=""
-                                                                type="file" placeholder="..."
-                                                                style="width: 100%;">
+                                                            Photograph of Building <br> <input class="form-control"
+                                                                name="vehicle_rep_picture[]"
+                                                                value="{{ $vehicle->vehicle_rep_picture }}" id="" type="file"
+                                                                placeholder="..." style="width: 100%;">
                                                         </div>
                                                         <div class="col-lg-6 mt-1">
-                                                            Pin location <br> <input
-                                                                class="form-control" name="vehicle_rep_location[]" value="{{ $vehicle->vehicle_rep_location }}" id=""
-                                                                type="text" placeholder="..."
-                                                                style="width: 100%;">
+                                                            Pin location <br> <input class="form-control"
+                                                                name="vehicle_rep_location[]"
+                                                                value="{{ $vehicle->vehicle_rep_location }}" id="" type="text"
+                                                                placeholder="..." style="width: 100%;">
                                                         </div>
                                                     </div>
                                                 </div>
 
 
                                                 <div class="col-lg-6 mt-1">
-                                                    Duty Start Date <br> <input class="form-control"
-                                                        type="date" name="vehicle_duty_start_date[]" value="{{ $vehicle->vehicle_duty_start_date }}" placeholder="..."
+                                                    Duty Start Date <br> <input class="form-control" type="date"
+                                                        name="vehicle_duty_start_date[]"
+                                                        value="{{ $vehicle->vehicle_duty_start_date }}" placeholder="..."
                                                         style="width: 100%;">
                                                 </div>
                                                 <div class="col-lg-6 mt-1">
-                                                    Duty End Date <br> <input class="form-control"
-                                                        type="date" name="vehicle_duty_end_date[]" value="{{ $vehicle->vehicle_duty_end_date }}" placeholder="..."
+                                                    Duty End Date <br> <input class="form-control" type="date"
+                                                        name="vehicle_duty_end_date[]"
+                                                        value="{{ $vehicle->vehicle_duty_end_date }}" placeholder="..."
                                                         style="width: 100%;">
                                                 </div>
                                                 <div class="col-lg-6 mt-1">
-                                                    Duty Start Time <br> <input class="form-control"
-                                                        type="time" name="vehicle_duty_start_time[]" value="{{ $vehicle->vehicle_duty_start_time }}" placeholder="..."
+                                                    Duty Start Time <br> <input class="form-control" type="time"
+                                                        name="vehicle_duty_start_time[]"
+                                                        value="{{ $vehicle->vehicle_duty_start_time }}" placeholder="..."
                                                         style="width: 100%;">
                                                 </div>
                                                 <div class="col-lg-6 mt-1">
-                                                    Duty End Time <br> <input class="form-control"
-                                                        type="time" name="vehicle_duty_end_time[]" value="{{ $vehicle->vehicle_duty_end_time }}" placeholder="..."
+                                                    Duty End Time <br> <input class="form-control" type="time"
+                                                        name="vehicle_duty_end_time[]"
+                                                        value="{{ $vehicle->vehicle_duty_end_time }}" placeholder="..."
                                                         style="width: 100%;">
                                                 </div>
                                                 <div class="col-lg-6 mt-1">
-                                                    Shift Duration <br> <input class="form-control"
-                                                        type="text" name="vehicle_shift_duration[]" value="{{ $vehicle->vehicle_shift_duration }}"  placeholder="..."
+                                                    Shift Duration <br> <input class="form-control" type="text"
+                                                        name="vehicle_shift_duration[]"
+                                                        value="{{ $vehicle->vehicle_shift_duration }}" placeholder="..."
                                                         style="width: 100%;">
                                                 </div>
                                                 <div class="col-lg-6 mt-1">
-                                                    No. of Shifts <br> <input class="form-control"
-                                                        type="text" name="vehicle_no_of_shifts[]" value="{{ $vehicle->vehicle_no_of_shifts }}" placeholder="..."
+                                                    No. of Shifts <br> <input class="form-control" type="text"
+                                                        name="vehicle_no_of_shifts[]"
+                                                        value="{{ $vehicle->vehicle_no_of_shifts }}" placeholder="..."
                                                         style="width: 100%;">
                                                 </div>
 
-                                                 Required with Driver : <br>
-                                        <select id="driver" class="form-control mt-1" name="category" style="width: 90%;">
-                                            <option value="yes">Yes</option>
-                                            <option value="">No</option>
-                                        </select> -->
+                                                Required with Driver : <br>
+                                                <select id="driver" class="form-control mt-1" name="category"
+                                                    style="width: 90%;">
+                                                    <option value="yes">Yes</option>
+                                                    <option value="">No</option>
+                                                </select> -->
                                                 <div class="col-lg-6 spacing-right mt-2 ml-3 ">
-                                                    <input class="form-check-input" name="vehicle_req_with_driver[]" type="checkbox" {{ $vehicle->vehicle_req_with_driver ? 'checked' : '' }}
+                                                    <input class="form-check-input" name="vehicle_req_with_driver[]"
+                                                        type="checkbox" {{ $vehicle->vehicle_req_with_driver ? 'checked' : '' }}
                                                         id="check_driver">
                                                     <label class="form-check-label" for="check">Required
                                                         with Driver</label>
                                                 </div>
 
-                                                <div class="col-lg-6 mt-1" id="food_driver"
-                                                    style="display: none;">
+                                                <div class="col-lg-6 mt-1" id="food_driver" style="display: none;">
 
-                                                    Food For Driver By Client <br> <input
-                                                    class="form-control" name="vehicle_food_by_client[]" value="{{ $vehicle->vehicle_food_by_client }}" type="text"
-                                                    placeholder="..." style="width: 100%;">
+                                                    Food For Driver By Client <br> <input class="form-control"
+                                                        name="vehicle_food_by_client[]"
+                                                        value="{{ $vehicle->vehicle_food_by_client }}" type="text"
+                                                        placeholder="..." style="width: 100%;">
 
                                                 </div>
 
                                                 <div class="col-lg-6 spacing-right mt-2 ml-3 ">
-                                                    <input class="form-check-input" name="vehicle_req_with_security[]" type="checkbox" {{ $vehicle->vehicle_req_with_security ? 'checked' : '' }}
-                                                        id="check_staff">
+                                                    <input class="form-check-input" name="vehicle_req_with_security[]"
+                                                        type="checkbox" {{ $vehicle->vehicle_req_with_security ? 'checked' : '' }} id="check_staff">
                                                     <label class="form-check-label" for="check">Required
                                                         With Security
                                                         Staff</label>
                                                 </div>
 
-                                                 Men Guarding Services Tab
+                                                Men Guarding Services Tab
 
-                                                <div class="new-div" id="check_staff_Men_Guarding"
-                                                    style="display:none;">
+                                                <div class="new-div" id="check_staff_Men_Guarding" style="display:none;">
                                                     <div class="col-lg-12">
                                                         <div class="row mb-2">
 
                                                             <div class="col-lg-6 spacing-right">
-                                                                Category <br> <input
-                                                                class="form-control" name="vehicle_guard_category[]" value="{{ $vehicle->vehicle_guard_category }}" type="text"
-                                                                placeholder="..." style="width: 100%;">
+                                                                Category <br> <input class="form-control"
+                                                                    name="vehicle_guard_category[]"
+                                                                    value="{{ $vehicle->vehicle_guard_category }}" type="text"
+                                                                    placeholder="..." style="width: 100%;">
 
                                                             </div>
                                                             <div class="col-lg-6 spacing-right">
-                                                                Quantity : <br> <input
-                                                                class="form-control" name="vehicle_guard_quantity[]" value="{{ $vehicle->vehicle_guard_quantity }}" type="text"
-                                                                placeholder="..." style="width: 100%;">
+                                                                Quantity : <br> <input class="form-control"
+                                                                    name="vehicle_guard_quantity[]"
+                                                                    value="{{ $vehicle->vehicle_guard_quantity }}" type="text"
+                                                                    placeholder="..." style="width: 100%;">
                                                             </div>
                                                             <div class="col-lg-6 spacing-right">
-                                                                Shift Timing : <br>  <input
-                                                                class="form-control" name="vehicle_guard_shift_timing[]" value="{{ $vehicle->vehicle_guard_shift_timing }}" type="text"
-                                                                placeholder="..." style="width: 100%;">
+                                                                Shift Timing : <br> <input class="form-control"
+                                                                    name="vehicle_guard_shift_timing[]"
+                                                                    value="{{ $vehicle->vehicle_guard_shift_timing }}"
+                                                                    type="text" placeholder="..." style="width: 100%;">
 
                                                             </div>
                                                             <div class="col-lg-6 spacing-right">
-                                                                Food by Client : <br> <input
-                                                                class="form-control" name="vehicle_guard_food_by_client[]" value="{{ $vehicle->vehicle_guard_food_by_client }}" type="text"
-                                                                placeholder="..." style="width: 100%;">
+                                                                Food by Client : <br> <input class="form-control"
+                                                                    name="vehicle_guard_food_by_client[]"
+                                                                    value="{{ $vehicle->vehicle_guard_food_by_client }}"
+                                                                    type="text" placeholder="..." style="width: 100%;">
 
                                                             </div>
                                                             <div class="col-lg-6 spacing-right">
-                                                                Accomodation By Client : <br>  <input
-                                                                class="form-control" name="vehicle_guard_accomodation[]" value="{{ $vehicle->vehicle_guard_accomodation }}" type="text"
-                                                                placeholder="..." style="width: 100%;">
+                                                                Accomodation By Client : <br> <input class="form-control"
+                                                                    name="vehicle_guard_accomodation[]"
+                                                                    value="{{ $vehicle->vehicle_guard_accomodation }}"
+                                                                    type="text" placeholder="..." style="width: 100%;">
 
                                                             </div>
 
                                                             <div class="col-lg-6 spacing-right">
-                                                                Transportation by Client : <br>  <input
-                                                                class="form-control" name="vehicle_guard_transportation[]" value="{{ $vehicle->vehicle_guard_transportation }}" type="text"
-                                                                placeholder="..." style="width: 100%;">
+                                                                Transportation by Client : <br> <input class="form-control"
+                                                                    name="vehicle_guard_transportation[]"
+                                                                    value="{{ $vehicle->vehicle_guard_transportation }}"
+                                                                    type="text" placeholder="..." style="width: 100%;">
 
                                                             </div>
                                                             <div class="col-lg-6 spacing-right">
-                                                                Required on monthly basis : <br> <input
-                                                                class="form-control" name="vehicle_guard_req_monthly[]" value="{{ $vehicle->vehicle_guard_req_monthly }}" type="text"
-                                                                placeholder="..." style="width: 100%;">
+                                                                Required on monthly basis : <br> <input class="form-control"
+                                                                    name="vehicle_guard_req_monthly[]"
+                                                                    value="{{ $vehicle->vehicle_guard_req_monthly }}"
+                                                                    type="text" placeholder="..." style="width: 100%;">
 
                                                             </div>
                                                             <div class="col-lg-6 spacing-right">
-                                                                Required on dialy basis : <br>  <input
-                                                                class="form-control" name="vehicle_guard_req_dialy[]" value="{{ $vehicle->vehicle_guard_req_dialy }}" type="text"
-                                                                placeholder="..." style="width: 100%;">
+                                                                Required on dialy basis : <br> <input class="form-control"
+                                                                    name="vehicle_guard_req_dialy[]"
+                                                                    value="{{ $vehicle->vehicle_guard_req_dialy }}" type="text"
+                                                                    placeholder="..." style="width: 100%;">
 
                                                             </div>
                                                             <div class="col-lg-6 mt-1">
                                                                 No. of days Security Staff required for
-                                                                <br> <input class="form-control" name="vehicle_guard_no[]" value="{{ $vehicle->vehicle_guard_no }}"
-                                                                    type="text" placeholder="..."
-                                                                    style="width: 100%;">
+                                                                <br> <input class="form-control" name="vehicle_guard_no[]"
+                                                                    value="{{ $vehicle->vehicle_guard_no }}" type="text"
+                                                                    placeholder="..." style="width: 100%;">
                                                             </div>
                                                             <div class="col-lg-6">
-                                                                Notes <br> <textarea
-                                                                    class="form-control mt-1"
+                                                                Notes <br> <textarea class="form-control mt-1"
                                                                     id="head_office_name" name="vehicle_guard_notes[]"
-                                                                    type="text"
-                                                                    placeholder="..."
+                                                                    type="text" placeholder="..."
                                                                     style="width: 100%;">{{ $vehicle->vehicle_guard_notes }}</textarea>
                                                             </div>
                                                             <div class="col-lg-6">
-                                                                Attachments <br> <input
-                                                                    class="form-control mt-1"
-                                                                    id="head_office_email" value="{{ $vehicle->vehicle_guard_attach }}" name="vehicle_guard_attach[]"
-                                                                    type="file"
-                                                                    placeholder="..."
+                                                                Attachments <br> <input class="form-control mt-1"
+                                                                    id="head_office_email"
+                                                                    value="{{ $vehicle->vehicle_guard_attach }}"
+                                                                    name="vehicle_guard_attach[]" type="file" placeholder="..."
                                                                     style="width: 100%;">
                                                             </div>
-                                                             <button class="new-branch mt-2" onclick="removeNewDiv7()">Remove</button>
+                                                            <button class="new-branch mt-2"
+                                                                onclick="removeNewDiv7()">Remove</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -973,7 +1102,7 @@
                                     </div>
                                 </div>
                             @endforeach
-                            @else
+                        @else
                             <p>No Vehicle details found.</p>
                         @endif
                     </div>
@@ -985,19 +1114,18 @@
                             @foreach ($requirements->requirementcanine as $index => $canine)
                                 <!-- Initial Accordion Item -->
                                 <div class="accordion-item signaccordion-item3" id="signatoryEntry3{{ $index + 1 }}">
-                                    <h2 class="accordion-header" id="signatoryHeading3{{ $index + 1 }}"
-                                        style="color: white">
-                                        <button class="accordion-button"
-                                            style="background-color: #34005A; color:white" type="button"
-                                            data-toggle="collapse" data-target="#signatoryCollapse3{{ $index + 1 }}"
-                                            aria-expanded="false" aria-controls="signatoryCollapse3{{ $index + 1 }}">
+                                    <h2 class="accordion-header" id="signatoryHeading3{{ $index + 1 }}" style="color: white">
+                                        <button class="accordion-button" style="background-color: #34005A; color:white"
+                                            type="button" data-toggle="collapse"
+                                            data-target="#signatoryCollapse3{{ $index + 1 }}" aria-expanded="false"
+                                            aria-controls="signatoryCollapse3{{ $index + 1 }}">
                                             Canine Entry {{ $index + 1 }}
                                         </button>
                                     </h2>
                                     <!--<div id="signatoryCollapse3{{ $index + 1 }}" class="collapse"-->
                                     <!--    aria-labelledby="signatoryHeading3{{ $index + 1 }}">-->
                                     <!--    <div class="accordion-body">-->
-                                            <!-- Your content for signatory entry goes here -->
+                                    <!-- Your content for signatory entry goes here -->
                                     <!--        <div class="row mb-2" id="signatoryDetailsContainer3">-->
                                     <!--            <div class="col-lg-6 spacing-right">-->
                                     <!--                Required for : <br> <input class="form-control"-->
@@ -1128,19 +1256,18 @@
                         @if($requirements->requirementfacilitation && $requirements->requirementfacilitation->isNotEmpty())
                             @foreach ($requirements->requirementfacilitation as $index => $facilitation)
                                 <div class="accordion-item signaccordion-item4" id="signatoryEntry4{{ $index + 1 }}">
-                                    <h2 class="accordion-header" id="signatoryHeading4{{ $index + 1 }}"
-                                        style="color: white">
-                                        <button class="accordion-button"
-                                            style="background-color: #34005A; color:white" type="button"
-                                            data-toggle="collapse" data-target="#signatoryCollapse4{{ $index + 1 }}"
-                                            aria-expanded="false" aria-controls="signatoryCollapse4{{ $index + 1 }}">
+                                    <h2 class="accordion-header" id="signatoryHeading4{{ $index + 1 }}" style="color: white">
+                                        <button class="accordion-button" style="background-color: #34005A; color:white"
+                                            type="button" data-toggle="collapse"
+                                            data-target="#signatoryCollapse4{{ $index + 1 }}" aria-expanded="false"
+                                            aria-controls="signatoryCollapse4{{ $index + 1 }}">
                                             Facilitation Entry {{ $index + 1 }}
                                         </button>
                                     </h2>
                                     <!--<div id="signatoryCollapse4{{ $index + 1 }}" class="collapse"-->
                                     <!--    aria-labelledby="signatoryHeading4{{ $index + 1 }}">-->
                                     <!--    <div class="accordion-body">-->
-                                            <!-- Your content for signatory entry goes here -->
+                                    <!-- Your content for signatory entry goes here -->
                                     <!--        <div class="row mb-2" id="signatoryDetailsContainer">-->
                                     <!--            <div class="col-lg-6 mt-1">-->
                                     <!--                Guest Arrival Time <br> <input class="form-control"-->
@@ -1284,7 +1411,7 @@
                                     <!--                    </div>-->
                                     <!--                </div>-->
                                     <!--            </div>-->
-                                                <!--  -->
+                                    <!--  -->
 
                                     <!--            <div class="col-lg-6 mt-1">-->
                                     <!--                Flight Number <br> <input class="form-control"-->
@@ -1364,8 +1491,8 @@
                                 </div>
                             @endforeach
                         @else
-                        <p>No Facilitation details found.</p>
-                    @endif
+                            <p>No Facilitation details found.</p>
+                        @endif
                     </div>
 
 
@@ -1375,43 +1502,42 @@
                     <div class="accordion" id="signatoryAccordion4_1">
                         @if($requirements->requirementjet && $requirements->requirementjet->isNotEmpty())
                             @foreach ($requirements->requirementjet as $index => $jet)
-                            <!-- Initial Accordion Item -->
-                            <div class="accordion-item signaccordion-item4_1" id="signatoryEntry4_1{{ $index + 1 }}">
-                                <h2 class="accordion-header" id="signatoryHeading4_1{{ $index + 1 }}"
-                                    style="color: white">
-                                    <button class="accordion-button"
-                                        style="background-color: #34005A; color:white" type="button"
-                                        data-toggle="collapse" data-target="#signatoryCollapse4_1{{ $index + 1 }}"
-                                        aria-expanded="false" aria-controls="signatoryCollapse4_1{{ $index + 1 }}">
-                                        Private Jet Entry {{ $index + 1 }}
-                                    </button>
-                                </h2>
-                                <!--<div id="signatoryCollapse4_1{{ $index + 1 }}" class="collapse"-->
-                                <!--    aria-labelledby="signatoryHeading4_1{{ $index + 1 }}">-->
-                                <!--    <div class="accordion-body">-->
-                                <!--        <div class="row mb-2" id="signatoryDetailsContainer4_1">-->
-                                            <!-- Your content for entry goes here -->
-                                <!--            <div class="col-lg-6 mt-1">-->
-                                <!--                No. of Days Private Jet Required for <br> <input-->
-                                <!--                    class="form-control" name="no_of_days_private_jet[]" value="{{ $jet->no_of_days_private_jet }}" type="text"-->
-                                <!--                    placeholder="..."-->
-                                <!--                    style="width: 100%;">-->
-                                <!--            </div>-->
-                                <!--            <div class="col-lg-6 spacing-right">-->
-                                <!--                Fuel <br>  <input name="fuel_for_private_jet[]" value="{{ $jet->fuel_for_private_jet }}"-->
-                                <!--                class="form-control" type="text" placeholder="..."-->
-                                <!--                style="width: 100%;">-->
+                                <!-- Initial Accordion Item -->
+                                <div class="accordion-item signaccordion-item4_1" id="signatoryEntry4_1{{ $index + 1 }}">
+                                    <h2 class="accordion-header" id="signatoryHeading4_1{{ $index + 1 }}" style="color: white">
+                                        <button class="accordion-button" style="background-color: #34005A; color:white"
+                                            type="button" data-toggle="collapse"
+                                            data-target="#signatoryCollapse4_1{{ $index + 1 }}" aria-expanded="false"
+                                            aria-controls="signatoryCollapse4_1{{ $index + 1 }}">
+                                            Private Jet Entry {{ $index + 1 }}
+                                        </button>
+                                    </h2>
+                                    <!--<div id="signatoryCollapse4_1{{ $index + 1 }}" class="collapse"-->
+                                    <!--    aria-labelledby="signatoryHeading4_1{{ $index + 1 }}">-->
+                                    <!--    <div class="accordion-body">-->
+                                    <!--        <div class="row mb-2" id="signatoryDetailsContainer4_1">-->
+                                    <!-- Your content for entry goes here -->
+                                    <!--            <div class="col-lg-6 mt-1">-->
+                                    <!--                No. of Days Private Jet Required for <br> <input-->
+                                    <!--                    class="form-control" name="no_of_days_private_jet[]" value="{{ $jet->no_of_days_private_jet }}" type="text"-->
+                                    <!--                    placeholder="..."-->
+                                    <!--                    style="width: 100%;">-->
+                                    <!--            </div>-->
+                                    <!--            <div class="col-lg-6 spacing-right">-->
+                                    <!--                Fuel <br>  <input name="fuel_for_private_jet[]" value="{{ $jet->fuel_for_private_jet }}"-->
+                                    <!--                class="form-control" type="text" placeholder="..."-->
+                                    <!--                style="width: 100%;">-->
 
-                                <!--            </div>-->
-                                <!--            <div class="col-lg-12 mt-1 spacing-right" id="rateOfFuel">-->
-                                <!--                Rate of Fuel per Kilometer <br> <input name="rate_of_fuel_for_jet[]" value="{{ $jet->rate_of_fuel_for_jet }}"-->
-                                <!--                    class="form-control" type="text" placeholder="..."-->
-                                <!--                    style="width: 100%;">-->
-                                <!--            </div>-->
-                                <!--        </div>-->
-                                <!--    </div>-->
-                                <!--</div>-->
-                            </div>
+                                    <!--            </div>-->
+                                    <!--            <div class="col-lg-12 mt-1 spacing-right" id="rateOfFuel">-->
+                                    <!--                Rate of Fuel per Kilometer <br> <input name="rate_of_fuel_for_jet[]" value="{{ $jet->rate_of_fuel_for_jet }}"-->
+                                    <!--                    class="form-control" type="text" placeholder="..."-->
+                                    <!--                    style="width: 100%;">-->
+                                    <!--            </div>-->
+                                    <!--        </div>-->
+                                    <!--    </div>-->
+                                    <!--</div>-->
+                                </div>
                             @endforeach
                         @else
                             <p>No Jet details found.</p>
@@ -1424,21 +1550,20 @@
                     <div class="accordion" id="signatoryAccordion5">
                         @if($requirements->requirementevent && $requirements->requirementevent->isNotEmpty())
                             @foreach ($requirements->requirementevent as $index => $event)
-                            <!-- Initial Accordion Item -->
+                                <!-- Initial Accordion Item -->
                                 <div class="accordion-item signaccordion-item5" id="signatoryEntry5{{ $index + 1 }}">
-                                    <h2 class="accordion-header" id="signatoryHeading5{{ $index + 1 }}"
-                                        style="color: white">
-                                        <button class="accordion-button"
-                                            style="background-color: #34005A; color:white" type="button"
-                                            data-toggle="collapse" data-target="#signatoryCollapse5{{ $index + 1 }}"
-                                            aria-expanded="false" aria-controls="signatoryCollapse5{{ $index + 1 }}">
+                                    <h2 class="accordion-header" id="signatoryHeading5{{ $index + 1 }}" style="color: white">
+                                        <button class="accordion-button" style="background-color: #34005A; color:white"
+                                            type="button" data-toggle="collapse"
+                                            data-target="#signatoryCollapse5{{ $index + 1 }}" aria-expanded="false"
+                                            aria-controls="signatoryCollapse5{{ $index + 1 }}">
                                             Event Entry {{ $index + 1 }}
                                         </button>
                                     </h2>
                                     <!--<div id="signatoryCollapse5{{ $index + 1 }}" class="collapse"-->
                                     <!--    aria-labelledby="signatoryHeading5{{ $index + 1 }}">-->
                                     <!--    <div class="accordion-body">-->
-                                            <!-- Your content for entry goes here -->
+                                    <!-- Your content for entry goes here -->
                                     <!--        <div class="row mb-2" id="signatoryDetailsContainer5">-->
                                     <!--            <div class="row mb-2">-->
                                     <!--                <div class="col-lg-6 spacing-right" id="Owner">-->
@@ -1502,7 +1627,7 @@
                                     <!--                        for="check">Reporting Location</label>-->
                                     <!--                </div>-->
 
-                                                    <!-- Address -->
+                                    <!-- Address -->
                                     <!--                <div class="container " id="reporting_location_form"-->
                                     <!--                    style="display: none;">-->
                                     <!--                    <div class="row row-cols-2">-->
@@ -1556,7 +1681,7 @@
                                     <!--                        </div>-->
                                     <!--                    </div>-->
                                     <!--                </div>-->
-                                                    <!--  -->
+                                    <!--  -->
 
                                     <!--                <div class="col-lg-6 mt-1">-->
                                     <!--                    Event Date <br> <input class="form-control"-->
@@ -1610,12 +1735,11 @@
                             @foreach ($requirements->requirementconsultancy as $index => $consultancy)
                                 <!-- Initial Accordion Item -->
                                 <div class="accordion-item signaccordion-item6" id="signatoryEntry6{{ $index + 1 }}">
-                                    <h2 class="accordion-header" id="signatoryHeading6{{ $index + 1 }}"
-                                        style="color: white">
-                                        <button class="accordion-button"
-                                            style="background-color: #34005A; color:white" type="button"
-                                            data-toggle="collapse" data-target="#signatoryCollapse6{{ $index + 1 }}"
-                                            aria-expanded="false" aria-controls="signatoryCollapse6{{ $index + 1 }}">
+                                    <h2 class="accordion-header" id="signatoryHeading6{{ $index + 1 }}" style="color: white">
+                                        <button class="accordion-button" style="background-color: #34005A; color:white"
+                                            type="button" data-toggle="collapse"
+                                            data-target="#signatoryCollapse6{{ $index + 1 }}" aria-expanded="false"
+                                            aria-controls="signatoryCollapse6{{ $index + 1 }}">
                                             Security Consultancy Entry {{ $index + 1 }}
                                         </button>
                                     </h2>
@@ -1623,7 +1747,7 @@
                                     <!--    aria-labelledby="signatoryHeading6{{ $index + 1 }}">-->
                                     <!--    <div class="accordion-body">-->
                                     <!--        <div class="row mb-2" id="signatoryDetailsContainer6">-->
-                                                <!-- Your content for entry goes here -->
+                                    <!-- Your content for entry goes here -->
                                     <!--            <div class="col-lg-6 form-group spacing-left">-->
                                     <!--                Category:<br> <input class="form-control mt-1"-->
                                     <!--                id=""  type="file" value="{{ $consultancy->consultancy_category }}" name="consultancy_category[]"-->
@@ -1670,7 +1794,7 @@
 
                 </div>
 
-                <div class="container my-1" >
+                <div class="container my-1">
                     <div class="accordion" id="signatoryAccordion7" style="width:100%;">
                         @if($requirements->requirementfire && $requirements->requirementfire->isNotEmpty())
                             @foreach ($requirements->requirementfire as $index => $fire)
@@ -1877,121 +2001,121 @@
 
                 </div>
 
-                <div class="container my-1" >
+                <div class="container my-1">
                     <div class="accordion" id="signatoryAccordion15" style="width:100%;">
                         <!-- Initial Accordion Item -->
                         @if($requirements->requirementotherfire && $requirements->requirementotherfire->isNotEmpty())
-                        @foreach ($requirements->requirementotherfire as $index => $otherfire)
-                        <!--<div class="accordion-item signaccordion-item15" id="signatoryEntry15{{ $index + 1 }}">-->
-                        <!--    <h2 class="accordion-header" id="signatoryHeading15{{ $index + 1 }}"-->
-                        <!--        style="color: white">-->
-                        <!--        <button class="accordion-button"-->
-                        <!--            style="background-color: #34005A; color:white" type="button"-->
-                        <!--            data-toggle="collapse" data-target="#signatoryCollapse15{{ $index + 1 }}"-->
-                        <!--            aria-expanded="false" aria-controls="signatoryCollapse15{{ $index + 1 }}">-->
-                        <!--            Other Active Fire Protection Entry {{ $index + 1 }}-->
-                        <!--        </button>-->
-                        <!--    </h2>-->
-                        <!--    <div id="signatoryCollapse15{{ $index + 1 }}" class="collapse"-->
-                        <!--        aria-labelledby="signatoryHeading15{{ $index + 1 }}">-->
-                        <!--        <div class="accordion-body">-->
-                        <!--            <div class="row mb-2" id="signatoryDetailsContainer15">-->
-                        <!--                <div class="row mb-2">-->
-                        <!--                    <div class="col-lg-6 spacing-right">-->
-                        <!--                        Categories : <br> <input class="form-control"-->
-                        <!--                        type="text" name="other_fire_category[]" value="{{ $otherfire->other_fire_category }}" placeholder="..."-->
-                        <!--                        style="width: 100%;">-->
-                        <!--                    </div>-->
-                        <!--                    <div class="col-lg-6 spacing-right">-->
-                        <!--                        Equipment Name : <br>-->
-                        <!--                        <input class="form-control"-->
-                        <!--                            type="text" name="other_equip_name[]" value="{{ $otherfire->other_equip_name }}" placeholder="..."-->
-                        <!--                            style="width: 100%;">-->
-                        <!--                    </div>-->
-                        <!--                    <div class="col-lg-6 mt-1">-->
-                        <!--                        Article No<br> <input class="form-control"-->
-                        <!--                            type="text" name="other_article_no[]" value="{{ $otherfire->other_article_no }}" placeholder="..."-->
-                        <!--                            style="width: 100%;">-->
-                        <!--                    </div>-->
-                        <!--                    <div class="col-lg-6 mt-1">-->
-                        <!--                        Model <br> <input class="form-control" name="other_model[]" value="{{ $otherfire->other_model }}" type="text" placeholder="..."-->
-                        <!--                            style="width: 100%;">-->
-                        <!--                    </div>-->
-                        <!--                    <div class="col-lg-6 mt-1 spacing-right">-->
-                        <!--                        Year of Manufacturing : <br>-->
-                        <!--                        <input class="form-control" name="other_year_of_manufacture[]" value="{{ $otherfire->other_year_of_manufacture }}" type="text" placeholder="..."-->
-                        <!--                            style="width: 100%;">-->
-                        <!--                    </div>-->
-                        <!--                    <div class="col-lg-6 spacing-right">-->
-                        <!--                        Expiry Date : <br>-->
-                        <!--                        <input class="form-control" name="other_expiry_date[]" value="{{ $otherfire->other_expiry_date }}" type="text" placeholder="..."-->
-                        <!--                            style="width: 100%;">-->
-                        <!--                    </div>-->
-                        <!--                    <p>"Your Fire Fighting Cylinder is going to expire on "</p>-->
-                        <!--                    <div class="container " id="">-->
-                        <!--                        <div class="row row-cols-2">-->
-                        <!--                            <div class="col-lg-6 mt-1">-->
-                        <!--                                Warranty Period <br> <input class="form-control" id=""-->
-                        <!--                                    type="text" name="other_warranty_period[]" value="{{ $otherfire->other_warranty_period }}" placeholder="..." style="width: 100%;">-->
-                        <!--                            </div>-->
-                        <!--                            <div class="col-lg-6 mt-1">-->
-                        <!--                                Color <br> <input class="form-control" id="" name="other_fire_category[]" type="text"-->
-                        <!--                                value="{{ $otherfire->other_fire_category }}" placeholder="..." style="width: 100%;">-->
-                        <!--                            </div>-->
-                        <!--                            <div class="col-lg-6 mt-1">-->
-                        <!--                                Quantity <br> <input class="form-control" id=""-->
-                        <!--                                value="{{ $otherfire->other_quantity }}" type="text" name="other_quantity[]" placeholder="..." style="width: 100%;">-->
-                        <!--                            </div>-->
-                        <!--                            <div class="col-lg-6 mt-1">-->
-                        <!--                                Specifications Sheet: <br> <input class="form-control" id=""-->
-                        <!--                                value="{{ $otherfire->other_specifications }}" type="file" name="other_specifications[]" placeholder="..." style="width: 100%;">-->
-                        <!--                            </div>-->
-                        <!--                            <div class="col-lg-6 mt-1">-->
-                        <!--                                Scope of Work <br> <input class="form-control" id=""-->
-                        <!--                                value="{{ $otherfire->other_scope_of_work }}"  type="file" name="other_scope_of_work[]" placeholder="..." style="width: 100%;">-->
-                        <!--                            </div>-->
-                        <!--                            <div class="col-lg-6 mt-1">-->
-                        <!--                                Any Special Instructions <br> <textarea class="form-control mt-1"-->
-                        <!--                                id="head_office_name" name="other_fire_category[]"-->
-                        <!--                                type="text" placeholder="..." value="{{ $otherfire->other_fire_category }}"-->
-                        <!--                                style="width: 100%;"></textarea>-->
-                        <!--                            </div>-->
-                        <!--                            <div class="col-lg-6 mt-1">-->
-                        <!--                                Picture of Building/Premises:  <br> <input class="form-control" id=""-->
-                        <!--                                value="{{ $otherfire->other_picture_of_building }}"   type="file" name="other_picture_of_building[]" placeholder="..." style="width: 100%;">-->
-                        <!--                            </div>-->
-                        <!--                            <div class="col-lg-6 mt-1">-->
-                        <!--                                Complete Equipment Cost:  <br> <input class="form-control" id=""-->
-                        <!--                                value="{{ $otherfire->other_complete_cost }}"   type="text" name="other_complete_cost[]" placeholder="..." style="width: 100%;">-->
-                        <!--                            </div>-->
-                        <!--                            <div class="col-lg-6 mt-1">-->
-                        <!--                                Delivery charges:  <br> <input class="form-control" id=""-->
-                        <!--                                value="{{ $otherfire->other_delivery_charges }}"   type="text" name="other_delivery_charges[]" placeholder="..." style="width: 100%;">-->
-                        <!--                            </div>-->
-                        <!--                            <div class="col-lg-6 mt-1">-->
-                        <!--                                Installation Cost: <br> <input class="form-control" id=""-->
-                        <!--                                value="{{ $otherfire->other_installtion_cost }}"   type="text" name="other_installtion_cost[]" placeholder="..." style="width: 100%;">-->
-                        <!--                            </div>-->
-                        <!--                        </div>-->
-                        <!--                    </div>-->
-                        <!--                </div>-->
-                        <!--                <div class="col-lg-6">-->
-                        <!--                    Notes <br> <textarea class="form-control mt-1"-->
-                        <!--                        id="head_office_name" name="other_fire_notes[]"-->
-                        <!--                        type="text" placeholder="..."-->
-                        <!--                        style="width: 100%;">{{ $otherfire->other_fire_notes }}</textarea>-->
-                        <!--                </div>-->
-                        <!--                <div class="col-lg-6">-->
-                        <!--                    Attachments <br> <input class="form-control mt-1"-->
-                        <!--                        id="head_office_email" name="other_fire_attachment[]"-->
-                        <!--                        type="file" placeholder="..." value="{{ $otherfire->other_fire_attachment }}"-->
-                        <!--                        style="width: 100%;">-->
-                        <!--                </div>-->
-                        <!--            </div>-->
-                        <!--        </div>-->
-                        <!--    </div>-->
-                        <!--</div>-->
-                        @endforeach
+                            @foreach ($requirements->requirementotherfire as $index => $otherfire)
+                                <!--<div class="accordion-item signaccordion-item15" id="signatoryEntry15{{ $index + 1 }}">-->
+                                <!--    <h2 class="accordion-header" id="signatoryHeading15{{ $index + 1 }}"-->
+                                <!--        style="color: white">-->
+                                <!--        <button class="accordion-button"-->
+                                <!--            style="background-color: #34005A; color:white" type="button"-->
+                                <!--            data-toggle="collapse" data-target="#signatoryCollapse15{{ $index + 1 }}"-->
+                                <!--            aria-expanded="false" aria-controls="signatoryCollapse15{{ $index + 1 }}">-->
+                                <!--            Other Active Fire Protection Entry {{ $index + 1 }}-->
+                                <!--        </button>-->
+                                <!--    </h2>-->
+                                <!--    <div id="signatoryCollapse15{{ $index + 1 }}" class="collapse"-->
+                                <!--        aria-labelledby="signatoryHeading15{{ $index + 1 }}">-->
+                                <!--        <div class="accordion-body">-->
+                                <!--            <div class="row mb-2" id="signatoryDetailsContainer15">-->
+                                <!--                <div class="row mb-2">-->
+                                <!--                    <div class="col-lg-6 spacing-right">-->
+                                <!--                        Categories : <br> <input class="form-control"-->
+                                <!--                        type="text" name="other_fire_category[]" value="{{ $otherfire->other_fire_category }}" placeholder="..."-->
+                                <!--                        style="width: 100%;">-->
+                                <!--                    </div>-->
+                                <!--                    <div class="col-lg-6 spacing-right">-->
+                                <!--                        Equipment Name : <br>-->
+                                <!--                        <input class="form-control"-->
+                                <!--                            type="text" name="other_equip_name[]" value="{{ $otherfire->other_equip_name }}" placeholder="..."-->
+                                <!--                            style="width: 100%;">-->
+                                <!--                    </div>-->
+                                <!--                    <div class="col-lg-6 mt-1">-->
+                                <!--                        Article No<br> <input class="form-control"-->
+                                <!--                            type="text" name="other_article_no[]" value="{{ $otherfire->other_article_no }}" placeholder="..."-->
+                                <!--                            style="width: 100%;">-->
+                                <!--                    </div>-->
+                                <!--                    <div class="col-lg-6 mt-1">-->
+                                <!--                        Model <br> <input class="form-control" name="other_model[]" value="{{ $otherfire->other_model }}" type="text" placeholder="..."-->
+                                <!--                            style="width: 100%;">-->
+                                <!--                    </div>-->
+                                <!--                    <div class="col-lg-6 mt-1 spacing-right">-->
+                                <!--                        Year of Manufacturing : <br>-->
+                                <!--                        <input class="form-control" name="other_year_of_manufacture[]" value="{{ $otherfire->other_year_of_manufacture }}" type="text" placeholder="..."-->
+                                <!--                            style="width: 100%;">-->
+                                <!--                    </div>-->
+                                <!--                    <div class="col-lg-6 spacing-right">-->
+                                <!--                        Expiry Date : <br>-->
+                                <!--                        <input class="form-control" name="other_expiry_date[]" value="{{ $otherfire->other_expiry_date }}" type="text" placeholder="..."-->
+                                <!--                            style="width: 100%;">-->
+                                <!--                    </div>-->
+                                <!--                    <p>"Your Fire Fighting Cylinder is going to expire on "</p>-->
+                                <!--                    <div class="container " id="">-->
+                                <!--                        <div class="row row-cols-2">-->
+                                <!--                            <div class="col-lg-6 mt-1">-->
+                                <!--                                Warranty Period <br> <input class="form-control" id=""-->
+                                <!--                                    type="text" name="other_warranty_period[]" value="{{ $otherfire->other_warranty_period }}" placeholder="..." style="width: 100%;">-->
+                                <!--                            </div>-->
+                                <!--                            <div class="col-lg-6 mt-1">-->
+                                <!--                                Color <br> <input class="form-control" id="" name="other_fire_category[]" type="text"-->
+                                <!--                                value="{{ $otherfire->other_fire_category }}" placeholder="..." style="width: 100%;">-->
+                                <!--                            </div>-->
+                                <!--                            <div class="col-lg-6 mt-1">-->
+                                <!--                                Quantity <br> <input class="form-control" id=""-->
+                                <!--                                value="{{ $otherfire->other_quantity }}" type="text" name="other_quantity[]" placeholder="..." style="width: 100%;">-->
+                                <!--                            </div>-->
+                                <!--                            <div class="col-lg-6 mt-1">-->
+                                <!--                                Specifications Sheet: <br> <input class="form-control" id=""-->
+                                <!--                                value="{{ $otherfire->other_specifications }}" type="file" name="other_specifications[]" placeholder="..." style="width: 100%;">-->
+                                <!--                            </div>-->
+                                <!--                            <div class="col-lg-6 mt-1">-->
+                                <!--                                Scope of Work <br> <input class="form-control" id=""-->
+                                <!--                                value="{{ $otherfire->other_scope_of_work }}"  type="file" name="other_scope_of_work[]" placeholder="..." style="width: 100%;">-->
+                                <!--                            </div>-->
+                                <!--                            <div class="col-lg-6 mt-1">-->
+                                <!--                                Any Special Instructions <br> <textarea class="form-control mt-1"-->
+                                <!--                                id="head_office_name" name="other_fire_category[]"-->
+                                <!--                                type="text" placeholder="..." value="{{ $otherfire->other_fire_category }}"-->
+                                <!--                                style="width: 100%;"></textarea>-->
+                                <!--                            </div>-->
+                                <!--                            <div class="col-lg-6 mt-1">-->
+                                <!--                                Picture of Building/Premises:  <br> <input class="form-control" id=""-->
+                                <!--                                value="{{ $otherfire->other_picture_of_building }}"   type="file" name="other_picture_of_building[]" placeholder="..." style="width: 100%;">-->
+                                <!--                            </div>-->
+                                <!--                            <div class="col-lg-6 mt-1">-->
+                                <!--                                Complete Equipment Cost:  <br> <input class="form-control" id=""-->
+                                <!--                                value="{{ $otherfire->other_complete_cost }}"   type="text" name="other_complete_cost[]" placeholder="..." style="width: 100%;">-->
+                                <!--                            </div>-->
+                                <!--                            <div class="col-lg-6 mt-1">-->
+                                <!--                                Delivery charges:  <br> <input class="form-control" id=""-->
+                                <!--                                value="{{ $otherfire->other_delivery_charges }}"   type="text" name="other_delivery_charges[]" placeholder="..." style="width: 100%;">-->
+                                <!--                            </div>-->
+                                <!--                            <div class="col-lg-6 mt-1">-->
+                                <!--                                Installation Cost: <br> <input class="form-control" id=""-->
+                                <!--                                value="{{ $otherfire->other_installtion_cost }}"   type="text" name="other_installtion_cost[]" placeholder="..." style="width: 100%;">-->
+                                <!--                            </div>-->
+                                <!--                        </div>-->
+                                <!--                    </div>-->
+                                <!--                </div>-->
+                                <!--                <div class="col-lg-6">-->
+                                <!--                    Notes <br> <textarea class="form-control mt-1"-->
+                                <!--                        id="head_office_name" name="other_fire_notes[]"-->
+                                <!--                        type="text" placeholder="..."-->
+                                <!--                        style="width: 100%;">{{ $otherfire->other_fire_notes }}</textarea>-->
+                                <!--                </div>-->
+                                <!--                <div class="col-lg-6">-->
+                                <!--                    Attachments <br> <input class="form-control mt-1"-->
+                                <!--                        id="head_office_email" name="other_fire_attachment[]"-->
+                                <!--                        type="file" placeholder="..." value="{{ $otherfire->other_fire_attachment }}"-->
+                                <!--                        style="width: 100%;">-->
+                                <!--                </div>-->
+                                <!--            </div>-->
+                                <!--        </div>-->
+                                <!--    </div>-->
+                                <!--</div>-->
+                            @endforeach
                         @else
                             <p>No Other Fire details found.</p>
                         @endif
@@ -2005,12 +2129,11 @@
                         @if($requirements->requirementpassive && $requirements->requirementpassive->isNotEmpty())
                             @foreach ($requirements->requirementpassive as $index => $passive)
                                 <div class="accordion-item signaccordion-item16" id="signatoryEntry16{{ $index + 1 }}">
-                                    <h2 class="accordion-header" id="signatoryHeading16{{ $index + 1 }}"
-                                        style="color: white">
-                                        <button class="accordion-button"
-                                            style="background-color: #34005A; color:white" type="button"
-                                            data-toggle="collapse" data-target="#signatoryCollapse16{{ $index + 1 }}"
-                                            aria-expanded="false" aria-controls="signatoryCollapse16{{ $index + 1 }}">
+                                    <h2 class="accordion-header" id="signatoryHeading16{{ $index + 1 }}" style="color: white">
+                                        <button class="accordion-button" style="background-color: #34005A; color:white"
+                                            type="button" data-toggle="collapse"
+                                            data-target="#signatoryCollapse16{{ $index + 1 }}" aria-expanded="false"
+                                            aria-controls="signatoryCollapse16{{ $index + 1 }}">
                                             Passive Fire Protection Entry {{ $index + 1 }}
                                         </button>
                                     </h2>
@@ -2020,64 +2143,71 @@
                                             <div class="row mb-2" id="signatoryDetailsContainer16">
                                                 <div class="row mb-2">
                                                     <div class="col-lg-12 spacing-right">
-                                                        Categories : <br>     <input class="form-control"
-                                                        type="text" name="passive_category[]" value="{{ $passive->passive_category }}" placeholder="..."
-                                                        style="width: 100%;">
+                                                        Categories : <br> <input class="form-control" type="text"
+                                                            name="passive_category[]" value="{{ $passive->passive_category }}"
+                                                            placeholder="..." style="width: 100%;">
                                                     </div>
                                                     <h5>Dimensions</h5>
                                                     <div class="col-lg-6 spacing-right">
                                                         Length : <br>
-                                                        <input class="form-control"
-                                                            type="text" name="passive_dimension[]" value="{{ $passive->passive_dimension }}" placeholder="..."
+                                                        <input class="form-control" type="text" name="passive_dimension[]"
+                                                            value="{{ $passive->passive_dimension }}" placeholder="..."
                                                             style="width: 100%;">
                                                     </div>
                                                     <div class="col-lg-6 mt-1">
-                                                        Width<br> <input class="form-control"
-                                                            type="text" name="passive_width[]" value="{{ $passive->passive_width }}" placeholder="..."
+                                                        Width<br> <input class="form-control" type="text" name="passive_width[]"
+                                                            value="{{ $passive->passive_width }}" placeholder="..."
                                                             style="width: 100%;">
                                                     </div>
                                                     <div class="col-lg-6 mt-1">
-                                                        Height <br> <input class="form-control" name="passive_height[]" value="{{ $passive->passive_height }}" type="text" placeholder="..."
+                                                        Height <br> <input class="form-control" name="passive_height[]"
+                                                            value="{{ $passive->passive_height }}" type="text" placeholder="..."
                                                             style="width: 100%;">
                                                     </div>
                                                     <div class="col-lg-6 mt-1 spacing-right">
                                                         Thickness/Depth : <br>
-                                                        <input class="form-control" name="passive_depth[]" value="{{ $passive->passive_depth }}" type="text" placeholder="..."
+                                                        <input class="form-control" name="passive_depth[]"
+                                                            value="{{ $passive->passive_depth }}" type="text" placeholder="..."
                                                             style="width: 100%;">
                                                     </div>
                                                     <div class="col-lg-6 spacing-right">
                                                         Quantity : <br>
-                                                        <input class="form-control" name="passive_quantity[]" value="{{ $passive->passive_quantity }}" type="text" placeholder="..."
-                                                            style="width: 100%;">
+                                                        <input class="form-control" name="passive_quantity[]"
+                                                            value="{{ $passive->passive_quantity }}" type="text"
+                                                            placeholder="..." style="width: 100%;">
                                                     </div>
                                                     <div class="col-lg-6 spacing-right">
                                                         Material : <br>
-                                                        <input class="form-control"
-                                                            type="text" name="passive_material[]" value="{{ $passive->passive_material }}" placeholder="..."
+                                                        <input class="form-control" type="text" name="passive_material[]"
+                                                            value="{{ $passive->passive_material }}" placeholder="..."
                                                             style="width: 100%;">
                                                     </div>
                                                     <div class="col-lg-6 mt-1">
-                                                        Equipment Name <br> <input class="form-control"
-                                                            type="text" name="passive_equipment[]" value="{{ $passive->passive_equipment }}"  placeholder="..."
-                                                            style="width: 100%;">
+                                                        Equipment Name <br> <input class="form-control" type="text"
+                                                            name="passive_equipment[]" value="{{ $passive->passive_equipment }}"
+                                                            placeholder="..." style="width: 100%;">
                                                     </div>
                                                     <div class="col-lg-6 mt-1">
-                                                        Article No <br> <input class="form-control" name="passive_article[]" value="{{ $passive->passive_article }}" type="text" placeholder="..."
-                                                            style="width: 100%;">
+                                                        Article No <br> <input class="form-control" name="passive_article[]"
+                                                            value="{{ $passive->passive_article }}" type="text"
+                                                            placeholder="..." style="width: 100%;">
                                                     </div>
                                                     <div class="col-lg-6 mt-1 spacing-right">
                                                         Model : <br>
-                                                        <input class="form-control" name="passive_model[]" value="{{ $passive->passive_model }}" type="text" placeholder="..."
+                                                        <input class="form-control" name="passive_model[]"
+                                                            value="{{ $passive->passive_model }}" type="text" placeholder="..."
                                                             style="width: 100%;">
                                                     </div>
                                                     <div class="col-lg-6 spacing-right">
                                                         Year of Manufacturing : <br>
-                                                        <input class="form-control" name="passive_year_of_manufacture[]" value="{{ $passive->passive_year_of_manufacture }}" type="text" placeholder="..."
-                                                            style="width: 100%;">
+                                                        <input class="form-control" name="passive_year_of_manufacture[]"
+                                                            value="{{ $passive->passive_year_of_manufacture }}" type="text"
+                                                            placeholder="..." style="width: 100%;">
                                                     </div>
                                                     <div class="col-lg-6 spacing-right">
-                                                        Expiry Date:  : <br>
-                                                        <input class="form-control" name="passive_expiry[]" value="{{ $passive->passive_expiry }}" type="text" placeholder="..."
+                                                        Expiry Date: : <br>
+                                                        <input class="form-control" name="passive_expiry[]"
+                                                            value="{{ $passive->passive_expiry }}" type="text" placeholder="..."
                                                             style="width: 100%;">
                                                     </div>
                                                     <p>"Your Passive Fire Fighting Cylinder is going to expire on "</p>
@@ -2085,53 +2215,77 @@
                                                         <div class="row row-cols-2">
                                                             <div class="col-lg-6 mt-1">
                                                                 Warranty Period <br> <input class="form-control" id=""
-                                                                value="{{ $passive->passive_warranty }}"       type="text" name="passive_warranty[]" placeholder="..." style="width: 100%;">
+                                                                    value="{{ $passive->passive_warranty }}" type="text"
+                                                                    name="passive_warranty[]" placeholder="..."
+                                                                    style="width: 100%;">
                                                             </div>
                                                             <div class="col-lg-6 mt-1">
-                                                                Color <br> <input class="form-control" name="passive_color[]" id=""  type="text"
-                                                                value="{{ $passive->passive_color }}"      placeholder="..." style="width: 100%;">
+                                                                Color <br> <input class="form-control" name="passive_color[]"
+                                                                    id="" type="text" value="{{ $passive->passive_color }}"
+                                                                    placeholder="..." style="width: 100%;">
                                                             </div>
                                                             <div class="col-lg-6 mt-1">
-                                                                Quantity <br> <input class="form-control" name="passive_second_quantity[]" id=""
-                                                                value="{{ $passive->passive_second_quantity }}"  type="text" placeholder="..." style="width: 100%;">
+                                                                Quantity <br> <input class="form-control"
+                                                                    name="passive_second_quantity[]" id=""
+                                                                    value="{{ $passive->passive_second_quantity }}" type="text"
+                                                                    placeholder="..." style="width: 100%;">
                                                             </div>
                                                             <div class="col-lg-6 mt-1">
-                                                                Scope of Work <br> <input class="form-control" name="passive_scope_of_work[]" id=""
-                                                                value="{{ $passive->passive_scope_of_work }}"    type="file" placeholder="..." style="width: 100%;">
+                                                                Scope of Work <br> <input class="form-control"
+                                                                    name="passive_scope_of_work[]" id=""
+                                                                    value="{{ $passive->passive_scope_of_work }}" type="file"
+                                                                    placeholder="..." style="width: 100%;">
                                                             </div>
                                                             <div class="col-lg-6 mt-1">
-                                                                Any Special Instructions <br> <textarea class="form-control mt-1"
-                                                                id="head_office_name" name="passive_instruction[]"
-                                                                type="text" placeholder="..." value="{{ $passive->passive_instruction }}"
-                                                                style="width: 100%;"></textarea>
+                                                                Any Special Instructions <br> <textarea
+                                                                    class="form-control mt-1" id="head_office_name"
+                                                                    name="passive_instruction[]" type="text" placeholder="..."
+                                                                    value="{{ $passive->passive_instruction }}"
+                                                                    style="width: 100%;"></textarea>
                                                             </div>
                                                             <div class="col-lg-6 mt-1">
-                                                                Picture of Building/Premises:  <br> <input class="form-control" id=""
-                                                                value="{{ $passive->passive_building_picture }}"  type="file" name="passive_building_picture[]" placeholder="..." style="width: 100%;">
+                                                                Picture of Building/Premises: <br> <input class="form-control"
+                                                                    id="" value="{{ $passive->passive_building_picture }}"
+                                                                    type="file" name="passive_building_picture[]"
+                                                                    placeholder="..." style="width: 100%;">
                                                             </div>
                                                             <div class="col-lg-6 mt-1">
-                                                                Complete Equipment Cost:  <br> <input class="form-control" id=""
-                                                                value="{{ $passive->passive_complete_cost }}"  type="text" name="passive_complete_cost[]" placeholder="..." style="width: 100%;">
+                                                                Complete Equipment Cost: <br> <input class="form-control" id=""
+                                                                    value="{{ $passive->passive_complete_cost }}" type="text"
+                                                                    name="passive_complete_cost[]" placeholder="..."
+                                                                    style="width: 100%;">
                                                             </div>
                                                             <div class="col-lg-6 mt-1">
-                                                                Delivery charges:  <br> <input class="form-control" id=""
-                                                                value="{{ $passive->passive_delivery_charges }}"   type="text" name="passive_delivery_charges[]" placeholder="..." style="width: 100%;">
+                                                                Delivery charges: <br> <input class="form-control" id=""
+                                                                    value="{{ $passive->passive_delivery_charges }}" type="text"
+                                                                    name="passive_delivery_charges[]" placeholder="..."
+                                                                    style="width: 100%;">
                                                             </div>
                                                             <div class="col-lg-6 mt-1">
                                                                 Installation Cost: <br> <input class="form-control" id=""
-                                                                value="{{ $passive->passive_cost }}"  type="text" name="passive_cost[]" placeholder="..." style="width: 100%;">
+                                                                    value="{{ $passive->passive_cost }}" type="text"
+                                                                    name="passive_cost[]" placeholder="..."
+                                                                    style="width: 100%;">
                                                             </div>
                                                             <div class="col-lg-6 mt-1">
-                                                                Drawings of the Buildings/Premises <br> <input class="form-control" id=""
-                                                                value="{{ $passive->passive_drawings }}"    type="file" name="passive_drawings[]" placeholder="..." style="width: 100%;">
+                                                                Drawings of the Buildings/Premises <br> <input
+                                                                    class="form-control" id=""
+                                                                    value="{{ $passive->passive_drawings }}" type="file"
+                                                                    name="passive_drawings[]" placeholder="..."
+                                                                    style="width: 100%;">
                                                             </div>
                                                             <div class="col-lg-6 mt-1">
-                                                                Pictures of the Buildings/Premises <br> <input class="form-control" id=""
-                                                                value="{{ $passive->passive_pictures }}"  type="file" name="passive_pictures[]" placeholder="..." style="width: 100%;">
+                                                                Pictures of the Buildings/Premises <br> <input
+                                                                    class="form-control" id=""
+                                                                    value="{{ $passive->passive_pictures }}" type="file"
+                                                                    name="passive_pictures[]" placeholder="..."
+                                                                    style="width: 100%;">
                                                             </div>
                                                             <div class="col-lg-6 mt-1">
-                                                                Complete Equipment Charges: <br> <input class="form-control" id=""
-                                                                value="{{ $passive->passive_complete_equip_charges }}"   type="text" name="passive_complete_equip_charges[]" placeholder="..." style="width: 100%;">
+                                                                Complete Equipment Charges: <br> <input class="form-control"
+                                                                    id="" value="{{ $passive->passive_complete_equip_charges }}"
+                                                                    type="text" name="passive_complete_equip_charges[]"
+                                                                    placeholder="..." style="width: 100%;">
                                                             </div>
 
                                                         </div>
@@ -2155,12 +2309,11 @@
                             @foreach ($requirements->requirementequipment as $index => $equipment)
                                 <!-- Initial Accordion Item -->
                                 <div class="accordion-item signaccordion-item8" id="signatoryEntry8{{ $index + 1 }}">
-                                    <h2 class="accordion-header" id="signatoryHeading8{{ $index + 1 }}"
-                                        style="color: white">
-                                        <button class="accordion-button"
-                                            style="background-color: #34005A; color:white" type="button"
-                                            data-toggle="collapse" data-target="#signatoryCollapse8{{ $index + 1 }}"
-                                            aria-expanded="false" aria-controls="signatoryCollapse8{{ $index + 1 }}">
+                                    <h2 class="accordion-header" id="signatoryHeading8{{ $index + 1 }}" style="color: white">
+                                        <button class="accordion-button" style="background-color: #34005A; color:white"
+                                            type="button" data-toggle="collapse"
+                                            data-target="#signatoryCollapse8{{ $index + 1 }}" aria-expanded="false"
+                                            aria-controls="signatoryCollapse8{{ $index + 1 }}">
                                             Security Equipment Entry {{ $index + 1 }}
                                         </button>
                                     </h2>
@@ -2168,7 +2321,7 @@
                                     <!--    aria-labelledby="signatoryHeading8{{ $index + 1 }}">-->
                                     <!--    <div class="accordion-body">-->
                                     <!--        <div class="row mb-2" id="signatoryDetailsContainer8">-->
-                                                <!-- Your content for entry goes here -->
+                                    <!-- Your content for entry goes here -->
                                     <!--            <div class="col-lg-6 form-group spacing-left">-->
                                     <!--                Category:<br> <input-->
                                     <!--                class="form-control" type="text" name="equipment_category[]"-->
@@ -2339,7 +2492,7 @@
                                     <!--    </div>-->
                                     <!--</div>-->
                                 </div>
-                        @endforeach
+                            @endforeach
                         @else
                             <p>No Equipment details found.</p>
                         @endif
@@ -2348,16 +2501,17 @@
 
                 </div>
 
-                <div class="container  my-1" id="incidentContainer" >
-                    <div class="accordion" id="incidentAccordion" >
+                <div class="container  my-1" id="incidentContainer">
+                    <div class="accordion" id="incidentAccordion">
                         @if($requirements->requirementbarrier && $requirements->requirementbarrier->isNotEmpty())
                             @foreach ($requirements->requirementbarrier as $index => $barrier)
                                 <!-- Initial Accordion Item -->
                                 <div class="accordion-item incidentaccordion-item" id="incidentEntry1{{ $index + 1 }}">
                                     <h2 class="accordion-header" id="incidentHeading1{{ $index + 1 }}" style="color: white">
-                                        <button class="accordion-button" style="background-color: #34005A; color:white"  type="button"
-                                        data-toggle="collapse" data-target="#incidentCollapse1{{ $index + 1 }}" aria-expanded="false"
-                                        aria-controls="incidentCollapse1{{ $index + 1 }}">
+                                        <button class="accordion-button" style="background-color: #34005A; color:white"
+                                            type="button" data-toggle="collapse"
+                                            data-target="#incidentCollapse1{{ $index + 1 }}" aria-expanded="false"
+                                            aria-controls="incidentCollapse1{{ $index + 1 }}">
                                             Automatic Traffic Barrier Entry {{ $index + 1 }}
                                         </button>
                                     </h2>
@@ -2710,15 +2864,11 @@
                         @if($requirements->requirementattendance && $requirements->requirementattendance->isNotEmpty())
                             @foreach ($requirements->requirementattendance as $index => $attendance)
                                 <!-- Initial Accordion Item -->
-                                <div class="accordion-item signaccordion-item9_1"
-                                    id="signatoryEntry9_1{{ $index + 1 }}">
-                                    <h2 class="accordion-header" id="signatoryHeading9_1{{ $index + 1 }}"
-                                        style="color: white">
-                                        <button class="accordion-button"
-                                            style="background-color: #34005A; color:white"
+                                <div class="accordion-item signaccordion-item9_1" id="signatoryEntry9_1{{ $index + 1 }}">
+                                    <h2 class="accordion-header" id="signatoryHeading9_1{{ $index + 1 }}" style="color: white">
+                                        <button class="accordion-button" style="background-color: #34005A; color:white"
                                             type="button" data-toggle="collapse"
-                                            data-target="#signatoryCollapse9_1{{ $index + 1 }}"
-                                            aria-expanded="false"
+                                            data-target="#signatoryCollapse9_1{{ $index + 1 }}" aria-expanded="false"
                                             aria-controls="signatoryCollapse9_1{{ $index + 1 }}">
                                             Attendence Machine Entry {{ $index + 1 }}
                                         </button>
@@ -2727,7 +2877,7 @@
                                     <!--    aria-labelledby="signatoryHeading9_1{{ $index + 1 }}">-->
                                     <!--    <div class="accordion-body">-->
                                     <!--        <div class="row mb-2" id="signatoryDetailsContainer9_1">-->
-                                                <!-- Your content for entry goes here -->
+                                    <!-- Your content for entry goes here -->
                                     <!--            <div class="col-lg-6 mt-1">-->
                                     <!--                Category <br> <input class="form-control"-->
                                     <!--                    type="text" name="attendance_category[]" placeholder="..."-->
@@ -2777,15 +2927,11 @@
                         <!-- Initial Accordion Item -->
                         @if($requirements->requirementweb && $requirements->requirementweb->isNotEmpty())
                             @foreach ($requirements->requirementweb as $index => $web)
-                                <div class="accordion-item signaccordion-item9_2"
-                                    id="signatoryEntry9_2{{ $index + 1 }}">
-                                    <h2 class="accordion-header" id="signatoryHeading9_2{{ $index + 1 }}"
-                                        style="color: white">
-                                        <button class="accordion-button"
-                                            style="background-color: #34005A; color:white"
+                                <div class="accordion-item signaccordion-item9_2" id="signatoryEntry9_2{{ $index + 1 }}">
+                                    <h2 class="accordion-header" id="signatoryHeading9_2{{ $index + 1 }}" style="color: white">
+                                        <button class="accordion-button" style="background-color: #34005A; color:white"
                                             type="button" data-toggle="collapse"
-                                            data-target="#signatoryCollapse9_2{{ $index + 1 }}"
-                                            aria-expanded="false"
+                                            data-target="#signatoryCollapse9_2{{ $index + 1 }}" aria-expanded="false"
                                             aria-controls="signatoryCollapse9_2{{ $index + 1 }}">
                                             Web Surveillance Entry {{ $index + 1 }}
                                         </button>
@@ -2794,7 +2940,7 @@
                                     <!--    aria-labelledby="signatoryHeading9_2{{ $index + 1 }}">-->
                                     <!--    <div class="accordion-body">-->
                                     <!--        <div class="row mb-2" id="signatoryDetailsContainer9_2">-->
-                                                <!-- Your content for entry goes here -->
+                                    <!-- Your content for entry goes here -->
                                     <!--            <div class="col-lg-6 mt-1">-->
                                     <!--                Category <br> <input class="form-control"-->
                                     <!--                    type="text" name="web_category[]" value="{{ $web->web_category }}" placeholder="..."-->
@@ -2847,12 +2993,9 @@
                         <!-- Initial Accordion Item -->
                         @if($requirements->requirementcctv && $requirements->requirementcctv->isNotEmpty())
                             @foreach ($requirements->requirementcctv as $index => $cctv)
-                                <div class="accordion-item signaccordion-item9"
-                                    id="signatoryEntry9{{ $index + 1 }}">
-                                    <h2 class="accordion-header" id="signatoryHeading9{{ $index + 1 }}"
-                                        style="color: white">
-                                        <button class="accordion-button"
-                                            style="background-color: #34005A; color:white"
+                                <div class="accordion-item signaccordion-item9" id="signatoryEntry9{{ $index + 1 }}">
+                                    <h2 class="accordion-header" id="signatoryHeading9{{ $index + 1 }}" style="color: white">
+                                        <button class="accordion-button" style="background-color: #34005A; color:white"
                                             type="button" data-toggle="collapse"
                                             data-target="#signatoryCollapse9{{ $index + 1 }}" aria-expanded="false"
                                             aria-controls="signatoryCollapse9{{ $index + 1 }}">
@@ -2863,7 +3006,7 @@
                                     <!--    aria-labelledby="signatoryHeading9{{ $index + 1 }}">-->
                                     <!--    <div class="accordion-body">-->
                                     <!--        <div class="row mb-2" id="signatoryDetailsContainer9">-->
-                                                <!-- Your content for entry goes here -->
+                                    <!-- Your content for entry goes here -->
                                     <!--            <div class="col-lg-6 form-group spacing-left">-->
                                     <!--                Category:<br> <input class="form-control"-->
                                     <!--                type="text" value="{{ $cctv->cctv_category }}" placeholder="..." name="cctv_category[]"-->
@@ -3120,12 +3263,11 @@
                         @if($requirements->requirementalarm && $requirements->requirementalarm->isNotEmpty())
                             @foreach ($requirements->requirementalarm as $index => $alarm)
                                 <div class="accordion-item signaccordion-item17" id="signatoryEntry17{{ $index + 1 }}">
-                                    <h2 class="accordion-header" id="signatoryHeading17{{ $index + 1 }}"
-                                        style="color: white">
-                                        <button class="accordion-button"
-                                            style="background-color: #34005A; color:white" type="button"
-                                            data-toggle="collapse" data-target="#signatoryCollapse17{{ $index + 1 }}"
-                                            aria-expanded="false" aria-controls="signatoryCollapse17{{ $index + 1 }}">
+                                    <h2 class="accordion-header" id="signatoryHeading17{{ $index + 1 }}" style="color: white">
+                                        <button class="accordion-button" style="background-color: #34005A; color:white"
+                                            type="button" data-toggle="collapse"
+                                            data-target="#signatoryCollapse17{{ $index + 1 }}" aria-expanded="false"
+                                            aria-controls="signatoryCollapse17{{ $index + 1 }}">
                                             Alarm Entry {{ $index + 1 }}
                                         </button>
                                     </h2>
@@ -3351,14 +3493,15 @@
                                 <div class="accordion-item signaccordion-item12" id="signatoryEntry12{{ $index + 1 }}">
                                     <h2 class="accordion-header" id="signatoryHeading12{{ $index + 1 }}" style="color: white">
                                         <button class="accordion-button" style="background-color: #34005A; color:white"
-                                            type="button" data-toggle="collapse" data-target="#signatoryCollapse12{{ $index + 1 }}"
-                                            aria-expanded="false" aria-controls="signatoryCollapse12{{ $index + 1 }}">
+                                            type="button" data-toggle="collapse"
+                                            data-target="#signatoryCollapse12{{ $index + 1 }}" aria-expanded="false"
+                                            aria-controls="signatoryCollapse12{{ $index + 1 }}">
                                             With Complaines- Shown WHT Entry {{ $index + 1 }}
                                         </button>
                                     </h2>
                                     <!--<div id="signatoryCollapse12{{ $index + 1 }}" class="collapse" aria-labelledby="signatoryHeading12{{ $index + 1 }}">-->
                                     <!--    <div class="accordion-body">-->
-                                            <!-- Your content for entry goes here -->
+                                    <!-- Your content for entry goes here -->
                                     <!--        <div class="row mb-2" id="signatoryDetailsContainer12">-->
                                     <!--            <div class="col-12 d-flex">-->
                                     <!--                <div class="col-md-4">-->
@@ -3440,8 +3583,8 @@
                                     <!--                        <input class="form-control"  value="{{ $shownwht->wc_sw_uni_cost }}" name="wc_sw_uni_cost[]" type="text"-->
                                     <!--                            placeholder="..." style="width: 100%;">-->
                                     <!--                    </div>-->
-                                                        <!-- <div class="mb-3">
-                                    <!--                        <label class="form-check-label" for="">Hidden Admin Cost:</label>-->
+                                    <!-- <div class="mb-3">
+                                            <!--                        <label class="form-check-label" for="">Hidden Admin Cost:</label>-->
                                     <!--                        <input class="form-control" id="hiddenAdminCostField"-->
                                     <!--                            name="hiddenAdminCost" type="text" placeholder="..."-->
                                     <!--                            style="width: 100%;">-->
@@ -3462,8 +3605,8 @@
                                     <!--                        <input class="form-control"  value="{{ $shownwht->wc_sw_admin_cost }}" id="adminCostField" name="wc_sw_admin_cost[]"-->
                                     <!--                            type="text" placeholder="..." style="width: 100%;">-->
                                     <!--                    </div>-->
-                                                        <!-- <div class="mb-3">
-                                    <!--                        <label class="form-check-label" for="">Total Admin Cost:</label>-->
+                                    <!-- <div class="mb-3">
+                                            <!--                        <label class="form-check-label" for="">Total Admin Cost:</label>-->
                                     <!--                        <input class="form-control" id="totalAdminCostField"-->
                                     <!--                            name="totalAdminCost" type="text" placeholder="..."-->
                                     <!--                            style="width: 100%;" readOnly>-->
@@ -3490,14 +3633,15 @@
                                 <div class="accordion-item signaccordion-item11" id="signatoryEntry11{{ $index + 1 }}">
                                     <h2 class="accordion-header" id="signatoryHeading11{{ $index + 1 }}" style="color: white">
                                         <button class="accordion-button" style="background-color: #34005A; color:white"
-                                            type="button" data-toggle="collapse" data-target="#signatoryCollapse11{{ $index + 1 }}"
-                                            aria-expanded="false" aria-controls="signatoryCollapse11{{ $index + 1 }}">
+                                            type="button" data-toggle="collapse"
+                                            data-target="#signatoryCollapse11{{ $index + 1 }}" aria-expanded="false"
+                                            aria-controls="signatoryCollapse11{{ $index + 1 }}">
                                             With Complaines- Hidden WHT Entry {{ $index + 1 }}
                                         </button>
                                     </h2>
                                     <!--<div id="signatoryCollapse11{{ $index + 1 }}" class="collapse" aria-labelledby="signatoryHeading11{{ $index + 1 }}">-->
                                     <!--    <div class="accordion-body">-->
-                                            <!-- Your content for entry goes here -->
+                                    <!-- Your content for entry goes here -->
                                     <!--        <div class="row mb-2" id="signatoryDetailsContainer11">-->
                                     <!--            <div class="col-12 d-flex">-->
                                     <!--                <div class="col-md-4">-->
@@ -3645,14 +3789,15 @@
                                 <div class="accordion-item signaccordion-item13" id="signatoryEntry13{{ $index + 1 }}">
                                     <h2 class="accordion-header" id="signatoryHeading13{{ $index + 1 }}" style="color: white">
                                         <button class="accordion-button" style="background-color: #34005A; color:white"
-                                            type="button" data-toggle="collapse" data-target="#signatoryCollapse13{{ $index + 1 }}"
-                                            aria-expanded="false" aria-controls="signatoryCollapse13{{ $index + 1 }}">
+                                            type="button" data-toggle="collapse"
+                                            data-target="#signatoryCollapse13{{ $index + 1 }}" aria-expanded="false"
+                                            aria-controls="signatoryCollapse13{{ $index + 1 }}">
                                             Lump Sum- Shown WHT Entry {{ $index + 1 }}
                                         </button>
                                     </h2>
                                     <!--<div id="signatoryCollapse13{{ $index + 1 }}" class="collapse" aria-labelledby="signatoryHeading13{{ $index + 1 }}">-->
                                     <!--    <div class="accordion-body">-->
-                                            <!-- Your content for entry goes here -->
+                                    <!-- Your content for entry goes here -->
                                     <!--        <div class="row mb-2" id="signatoryDetailsContainer13">-->
                                     <!--            <div class="col-12 d-flex">-->
                                     <!--                <div class="col-md-4">-->
@@ -3761,14 +3906,15 @@
                                 <div class="accordion-item signaccordion-item14" id="signatoryEntry14{{ $index + 1 }}">
                                     <h2 class="accordion-header" id="signatoryHeading14{{ $index + 1 }}" style="color: white">
                                         <button class="accordion-button" style="background-color: #34005A; color:white"
-                                            type="button" data-toggle="collapse" data-target="#signatoryCollapse14{{ $index + 1 }}"
-                                            aria-expanded="false" aria-controls="signatoryCollapse14{{ $index + 1 }}">
+                                            type="button" data-toggle="collapse"
+                                            data-target="#signatoryCollapse14{{ $index + 1 }}" aria-expanded="false"
+                                            aria-controls="signatoryCollapse14{{ $index + 1 }}">
                                             Lump Sum- Hidden WHT Entry {{ $index + 1 }}
                                         </button>
                                     </h2>
                                     <!--<div id="signatoryCollapse14{{ $index + 1 }}" class="collapse" aria-labelledby="signatoryHeading14{{ $index + 1 }}">-->
                                     <!--    <div class="accordion-body">-->
-                                            <!-- Your content for entry goes here -->
+                                    <!-- Your content for entry goes here -->
                                     <!--        <div class="row mb-2" id="signatoryDetailsContainer14">-->
                                     <!--            <div class="col-12 d-flex">-->
                                     <!--                <div class="col-md-4">-->
@@ -3889,8 +4035,10 @@
                     <div class="col-12 d-flex">
                         <div class="col-md-4">
                             <div class="mb-3">
-                                Category : <br>  <input class="form-control" type="text" name="reverseAfterWht" placeholder="..." style="width: 100%;">
-                                <select id="category" class="form-control mt-1" name="reverseCategory" style="width: 100%;">
+                                Category : <br> <input class="form-control" type="text" name="reverseAfterWht"
+                                    placeholder="..." style="width: 100%;">
+                                <select id="category" class="form-control mt-1" name="reverseCategory"
+                                    style="width: 100%;">
                                     <option value=""> Select</option>
                                     <option value="Supervisor"> Supervisor</option>
                                     <option value="Guard EX">Guard EX</option>
@@ -3900,43 +4048,52 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-check-label" for="">After WHT:</label>
-                                <input class="form-control" type="text" name="reverseAfterWht" placeholder="..." style="width: 100%;">
+                                <input class="form-control" type="text" name="reverseAfterWht" placeholder="..."
+                                    style="width: 100%;">
                             </div>
                             <div class="mb-3">
                                 <label class="form-check-label" for="">Salary:</label>
-                                <input class="form-control" type="text" name="reverseSalary" placeholder="..." style="width: 100%;">
+                                <input class="form-control" type="text" name="reverseSalary" placeholder="..."
+                                    style="width: 100%;">
                             </div>
                             <div class="mb-3">
                                 <label class="form-check-label" for="">Total Profit:</label>
-                                <input class="form-control" type="text" name="reverseTotalProfit" placeholder="..." style="width: 100%;">
+                                <input class="form-control" type="text" name="reverseTotalProfit" placeholder="..."
+                                    style="width: 100%;">
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="mb-3">
                                 <label class="form-check-label" for="">Rate:</label>
-                                <input class="form-control" type="text" name="reverseRate" placeholder="..." style="width: 100%;">
+                                <input class="form-control" type="text" name="reverseRate" placeholder="..."
+                                    style="width: 100%;">
                             </div>
                             <div class="mb-3">
                                 <label class="form-check-label" for="">GST:</label>
-                                <input class="form-control" type="text" name="reverseGst" placeholder="..." style="width: 100%;">
+                                <input class="form-control" type="text" name="reverseGst" placeholder="..."
+                                    style="width: 100%;">
                             </div>
                             <div class="mb-3">
                                 <label class="form-check-label" for="">Profit:</label>
-                                <input class="form-control" type="text" name="reverseProfit" placeholder="..." style="width: 100%;">
+                                <input class="form-control" type="text" name="reverseProfit" placeholder="..."
+                                    style="width: 100%;">
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="mb-3">
                                 <label class="form-check-label" for="">WHT:</label>
-                                <input class="form-control" type="text" name="reverseWht" placeholder="..." style="width: 100%;">
+                                <input class="form-control" type="text" name="reverseWht" placeholder="..."
+                                    style="width: 100%;">
                             </div>
                             <div class="mb-3">
                                 <label class="form-check-label" for="">After GST:</label>
-                                <input class="form-control" type="text" name="reverseAfterGst" placeholder="..." style="width: 100%;">
+                                <input class="form-control" type="text" name="reverseAfterGst" placeholder="..."
+                                    style="width: 100%;">
                             </div>
                             <div class="mb-3">
                                 <label class="form-check-label" for="">QTY:</label>
-                                <input class="form-control" type="text" name="reverseQuantity" placeholder="..." style="width: 100%;">
+                                <input class="form-control" type="text" name="reverseQuantity" placeholder="..."
+                                    style="width: 100%;">
                             </div>
                         </div>
                     </div>
@@ -3952,83 +4109,92 @@
                             <div class="row mb-2">
                                 <h5>Doer of the Task :</h5>
                                 <div class="col-lg-3 43spacing-right">
-                                    Employee id <br> <input class="form-control" name="doerEmpId" type="text" placeholder="..."
-                                        style="width: 100%;">
+                                    Employee id <br> <input class="form-control" name="doerEmpId" type="text"
+                                        placeholder="..." style="width: 100%;">
                                 </div>
                                 <div class="col-lg-3 43spacing-right">
-                                    Name <br> <input class="form-control" type="text" name="doerName" placeholder="..." style="width: 100%;">
-                                </div>
-                                <div class="col-lg-3 spacing-right">
-                                    Cell Number <br> <input class="form-control" name="doerCellNo"  type="text" placeholder="..."
+                                    Name <br> <input class="form-control" type="text" name="doerName" placeholder="..."
                                         style="width: 100%;">
                                 </div>
                                 <div class="col-lg-3 spacing-right">
-                                    Email <br> <input class="form-control" name="doerEmail"  type="text" placeholder="..." style="width: 100%;">
+                                    Cell Number <br> <input class="form-control" name="doerCellNo" type="text"
+                                        placeholder="..." style="width: 100%;">
+                                </div>
+                                <div class="col-lg-3 spacing-right">
+                                    Email <br> <input class="form-control" name="doerEmail" type="text"
+                                        placeholder="..." style="width: 100%;">
                                 </div>
                             </div>
                             <div class="row mb-2">
                                 <h5>Observer of the Task :</h5>
                                 <div class="col-lg-3 43spacing-right">
-                                    Employee id <br> <input class="form-control" name="observerEmpId" type="text" placeholder="..."
-                                        style="width: 100%;">
+                                    Employee id <br> <input class="form-control" name="observerEmpId" type="text"
+                                        placeholder="..." style="width: 100%;">
                                 </div>
                                 <div class="col-lg-3 43spacing-right">
-                                    Name <br> <input class="form-control" name="observerName" type="text" placeholder="..." style="width: 100%;">
+                                    Name <br> <input class="form-control" name="observerName" type="text"
+                                        placeholder="..." style="width: 100%;">
                                 </div>
                                 <div class="col-lg-3 spacing-right">
-                                    Cell Number <br> <input class="form-control" name="observerCellNo" type="text" placeholder="..."
-                                        style="width: 100%;">
+                                    Cell Number <br> <input class="form-control" name="observerCellNo" type="text"
+                                        placeholder="..." style="width: 100%;">
                                 </div>
                                 <div class="col-lg-3 spacing-right">
-                                    Email <br> <input class="form-control" type="text" name="observerEmail" placeholder="..." style="width: 100%;">
+                                    Email <br> <input class="form-control" type="text" name="observerEmail"
+                                        placeholder="..." style="width: 100%;">
                                 </div>
                             </div>
                             <div class="row mb-2">
                                 <h5>Approver of the Task :</h5>
                                 <div class="col-lg-3 43spacing-right">
-                                    Employee id <br> <input class="form-control" name="approverEmpId" type="text" placeholder="..."
-                                        style="width: 100%;">
+                                    Employee id <br> <input class="form-control" name="approverEmpId" type="text"
+                                        placeholder="..." style="width: 100%;">
                                 </div>
                                 <div class="col-lg-3 43spacing-right">
-                                    Name <br> <input class="form-control" name="approverName" type="text" placeholder="..." style="width: 100%;">
+                                    Name <br> <input class="form-control" name="approverName" type="text"
+                                        placeholder="..." style="width: 100%;">
                                 </div>
                                 <div class="col-lg-3 spacing-right">
-                                    Cell Number <br> <input class="form-control" name="approverCellNo" type="text" placeholder="..."
-                                        style="width: 100%;">
+                                    Cell Number <br> <input class="form-control" name="approverCellNo" type="text"
+                                        placeholder="..." style="width: 100%;">
                                 </div>
                                 <div class="col-lg-3 spacing-right">
-                                    Email <br> <input class="form-control" name="approverEmail" type="text" placeholder="..." style="width: 100%;">
+                                    Email <br> <input class="form-control" name="approverEmail" type="text"
+                                        placeholder="..." style="width: 100%;">
                                 </div>
                             </div>
                             <div class="row mb-2">
                                 <h5>Visitor :</h5>
                                 <div class="col-lg-3 43spacing-right">
-                                    Employee id <br> <input class="form-control" name="visitorEmpId" type="text" placeholder="..."
-                                        style="width: 100%;">
+                                    Employee id <br> <input class="form-control" name="visitorEmpId" type="text"
+                                        placeholder="..." style="width: 100%;">
                                 </div>
                                 <div class="col-lg-3 43spacing-right">
-                                    Name <br> <input class="form-control" name="visitorName" type="text" placeholder="..." style="width: 100%;">
+                                    Name <br> <input class="form-control" name="visitorName" type="text"
+                                        placeholder="..." style="width: 100%;">
                                 </div>
                                 <div class="col-lg-3 spacing-right">
-                                    Cell Number <br> <input class="form-control" name="visitorCellNo" type="text" placeholder="..."
-                                        style="width: 100%;">
+                                    Cell Number <br> <input class="form-control" name="visitorCellNo" type="text"
+                                        placeholder="..." style="width: 100%;">
                                 </div>
                                 <div class="col-lg-3 spacing-right">
-                                    Email <br> <input class="form-control" name="visitorEmail" type="text" placeholder="..." style="width: 100%;">
+                                    Email <br> <input class="form-control" name="visitorEmail" type="text"
+                                        placeholder="..." style="width: 100%;">
                                 </div>
                             </div>
                             <div class="row mb-2">
                                 <h5>To Whom he Met :</h5>
                                 <div class="col-lg-4 spacing-right">
-                                    Name <br> <input class="form-control" name="hemet" type="text" placeholder="..." style="width: 100%;">
+                                    Name <br> <input class="form-control" name="hemet" type="text" placeholder="..."
+                                        style="width: 100%;">
                                 </div>
                                 <div class="col-lg-4 spacing-right">
-                                    Visiting Card (Front) <br> <input class="form-control" name="visitingCardFront" id="inpFile3" type="file"
-                                        placeholder="..." style="width: 100%;">
+                                    Visiting Card (Front) <br> <input class="form-control" name="visitingCardFront"
+                                        id="inpFile3" type="file" placeholder="..." style="width: 100%;">
                                 </div>
                                 <div class="col-lg-4 spacing-right">
-                                    Visiting Card (Back) <br> <input class="form-control" name="visitingCardBack" id="inpFile4" type="file"
-                                        placeholder="..." style="width: 100%;">
+                                    Visiting Card (Back) <br> <input class="form-control" name="visitingCardBack"
+                                        id="inpFile4" type="file" placeholder="..." style="width: 100%;">
                                 </div>
                                 <div class="row mb-2" style="display: flex; justify-content:end">
                                     <div class="col-lg-3 spacing-right">
@@ -4137,8 +4303,8 @@
                             </div>
                             <div class="row mb-2">
                                 <div class="col-lg-5  spacing-right">
-                                    Name of Courier Service <br> <input class="form-control" type="text" placeholder="..."
-                                        style="width: 100%;">
+                                    Name of Courier Service <br> <input class="form-control" type="text"
+                                        placeholder="..." style="width: 100%;">
                                 </div>
                                 <div class="col-lg-5 spacing-left">
                                     Screen Shots (Delivery Status) <br> <input class="form-control" type="text"
@@ -4181,26 +4347,26 @@
                         <div class="col-lg-6 spacing-right">
                             <div class="row mb-2">
                                 <div class="col-lg-10 spacing-right">
-                                    Competitor's Name <br> <input class="form-control" name="competitorName" type="text" placeholder="..."
-                                        style="width: 100%;">
+                                    Competitor's Name <br> <input class="form-control" name="competitorName" type="text"
+                                        placeholder="..." style="width: 100%;">
                                 </div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-lg-5  spacing-right">
-                                    Competitors's Rate <br> <input class="form-control" name="competitorRate" type="text" placeholder="..."
-                                        style="width: 100%;">
+                                    Competitors's Rate <br> <input class="form-control" name="competitorRate"
+                                        type="text" placeholder="..." style="width: 100%;">
                                 </div>
                                 <div class="col-lg-5  spacing-right">
-                                    Number of Guards <br> <input class="form-control" name="noOfGuards" type="text" placeholder="..."
-                                        style="width: 100%;">
+                                    Number of Guards <br> <input class="form-control" name="noOfGuards" type="text"
+                                        placeholder="..." style="width: 100%;">
                                 </div>
                                 <div class="col-lg-5  spacing-right">
-                                    Attachments <br> <input class="form-control" name="competitorAttach" type="file" placeholder="..."
-                                        style="width: 100%;">
+                                    Attachments <br> <input class="form-control" name="competitorAttach" type="file"
+                                        placeholder="..." style="width: 100%;">
                                 </div>
                                 <div class="col-lg-5  spacing-right">
-                                    Target Pricing <br> <input class="form-control" name="targetPrice" type="text" placeholder="..."
-                                        style="width: 100%;">
+                                    Target Pricing <br> <input class="form-control" name="targetPrice" type="text"
+                                        placeholder="..." style="width: 100%;">
                                 </div>
                             </div>
                         </div>
@@ -4208,7 +4374,8 @@
                             <div class="row mb-2">
                                 <div class="col-lg-10">
                                     Notes & Remarks <br>
-                                    <textarea style="width: 100%;" name="competitorNotes" id="" cols="20" rows="4"></textarea>
+                                    <textarea style="width: 100%;" name="competitorNotes" id="" cols="20"
+                                        rows="4"></textarea>
                                 </div>
                             </div>
                         </div> --}}
@@ -4225,20 +4392,20 @@
                         <div class="col-lg-12 spacing-right">
                             <div class="row mb-2">
                                 <div class="col-lg-4">
-                                    Source of RFQ:<br>  <input class="form-control" name="srcOfRfq" type="file"
-                                    placeholder="..." style="width: 100%;">
-                                </div>
-                                <div class="col-lg-4 spacing-right">
-                                    Supporting of Source of RFQ <br> <input class="form-control" name="supportingRfqAttach" type="file"
+                                    Source of RFQ:<br> <input class="form-control" name="srcOfRfq" type="file"
                                         placeholder="..." style="width: 100%;">
                                 </div>
                                 <div class="col-lg-4 spacing-right">
-                                    RFQ Document <br> <input class="form-control" type="file" name="rfqDocAttach" placeholder="..."
-                                        style="width: 100%;">
+                                    Supporting of Source of RFQ <br> <input class="form-control"
+                                        name="supportingRfqAttach" type="file" placeholder="..." style="width: 100%;">
                                 </div>
                                 <div class="col-lg-4 spacing-right">
-                                    Common Services Required <br> <input class="form-control" name="commonSerReq" type="text"
+                                    RFQ Document <br> <input class="form-control" type="file" name="rfqDocAttach"
                                         placeholder="..." style="width: 100%;">
+                                </div>
+                                <div class="col-lg-4 spacing-right">
+                                    Common Services Required <br> <input class="form-control" name="commonSerReq"
+                                        type="text" placeholder="..." style="width: 100%;">
                                 </div>
                             </div>
                             <div class="row mb-2">
@@ -4248,12 +4415,12 @@
                                         style="width: 100%;">
                                 </div>
                                 <div class="col-lg-4 spacing-right">
-                                    Instrument No <br> <input class="form-control" name="insNo" type="text" placeholder="..."
-                                        style="width: 100%;">
+                                    Instrument No <br> <input class="form-control" name="insNo" type="text"
+                                        placeholder="..." style="width: 100%;">
                                 </div>
                                 <div class="col-lg-4 spacing-right">
-                                    Name of Bank <br> <input class="form-control" name="bankName" type="text" placeholder="..."
-                                        style="width: 100%;">
+                                    Name of Bank <br> <input class="form-control" name="bankName" type="text"
+                                        placeholder="..." style="width: 100%;">
                                 </div>
                             </div>
                             <div class="row mb-2">
@@ -4262,26 +4429,26 @@
                                         type="text" name="screenshotDoc" placeholder="..." style="width: 100%;">
                                 </div>
                                 <div class="col-lg-3 spacing-right">
-                                    Date of Publication <br> <input class="form-control" name="pubDate" type="date" placeholder="..."
-                                        style="width: 100%;">
+                                    Date of Publication <br> <input class="form-control" name="pubDate" type="date"
+                                        placeholder="..." style="width: 100%;">
                                 </div>
                                 <div class="col-lg-3 spacing-right">
-                                    Submission Date <br> <input class="form-control" name="subDate" type="date" placeholder="..."
-                                        style="width: 100%;">
+                                    Submission Date <br> <input class="form-control" name="subDate" type="date"
+                                        placeholder="..." style="width: 100%;">
                                 </div>
                                 <div class="col-lg-3 spacing-right">
-                                    Internal Deadline <br> <input class="form-control" name="internalDeadline" type="date" placeholder="..."
-                                        style="width: 100%;">
+                                    Internal Deadline <br> <input class="form-control" name="internalDeadline"
+                                        type="date" placeholder="..." style="width: 100%;">
                                 </div>
                                 <div class=" mb-2 mt-2 d-flex align-items-center">
                                     <div class="form-check form-check-inline spacing-left">
-                                        <input class="form-check-input" type="checkbox" name="bidMoney" id="bidMoneyCheckbox"
-                                            value="negative">
+                                        <input class="form-check-input" type="checkbox" name="bidMoney"
+                                            id="bidMoneyCheckbox" value="negative">
                                         <label class="form-check-label" for="bidMoneyCheckbox">Bid Money</label>
                                     </div>
                                     <div class="col-lg-4 spacing-right">
-                                        Decision <br> <input class="form-control" name="decision" type="text" placeholder="..."
-                                            style="width: 100%;">
+                                        Decision <br> <input class="form-control" name="decision" type="text"
+                                            placeholder="..." style="width: 100%;">
                                     </div>
                                 </div>
 
@@ -4298,15 +4465,15 @@
                                         </div>
                                         <div id="pay">
                                             <div class="form-check form-check-inline spacing-left">
-                                                <input class="form-check-input" name="payOrder" type="checkbox" id="payOrderCheckbox"
-                                                    value="">
+                                                <input class="form-check-input" name="payOrder" type="checkbox"
+                                                    id="payOrderCheckbox" value="">
                                                 <label class="form-check-label" for="payOrderCheckbox">Pay Order</label>
                                             </div>
                                         </div>
                                         <div id="demand">
                                             <div class="form-check form-check-inline spacing-left">
-                                                <input class="form-check-input" name="demand" type="checkbox" id="demandDraftCheckbox"
-                                                    value="">
+                                                <input class="form-check-input" name="demand" type="checkbox"
+                                                    id="demandDraftCheckbox" value="">
                                                 <label class="form-check-label" for="demandDraftCheckbox">Demand
                                                     Draft</label>
                                             </div>
@@ -4337,8 +4504,8 @@
                                             </div>
                                         </div>
                                         <div class="col-lg-3 spacing-right">
-                                            Submission Proof <input class="form-control" name="subProfAttach" type="file" placeholder="..."
-                                                style="width: 100%;">
+                                            Submission Proof <input class="form-control" name="subProfAttach"
+                                                type="file" placeholder="..." style="width: 100%;">
                                         </div>
                                     </div>
                                 </div>
@@ -4346,28 +4513,28 @@
                             <div class="row mb-2">
                                 <h5>Submission Details :</h5>
                                 <div class="col-lg-4 spacing-right">
-                                    RFQ submitted By : <br> <input class="form-control" name="rfqSubBy" type="text" placeholder="..."
-                                        style="width: 100%;">
+                                    RFQ submitted By : <br> <input class="form-control" name="rfqSubBy" type="text"
+                                        placeholder="..." style="width: 100%;">
                                 </div>
                                 <div class="col-lg-4 spacing-right">
-                                    RFQ submitted on : <br> <input class="form-control" name="rfqSubOn" type="date" placeholder="..."
-                                        style="width: 100%;">
+                                    RFQ submitted on : <br> <input class="form-control" name="rfqSubOn" type="date"
+                                        placeholder="..." style="width: 100%;">
                                 </div>
                                 <div class="col-lg-4 spacing-right">
-                                    RFQ submitted Via : <br> <input class="form-control" name="rfqSubVia" type="text" placeholder="..."
-                                        style="width: 100%;">
+                                    RFQ submitted Via : <br> <input class="form-control" name="rfqSubVia" type="text"
+                                        placeholder="..." style="width: 100%;">
                                 </div>
                                 <div class="col-lg-4 spacing-right">
-                                    Technical Proposal : <br> <input class="form-control" name="tecPro" type="text" placeholder="..."
-                                        style="width: 100%;">
+                                    Technical Proposal : <br> <input class="form-control" name="tecPro" type="text"
+                                        placeholder="..." style="width: 100%;">
                                 </div>
                                 <div class="col-lg-4 spacing-right">
-                                    Financial Proposal : <br> <input class="form-control" name="finPro" type="file" placeholder="..."
-                                        style="width: 100%;">
+                                    Financial Proposal : <br> <input class="form-control" name="finPro" type="file"
+                                        placeholder="..." style="width: 100%;">
                                 </div>
                                 <div class="col-lg-4 spacing-right">
-                                    Tender Opening Date : <br> <input class="form-control" name="tenOpn" type="date" placeholder="..."
-                                        style="width: 100%;">
+                                    Tender Opening Date : <br> <input class="form-control" name="tenOpn" type="date"
+                                        placeholder="..." style="width: 100%;">
                                 </div>
                                 <div class="col-lg-6 spacing-right">
                                     List of Participating Companies with Financials <br> <input class="form-control"
@@ -4375,22 +4542,22 @@
                                 </div>
                                 <div class="mb-2 mt-2 d-flex align-items-center">
                                     <div class="form-check form-check-inline spacing-left">
-                                        <input class="form-check-input" name="byHand" id="byHandSubmittionCheckBox" type="checkbox"
-                                            value="negative">
+                                        <input class="form-check-input" name="byHand" id="byHandSubmittionCheckBox"
+                                            type="checkbox" value="negative">
                                         <label class="form-check-label" for="inlineCheckbox1">By Hand</label>
                                     </div>
                                     <div class="row" id="byHandSubmittion_form" style="display: none;">
                                         <div class="col-lg-4 spacing-right">
-                                            Time of Submission : <br> <input class="form-control" name="timeSub" type="time"
-                                                placeholder="..." style="width: 100%;">
+                                            Time of Submission : <br> <input class="form-control" name="timeSub"
+                                                type="time" placeholder="..." style="width: 100%;">
                                         </div>
                                         <div class="col-lg-4 spacing-right">
                                             Submitted to : <br> <input class="form-control" name="subTo" type="text"
                                                 placeholder="..." style="width: 100%;">
                                         </div>
                                         <div class="col-lg-4 spacing-right">
-                                            Scanned Receving Of Submission <input class="form-control" name="scanRecAttach" type="file"
-                                                placeholder="..." style="width: 100%;">
+                                            Scanned Receving Of Submission <input class="form-control"
+                                                name="scanRecAttach" type="file" placeholder="..." style="width: 100%;">
                                         </div>
                                     </div>
                                 </div>
@@ -4402,25 +4569,26 @@
                                     </div>
                                     <div class="row" id="viaCourierSubmittion_form" style="display: none;">
                                         <div class="col-lg-6 spacing-right">
-                                            Name of Courier : <br> <input class="form-control" name="nameOfCourier" type="text"
-                                                placeholder="..." style="width: 100%;">
+                                            Name of Courier : <br> <input class="form-control" name="nameOfCourier"
+                                                type="text" placeholder="..." style="width: 100%;">
                                         </div>
                                         <div class="col-lg-6 spacing-right">
-                                            Time of Dispatching : <br> <input class="form-control" name="timeOfDispatching" type="time"
-                                                placeholder="..." style="width: 100%;">
+                                            Time of Dispatching : <br> <input class="form-control"
+                                                name="timeOfDispatching" type="time" placeholder="..."
+                                                style="width: 100%;">
                                         </div>
                                     </div>
                                 </div>
                                 <div class=" mb-2 mt-2 d-flex align-items-center">
                                     <div class="form-check form-check-inline spacing-left">
-                                        <input class="form-check-input" name="viaEmail" id="viaEmailSubmittion_checkBox" type="checkbox"
-                                            id="inlineCheckbox1" value="negative">
+                                        <input class="form-check-input" name="viaEmail" id="viaEmailSubmittion_checkBox"
+                                            type="checkbox" id="inlineCheckbox1" value="negative">
                                         <label class="form-check-label" for="inlineCheckbox1">Via Email</label>
                                     </div>
                                     <div class="col-lg-4 spacing-right" id="viaEmailSubmittion_form"
                                         style="display: none;">
-                                        Time of Submission : <br> <input class="form-control" name="emailtimeSub" type="time"
-                                            placeholder="..." style="width: 100%;">
+                                        Time of Submission : <br> <input class="form-control" name="emailtimeSub"
+                                            type="time" placeholder="..." style="width: 100%;">
                                     </div>
                                 </div>
 
@@ -4461,12 +4629,12 @@
                             <div id="grevCheckbox" style="display:none">
                                 <div class="row">
                                     <div class="col-lg-4 spacing-right">
-                                        Greviance Related to : <br> <input class="form-control" name="grevRelated" type="text"
-                                            placeholder="..." style="width: 100%;">
+                                        Greviance Related to : <br> <input class="form-control" name="grevRelated"
+                                            type="text" placeholder="..." style="width: 100%;">
                                     </div>
                                     <div class="col-lg-4 spacing-right">
-                                        Greviance Attachment: <br> <input class="form-control" name="grevAttach" type="file"
-                                            placeholder="..." style="width: 100%;">
+                                        Greviance Attachment: <br> <input class="form-control" name="grevAttach"
+                                            type="file" placeholder="..." style="width: 100%;">
                                     </div>
                                 </div>
                             </div>
@@ -4479,24 +4647,26 @@
                     aria-labelledby="nav-bid-security-tab">
                     <div class="row">
                         <div class="col-lg-4 spacing-right">
-                            Date: <br> <input class="form-control" type="date" name="bidDate" placeholder="..." style="width: 100%;">
-                        </div>
-                        <div class="col-lg-4 spacing-right">
-                            Company Name: <br> <input class="form-control" name="companyName" type="text" placeholder="..."
+                            Date: <br> <input class="form-control" type="date" name="bidDate" placeholder="..."
                                 style="width: 100%;">
                         </div>
                         <div class="col-lg-4 spacing-right">
-                            In Favor of: <br> <input class="form-control" name="inFavourOf" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Company Name: <br> <input class="form-control" name="companyName" type="text"
+                                placeholder="..." style="width: 100%;">
+                        </div>
+                        <div class="col-lg-4 spacing-right">
+                            In Favor of: <br> <input class="form-control" name="inFavourOf" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-lg-4 spacing-right mt-1">
-                            Bid Security Amount: <br> <input class="form-control" name="bidAmount" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Bid Security Amount: <br> <input class="form-control" name="bidAmount" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
                         <div class="col-lg-4 spacing-right mt-1">
-                            Type: <br> <input class="form-control" type="text" name="bidType" placeholder="..." style="width: 100%;">
+                            Type: <br> <input class="form-control" type="text" name="bidType" placeholder="..."
+                                style="width: 100%;">
                         </div>
                         <div class="col-lg-4 spacing-right mt-1">
                             Bank Name: <br> <input class="form-control" name="bidBankName" type="text" placeholder="..."
@@ -4505,8 +4675,8 @@
                     </div>
                     <div class="row">
                         <div class="col-lg-4 spacing-right mt-1">
-                            Instrument No: <br> <input class="form-control" name="bidInsNo" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Instrument No: <br> <input class="form-control" name="bidInsNo" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
                         <div class="col-lg-4 spacing-right mt-1">
                             Received: <br> <input class="form-control" name="bidReceived" type="text" placeholder="..."
@@ -4533,8 +4703,8 @@
                 <div class="tab-pane fade show  m-3" style="opacity: 90%;" id="survey-checklist" role="tabpanel"
                     aria-labelledby="nav-survey-checklist-tab">
                     <div class="col-lg-4 spacing-right">
-                        Location/Client Name: <br> <input class="form-control" name="location" type="text" placeholder="..."
-                            style="width: 100%;">
+                        Location/Client Name: <br> <input class="form-control" name="location" type="text"
+                            placeholder="..." style="width: 100%;">
                     </div>
                     <h5 class="mt-2">1. Security Company deployed?</h5>
                     <div class="row">
@@ -4564,13 +4734,13 @@
                             <div class="mt-2">
                                 <h6>a) Rank?</h6>
                             </div>
-                            Response: <br> <input class="form-control" name="sidRankResponse" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Response: <br> <input class="form-control" name="sidRankResponse" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
                         <div class="col-lg-6 spacing-right" style="margin-top:35px;">
 
-                            Remarks: <br> <input class="form-control" name="sidRankRemarks" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Remarks: <br> <input class="form-control" name="sidRankRemarks" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
 
                     </div>
@@ -4580,13 +4750,13 @@
                             <div class="mt-2">
                                 <h6>b) Salary?</h6>
                             </div>
-                            Response: <br> <input class="form-control" name="sidSalaryResponse" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Response: <br> <input class="form-control" name="sidSalaryResponse" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
                         <div class="col-lg-6 spacing-right" style="margin-top:35px;">
 
-                            Remarks: <br> <input class="form-control" name="sidSalaryRemarks" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Remarks: <br> <input class="form-control" name="sidSalaryRemarks" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
 
                     </div>
@@ -4595,13 +4765,13 @@
                             <div class="mt-2">
                                 <h6>c) Monthly Leaves?</h6>
                             </div>
-                            Response: <br> <input class="form-control" name="sidMonthlyResponse" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Response: <br> <input class="form-control" name="sidMonthlyResponse" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
                         <div class="col-lg-6 spacing-right" style="margin-top:35px;">
 
-                            Remarks: <br> <input class="form-control" name="sidMonthlyRemarks" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Remarks: <br> <input class="form-control" name="sidMonthlyRemarks" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
 
                     </div>
@@ -4610,13 +4780,13 @@
                             <div class="mt-2">
                                 <h6>d) EOBI & Social Security?</h6>
                             </div>
-                            Response: <br> <input class="form-control" name="sidEOBIResponse" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Response: <br> <input class="form-control" name="sidEOBIResponse" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
                         <div class="col-lg-6 spacing-right" style="margin-top:35px;">
 
-                            Remarks: <br> <input class="form-control" name="sidEOBIRankRemarks" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Remarks: <br> <input class="form-control" name="sidEOBIRankRemarks" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
 
                     </div>
@@ -4625,25 +4795,25 @@
                             <div class="mt-2">
                                 <h6>d) Social Security Card?</h6>
                             </div>
-                            Response: <br> <input class="form-control" name="sidSocialResponse" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Response: <br> <input class="form-control" name="sidSocialResponse" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
                         <div class="col-lg-6 spacing-right" style="margin-top:35px;">
 
-                            Remarks: <br> <input class="form-control" name="sidSocialRemarks" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Remarks: <br> <input class="form-control" name="sidSocialRemarks" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
 
                     </div>
                     <h5 class="mt-2">4. Number of Security in charge deployed?</h5>
                     <div class="row">
                         <div class="col-lg-6 spacing-right">
-                            Response: <br> <input class="form-control" name="securityinChargeResponse"  type="text" placeholder="..."
-                                style="width: 100%;">
+                            Response: <br> <input class="form-control" name="securityinChargeResponse" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
                         <div class="col-lg-6 spacing-right">
-                            Remarks: <br> <input class="form-control" name="securityinChargeRemarks" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Remarks: <br> <input class="form-control" name="securityinChargeRemarks" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
                     </div>
 
@@ -4653,13 +4823,13 @@
                             <div>
                                 <h6>a) Rank? </h6>
                             </div>
-                            Response: <br> <input class="form-control" name="ssdRankResponse" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Response: <br> <input class="form-control" name="ssdRankResponse" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
                         <div class="col-lg-6 spacing-right" style="margin-top:18px;">
 
-                            Remarks: <br> <input class="form-control" name="ssdRankRemarks" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Remarks: <br> <input class="form-control" name="ssdRankRemarks" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
 
                     </div>
@@ -4668,13 +4838,13 @@
                             <div class="mt-2">
                                 <h6> b) Salary?</h6>
                             </div>
-                            Response: <br> <input class="form-control" name="ssdSalaryResponse" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Response: <br> <input class="form-control" name="ssdSalaryResponse" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
                         <div class="col-lg-6 spacing-right" style="margin-top:35px;">
 
-                            Remarks: <br> <input class="form-control" name="ssdSalaryRemarks" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Remarks: <br> <input class="form-control" name="ssdSalaryRemarks" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
 
                     </div>
@@ -4683,13 +4853,13 @@
                             <div class="mt-2">
                                 <h6>c) Monthly Leaves?</h6>
                             </div>
-                            Response: <br> <input class="form-control" name="ssdMonthlyResponse" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Response: <br> <input class="form-control" name="ssdMonthlyResponse" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
                         <div class="col-lg-6 spacing-right" style="margin-top:35px;">
 
-                            Remarks: <br> <input class="form-control" name="ssdMonthlyRemarks" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Remarks: <br> <input class="form-control" name="ssdMonthlyRemarks" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
 
                     </div>
@@ -4698,13 +4868,13 @@
                             <div class="mt-2">
                                 <h6> d) EOBI & Social Security?</h6>
                             </div>
-                            Response: <br> <input class="form-control" name="ssdEOBIResponse" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Response: <br> <input class="form-control" name="ssdEOBIResponse" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
                         <div class="col-lg-6 spacing-right" style="margin-top:35px;">
 
-                            Remarks: <br> <input class="form-control" name="ssdEOBIRemarks" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Remarks: <br> <input class="form-control" name="ssdEOBIRemarks" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
 
                     </div>
@@ -4713,13 +4883,13 @@
                             <div class="mt-2">
                                 <h6>e) Social Security Card?</h6>
                             </div>
-                            Response: <br> <input class="form-control" name="ssdSocialResponse" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Response: <br> <input class="form-control" name="ssdSocialResponse" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
                         <div class="col-lg-6 spacing-right" style="margin-top:35px;">
 
-                            Remarks: <br> <input class="form-control" name="ssdSocialRemarks" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Remarks: <br> <input class="form-control" name="ssdSocialRemarks" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
 
                     </div>
@@ -4741,12 +4911,12 @@
                             <div class="mt-2">
                                 <h6> a) Salary?</h6>
                             </div>
-                            Response: <br> <input class="form-control" name="sgcdSalaryResponse" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Response: <br> <input class="form-control" name="sgcdSalaryResponse" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
                         <div class="col-lg-6 spacing-right" style="margin-top:35px;">
-                            Remarks: <br> <input class="form-control" name="sgcdSalaryRemarks" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Remarks: <br> <input class="form-control" name="sgcdSalaryRemarks" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
 
                     </div>
@@ -4755,13 +4925,13 @@
                             <div class="mt-2">
                                 <h6>b) Monthly Leaves?</h6>
                             </div>
-                            Response: <br> <input class="form-control" name="sgcdMonthlyResponse" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Response: <br> <input class="form-control" name="sgcdMonthlyResponse" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
                         <div class="col-lg-6 spacing-right" style="margin-top:35px;">
 
-                            Remarks: <br> <input class="form-control" name="sgcdMonthlyRemarks" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Remarks: <br> <input class="form-control" name="sgcdMonthlyRemarks" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
 
                     </div>
@@ -4770,13 +4940,13 @@
                             <div class="mt-2">
                                 <h6> c) EOBI & Social Security?</h6>
                             </div>
-                            Response: <br> <input class="form-control" name="sgcdEOBIResponse" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Response: <br> <input class="form-control" name="sgcdEOBIResponse" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
                         <div class="col-lg-6 spacing-right" style="margin-top:35px;">
 
-                            Remarks: <br> <input class="form-control" name="sgcdEOBIRemarks" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Remarks: <br> <input class="form-control" name="sgcdEOBIRemarks" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
 
                     </div>
@@ -4785,13 +4955,13 @@
                             <div class="mt-2">
                                 <h6> d) Social Security Card?</h6>
                             </div>
-                            Response: <br> <input class="form-control" name="sgcdSocialResponse" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Response: <br> <input class="form-control" name="sgcdSocialResponse" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
                         <div class="col-lg-6 spacing-right" style="margin-top:35px;">
 
-                            Remarks: <br> <input class="form-control" name="sgcdSocialRemarks" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Remarks: <br> <input class="form-control" name="sgcdSocialRemarks" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
                     </div>
                     <h5 class="mt-2">8. Number of Civil Guards?</h5>
@@ -4812,7 +4982,7 @@
                                 style="width: 100%;">
                         </div>
                         <div class="col-lg-6 spacing-right">
-                            Remarks: <br> <input class="form-control" name="noegRemarks"  type="text" placeholder="..."
+                            Remarks: <br> <input class="form-control" name="noegRemarks" type="text" placeholder="..."
                                 style="width: 100%;">
                         </div>
                     </div>
@@ -4823,13 +4993,13 @@
                             <div class="mt-2">
                                 <h6> a) Free of cost by client?</h6>
                             </div>
-                            Response: <br> <input class="form-control" name="ffssFreeResponse" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Response: <br> <input class="form-control" name="ffssFreeResponse" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
                         <div class="col-lg-6 spacing-right" style="margin-top:35px;">
 
-                            Remarks: <br> <input class="form-control" name="ffssFreeRemarks" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Remarks: <br> <input class="form-control" name="ffssFreeRemarks" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
 
                     </div>
@@ -4838,13 +5008,13 @@
                             <div class="mt-2">
                                 <h6>b) Or any charges per month?</h6>
                             </div>
-                            Response: <br> <input class="form-control" name="ffssCostResponse" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Response: <br> <input class="form-control" name="ffssCostResponse" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
                         <div class="col-lg-6 spacing-right" style="margin-top:35px;">
 
-                            Remarks: <br> <input class="form-control" name="ffssCostRemarks"  type="text" placeholder="..."
-                                style="width: 100%;">
+                            Remarks: <br> <input class="form-control" name="ffssCostRemarks" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
 
                     </div>
@@ -4854,13 +5024,13 @@
                                 <h6> c) All time food avaliable
                                     or duty time only?</h6>
                             </div>
-                            Response: <br> <input class="form-control" name="ffssFoodResponse" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Response: <br> <input class="form-control" name="ffssFoodResponse" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
                         <div class="col-lg-6 spacing-right" style="margin-top:35px;">
 
-                            Remarks: <br> <input class="form-control" name="ffssFoodRemarks" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Remarks: <br> <input class="form-control" name="ffssFoodRemarks" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
                     </div>
                     <h5 class="mt-2">11. Accomodation by client or Security
@@ -4889,13 +5059,13 @@
                             <div class="mt-2">
                                 <h6> a) Bike?</h6>
                             </div>
-                            Response: <br> <input class="form-control" name="abcBikeResponse" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Response: <br> <input class="form-control" name="abcBikeResponse" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
                         <div class="col-lg-6 spacing-right" style="margin-top:35px;">
 
-                            Remarks: <br> <input class="form-control" name="abcBikeRemarks" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Remarks: <br> <input class="form-control" name="abcBikeRemarks" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
 
                     </div>
@@ -4904,13 +5074,13 @@
                             <div class="mt-2">
                                 <h6>b) Or 4x wheeler?</h6>
                             </div>
-                            Response: <br> <input class="form-control" name="abcFourResponse" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Response: <br> <input class="form-control" name="abcFourResponse" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
                         <div class="col-lg-6 spacing-right" style="margin-top:35px;">
 
-                            Remarks: <br> <input class="form-control" name="abcFourRemarks" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Remarks: <br> <input class="form-control" name="abcFourRemarks" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
 
                     </div>
@@ -4919,13 +5089,13 @@
                             <div class="mt-2">
                                 <h6> c) Which Vehicle?</h6>
                             </div>
-                            Response: <br> <input class="form-control" name="abcVehicleResponse" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Response: <br> <input class="form-control" name="abcVehicleResponse" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
                         <div class="col-lg-6 spacing-right" style="margin-top:35px;">
 
-                            Remarks: <br> <input class="form-control" name="abcVehicleRemarks" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Remarks: <br> <input class="form-control" name="abcVehicleRemarks" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
                     </div>
                     <div class="row">
@@ -4933,13 +5103,13 @@
                             <div class="mt-2">
                                 <h6> d) How many rounds per day?</h6>
                             </div>
-                            Response: <br> <input class="form-control" name="abcRoundsResponse" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Response: <br> <input class="form-control" name="abcRoundsResponse" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
                         <div class="col-lg-6 spacing-right" style="margin-top:35px;">
 
-                            Remarks: <br> <input class="form-control" name="abcRoundsRemarks" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Remarks: <br> <input class="form-control" name="abcRoundsRemarks" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
                     </div>
                     <div class="row">
@@ -4947,13 +5117,13 @@
                             <div class="mt-2">
                                 <h6> e) Fuel by client/company?</h6>
                             </div>
-                            Response: <br> <input class="form-control" name="abcFuelResponse" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Response: <br> <input class="form-control" name="abcFuelResponse" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
                         <div class="col-lg-6 spacing-right" style="margin-top:35px;">
 
-                            Remarks: <br> <input class="form-control" name="abcFuelRemarks" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Remarks: <br> <input class="form-control" name="abcFuelRemarks" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
                     </div>
                     <div class="row">
@@ -4961,13 +5131,13 @@
                             <div class="mt-2">
                                 <h6> f) Fuel Consumption?</h6>
                             </div>
-                            Response: <br> <input class="form-control" name="abcConsumptionResponse" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Response: <br> <input class="form-control" name="abcConsumptionResponse" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
                         <div class="col-lg-6 spacing-right" style="margin-top:35px;">
 
-                            Remarks: <br> <input class="form-control" name="abcConsumptionRemarks" type="text" placeholder="..."
-                                style="width: 100%;">
+                            Remarks: <br> <input class="form-control" name="abcConsumptionRemarks" type="text"
+                                placeholder="..." style="width: 100%;">
                         </div>
                     </div>
                     <h5 class="mt-2">13. Wireless Equipment if any?
@@ -4990,13 +5160,13 @@
                         <div class="row">
                             <div class="col-lg-6 spacing-right mt-2">
 
-                                Notes: <br> <textarea class="form-control" name="checklistNotes" style="width: 100%;" name="" id="" cols="15"
-                                    rows="4"></textarea>
+                                Notes: <br> <textarea class="form-control" name="checklistNotes" style="width: 100%;"
+                                    name="" id="" cols="15" rows="4"></textarea>
                             </div>
                             <div class="col-lg-6 spacing-right" style="margin-top:26px;">
 
-                                Attachements: <br> <input class="form-control" name="checklistAttach" type="text" placeholder="..."
-                                    style="width: 100%;">
+                                Attachements: <br> <input class="form-control" name="checklistAttach" type="text"
+                                    placeholder="..." style="width: 100%;">
                             </div>
 
                         </div>
@@ -5044,7 +5214,7 @@
                                     <td width="5%">3</td>
                                     <td width="45%">Send email for Bid Security to finance</td>
                                     <td width="45%">Same day of receiving documents</td>
-                                    <td width="25%"><input name="rem2"  /></td>
+                                    <td width="25%"><input name="rem2" /></td>
                                 </tr>
                                 <tr width="100%">
                                     <td width="5%">4</td>
@@ -5053,7 +5223,7 @@
                                         - Share and brief tender docs to discuss points
                                     </td>
                                     <td width="25%">01 day before pre-bid</td>
-                                    <td width="25%"><input  name="rem3" /></td>
+                                    <td width="25%"><input name="rem3" /></td>
                                 </tr>
                                 <tr width="100%">
                                     <td width="5%">5</td>
@@ -5128,12 +5298,14 @@
                 <div class="tab-pane fade show  m-3" style="opacity: 90%;" id="daily-report" role="tabpanel"
                     aria-labelledby="daily-report-tab">
                     <div class="row">
-                        <div class="container  my-1" id="armourContainer" >
-                            <div class="accordion" id="armourAccordion" >
+                        <div class="container  my-1" id="armourContainer">
+                            <div class="accordion" id="armourAccordion">
                                 <!-- Initial Accordion Item -->
                                 <div class="accordion-item armouraccordion-item" id="armourEntry1">
                                     <h2 class="accordion-header" id="armourHeading1" style="color: white">
-                                        <button class="accordion-button" style="background-color: #34005A; color:white"  type="button" data-toggle="collapse" data-target="#armourCollapse1" aria-expanded="false" aria-controls="armourCollapse1">
+                                        <button class="accordion-button" style="background-color: #34005A; color:white"
+                                            type="button" data-toggle="collapse" data-target="#armourCollapse1"
+                                            aria-expanded="false" aria-controls="armourCollapse1">
                                             RFQ Report 1
                                         </button>
                                     </h2>
@@ -5141,103 +5313,107 @@
                                         <div class="accordion-body">
                                             <div id="cleaningInfo" class="row">
                                                 <div class="col-lg-4 spacing-right">
-                                                    Date: <br> <input class="form-control" type="date" placeholder="..." style="width: 100%;">
-                                                </div>
-                                                <div class="col-lg-4 spacing-right">
-                                                    Report Uploaded By (Name): <br> <input class="form-control" type="text" placeholder="..."
+                                                    Date: <br> <input class="form-control" type="date" placeholder="..."
                                                         style="width: 100%;">
                                                 </div>
                                                 <div class="col-lg-4 spacing-right">
+                                                    Report Uploaded By (Name): <br> <input class="form-control"
+                                                        type="text" placeholder="..." style="width: 100%;">
+                                                </div>
+                                                <div class="col-lg-4 spacing-right">
 
-                                                    Report Uploaded By (Number): <br> <input class="form-control" type="text" placeholder="..."
+                                                    Report Uploaded By (Number): <br> <input class="form-control"
+                                                        type="text" placeholder="..." style="width: 100%;">
+                                                </div>
+                                                <div class="col-lg-4 spacing-right mt-2">
+
+                                                    Report Uploaded By (Email): <br> <input class="form-control"
+                                                        type="email" placeholder="..." style="width: 100%;">
+                                                </div>
+                                                <div class="col-lg-4 spacing-right mt-2">
+
+                                                    Office ID: <br> <input class="form-control" type="text"
+                                                        placeholder="..." style="width: 100%;">
+                                                </div>
+                                                <div class="col-lg-4 spacing-right mt-2">
+
+                                                    Department ID: <br> <input class="form-control" type="text"
+                                                        placeholder="..." style="width: 100%;">
+                                                </div>
+                                                <div class="col-lg-4 spacing-right mt-2">
+
+                                                    Reporting Person Name: <br> <input class="form-control" type="text"
+                                                        placeholder="..." style="width: 100%;">
+                                                </div>
+                                                <div class="col-lg-4 spacing-right mt-2">
+
+                                                    Reporting Person Number: <br> <input class="form-control"
+                                                        type="text" placeholder="..." style="width: 100%;">
+                                                </div>
+                                                <div class="col-lg-4 spacing-right mt-2">
+
+                                                    Reporting Person Email: <br> <input class="form-control"
+                                                        type="email" placeholder="..." style="width: 100%;">
+                                                </div>
+                                                <div class="col-lg-4 spacing-right mt-2">
+
+                                                    Region Name: <br> <input class="form-control" type="text"
+                                                        placeholder="..." style="width: 100%;">
+                                                </div>
+                                                <div class="col-lg-4 spacing-right mt-2">
+
+                                                    Region Code: <br> <input class="form-control" type="text"
+                                                        placeholder="..." style="width: 100%;">
+                                                </div>
+                                                <div class="col-lg-4 spacing-right mt-2">
+
+                                                    GM: <br> <input class="form-control" type="text" placeholder="..."
                                                         style="width: 100%;">
                                                 </div>
                                                 <div class="col-lg-4 spacing-right mt-2">
 
-                                                    Report Uploaded By (Email): <br> <input class="form-control" type="email" placeholder="..."
+                                                    DGM: <br> <input class="form-control" type="email" placeholder="..."
                                                         style="width: 100%;">
                                                 </div>
                                                 <div class="col-lg-4 spacing-right mt-2">
 
-                                                    Office ID: <br> <input class="form-control" type="text" placeholder="..."
+                                                    CRO: <br> <input class="form-control" type="text" placeholder="..."
                                                         style="width: 100%;">
                                                 </div>
                                                 <div class="col-lg-4 spacing-right mt-2">
 
-                                                    Department ID: <br> <input class="form-control" type="text" placeholder="..."
-                                                        style="width: 100%;">
+                                                    Client/ Location Visited: <br> <input class="form-control"
+                                                        type="text" placeholder="..." style="width: 100%;">
                                                 </div>
                                                 <div class="col-lg-4 spacing-right mt-2">
 
-                                                    Reporting Person Name: <br> <input class="form-control" type="text" placeholder="..."
-                                                        style="width: 100%;">
+                                                    Response By: <br> <input class="form-control" type="text"
+                                                        placeholder="..." style="width: 100%;">
                                                 </div>
                                                 <div class="col-lg-4 spacing-right mt-2">
 
-                                                    Reporting Person Number: <br> <input class="form-control" type="text" placeholder="..."
-                                                        style="width: 100%;">
+                                                    Opening Date: <br> <input class="form-control" type="date"
+                                                        placeholder="..." style="width: 100%;">
                                                 </div>
                                                 <div class="col-lg-4 spacing-right mt-2">
 
-                                                    Reporting Person Email: <br> <input class="form-control" type="email" placeholder="..."
-                                                        style="width: 100%;">
+                                                    Status: <br> <input class="form-control" type="email"
+                                                        placeholder="..." style="width: 100%;">
                                                 </div>
                                                 <div class="col-lg-4 spacing-right mt-2">
 
-                                                    Region Name: <br> <input class="form-control" type="text" placeholder="..."
-                                                        style="width: 100%;">
-                                                </div>
-                                                <div class="col-lg-4 spacing-right mt-2">
-
-                                                    Region Code: <br> <input class="form-control" type="text" placeholder="..."
-                                                        style="width: 100%;">
-                                                </div>
-                                                <div class="col-lg-4 spacing-right mt-2">
-
-                                                    GM: <br> <input class="form-control" type="text" placeholder="..." style="width: 100%;">
-                                                </div>
-                                                <div class="col-lg-4 spacing-right mt-2">
-
-                                                    DGM: <br> <input class="form-control" type="email" placeholder="..." style="width: 100%;">
-                                                </div>
-                                                <div class="col-lg-4 spacing-right mt-2">
-
-                                                    CRO: <br> <input class="form-control" type="text" placeholder="..." style="width: 100%;">
-                                                </div>
-                                                <div class="col-lg-4 spacing-right mt-2">
-
-                                                    Client/ Location Visited: <br> <input class="form-control" type="text" placeholder="..."
-                                                        style="width: 100%;">
-                                                </div>
-                                                <div class="col-lg-4 spacing-right mt-2">
-
-                                                    Response By: <br> <input class="form-control" type="text" placeholder="..."
-                                                        style="width: 100%;">
-                                                </div>
-                                                <div class="col-lg-4 spacing-right mt-2">
-
-                                                    Opening Date: <br> <input class="form-control" type="date" placeholder="..."
-                                                        style="width: 100%;">
-                                                </div>
-                                                <div class="col-lg-4 spacing-right mt-2">
-
-                                                    Status: <br> <input class="form-control" type="email" placeholder="..."
-                                                        style="width: 100%;">
-                                                </div>
-                                                <div class="col-lg-4 spacing-right mt-2">
-
-                                                    Remarks: <br> <input class="form-control" type="email" placeholder="..."
-                                                        style="width: 100%;">
+                                                    Remarks: <br> <input class="form-control" type="email"
+                                                        placeholder="..." style="width: 100%;">
                                                 </div>
                                                 <div class="col-lg-4 spacing-right mt-2">
                                                     Notes <br>
-                                                    <textarea class="form-control" style="width: 100%;"  id="" cols="15"
+                                                    <textarea class="form-control" style="width: 100%;" id="" cols="15"
                                                         rows="4"></textarea>
                                                 </div>
                                                 <div class="col-lg-4 spacing-right mt-2">
 
-                                                    Attachements: <br> <input class="form-control" type="file" placeholder="..."
-                                                        style="width: 100%;">
+                                                    Attachements: <br> <input class="form-control" type="file"
+                                                        placeholder="..." style="width: 100%;">
                                                 </div>
                                             </div>
                                         </div>
@@ -5258,318 +5434,318 @@
 
             </div>
             <button type="submit">Submit</button>
-        </div>
+</div>
 
-    </form>
+</form>
 
-    </section>
+</section>
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-    const downloadButton = document.getElementById('download-pdf');
-    const sendButton = document.getElementById('send-email');
-    const modal = document.getElementById('emailModal');
-    const closeModal = modal.querySelector('.close');
-    const sendEmailBtn = modal.querySelector('#sendEmailBtn');
+    document.addEventListener("DOMContentLoaded", function () {
+        const downloadButton = document.getElementById('download-pdf');
+        const sendButton = document.getElementById('send-email');
+        const modal = document.getElementById('emailModal');
+        const closeModal = modal.querySelector('.close');
+        const sendEmailBtn = modal.querySelector('#sendEmailBtn');
 
-    if (downloadButton && sendButton) {
-        downloadButton.addEventListener('click', function() {
-            downloadPDF();
-        });
+        if (downloadButton && sendButton) {
+            downloadButton.addEventListener('click', function () {
+                downloadPDF();
+            });
 
-        sendButton.addEventListener('click', function() {
-            modal.style.display = "block";
-        });
+            sendButton.addEventListener('click', function () {
+                modal.style.display = "block";
+            });
 
-        closeModal.addEventListener('click', function() {
-            modal.style.display = "none";
-        });
+            closeModal.addEventListener('click', function () {
+                modal.style.display = "none";
+            });
 
-        sendEmailBtn.addEventListener('click', function() {
-            sendPDFViaEmail();
-        });
-    } else {
-        console.error('Buttons not found.');
-    }
-});
-
-function downloadPDF() {
-    const button = document.getElementById('download-pdf');
-    if (button) {
-        button.textContent = 'System is Generating PDF...';
-
-        const element = document.getElementById('sales_form');
-        if (element) {
-            const options = {
-                margin: 1,
-                filename: 'sales_information.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2 },
-                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-            };
-            html2pdf()
-                .set(options)
-                .from(element)
-                .toPdf()
-                .get('pdf')
-                .then(function(pdf) {
-                    console.log('PDF generated:', pdf);
-
-                    pdf.save(options.filename);
-                    button.textContent = 'PDF Generated!';
-                })
-                .catch(error => {
-                    console.error('Error generating PDF:', error);
-                    button.textContent = 'Failed to Generate PDF';
-                });
+            sendEmailBtn.addEventListener('click', function () {
+                sendPDFViaEmail();
+            });
         } else {
-            console.error('Element with ID "sales_form" not found.');
-            button.textContent = 'Failed to Generate PDF';
+            console.error('Buttons not found.');
         }
-    } else {
-        console.error('Button with ID "download-pdf" not found.');
+    });
+
+    function downloadPDF() {
+        const button = document.getElementById('download-pdf');
+        if (button) {
+            button.textContent = 'System is Generating PDF...';
+
+            const element = document.getElementById('sales_form');
+            if (element) {
+                const options = {
+                    margin: 1,
+                    filename: 'sales_information.pdf',
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2 },
+                    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+                };
+                html2pdf()
+                    .set(options)
+                    .from(element)
+                    .toPdf()
+                    .get('pdf')
+                    .then(function (pdf) {
+                        console.log('PDF generated:', pdf);
+
+                        pdf.save(options.filename);
+                        button.textContent = 'PDF Generated!';
+                    })
+                    .catch(error => {
+                        console.error('Error generating PDF:', error);
+                        button.textContent = 'Failed to Generate PDF';
+                    });
+            } else {
+                console.error('Element with ID "sales_form" not found.');
+                button.textContent = 'Failed to Generate PDF';
+            }
+        } else {
+            console.error('Button with ID "download-pdf" not found.');
+        }
     }
-}
 
-function sendPDFViaEmail() {
-    const modal = document.getElementById('emailModal');
-    const emailInput = document.getElementById('emailInput');
-    const ccInput = document.getElementById('ccInput');
-    const bccInput = document.getElementById('bccInput');
-    const subjectInput = document.getElementById('subjectInput');
-    const bodyInput = document.getElementById('bodyInput');
-    const button = document.getElementById('send-email');
+    function sendPDFViaEmail() {
+        const modal = document.getElementById('emailModal');
+        const emailInput = document.getElementById('emailInput');
+        const ccInput = document.getElementById('ccInput');
+        const bccInput = document.getElementById('bccInput');
+        const subjectInput = document.getElementById('subjectInput');
+        const bodyInput = document.getElementById('bodyInput');
+        const button = document.getElementById('send-email');
 
-    if (modal && emailInput && button) {
-        modal.style.display = "none";
+        if (modal && emailInput && button) {
+            modal.style.display = "none";
 
-        button.textContent = 'System is Sending Email...';
-        const email = emailInput.value;
-        const cc = ccInput.value;
-        const bcc = bccInput.value;
-        const subject = subjectInput.value;
-        const body = bodyInput.value;
+            button.textContent = 'System is Sending Email...';
+            const email = emailInput.value;
+            const cc = ccInput.value;
+            const bcc = bccInput.value;
+            const subject = subjectInput.value;
+            const body = bodyInput.value;
 
-        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-        const formData = new FormData();
-        formData.append('_token', csrfToken);
-        formData.append('email', email);
-        formData.append('cc', cc);
-        formData.append('bcc', bcc);
-        formData.append('subject', subject);
-        formData.append('body', body);
+            const formData = new FormData();
+            formData.append('_token', csrfToken);
+            formData.append('email', email);
+            formData.append('cc', cc);
+            formData.append('bcc', bcc);
+            formData.append('subject', subject);
+            formData.append('body', body);
 
-        const element = document.getElementById('sales_form');
-        if (element) {
-            const options = {
-                margin: 1,
-                filename: 'sales_information.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2 },
-                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-            };
-            html2pdf()
-                .set(options)
-                .from(element)
-                .toPdf()
-                .get('pdf')
-                .then(function(pdf) {
-                    console.log('PDF generated:', pdf);
+            const element = document.getElementById('sales_form');
+            if (element) {
+                const options = {
+                    margin: 1,
+                    filename: 'sales_information.pdf',
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2 },
+                    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+                };
+                html2pdf()
+                    .set(options)
+                    .from(element)
+                    .toPdf()
+                    .get('pdf')
+                    .then(function (pdf) {
+                        console.log('PDF generated:', pdf);
 
-                    formData.append('pdf', pdf.output('blob'));
+                        formData.append('pdf', pdf.output('blob'));
 
-                    fetch('/public/send-pdf-email', {
+                        fetch('/public/send-pdf-email', {
                             method: 'POST',
                             body: formData
                         })
-                        .then(response => {
-                            console.log('Response status:', response.status);
-                            console.log('Response status text:', response.statusText);
-                            return response.json();
-                        })
-                        .then(data => {
-                            console.log('Response data:', data);
-                            if (data.message === 'Email sent successfully!') {
-                                button.textContent = 'Email Sent!';
-                            } else {
-                                throw new Error('Failed to send email: ' + data.message);
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error sending email:', error);
-                            button.textContent = 'Failed to Send Email';
-                        });
-                })
-                .catch(error => {
-                    console.error('Error generating PDF:', error);
-                    button.textContent = 'Failed to Generate PDF';
-                });
+                            .then(response => {
+                                console.log('Response status:', response.status);
+                                console.log('Response status text:', response.statusText);
+                                return response.json();
+                            })
+                            .then(data => {
+                                console.log('Response data:', data);
+                                if (data.message === 'Email sent successfully!') {
+                                    button.textContent = 'Email Sent!';
+                                } else {
+                                    throw new Error('Failed to send email: ' + data.message);
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error sending email:', error);
+                                button.textContent = 'Failed to Send Email';
+                            });
+                    })
+                    .catch(error => {
+                        console.error('Error generating PDF:', error);
+                        button.textContent = 'Failed to Generate PDF';
+                    });
+            } else {
+                console.error('Element with ID "customer_form" not found.');
+                button.textContent = 'Failed to Generate PDF';
+            }
         } else {
-            console.error('Element with ID "customer_form" not found.');
-            button.textContent = 'Failed to Generate PDF';
+            console.error('Modal or input fields not found.');
         }
-    } else {
-        console.error('Modal or input fields not found.');
     }
-}
 </script>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            document.querySelector('.dropdown').addEventListener('mouseover', function () {
-                document.querySelector('.dropdown-content').style.display = 'block';
-            });
-
-            document.querySelector('.dropdown').addEventListener('mouseout', function () {
-                document.querySelector('.dropdown-content').style.display = 'none';
-            });
-        });
-    </script>
-
-    <script>
-        document.getElementById('categoryOfEquipment').addEventListener('change', function () {
-            var selectedOption = this.value;
-            hideAllContent(); // Hide all content first
-
-            // Show content based on selected option
-            switch (selectedOption) {
-                case 'ClassA':
-                    document.getElementById('classAContent').style.display = 'block';
-                    break;
-                case 'ClassB':
-                    document.getElementById('classBContent').style.display = 'block';
-                    break;
-                case 'ClassC':
-                    document.getElementById('classCContent').style.display = 'block';
-                    break;
-                case 'ClassD':
-                    document.getElementById('classDContent').style.display = 'block';
-                    break;
-                case 'ClassE':
-                    document.getElementById('classEContent').style.display = 'block';
-                    break;
-                case 'ClassF':
-                    document.getElementById('classFContent').style.display = 'block';
-                    break;
-                default:
-                    // Do nothing if no option selected
-                    break;
-            }
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelector('.dropdown').addEventListener('mouseover', function () {
+            document.querySelector('.dropdown-content').style.display = 'block';
         });
 
-        // Function to hide all content
-        function hideAllContent() {
-            var contentDivs = document.querySelectorAll('.col-lg-12.spacing-right[id$="Content"]');
-            contentDivs.forEach(function (div) {
-                div.style.display = 'none';
-            });
+        document.querySelector('.dropdown').addEventListener('mouseout', function () {
+            document.querySelector('.dropdown-content').style.display = 'none';
+        });
+    });
+</script>
+
+<script>
+    document.getElementById('categoryOfEquipment').addEventListener('change', function () {
+        var selectedOption = this.value;
+        hideAllContent(); // Hide all content first
+
+        // Show content based on selected option
+        switch (selectedOption) {
+            case 'ClassA':
+                document.getElementById('classAContent').style.display = 'block';
+                break;
+            case 'ClassB':
+                document.getElementById('classBContent').style.display = 'block';
+                break;
+            case 'ClassC':
+                document.getElementById('classCContent').style.display = 'block';
+                break;
+            case 'ClassD':
+                document.getElementById('classDContent').style.display = 'block';
+                break;
+            case 'ClassE':
+                document.getElementById('classEContent').style.display = 'block';
+                break;
+            case 'ClassF':
+                document.getElementById('classFContent').style.display = 'block';
+                break;
+            default:
+                // Do nothing if no option selected
+                break;
         }
-    </script>
+    });
 
-    <script>
-        document.getElementById('smokeDetectorInstallation').addEventListener('change', function () {
-            var installationOption = this.value;
-            var installationChargesField = document.getElementById('installationChargesField');
-
-            if (installationOption === 'yes') {
-                installationChargesField.style.display = 'block';
-            } else {
-                installationChargesField.style.display = 'none';
-            }
+    // Function to hide all content
+    function hideAllContent() {
+        var contentDivs = document.querySelectorAll('.col-lg-12.spacing-right[id$="Content"]');
+        contentDivs.forEach(function (div) {
+            div.style.display = 'none';
         });
-    </script>
+    }
+</script>
 
-    <script>
-        document.getElementById('internalShiftingSelect').addEventListener('change', function () {
-            var internalShiftingOption = this.value;
-            var internalShiftingChargesField = document.getElementById('internalShiftingChargesField');
+<script>
+    document.getElementById('smokeDetectorInstallation').addEventListener('change', function () {
+        var installationOption = this.value;
+        var installationChargesField = document.getElementById('installationChargesField');
 
-            if (internalShiftingOption === 'yes') {
-                internalShiftingChargesField.style.display = 'block';
-            } else {
-                internalShiftingChargesField.style.display = 'none';
-            }
-        });
-    </script>
+        if (installationOption === 'yes') {
+            installationChargesField.style.display = 'block';
+        } else {
+            installationChargesField.style.display = 'none';
+        }
+    });
+</script>
 
-    <script>
-        document.getElementById('reinstallationSelect').addEventListener('change', function () {
-            var reinstallationOption = this.value;
-            var reinstallationChargesField = document.getElementById('reinstallationChargesField');
+<script>
+    document.getElementById('internalShiftingSelect').addEventListener('change', function () {
+        var internalShiftingOption = this.value;
+        var internalShiftingChargesField = document.getElementById('internalShiftingChargesField');
 
-            if (reinstallationOption === 'yes') {
-                reinstallationChargesField.style.display = 'block';
-            } else {
-                reinstallationChargesField.style.display = 'none';
-            }
-        });
-    </script>
+        if (internalShiftingOption === 'yes') {
+            internalShiftingChargesField.style.display = 'block';
+        } else {
+            internalShiftingChargesField.style.display = 'none';
+        }
+    });
+</script>
 
-    <script>
-        document.getElementById('qrfMonitoringSelect').addEventListener('change', function () {
-            var qrfMonitoringOption = this.value;
-            var qrfMonitoringChargesField = document.getElementById('qrfMonitoringChargesField');
+<script>
+    document.getElementById('reinstallationSelect').addEventListener('change', function () {
+        var reinstallationOption = this.value;
+        var reinstallationChargesField = document.getElementById('reinstallationChargesField');
 
-            if (qrfMonitoringOption === 'yes') {
-                qrfMonitoringChargesField.style.display = 'block';
-            } else {
-                qrfMonitoringChargesField.style.display = 'none';
-            }
-        });
-    </script>
+        if (reinstallationOption === 'yes') {
+            reinstallationChargesField.style.display = 'block';
+        } else {
+            reinstallationChargesField.style.display = 'none';
+        }
+    });
+</script>
 
-    <script>
-        document.getElementById('monthlyQrfMonitoringCharges').addEventListener('input', function () {
-            var monthlyCharges = parseFloat(this.value);
-            var yearlyChargesField = document.getElementById('yearlyQrfMonitoringCharges');
+<script>
+    document.getElementById('qrfMonitoringSelect').addEventListener('change', function () {
+        var qrfMonitoringOption = this.value;
+        var qrfMonitoringChargesField = document.getElementById('qrfMonitoringChargesField');
 
-            if (!isNaN(monthlyCharges)) {
-                yearlyChargesField.value = monthlyCharges * 12;
-            } else {
-                yearlyChargesField.value = '';
-            }
-        });
-    </script>
+        if (qrfMonitoringOption === 'yes') {
+            qrfMonitoringChargesField.style.display = 'block';
+        } else {
+            qrfMonitoringChargesField.style.display = 'none';
+        }
+    });
+</script>
 
-    <script>
-        document.getElementById('policeMonitoringSelect').addEventListener('change', function () {
-            var policeMonitoringOption = this.value;
-            var policeMonitoringChargesField = document.getElementById('policeMonitoringChargesField');
+<script>
+    document.getElementById('monthlyQrfMonitoringCharges').addEventListener('input', function () {
+        var monthlyCharges = parseFloat(this.value);
+        var yearlyChargesField = document.getElementById('yearlyQrfMonitoringCharges');
 
-            if (policeMonitoringOption === 'yes') {
-                policeMonitoringChargesField.style.display = 'block';
-            } else {
-                policeMonitoringChargesField.style.display = 'none';
-            }
-        });
-    </script>
+        if (!isNaN(monthlyCharges)) {
+            yearlyChargesField.value = monthlyCharges * 12;
+        } else {
+            yearlyChargesField.value = '';
+        }
+    });
+</script>
 
-    <script>
-        document.getElementById('monthlyPoliceMonitoringCharges').addEventListener('input', function () {
-            var monthlyCharges = parseFloat(this.value);
-            var yearlyChargesField = document.getElementById('yearlyPoliceMonitoringCharges');
+<script>
+    document.getElementById('policeMonitoringSelect').addEventListener('change', function () {
+        var policeMonitoringOption = this.value;
+        var policeMonitoringChargesField = document.getElementById('policeMonitoringChargesField');
 
-            if (!isNaN(monthlyCharges)) {
-                yearlyChargesField.value = monthlyCharges * 12;
-            } else {
-                yearlyChargesField.value = '';
-            }
-        });
-    </script>
+        if (policeMonitoringOption === 'yes') {
+            policeMonitoringChargesField.style.display = 'block';
+        } else {
+            policeMonitoringChargesField.style.display = 'none';
+        }
+    });
+</script>
 
-    <script>
-    $(document).ready(function() {
-        $("#men_addmore_btn").click(function() {
+<script>
+    document.getElementById('monthlyPoliceMonitoringCharges').addEventListener('input', function () {
+        var monthlyCharges = parseFloat(this.value);
+        var yearlyChargesField = document.getElementById('yearlyPoliceMonitoringCharges');
+
+        if (!isNaN(monthlyCharges)) {
+            yearlyChargesField.value = monthlyCharges * 12;
+        } else {
+            yearlyChargesField.value = '';
+        }
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#men_addmore_btn").click(function () {
             $(".row-fluid:last").clone().appendTo(".row-fluid");
             $("#men_remove_btn").show();
             $("#men_addmore_btn").hide();
         });
-        $("#men_remove_btn").click(function() {
+        $("#men_remove_btn").click(function () {
             $(".row-fluid:last").remove();
             $("#men_remove_btn").hide();
             $("#men_addmore_btn").show();
@@ -5582,14 +5758,14 @@ function sendPDFViaEmail() {
 
 
 
-        $("#check-complaines").change(function() {
+        $("#check-complaines").change(function () {
             if (this.checked) {
                 $("#check1").show();
             } else {
                 $("#check1").hide();
             }
         });
-        $("#check-lumpsum").change(function() {
+        $("#check-lumpsum").change(function () {
             if (this.checked) {
                 $("#check2").show();
             } else {
@@ -5597,14 +5773,14 @@ function sendPDFViaEmail() {
             }
         });
 
-        $("#check1-shown").change(function() {
+        $("#check1-shown").change(function () {
             if (this.checked) {
                 $("#shown-WHT").show();
             } else {
                 $("#shown-WHT").hide();
             }
         });
-        $("#check1-hidden").change(function() {
+        $("#check1-hidden").change(function () {
             if (this.checked) {
                 $("#hidden-WHT").show();
             } else {
@@ -5612,14 +5788,14 @@ function sendPDFViaEmail() {
             }
         });
 
-        $("#check2-shown").change(function() {
+        $("#check2-shown").change(function () {
             if (this.checked) {
                 $("#shown-WHT-2").show();
             } else {
                 $("#shown-WHT-2").hide();
             }
         });
-        $("#check2-hidden").change(function() {
+        $("#check2-hidden").change(function () {
             if (this.checked) {
                 $("#hidden-WHT-2").show();
             } else {
@@ -5627,7 +5803,7 @@ function sendPDFViaEmail() {
             }
         });
 
-        $("#check-reverse").change(function() {
+        $("#check-reverse").change(function () {
             if (this.checked) {
                 $("#reverse-working").show();
             } else {
@@ -5636,10 +5812,10 @@ function sendPDFViaEmail() {
         });
 
     });
-    </script>
+</script>
 
 
-    <!-- <script>
+<!-- <script>
         document.getElementById("reporting_address").addEventListener("click", function(event) {
             event.preventDefault(); // prevent the default behavior of the link
 
@@ -5653,10 +5829,10 @@ function sendPDFViaEmail() {
          });
      </script> -->
 
-    <script>
+<script>
     const reporting_address_check = document.getElementById("reporting_address_check");
     const reporting_address_form = document.getElementById("reporting_address_form");
-    $("#reporting_address_check").change(function() {
+    $("#reporting_address_check").change(function () {
         if (this.checked) {
 
             $("#reporting_address_form").show();
@@ -5665,11 +5841,11 @@ function sendPDFViaEmail() {
             $("#reporting_address_form").hide();
         }
     });
-    </script>
+</script>
 
-    <script>
-    $(document).ready(function() {
-        $("#byHandSubmittionCheckBox").change(function() {
+<script>
+    $(document).ready(function () {
+        $("#byHandSubmittionCheckBox").change(function () {
             if (this.checked) {
                 $("#byHandSubmittion_form").show();
             } else {
@@ -5677,11 +5853,11 @@ function sendPDFViaEmail() {
             }
         });
     });
-    </script>
+</script>
 
-    <script>
-    $(document).ready(function() {
-        $("#viaCourierSubmittion_checkBox").change(function() {
+<script>
+    $(document).ready(function () {
+        $("#viaCourierSubmittion_checkBox").change(function () {
             if (this.checked) {
                 $("#viaCourierSubmittion_form").show();
             } else {
@@ -5689,11 +5865,11 @@ function sendPDFViaEmail() {
             }
         });
     });
-    </script>
+</script>
 
-    <script>
-    $(document).ready(function() {
-        $("#viaEmailSubmittion_checkBox").change(function() {
+<script>
+    $(document).ready(function () {
+        $("#viaEmailSubmittion_checkBox").change(function () {
             if (this.checked) {
                 $("#viaEmailSubmittion_form").show();
             } else {
@@ -5701,10 +5877,10 @@ function sendPDFViaEmail() {
             }
         });
     });
-    </script>
+</script>
 
-    <script>
-    $("#reporting_address_escort_check").change(function() {
+<script>
+    $("#reporting_address_escort_check").change(function () {
         if (this.checked) {
 
             $("#reporting_address_escort_form").show();
@@ -5713,10 +5889,10 @@ function sendPDFViaEmail() {
             $("#reporting_address_escort_form").hide();
         }
     });
-    </script>
+</script>
 
-    <script>
-    $("#check_driver").change(function() {
+<script>
+    $("#check_driver").change(function () {
         if (this.checked) {
 
             $("#food_driver").show();
@@ -5725,9 +5901,9 @@ function sendPDFViaEmail() {
             $("#food_driver").hide();
         }
     });
-    </script>
-    <script>
-    $("#check_escort_driver").change(function() {
+</script>
+<script>
+    $("#check_escort_driver").change(function () {
         if (this.checked) {
 
             $("#food_escort_driver").show();
@@ -5736,9 +5912,9 @@ function sendPDFViaEmail() {
             $("#food_escort_driver").hide();
         }
     });
-    </script>
-    <script>
-    $("#check_staff").change(function() {
+</script>
+<script>
+    $("#check_staff").change(function () {
         if (this.checked) {
 
             $("#check_staff_Men_Guarding").show();
@@ -5747,9 +5923,9 @@ function sendPDFViaEmail() {
             $("#check_staff_Men_Guarding").hide();
         }
     });
-    </script>
-    <script>
-    $("#check_escort_staff").change(function() {
+</script>
+<script>
+    $("#check_escort_staff").change(function () {
         if (this.checked) {
 
             $("#check_escort_staff_Men_Guarding").show();
@@ -5758,10 +5934,10 @@ function sendPDFViaEmail() {
             $("#check_escort_staff_Men_Guarding").hide();
         }
     });
-    </script>
+</script>
 
 
-    <!-- <script>
+<!-- <script>
     document.getElementById("airline").addEventListener("click", function(event) {
         event.preventDefault(); // prevent the default behavior of the link
 
@@ -5774,8 +5950,8 @@ function sendPDFViaEmail() {
         }
      });
  </script> -->
-    <script>
-    $("#airline_check").change(function() {
+<script>
+    $("#airline_check").change(function () {
         if (this.checked) {
 
             $("#airline_check_form").show();
@@ -5784,9 +5960,9 @@ function sendPDFViaEmail() {
             $("#airline_check_form").hide();
         }
     });
-    </script>
+</script>
 
-    <!-- <script>
+<!-- <script>
     document.getElementById("POC").addEventListener("click", function(event) {
         event.preventDefault(); // prevent the default behavior of the link
 
@@ -5799,8 +5975,8 @@ function sendPDFViaEmail() {
         }
      });
  </script> -->
-    <script>
-    $("#POC_check").change(function() {
+<script>
+    $("#POC_check").change(function () {
         if (this.checked) {
 
             $("#POC_check_form").show();
@@ -5809,10 +5985,10 @@ function sendPDFViaEmail() {
             $("#POC_check_form").hide();
         }
     });
-    </script>
+</script>
 
-    <script>
-    $("#reporting_location_check").change(function() {
+<script>
+    $("#reporting_location_check").change(function () {
         if (this.checked) {
 
             $("#reporting_location_form").show();
@@ -5821,9 +5997,9 @@ function sendPDFViaEmail() {
             $("#reporting_location_form").hide();
         }
     });
-    </script>
-    <script>
-    $("#escort_services_check").change(function() {
+</script>
+<script>
+    $("#escort_services_check").change(function () {
         if (this.checked) {
 
             $("#escort_services_form").show();
@@ -5832,9 +6008,9 @@ function sendPDFViaEmail() {
             $("#escort_services_form").hide();
         }
     });
-    </script>
-    <script>
-    $("#canine_services_check").change(function() {
+</script>
+<script>
+    $("#canine_services_check").change(function () {
         if (this.checked) {
 
             $("#canine_services_form").show();
@@ -5843,10 +6019,10 @@ function sendPDFViaEmail() {
             $("#canine_services_form").hide();
         }
     });
-    </script>
+</script>
 
-    <script>
-    $("#delievery_location_check").change(function() {
+<script>
+    $("#delievery_location_check").change(function () {
         if (this.checked) {
 
             $("#delievery_location_form").show();
@@ -5855,9 +6031,9 @@ function sendPDFViaEmail() {
             $("#delievery_location_form").hide();
         }
     });
-    </script>
-    <script>
-    $("#delievery_location_check_1").change(function() {
+</script>
+<script>
+    $("#delievery_location_check_1").change(function () {
         if (this.checked) {
 
             $("#delievery_location_form_1").show();
@@ -5866,9 +6042,9 @@ function sendPDFViaEmail() {
             $("#delievery_location_form_1").hide();
         }
     });
-    </script>
-    <script>
-    $("#delievery_location_check_2").change(function() {
+</script>
+<script>
+    $("#delievery_location_check_2").change(function () {
         if (this.checked) {
 
             $("#delievery_location_form_2").show();
@@ -5877,9 +6053,9 @@ function sendPDFViaEmail() {
             $("#delievery_location_form_2").hide();
         }
     });
-    </script>
-    <script>
-    $("#installation_location_check").change(function() {
+</script>
+<script>
+    $("#installation_location_check").change(function () {
         if (this.checked) {
 
             $("#installation_location_form").show();
@@ -5888,31 +6064,31 @@ function sendPDFViaEmail() {
             $("#installation_location_form").hide();
         }
     });
-    </script>
-    <script>
-        $("#delievery_location_check_3").change(function() {
-            if (this.checked) {
+</script>
+<script>
+    $("#delievery_location_check_3").change(function () {
+        if (this.checked) {
 
-                $("#delievery_location_form_3").show();
-            } else {
+            $("#delievery_location_form_3").show();
+        } else {
 
-                $("#delievery_location_form_3").hide();
-            }
-        });
-        </script>
-        <script>
-        $("#installation_location_check_3").change(function() {
-            if (this.checked) {
+            $("#delievery_location_form_3").hide();
+        }
+    });
+</script>
+<script>
+    $("#installation_location_check_3").change(function () {
+        if (this.checked) {
 
-                $("#installation_location_form_3").show();
-            } else {
+            $("#installation_location_form_3").show();
+        } else {
 
-                $("#installation_location_form_3").hide();
-            }
-        });
-        </script>
-    <script>
-    $("#installation_location_check_1").change(function() {
+            $("#installation_location_form_3").hide();
+        }
+    });
+</script>
+<script>
+    $("#installation_location_check_1").change(function () {
         if (this.checked) {
 
             $("#installation_location_form_1").show();
@@ -5921,9 +6097,9 @@ function sendPDFViaEmail() {
             $("#installation_location_form_1").hide();
         }
     });
-    </script>
-    <script>
-    $("#installation_location_check_2").change(function() {
+</script>
+<script>
+    $("#installation_location_check_2").change(function () {
         if (this.checked) {
 
             $("#installation_location_form_2").show();
@@ -5932,11 +6108,11 @@ function sendPDFViaEmail() {
             $("#installation_location_form_2").hide();
         }
     });
-    </script>
+</script>
 
 
 
-    <!-- <script>
+<!-- <script>
     document.getElementById("delivery_location").addEventListener("click", function(event) {
         event.preventDefault(); // prevent the default behavior of the link
 
@@ -5953,7 +6129,7 @@ function sendPDFViaEmail() {
 
 
 
-    <!-- <script>
+<!-- <script>
         document.getElementsByClassName("fuel").addEventListener("change", function (e) {
             e.preventDefault();
 
@@ -5968,12 +6144,12 @@ function sendPDFViaEmail() {
         });
     </script> -->
 
-    <script>
+<script>
     var fuel = document.getElementById("fuel");
     var fuel_rate_km = document.getElementById("fuel_rate_km");
     var fuel_rate_km_req = document.getElementById("fuel_rate_km_req");
 
-    fuel.addEventListener("change", function() {
+    fuel.addEventListener("change", function () {
         if (fuel.value === "fuel_rate_1") {
 
             fuel_rate_km.style.display = "block";
@@ -5984,13 +6160,13 @@ function sendPDFViaEmail() {
             fuel_rate_km_req.style.display = "block";
         }
     });
-    </script>
-    <script>
+</script>
+<script>
     var tooltaxdropdown = document.getElementById("tooltax_dropdown");
     var tooltax1 = document.getElementById("tooltax1");
     var tooltax2 = document.getElementById("tooltax2");
 
-    tooltaxdropdown.addEventListener("change", function() {
+    tooltaxdropdown.addEventListener("change", function () {
         if (tooltaxdropdown.value === "tool_actual") {
 
             tooltax1.style.display = "block";
@@ -6001,14 +6177,14 @@ function sendPDFViaEmail() {
             tooltax2.style.display = "block";
         }
     });
-    </script>
+</script>
 
-    <script>
+<script>
     var fuel_1 = document.getElementById("fuel_1");
     var fuel_rate_km_1 = document.getElementById("fuel_rate_km_1");
     var fuel_rate_km_req_1 = document.getElementById("fuel_rate_km_req_1");
 
-    fuel.addEventListener("change", function() {
+    fuel.addEventListener("change", function () {
         if (fuel_1.value === "fuel_rate_1_1") {
 
             fuel_rate_km_1.style.display = "block";
@@ -6019,10 +6195,10 @@ function sendPDFViaEmail() {
             fuel_rate_km_req_1.style.display = "block";
         }
     });
-    </script>
+</script>
 
-    <script>
-    document.getElementById("leadsubmit-category").addEventListener("click", function() {
+<script>
+    document.getElementById("leadsubmit-category").addEventListener("click", function () {
         var customCategory = document.getElementById("leadcustom-category").value;
         var select = document.getElementById("leadcategory");
         var option = document.createElement("option");
@@ -6030,9 +6206,9 @@ function sendPDFViaEmail() {
         option.value = customCategory;
         select.add(option);
     });
-    </script>
+</script>
 
-    <script>
+<script>
     function toggleCol8(colId) {
         var colCount = 11; // Number of columns
 
@@ -6043,9 +6219,9 @@ function sendPDFViaEmail() {
             }
         }
     }
-    </script>
-    `
-    <script>
+</script>
+`
+<script>
     function toggleDiv() {
         var div = document.getElementById("inputDiv");
         if (div.style.display === "none") {
@@ -6054,9 +6230,9 @@ function sendPDFViaEmail() {
             div.style.display = "none";
         }
     }
-    </script>
+</script>
 
-    <script>
+<script>
     function toggleDiv1() {
         var div1 = document.getElementById("inputDiv1");
         if (div1.style.display === "none") {
@@ -6065,10 +6241,10 @@ function sendPDFViaEmail() {
             div1.style.display = "none";
         }
     }
-    </script>
+</script>
 
-    <script>
-    document.getElementById("men-guard").addEventListener("click", function(event) {
+<script>
+    document.getElementById("men-guard").addEventListener("click", function (event) {
         event.preventDefault(); // prevent the default behavior of the link
         var div = document.getElementById("men");
         if (div.style.display === "none") {
@@ -6077,10 +6253,10 @@ function sendPDFViaEmail() {
             div.style.display = "none"; // hide the div
         }
     });
-    </script>
+</script>
 
-    <script>
-    document.getElementById("escort1").addEventListener("click", function(event) {
+<script>
+    document.getElementById("escort1").addEventListener("click", function (event) {
         event.preventDefault(); // prevent the default behavior of the link
         var div = document.getElementById("escort");
         if (div.style.visibility === "hidden") {
@@ -6089,10 +6265,10 @@ function sendPDFViaEmail() {
             div.style.visibility = "hidden"; // hide the element
         }
     });
-    </script>
+</script>
 
-    <script>
-    document.getElementById("canine1").addEventListener("click", function(event) {
+<script>
+    document.getElementById("canine1").addEventListener("click", function (event) {
         event.preventDefault(); // prevent the default behavior of the link
         var div = document.getElementById("canine");
         if (div.style.display === "none") {
@@ -6101,10 +6277,10 @@ function sendPDFViaEmail() {
             div.style.display = "none"; // hide the div
         }
     });
-    </script>
+</script>
 
-    <script>
-    document.getElementById("facility1").addEventListener("click", function(event) {
+<script>
+    document.getElementById("facility1").addEventListener("click", function (event) {
         event.preventDefault(); // prevent the default behavior of the link
         var div = document.getElementById("facility");
         if (div.style.display === "none") {
@@ -6113,40 +6289,40 @@ function sendPDFViaEmail() {
             div.style.display = "none"; // hide the div
         }
     });
-    </script>
+</script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const salaryInput = document.getElementById('salary');
-            const relieverAllowanceInput = document.getElementById('relieverAllowance');
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const salaryInput = document.getElementById('salary');
+        const relieverAllowanceInput = document.getElementById('relieverAllowance');
 
-            salaryInput.addEventListener('input', function() {
-                const salary = parseFloat(salaryInput.value);
-                const relieverAllowance = (salary / 26 * 4).toFixed(2); // Calculate reliever allowance
-                relieverAllowanceInput.value = isNaN(relieverAllowance) ? '' : relieverAllowance; // Update reliever allowance input
-            });
+        salaryInput.addEventListener('input', function () {
+            const salary = parseFloat(salaryInput.value);
+            const relieverAllowance = (salary / 26 * 4).toFixed(2); // Calculate reliever allowance
+            relieverAllowanceInput.value = isNaN(relieverAllowance) ? '' : relieverAllowance; // Update reliever allowance input
         });
-    </script>
+    });
+</script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const salaryInput = document.getElementById('hidesalary');
-            const relieverAllowanceInput = document.getElementById('hiderelieverAllowance');
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const salaryInput = document.getElementById('hidesalary');
+        const relieverAllowanceInput = document.getElementById('hiderelieverAllowance');
 
-            salaryInput.addEventListener('input', function() {
-                const salary = parseFloat(salaryInput.value);
-                const relieverAllowance = (salary / 26 * 4).toFixed(2); // Calculate reliever allowance
-                relieverAllowanceInput.value = isNaN(relieverAllowance) ? '' : relieverAllowance; // Update reliever allowance input
-            });
+        salaryInput.addEventListener('input', function () {
+            const salary = parseFloat(salaryInput.value);
+            const relieverAllowance = (salary / 26 * 4).toFixed(2); // Calculate reliever allowance
+            relieverAllowanceInput.value = isNaN(relieverAllowance) ? '' : relieverAllowance; // Update reliever allowance input
         });
-    </script>
+    });
+</script>
 
 
 
-    <!--Further Images Display Setup-->
+<!--Further Images Display Setup-->
 
-    <script>
-    document.getElementById('img1').addEventListener('click', function() {
+<script>
+    document.getElementById('img1').addEventListener('click', function () {
         var newDiv = document.getElementById('newDiv');
         newDiv.style.display = 'block';
     });
@@ -6155,9 +6331,9 @@ function sendPDFViaEmail() {
         var newDiv = document.getElementById('newDiv');
         newDiv.style.display = 'none';
     }
-    </script>
-    <script>
-    document.getElementById('img2').addEventListener('click', function() {
+</script>
+<script>
+    document.getElementById('img2').addEventListener('click', function () {
         var newDiv = document.getElementById('newDiv');
         newDiv.style.display = 'block';
     });
@@ -6166,10 +6342,10 @@ function sendPDFViaEmail() {
         var newDiv = document.getElementById('newDiv');
         newDiv.style.display = 'none';
     }
-    </script>
+</script>
 
-    <script>
-    document.getElementById('img2').addEventListener('click', function() {
+<script>
+    document.getElementById('img2').addEventListener('click', function () {
         var newDiv1 = document.getElementById('newDiv1');
         newDiv1.style.display = 'block';
     });
@@ -6178,10 +6354,10 @@ function sendPDFViaEmail() {
         var newDiv1 = document.getElementById('newDiv1');
         newDiv1.style.display = 'none';
     }
-    </script>
+</script>
 
-    <script>
-    document.getElementById('img3').addEventListener('click', function() {
+<script>
+    document.getElementById('img3').addEventListener('click', function () {
         $('#newDiv5-a').hide();
         var newDiv5 = document.getElementById('newDiv5');
         newDiv5.style.display = 'block';
@@ -6191,9 +6367,9 @@ function sendPDFViaEmail() {
         var newDiv5 = document.getElementById('newDiv5');
         newDiv5.style.display = 'none';
     }
-    </script>
-    <script>
-    document.getElementById('img3-a').addEventListener('click', function() {
+</script>
+<script>
+    document.getElementById('img3-a').addEventListener('click', function () {
         $('#newDiv5').hide();
         var newDiv5_a = document.getElementById('newDiv5-a');
         newDiv5_a.style.display = 'block';
@@ -6203,10 +6379,10 @@ function sendPDFViaEmail() {
         var newDiv5_a = document.getElementById('newDiv5-a');
         newDiv5_a.style.display = 'none';
     }
-    </script>
+</script>
 
-    <script>
-    document.getElementById('img4').addEventListener('click', function() {
+<script>
+    document.getElementById('img4').addEventListener('click', function () {
         var newDiv6 = document.getElementById('newDiv6');
         newDiv6.style.display = 'block';
     });
@@ -6215,10 +6391,10 @@ function sendPDFViaEmail() {
         var newDiv6 = document.getElementById('newDiv6');
         newDiv6.style.display = 'none';
     }
-    </script>
+</script>
 
-    <script>
-    document.getElementById('img5').addEventListener('click', function() {
+<script>
+    document.getElementById('img5').addEventListener('click', function () {
         var newDiv7 = document.getElementById('newDiv7');
         newDiv7.style.display = 'block';
     });
@@ -6227,10 +6403,10 @@ function sendPDFViaEmail() {
         var newDiv7 = document.getElementById('newDiv7');
         newDiv7.style.display = 'none';
     }
-    </script>
+</script>
 
-    <script>
-    document.getElementById('img6').addEventListener('click', function() {
+<script>
+    document.getElementById('img6').addEventListener('click', function () {
         var newDiv8 = document.getElementById('newDiv8');
         newDiv8.style.display = 'block';
     });
@@ -6239,10 +6415,10 @@ function sendPDFViaEmail() {
         var newDiv8 = document.getElementById('newDiv8');
         newDiv8.style.display = 'none';
     }
-    </script>
+</script>
 
-    <script>
-    document.getElementById('img9').addEventListener('click', function() {
+<script>
+    document.getElementById('img9').addEventListener('click', function () {
         $('#newDiv10-a').hide();
         var newDiv10 = document.getElementById('newDiv10');
         newDiv10.style.display = 'block';
@@ -6252,10 +6428,10 @@ function sendPDFViaEmail() {
         var newDiv10 = document.getElementById('newDiv10');
         newDiv10.style.display = 'none';
     }
-    </script>
+</script>
 
-    <script>
-    document.getElementById('img9-a').addEventListener('click', function() {
+<script>
+    document.getElementById('img9-a').addEventListener('click', function () {
         $('#newDiv10').hide();
         var newDiv10a = document.getElementById('newDiv10-a');
         newDiv10a.style.display = 'block';
@@ -6265,10 +6441,10 @@ function sendPDFViaEmail() {
         var newDiv10_a = document.getElementById('newDiv10-a');
         newDiv10_a.style.display = 'none';
     }
-    </script>
+</script>
 
-    <script>
-    document.getElementById('img10').addEventListener('click', function() {
+<script>
+    document.getElementById('img10').addEventListener('click', function () {
         var newDiv11 = document.getElementById('newDiv11');
         newDiv11.style.display = 'block';
     });
@@ -6277,10 +6453,10 @@ function sendPDFViaEmail() {
         var newDiv11 = document.getElementById('newDiv11');
         newDiv11.style.display = 'none';
     }
-    </script>
+</script>
 
-    <script>
-    document.getElementById('img11').addEventListener('click', function() {
+<script>
+    document.getElementById('img11').addEventListener('click', function () {
         var newDiv12 = document.getElementById('newDiv12');
         newDiv12.style.display = 'block';
     });
@@ -6289,10 +6465,10 @@ function sendPDFViaEmail() {
         var newDiv12 = document.getElementById('newDiv12');
         newDiv12.style.display = 'none';
     }
-    </script>
+</script>
 
-    <script>
-    document.getElementById('img11-a').addEventListener('click', function() {
+<script>
+    document.getElementById('img11-a').addEventListener('click', function () {
         var newDiv12a = document.getElementById('newDiv12-a');
         newDiv12a.style.display = 'block';
     });
@@ -6301,10 +6477,10 @@ function sendPDFViaEmail() {
         var newDiv12a = document.getElementById('newDiv12-a');
         newDiv12a.style.display = 'none';
     }
-    </script>
+</script>
 
-    <script>
-    document.getElementById('img12').addEventListener('click', function() {
+<script>
+    document.getElementById('img12').addEventListener('click', function () {
         var newDiv13 = document.getElementById('newDiv13');
         newDiv13.style.display = 'block';
     });
@@ -6313,10 +6489,10 @@ function sendPDFViaEmail() {
         var newDiv13 = document.getElementById('newDiv13');
         newDiv13.style.display = 'none';
     }
-    </script>
+</script>
 
-    <script>
-    document.getElementById('img13').addEventListener('click', function() {
+<script>
+    document.getElementById('img13').addEventListener('click', function () {
         $("#newDiv14-a").hide();
         $("#newDiv14-b").hide();
         var newDiv14 = document.getElementById('newDiv14');
@@ -6329,41 +6505,41 @@ function sendPDFViaEmail() {
         var newDiv14 = document.getElementById('newDiv14');
         newDiv14.style.display = 'none';
     }
-    </script>
+</script>
 
-    <script>
-    document.getElementById('img13-a').addEventListener('click', function() {
+<script>
+    document.getElementById('img13-a').addEventListener('click', function () {
         $("#newDiv14").hide();
         $("#newDiv14-b").hide();
         var newDiv14a = document.getElementById('newDiv14-a');
         newDiv14a.style.display = 'block';
 
     });
-    </script>
-    <script>
+</script>
+<script>
     function remove_newDiv14_a() {
         var newDiv14a = document.getElementById('newDiv14-a');
         newDiv14a.style.display = 'none';
     }
-    </script>
-    <script>
-    document.getElementById('img13-b').addEventListener('click', function() {
+</script>
+<script>
+    document.getElementById('img13-b').addEventListener('click', function () {
         $("#newDiv14").hide();
         $("#newDiv14-a").hide();
         var newDiv14b = document.getElementById('newDiv14-b');
         newDiv14b.style.display = 'block';
 
     });
-    </script>
-    <script>
+</script>
+<script>
     function remove_newDiv14_b() {
         var newDiv14b = document.getElementById('newDiv14-b');
         newDiv14b.style.display = 'none';
     }
-    </script>
+</script>
 
-    <script>
-    document.getElementById('img14').addEventListener('click', function() {
+<script>
+    document.getElementById('img14').addEventListener('click', function () {
         var newDiv15 = document.getElementById('newDiv15');
         newDiv15.style.display = 'block';
     });
@@ -6372,10 +6548,10 @@ function sendPDFViaEmail() {
         var newDiv15 = document.getElementById('newDiv15');
         newDiv15.style.display = 'none';
     }
-    </script>
+</script>
 
-    <script>
-    document.getElementById('img15').addEventListener('click', function() {
+<script>
+    document.getElementById('img15').addEventListener('click', function () {
         var newDiv3 = document.getElementById('newDiv3');
         newDiv3.style.display = 'block';
     });
@@ -6384,10 +6560,10 @@ function sendPDFViaEmail() {
         var newDiv3 = document.getElementById('newDiv3');
         newDiv3.style.display = 'none';
     }
-    </script>
+</script>
 
-    <script>
-    document.getElementById('img16').addEventListener('click', function() {
+<script>
+    document.getElementById('img16').addEventListener('click', function () {
         var newDiv4 = document.getElementById('newDiv4');
         newDiv4.style.display = 'block';
     });
@@ -6396,10 +6572,10 @@ function sendPDFViaEmail() {
         var newDiv4 = document.getElementById('newDiv4');
         newDiv4.style.display = 'none';
     }
-    </script>
+</script>
 
-    <script>
-    document.getElementById('img3').addEventListener('click', function() {
+<script>
+    document.getElementById('img3').addEventListener('click', function () {
         var newDiv9 = document.getElementById('newDiv9');
         newDiv9.style.display = 'block';
     });
@@ -6408,10 +6584,10 @@ function sendPDFViaEmail() {
         var newDiv9 = document.getElementById('newDiv9');
         newDiv9.style.display = 'none';
     }
-    </script>
+</script>
 
-    <script>
-    document.getElementById('img20').addEventListener('click', function() {
+<script>
+    document.getElementById('img20').addEventListener('click', function () {
         var newDiv17 = document.getElementById('newDiv17');
         newDiv17.style.display = 'block';
     });
@@ -6420,10 +6596,10 @@ function sendPDFViaEmail() {
         var newDiv17 = document.getElementById('newDiv17');
         newDiv17.style.display = 'none';
     }
-    </script>
+</script>
 
-    <script>
-    document.getElementById('img23').addEventListener('click', function() {
+<script>
+    document.getElementById('img23').addEventListener('click', function () {
         var newDiv18 = document.getElementById('newDiv18');
         newDiv18.style.display = 'block';
         console.log("clicked", newDiv18);
@@ -6433,11 +6609,11 @@ function sendPDFViaEmail() {
         var newDiv18 = document.getElementById('newDiv18');
         newDiv18.style.display = 'none';
     }
-    </script>
+</script>
 
 
-    <script>
-    document.getElementById('img25').addEventListener('click', function() {
+<script>
+    document.getElementById('img25').addEventListener('click', function () {
         var newDiv25 = document.getElementById('newDiv25');
         newDiv25.style.display = 'block';
     });
@@ -6446,30 +6622,30 @@ function sendPDFViaEmail() {
         var newDiv25 = document.getElementById('newDiv25');
         newDiv25.style.display = 'none';
     }
-    </script>
+</script>
 
 
-    <!--Checkboxes-->
+<!--Checkboxes-->
 
-    <script>
+<script>
     const checkbox = document.getElementById('pilotcheck');
     const inputContainer = document.getElementById('inputContainer');
 
-    checkbox.addEventListener('change', function() {
+    checkbox.addEventListener('change', function () {
         if (checkbox.checked) {
             inputContainer.style.display = 'block';
         } else {
             inputContainer.style.display = 'none';
         }
     });
-    </script>
+</script>
 
-    <script>
-    $(document).ready(function() {
+<script>
+    $(document).ready(function () {
         $('#otherCheckboxesContainer').hide();
 
         // Add an event listener to the Bid Money checkbox
-        $('#bidMoneyCheckbox').change(function() {
+        $('#bidMoneyCheckbox').change(function () {
             if ($(this).is(':checked')) {
                 // If the Bid Money checkbox is checked, display the other checkboxes
                 $('#otherCheckboxesContainer').show();
@@ -6479,9 +6655,9 @@ function sendPDFViaEmail() {
             }
         });
     });
-    </script>
+</script>
 
-    <script>
+<script>
     function toggleGrievanceDiv() {
         const grevCheckbox = document.getElementById("grev");
         const grevDiv = document.getElementById("grevCheckbox");
@@ -6492,9 +6668,9 @@ function sendPDFViaEmail() {
             grevDiv.style.display = "none";
         }
     }
-    </script>
+</script>
 
-    <script>
+<script>
     // POC Daily Sales Add Fields
     var room13 = 1;
 
@@ -6598,31 +6774,31 @@ function sendPDFViaEmail() {
     function poc_remove_fields(rid) {
         $('.removeclass' + rid).remove();
     }
+</script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
     </script>
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
-        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
-        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
     </script>
 
-    <!-- Script for validation on save button -->
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script>
-    $(document).ready(function() {
+<!-- Script for validation on save button -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function () {
         var saveButtonClicked = false;
 
-        $('#validateBtn').click(function() {
+        $('#validateBtn').click(function () {
             console.log("Button clicked!");
             saveButtonClicked = true;
 
             var isValid = true;
 
             // Your validation logic here
-            $('#prospectNo').each(function() {
+            $('#prospectNo').each(function () {
                 var trimmedValue = $.trim($(this).val());
                 console.log(trimmedValue);
                 if (trimmedValue === '') {
@@ -6656,13 +6832,13 @@ function sendPDFViaEmail() {
         //     $('#nav-contact-tab').removeAttr('data-toggle');
         // }
     });
-    </script>
+</script>
 
-    <!-- Script For Add more Gaurd Services -->
-    <script>
-    $(document).ready(function() {
+<!-- Script For Add more Gaurd Services -->
+<script>
+    $(document).ready(function () {
         // Add More Button Click Event
-        $('#addSignatory').on('click', function() {
+        $('#addSignatory').on('click', function () {
             var SignatoryAccordionCount = $('#signatoryAccordion .signaccordion-item').length + 1;
 
             var newSignAccordion = `
@@ -6810,23 +6986,23 @@ function sendPDFViaEmail() {
         });
 
         // Remove Accordion Button Click Event
-        $(document).on('click', '.removeSignAccordion', function() {
+        $(document).on('click', '.removeSignAccordion', function () {
             $(this).closest('.signaccordion-item').remove();
         });
 
     });
-    </script>
+</script>
 
-    <!-- Script For Show data in table and Update Table of Gaurd servises -->
-    <script>
-    $(document).ready(function() {
+<!-- Script For Show data in table and Update Table of Gaurd servises -->
+<script>
+    $(document).ready(function () {
         // Function to update summary table for Guard entries
         function updateSignatorySummaryTable() {
             // Clear existing rows
             $('#signatorySummaryTable tbody').empty();
 
             // Iterate through each gaurd accordion item and update the summary table
-            $('.signaccordion-item').each(function(index) {
+            $('.signaccordion-item').each(function (index) {
                 var gCategory = $(this).find('[name="ay_other_d"]').val();
                 var gQuality = $(this).find('[name="category"]').val();
                 var gShift = $(this).find('[name="category"]').val();
@@ -6849,7 +7025,7 @@ function sendPDFViaEmail() {
         }
 
         // Add More Signatory Button Click Event
-        $('#addSignatory').on('click', function() {
+        $('#addSignatory').on('click', function () {
             var signatoryEntryCount = $('#signatoryAccordion .signaccordion-item').length + 1;
 
             var newSignatoryEntry = `
@@ -6861,14 +7037,14 @@ function sendPDFViaEmail() {
         });
 
         // Update Signatory Table Button Click Event
-        $('#updateSignatoryTable').on('click', function() {
+        $('#updateSignatoryTable').on('click', function () {
             // Update the signatory summary table
             console.log("clicked save");
             updateSignatorySummaryTable();
         });
 
         // View Signatory Button Click Event
-        $(document).on('click', '.view-signatory-button', function() {
+        $(document).on('click', '.view-signatory-button', function () {
             var index = $(this).data('index');
             var accordionItem = $('.signaccordion-item').eq(index);
 
@@ -6877,24 +7053,24 @@ function sendPDFViaEmail() {
         });
 
         // Remove Signatory Entry Button Click Event
-        $(document).on('click', '.removeSignatoryAccordion', function() {
+        $(document).on('click', '.removeSignatoryAccordion', function () {
             $(this).closest('.signaccordion-item').remove();
             // Update the signatory summary table
             updateSignatorySummaryTable();
         });
 
         // Prevent the default behavior of the Add More Signatory button
-        $('#addSignatory').on('click', function(event) {
+        $('#addSignatory').on('click', function (event) {
             event.preventDefault();
         });
     });
-    </script>
+</script>
 
-    <!-- Script for Add more Vehicals -->
-    <script>
-    $(document).ready(function() {
+<!-- Script for Add more Vehicals -->
+<script>
+    $(document).ready(function () {
         // Add More Button Click Event
-        $('#addSignatory2').on('click', function() {
+        $('#addSignatory2').on('click', function () {
             var SignatoryAccordionCount2 = $('#signatoryAccordion2 .signaccordion-item2').length + 1;
 
             var newSignAccordion2 = `
@@ -7281,22 +7457,22 @@ function sendPDFViaEmail() {
         });
 
         // Remove Accordion Button Click Event
-        $(document).on('click', '.removeSignAccordion2', function() {
+        $(document).on('click', '.removeSignAccordion2', function () {
             $(this).closest('.signaccordion-item2').remove();
         });
     });
-    </script>
+</script>
 
-    <!-- Script For Show data in table and update table of Vehicals -->
-    <script>
-    $(document).ready(function() {
+<!-- Script For Show data in table and update table of Vehicals -->
+<script>
+    $(document).ready(function () {
         // Function to update summary table for Vehicals entries
         function updateSignatorySummaryTable2() {
             // Clear existing rows
             $('#signatorySummaryTable2 tbody').empty();
 
             // Iterate through each gaurd accordion item and update the summary table
-            $('.signaccordion-item2').each(function(index) {
+            $('.signaccordion-item2').each(function (index) {
                 var OnerStatus = $(this).find('[name="oscategory"]').val();
                 var types = $(this).find('[name="tcategory"]').val();
                 var category = $(this).find('[name="ccategory"]').val();
@@ -7321,7 +7497,7 @@ function sendPDFViaEmail() {
         }
 
         // Add More Signatory Button Click Event
-        $('#addSignatory2').on('click', function() {
+        $('#addSignatory2').on('click', function () {
             var signatoryEntryCount2 = $('#signatoryAccordion2 .signaccordion-item2').length + 1;
 
             var newSignatoryEntry2 = `
@@ -7333,14 +7509,14 @@ function sendPDFViaEmail() {
         });
 
         // Update Signatory Table Button Click Event
-        $('#updateSignatoryTable2').on('click', function() {
+        $('#updateSignatoryTable2').on('click', function () {
             // Update the signatory summary table
             console.log("clicked save");
             updateSignatorySummaryTable2();
         });
 
         // View Signatory Button Click Event
-        $(document).on('click', '.view-signatory-button', function() {
+        $(document).on('click', '.view-signatory-button', function () {
             var index = $(this).data('index');
             var accordionItem = $('.signaccordion-item2').eq(index);
 
@@ -7349,24 +7525,24 @@ function sendPDFViaEmail() {
         });
 
         // Remove Signatory Entry Button Click Event
-        $(document).on('click', '.removeSignatoryAccordion', function() {
+        $(document).on('click', '.removeSignatoryAccordion', function () {
             $(this).closest('.signaccordion-item2').remove();
             // Update the signatory summary table
             updateSignatorySummaryTable2();
         });
 
         // Prevent the default behavior of the Add More Signatory button
-        $('#addSignatory2').on('click', function(event) {
+        $('#addSignatory2').on('click', function (event) {
             event.preventDefault();
         });
     });
-    </script>
+</script>
 
-    <!-- Script for add more Canine -->
-    <script>
-    $(document).ready(function() {
+<!-- Script for add more Canine -->
+<script>
+    $(document).ready(function () {
         // Add More Button Click Event
-        $('#addSignatory3').on('click', function() {
+        $('#addSignatory3').on('click', function () {
             var SignatoryAccordionCount3 = $('#signatoryAccordion3 .signaccordion-item3').length + 1;
 
             var newSignAccordion3 = `
@@ -7519,23 +7695,23 @@ function sendPDFViaEmail() {
         });
 
         // Remove Accordion Button Click Event
-        $(document).on('click', '.removeSignAccordion3', function() {
+        $(document).on('click', '.removeSignAccordion3', function () {
             $(this).closest('.signaccordion-item3').remove();
         });
     });
-    </script>
+</script>
 
 
-    <!-- Script for show data in table and update table of canine services -->
-    <script>
-    $(document).ready(function() {
+<!-- Script for show data in table and update table of canine services -->
+<script>
+    $(document).ready(function () {
         // Function to update summary table for signatory entries
         function updateSignatorySummaryTable3() {
             // Clear existing rows
             $('#signatorySummaryTable3 tbody').empty();
 
             // Iterate through each signatory accordion item and update the summary table
-            $('.signaccordion-item3').each(function(index) {
+            $('.signaccordion-item3').each(function (index) {
                 var reqFor = $(this).find('[name="reqFor"]').val();
                 var colorOfDog = $(this).find('[name="colorOfDog"]').val();
                 var noOfDog = $(this).find('[name="noOfDog"]').val();
@@ -7558,7 +7734,7 @@ function sendPDFViaEmail() {
         }
 
         // Add More Signatory Button Click Event
-        $('#addSignatory3').on('click', function() {
+        $('#addSignatory3').on('click', function () {
             var signatoryEntryCount3 = $('#signatoryAccordion3 .signaccordion-item3').length + 1;
 
             var newSignatoryEntry3 = `
@@ -7569,13 +7745,13 @@ function sendPDFViaEmail() {
         });
 
         // Update Signatory Table Button Click Event
-        $('#updateSignatoryTable3').on('click', function() {
+        $('#updateSignatoryTable3').on('click', function () {
             // Update the signatory summary table
             updateSignatorySummaryTable3();
         });
 
         // View Signatory Button Click Event
-        $(document).on('click', '.view-signatory-button', function() {
+        $(document).on('click', '.view-signatory-button', function () {
             var index = $(this).data('index');
             var accordionItem = $('.signaccordion-item3').eq(index);
 
@@ -7584,24 +7760,24 @@ function sendPDFViaEmail() {
         });
 
         // Remove Signatory Entry Button Click Event
-        $(document).on('click', '.removeSignatoryAccordion3', function() {
+        $(document).on('click', '.removeSignatoryAccordion3', function () {
             $(this).closest('.signaccordion-item3').remove();
             // Update the signatory summary table
             updateSignatorySummaryTable3();
         });
 
         // Prevent the default behavior of the Add More Signatory button
-        $('#addSignatory3').on('click', function(event) {
+        $('#addSignatory3').on('click', function (event) {
             event.preventDefault();
         });
     });
-    </script>
+</script>
 
-    <!-- Script for add more Facilitation Services -->
-    <script>
-    $(document).ready(function() {
+<!-- Script for add more Facilitation Services -->
+<script>
+    $(document).ready(function () {
         // Add More Button Click Event
-        $('#addSignatory4').on('click', function() {
+        $('#addSignatory4').on('click', function () {
             var SignatoryAccordionCount4 = $('#signatoryAccordion4 .signaccordion-item4').length + 1;
 
             var newSignAccordion4 = `
@@ -7841,22 +8017,22 @@ function sendPDFViaEmail() {
         });
 
         // Remove Accordion Button Click Event
-        $(document).on('click', '.removeSignAccordion4', function() {
+        $(document).on('click', '.removeSignAccordion4', function () {
             $(this).closest('.signaccordion-item4').remove();
         });
     });
-    </script>
+</script>
 
-    <!-- Script for show data in table and update of Facilitation Services -->
-    <script>
-    $(document).ready(function() {
+<!-- Script for show data in table and update of Facilitation Services -->
+<script>
+    $(document).ready(function () {
         // Function to update summary table for signatory entries
         function updateSignatorySummaryTable4() {
             // Clear existing rows
             $('#signatorySummaryTable4 tbody').empty();
 
             // Iterate through each signatory accordion item and update the summary table
-            $('.signaccordion-item4').each(function(index) {
+            $('.signaccordion-item4').each(function (index) {
                 var gATime = $(this).find('[name="gATime"]').val();
                 var sTeamRepoTime = $(this).find('[name="sTeamRepoTime"]').val();
                 var nOfGuest = $(this).find('[name="nOfGuest"]').val();
@@ -7879,7 +8055,7 @@ function sendPDFViaEmail() {
         }
 
         // Add More Signatory Button Click Event
-        $('#addSignatory4').on('click', function() {
+        $('#addSignatory4').on('click', function () {
             var signatoryEntryCount4 = $('#signatoryAccordion4 .signaccordion-item4').length + 1;
 
             var newSignatoryEntry4 = `
@@ -7890,13 +8066,13 @@ function sendPDFViaEmail() {
         });
 
         // Update Signatory Table Button Click Event
-        $('#updateSignatoryTable4').on('click', function() {
+        $('#updateSignatoryTable4').on('click', function () {
             // Update the signatory summary table
             updateSignatorySummaryTable4();
         });
 
         // View Signatory Button Click Event
-        $(document).on('click', '.view-signatory-button', function() {
+        $(document).on('click', '.view-signatory-button', function () {
             var index = $(this).data('index');
             var accordionItem = $('.signaccordion-item4').eq(index);
 
@@ -7905,24 +8081,24 @@ function sendPDFViaEmail() {
         });
 
         // Remove Signatory Entry Button Click Event
-        $(document).on('click', '.removeSignatoryAccordion4', function() {
+        $(document).on('click', '.removeSignatoryAccordion4', function () {
             $(this).closest('.signaccordion-item4').remove();
             // Update the signatory summary table
             updateSignatorySummaryTable4();
         });
 
         // Prevent the default behavior of the Add More Signatory button
-        $('#addSignatory4').on('click', function(event) {
+        $('#addSignatory4').on('click', function (event) {
             event.preventDefault();
         });
     });
-    </script>
+</script>
 
-    <!-- Script for add more Facilitation Services (private jet) -->
-    <script>
-    $(document).ready(function() {
+<!-- Script for add more Facilitation Services (private jet) -->
+<script>
+    $(document).ready(function () {
         // Add More Button Click Event
-        $('#addSignatory4_1').on('click', function() {
+        $('#addSignatory4_1').on('click', function () {
             var SignatoryAccordionCount4_1 = $('#signatoryAccordion4_1 .signaccordion-item4_1').length +
                 1;
 
@@ -7969,22 +8145,22 @@ function sendPDFViaEmail() {
         });
 
         // Remove Accordion Button Click Event
-        $(document).on('click', '.removeSignAccordion4_1', function() {
+        $(document).on('click', '.removeSignAccordion4_1', function () {
             $(this).closest('.signaccordion-item4_1').remove();
         });
     });
-    </script>
+</script>
 
-    <!-- Script for show data in table and update of Facilitation Services (private jet) -->
-    <script>
-    $(document).ready(function() {
+<!-- Script for show data in table and update of Facilitation Services (private jet) -->
+<script>
+    $(document).ready(function () {
         // Function to update summary table for signatory entries
         function updateSignatorySummaryTable4_1() {
             // Clear existing rows
             $('#signatorySummaryTable4_1 tbody').empty();
 
             // Iterate through each signatory accordion item and update the summary table
-            $('.signaccordion-item4_1').each(function(index) {
+            $('.signaccordion-item4_1').each(function (index) {
                 var no_of_days_req_jet = $(this).find('[name="noOfDaysReqJet"]').val();
                 var fuel = $(this).find('[name="fuel"]').val();
                 var rete_of_fuel_per_kilo_M = $(this).find('[name="rateOfFuelPerKiloM"]').val();
@@ -8006,7 +8182,7 @@ function sendPDFViaEmail() {
         }
 
         // Add More Signatory Button Click Event
-        $('#addSignatory4_1').on('click', function() {
+        $('#addSignatory4_1').on('click', function () {
             var signatoryEntryCount4_1 = $('#signatoryAccordion4_1 .signaccordion-item4_1').length + 1;
 
             var newSignatoryEntry4_1 = `
@@ -8017,13 +8193,13 @@ function sendPDFViaEmail() {
         });
 
         // Update Signatory Table Button Click Event
-        $('#updateSignatoryTable4_1').on('click', function() {
+        $('#updateSignatoryTable4_1').on('click', function () {
             // Update the signatory summary table
             updateSignatorySummaryTable4_1();
         });
 
         // View Signatory Button Click Event
-        $(document).on('click', '.view-signatory-button4_1', function() {
+        $(document).on('click', '.view-signatory-button4_1', function () {
             var index = $(this).data('index');
             var accordionItem = $('.signaccordion-item4_1').eq(index);
 
@@ -8032,24 +8208,24 @@ function sendPDFViaEmail() {
         });
 
         // Remove Signatory Entry Button Click Event
-        $(document).on('click', '.removeSignatoryAccordion4_1', function() {
+        $(document).on('click', '.removeSignatoryAccordion4_1', function () {
             $(this).closest('.signaccordion-item4_1').remove();
             // Update the signatory summary table
             updateSignatorySummaryTable4_1();
         });
 
         // Prevent the default behavior of the Add More Signatory button
-        $('#addSignatory4_1').on('click', function(event) {
+        $('#addSignatory4_1').on('click', function (event) {
             event.preventDefault();
         });
     });
-    </script>
+</script>
 
-    <!-- Script for add more event Services -->
-    <script>
-    $(document).ready(function() {
+<!-- Script for add more event Services -->
+<script>
+    $(document).ready(function () {
         // Add More Button Click Event
-        $('#addSignatory5').on('click', function() {
+        $('#addSignatory5').on('click', function () {
             var SignatoryAccordionCount5 = $('#signatoryAccordion5 .signaccordion-item5').length + 1;
 
             var newSignAccordion5 = `
@@ -8232,22 +8408,22 @@ function sendPDFViaEmail() {
         });
 
         // Remove Accordion Button Click Event
-        $(document).on('click', '.removeSignAccordion5', function() {
+        $(document).on('click', '.removeSignAccordion5', function () {
             $(this).closest('.signaccordion-item5').remove();
         });
     });
-    </script>
+</script>
 
-    <!-- Script for show data in table and update of event Services -->
-    <script>
-    $(document).ready(function() {
+<!-- Script for show data in table and update of event Services -->
+<script>
+    $(document).ready(function () {
         // Function to update summary table for signatory entries
         function updateSignatorySummaryTable5() {
             // Clear existing rows
             $('#signatorySummaryTable5 tbody').empty();
 
             // Iterate through each signatory accordion item and update the summary table
-            $('.signaccordion-item5').each(function(index) {
+            $('.signaccordion-item5').each(function (index) {
                 var owner_ship_s = $(this).find('[name="ownershipS"]').val();
                 var required_For = $(this).find('[name="requiredFor"]').val();
                 var no_Of_Days_Staff_R = $(this).find('[name="noOfDaysStaffR"]').val();
@@ -8270,7 +8446,7 @@ function sendPDFViaEmail() {
         }
 
         // Add More Signatory Button Click Event
-        $('#addSignatory5').on('click', function() {
+        $('#addSignatory5').on('click', function () {
             var signatoryEntryCount5 = $('#signatoryAccordion5 .signaccordion-item5').length + 1;
 
             var newSignatoryEntry5 = `
@@ -8281,13 +8457,13 @@ function sendPDFViaEmail() {
         });
 
         // Update Signatory Table Button Click Event
-        $('#updateSignatoryTable5').on('click', function() {
+        $('#updateSignatoryTable5').on('click', function () {
             // Update the signatory summary table
             updateSignatorySummaryTable5();
         });
 
         // View Signatory Button Click Event
-        $(document).on('click', '.view-signatory-button', function() {
+        $(document).on('click', '.view-signatory-button', function () {
             var index = $(this).data('index');
             var accordionItem = $('.signaccordion-item5').eq(index);
 
@@ -8296,24 +8472,24 @@ function sendPDFViaEmail() {
         });
 
         // Remove Signatory Entry Button Click Event
-        $(document).on('click', '.removeSignatoryAccordion5', function() {
+        $(document).on('click', '.removeSignatoryAccordion5', function () {
             $(this).closest('.signaccordion-item5').remove();
             // Update the signatory summary table
             updateSignatorySummaryTable5();
         });
 
         // Prevent the default behavior of the Add More Signatory button
-        $('#addSignatory5').on('click', function(event) {
+        $('#addSignatory5').on('click', function (event) {
             event.preventDefault();
         });
     });
-    </script>
+</script>
 
-    <!-- Script for add more secuirty consultancy Services -->
-    <script>
-    $(document).ready(function() {
+<!-- Script for add more secuirty consultancy Services -->
+<script>
+    $(document).ready(function () {
         // Add More Button Click Event
-        $('#addSignatory6').on('click', function() {
+        $('#addSignatory6').on('click', function () {
             var SignatoryAccordionCount6 = $('#signatoryAccordion6 .signaccordion-item6').length + 1;
 
             var newSignAccordion6 = `
@@ -8389,22 +8565,22 @@ function sendPDFViaEmail() {
         });
 
         // Remove Accordion Button Click Event
-        $(document).on('click', '.removeSignAccordion6', function() {
+        $(document).on('click', '.removeSignAccordion6', function () {
             $(this).closest('.signaccordion-item6').remove();
         });
     });
-    </script>
+</script>
 
-    <!-- Script for show data in table and update of secuirty consultancy Services -->
-    <Script>
-    $(document).ready(function() {
+<!-- Script for show data in table and update of secuirty consultancy Services -->
+<Script>
+    $(document).ready(function () {
         // Function to update summary table for signatory entries
         function updateSignatorySummaryTable6() {
             // Clear existing rows
             $('#signatorySummaryTable6 tbody').empty();
 
             // Iterate through each signatory accordion item and update the summary table
-            $('.signaccordion-item6').each(function(index) {
+            $('.signaccordion-item6').each(function (index) {
                 var category_of_sec = $(this).find('[name="categoryOfSecuirty"]').val();
                 var scope_of_work = $(this).find('[name="scopeOfWork"]').val();
                 var date_of_submittion = $(this).find('[name="dateOfSubmittion"]').val();
@@ -8427,7 +8603,7 @@ function sendPDFViaEmail() {
         }
 
         // Add More Signatory Button Click Event
-        $('#addSignatory6').on('click', function() {
+        $('#addSignatory6').on('click', function () {
             var signatoryEntryCount6 = $('#signatoryAccordion6 .signaccordion-item6').length + 1;
 
             var newSignatoryEntry6 = `
@@ -8438,13 +8614,13 @@ function sendPDFViaEmail() {
         });
 
         // Update Signatory Table Button Click Event
-        $('#updateSignatoryTable6').on('click', function() {
+        $('#updateSignatoryTable6').on('click', function () {
             // Update the signatory summary table
             updateSignatorySummaryTable6();
         });
 
         // View Signatory Button Click Event
-        $(document).on('click', '.view-signatory-button', function() {
+        $(document).on('click', '.view-signatory-button', function () {
             var index = $(this).data('index');
             var accordionItem = $('.signaccordion-item6').eq(index);
 
@@ -8453,28 +8629,28 @@ function sendPDFViaEmail() {
         });
 
         // Remove Signatory Entry Button Click Event
-        $(document).on('click', '.removeSignatoryAccordion6', function() {
+        $(document).on('click', '.removeSignatoryAccordion6', function () {
             $(this).closest('.signaccordion-item6').remove();
             // Update the signatory summary table
             updateSignatorySummaryTable6();
         });
 
         // Prevent the default behavior of the Add More Signatory button
-        $('#addSignatory6').on('click', function(event) {
+        $('#addSignatory6').on('click', function (event) {
             event.preventDefault();
         });
     });
-    </Script>
+</Script>
 
 
-    <!-- Script for add more Fire fighting Services -->
-    <script>
-        $(document).ready(function() {
-            // Add More Button Click Event
-            $('#addSignatory7').on('click', function() {
-                var SignatoryAccordionCount7 = $('#signatoryAccordion7 .signaccordion-item7').length + 1;
+<!-- Script for add more Fire fighting Services -->
+<script>
+    $(document).ready(function () {
+        // Add More Button Click Event
+        $('#addSignatory7').on('click', function () {
+            var SignatoryAccordionCount7 = $('#signatoryAccordion7 .signaccordion-item7').length + 1;
 
-                var newSignAccordion7 = `
+            var newSignAccordion7 = `
             <div class="accordion-item signaccordion-item7" id="signatoryEntry7${SignatoryAccordionCount7}">
                 <h2 class="accordion-header" id="signatoryHeading7${SignatoryAccordionCount7}">
                     <button class="accordion-button" type="button" style="background-color: #34005A; color:white"  data-toggle="collapse" data-target="#signatoryCollapse7${SignatoryAccordionCount7}" aria-expanded="false" aria-controls="signatoryCollapse7${SignatoryAccordionCount7}">
@@ -8675,35 +8851,35 @@ function sendPDFViaEmail() {
             </div>
             `;
 
-                $('#signatoryAccordion7').append(newSignAccordion7);
-            });
-
-            // Remove Accordion Button Click Event
-            $(document).on('click', '.removeSignAccordion7', function() {
-                $(this).closest('.signaccordion-item7').remove();
-            });
+            $('#signatoryAccordion7').append(newSignAccordion7);
         });
-    </script>
+
+        // Remove Accordion Button Click Event
+        $(document).on('click', '.removeSignAccordion7', function () {
+            $(this).closest('.signaccordion-item7').remove();
+        });
+    });
+</script>
 
 
-    <!-- Script for show data in table and update of fire fighting Services -->
-    <script>
-        $(document).ready(function() {
-            // Function to update summary table for signatory entries
-            function updateSignatorySummaryTable7() {
-                // Clear existing rows
-                $('#signatorySummaryTable7 tbody').empty();
+<!-- Script for show data in table and update of fire fighting Services -->
+<script>
+    $(document).ready(function () {
+        // Function to update summary table for signatory entries
+        function updateSignatorySummaryTable7() {
+            // Clear existing rows
+            $('#signatorySummaryTable7 tbody').empty();
 
-                // Iterate through each signatory accordion item and update the summary table
-                $('.signaccordion-item7').each(function(index) {
-                    var equip_name = $(this).find('[name="equip_name"]').val();
-                    var cylinder_size = $(this).find('[name="cylinder_size"]').val();
-                    var article_no = $(this).find('[name="article_no"]').val();
+            // Iterate through each signatory accordion item and update the summary table
+            $('.signaccordion-item7').each(function (index) {
+                var equip_name = $(this).find('[name="equip_name"]').val();
+                var cylinder_size = $(this).find('[name="cylinder_size"]').val();
+                var article_no = $(this).find('[name="article_no"]').val();
 
-                    // Check if any relevant data is entered
-                    if (equip_name || cylinder_size || article_no) {
-                        // Add a new row to the summary table
-                        $('#signatorySummaryTable7 tbody').append(`
+                // Check if any relevant data is entered
+                if (equip_name || cylinder_size || article_no) {
+                    // Add a new row to the summary table
+                    $('#signatorySummaryTable7 tbody').append(`
                     <tr>
                         <td>${index + 1}</td>
                         <td>${equip_name}</td>
@@ -8713,58 +8889,58 @@ function sendPDFViaEmail() {
                         <!-- Add more columns as needed -->
                     </tr>
                 `);
-                    }
-                });
-            }
+                }
+            });
+        }
 
-            // Add More Signatory Button Click Event
-            $('#addSignatory7').on('click', function() {
-                var signatoryEntryCount7 = $('#signatoryAccordion7 .signaccordion-item7').length + 1;
+        // Add More Signatory Button Click Event
+        $('#addSignatory7').on('click', function () {
+            var signatoryEntryCount7 = $('#signatoryAccordion7 .signaccordion-item7').length + 1;
 
-                var newSignatoryEntry7 = `
+            var newSignatoryEntry7 = `
             <!-- Your existing signatory accordion HTML goes here -->
             `;
-                console.log('Adding signatory entry:', signatoryEntryCount7);
-                $('#signatoryAccordion7').append(newSignatoryEntry7);
-            });
-
-            // Update Signatory Table Button Click Event
-            $('#updateSignatoryTable7').on('click', function() {
-                // Update the signatory summary table
-                updateSignatorySummaryTable7();
-            });
-
-            // View Signatory Button Click Event
-            $(document).on('click', '.view-signatory-button', function() {
-                var index = $(this).data('index');
-                var accordionItem = $('.signaccordion-item7').eq(index);
-
-                // Toggle the collapse state of the accordion item
-                accordionItem.find('.collapse').collapse('toggle');
-            });
-
-            // Remove Signatory Entry Button Click Event
-            $(document).on('click', '.removeSignatoryAccordion7', function() {
-                $(this).closest('.signaccordion-item7').remove();
-                // Update the signatory summary table
-                updateSignatorySummaryTable7();
-            });
-
-            // Prevent the default behavior of the Add More Signatory button
-            $('#addSignatory7').on('click', function(event) {
-                event.preventDefault();
-            });
+            console.log('Adding signatory entry:', signatoryEntryCount7);
+            $('#signatoryAccordion7').append(newSignatoryEntry7);
         });
-    </script>
+
+        // Update Signatory Table Button Click Event
+        $('#updateSignatoryTable7').on('click', function () {
+            // Update the signatory summary table
+            updateSignatorySummaryTable7();
+        });
+
+        // View Signatory Button Click Event
+        $(document).on('click', '.view-signatory-button', function () {
+            var index = $(this).data('index');
+            var accordionItem = $('.signaccordion-item7').eq(index);
+
+            // Toggle the collapse state of the accordion item
+            accordionItem.find('.collapse').collapse('toggle');
+        });
+
+        // Remove Signatory Entry Button Click Event
+        $(document).on('click', '.removeSignatoryAccordion7', function () {
+            $(this).closest('.signaccordion-item7').remove();
+            // Update the signatory summary table
+            updateSignatorySummaryTable7();
+        });
+
+        // Prevent the default behavior of the Add More Signatory button
+        $('#addSignatory7').on('click', function (event) {
+            event.preventDefault();
+        });
+    });
+</script>
 
 
-    <script>
-        $(document).ready(function() {
-            // Add More Button Click Event
-            $('#addSignatory15').on('click', function() {
-                var SignatoryAccordionCount15 = $('#signatoryAccordion15 .signaccordion-item15').length + 1;
+<script>
+    $(document).ready(function () {
+        // Add More Button Click Event
+        $('#addSignatory15').on('click', function () {
+            var SignatoryAccordionCount15 = $('#signatoryAccordion15 .signaccordion-item15').length + 1;
 
-                var newSignAccordion15 = `
+            var newSignAccordion15 = `
             <div class="accordion-item signaccordion-item15" id="signatoryEntry15${SignatoryAccordionCount15}">
                 <h2 class="accordion-header" id="signatoryHeading15${SignatoryAccordionCount15}">
                     <button class="accordion-button" type="button" style="background-color: #34005A; color:white"  data-toggle="collapse" data-target="#signatoryCollapse15${SignatoryAccordionCount15}" aria-expanded="false" aria-controls="signatoryCollapse15${SignatoryAccordionCount15}">
@@ -8881,35 +9057,35 @@ function sendPDFViaEmail() {
             </div>
             `;
 
-                $('#signatoryAccordion15').append(newSignAccordion15);
-            });
-
-            // Remove Accordion Button Click Event
-            $(document).on('click', '.removeSignAccordion15', function() {
-                $(this).closest('.signaccordion-item15').remove();
-            });
+            $('#signatoryAccordion15').append(newSignAccordion15);
         });
-    </script>
+
+        // Remove Accordion Button Click Event
+        $(document).on('click', '.removeSignAccordion15', function () {
+            $(this).closest('.signaccordion-item15').remove();
+        });
+    });
+</script>
 
 
-    <!-- Script for show data in table and update of fire fighting Services -->
-    <script>
-        $(document).ready(function() {
-            // Function to update summary table for signatory entries
-            function updateSignatorySummaryTable15() {
-                // Clear existing rows
-                $('#signatorySummaryTable15 tbody').empty();
+<!-- Script for show data in table and update of fire fighting Services -->
+<script>
+    $(document).ready(function () {
+        // Function to update summary table for signatory entries
+        function updateSignatorySummaryTable15() {
+            // Clear existing rows
+            $('#signatorySummaryTable15 tbody').empty();
 
-                // Iterate through each signatory accordion item and update the summary table
-                $('.signaccordion-item15').each(function(index) {
-                    var model = $(this).find('[name="model"]').val();
-                    var e_name = $(this).find('[name="e_name"]').val();
-                    var a_no = $(this).find('[name="a_no"]').val();
+            // Iterate through each signatory accordion item and update the summary table
+            $('.signaccordion-item15').each(function (index) {
+                var model = $(this).find('[name="model"]').val();
+                var e_name = $(this).find('[name="e_name"]').val();
+                var a_no = $(this).find('[name="a_no"]').val();
 
-                    // Check if any relevant data is entered
-                    if (model || e_name || a_no) {
-                        // Add a new row to the summary table
-                        $('#signatorySummaryTable15 tbody').append(`
+                // Check if any relevant data is entered
+                if (model || e_name || a_no) {
+                    // Add a new row to the summary table
+                    $('#signatorySummaryTable15 tbody').append(`
                     <tr>
                         <td>${index + 1}</td>
                         <td>${e_name}</td>
@@ -8919,58 +9095,58 @@ function sendPDFViaEmail() {
                         <!-- Add more columns as needed -->
                     </tr>
                 `);
-                    }
-                });
-            }
+                }
+            });
+        }
 
-            // Add More Signatory Button Click Event
-            $('#addSignatory15').on('click', function() {
-                var signatoryEntryCount15 = $('#signatoryAccordion15 .signaccordion-item15').length + 1;
+        // Add More Signatory Button Click Event
+        $('#addSignatory15').on('click', function () {
+            var signatoryEntryCount15 = $('#signatoryAccordion15 .signaccordion-item15').length + 1;
 
-                var newSignatoryEntry15 = `
+            var newSignatoryEntry15 = `
             <!-- Your existing signatory accordion HTML goes here -->
             `;
-                console.log('Adding signatory entry:', signatoryEntryCount15);
-                $('#signatoryAccordion15').append(newSignatoryEntry15);
-            });
-
-            // Update Signatory Table Button Click Event
-            $('#updateSignatoryTable15').on('click', function() {
-                // Update the signatory summary table
-                updateSignatorySummaryTable15();
-            });
-
-            // View Signatory Button Click Event
-            $(document).on('click', '.view-signatory-button', function() {
-                var index = $(this).data('index');
-                var accordionItem = $('.signaccordion-item15').eq(index);
-
-                // Toggle the collapse state of the accordion item
-                accordionItem.find('.collapse').collapse('toggle');
-            });
-
-            // Remove Signatory Entry Button Click Event
-            $(document).on('click', '.removeSignatoryAccordion15', function() {
-                $(this).closest('.signaccordion-item15').remove();
-                // Update the signatory summary table
-                updateSignatorySummaryTable15();
-            });
-
-            // Prevent the default behavior of the Add More Signatory button
-            $('#addSignatory15').on('click', function(event) {
-                event.preventDefault();
-            });
+            console.log('Adding signatory entry:', signatoryEntryCount15);
+            $('#signatoryAccordion15').append(newSignatoryEntry15);
         });
-    </script>
+
+        // Update Signatory Table Button Click Event
+        $('#updateSignatoryTable15').on('click', function () {
+            // Update the signatory summary table
+            updateSignatorySummaryTable15();
+        });
+
+        // View Signatory Button Click Event
+        $(document).on('click', '.view-signatory-button', function () {
+            var index = $(this).data('index');
+            var accordionItem = $('.signaccordion-item15').eq(index);
+
+            // Toggle the collapse state of the accordion item
+            accordionItem.find('.collapse').collapse('toggle');
+        });
+
+        // Remove Signatory Entry Button Click Event
+        $(document).on('click', '.removeSignatoryAccordion15', function () {
+            $(this).closest('.signaccordion-item15').remove();
+            // Update the signatory summary table
+            updateSignatorySummaryTable15();
+        });
+
+        // Prevent the default behavior of the Add More Signatory button
+        $('#addSignatory15').on('click', function (event) {
+            event.preventDefault();
+        });
+    });
+</script>
 
 
-    <script>
-        $(document).ready(function() {
-            // Add More Button Click Event
-            $('#addSignatory16').on('click', function() {
-                var SignatoryAccordionCount16 = $('#signatoryAccordion16 .signaccordion-item16').length + 1;
+<script>
+    $(document).ready(function () {
+        // Add More Button Click Event
+        $('#addSignatory16').on('click', function () {
+            var SignatoryAccordionCount16 = $('#signatoryAccordion16 .signaccordion-item16').length + 1;
 
-                var newSignAccordion16 = `
+            var newSignAccordion16 = `
                 <div class="accordion-item signaccordion-item16" id="signatoryEntry16${SignatoryAccordionCount16}">
                 <h2 class="accordion-header" id="signatoryHeading16${SignatoryAccordionCount16}">
                     <button class="accordion-button" type="button" style="background-color: #34005A; color:white"  data-toggle="collapse" data-target="#signatoryCollapse16${SignatoryAccordionCount16}" aria-expanded="false" aria-controls="signatoryCollapse16${SignatoryAccordionCount16}">
@@ -9117,36 +9293,36 @@ function sendPDFViaEmail() {
             </div>
             `;
 
-                $('#signatoryAccordion16').append(newSignAccordion16);
-            });
-
-            // Remove Accordion Button Click Event
-            $(document).on('click', '.removeSignAccordion16', function() {
-                $(this).closest('.signaccordion-item16').remove();
-            });
+            $('#signatoryAccordion16').append(newSignAccordion16);
         });
-    </script>
+
+        // Remove Accordion Button Click Event
+        $(document).on('click', '.removeSignAccordion16', function () {
+            $(this).closest('.signaccordion-item16').remove();
+        });
+    });
+</script>
 
 
 
-    <!-- Script for show data in table and update of fire fighting Services -->
-    <script>
-        $(document).ready(function() {
-            // Function to update summary table for signatory entries
-            function updateSignatorySummaryTable16() {
-                // Clear existing rows
-                $('#signatorySummaryTable16 tbody').empty();
+<!-- Script for show data in table and update of fire fighting Services -->
+<script>
+    $(document).ready(function () {
+        // Function to update summary table for signatory entries
+        function updateSignatorySummaryTable16() {
+            // Clear existing rows
+            $('#signatorySummaryTable16 tbody').empty();
 
-                // Iterate through each signatory accordion item and update the summary table
-                $('.signaccordion-item16').each(function(index) {
-                    var passive_cat = $(this).find('[name="passive_cat"]').val();
-                    var length = $(this).find('[name="length"]').val();
-                    var width = $(this).find('[name="width"]').val();
+            // Iterate through each signatory accordion item and update the summary table
+            $('.signaccordion-item16').each(function (index) {
+                var passive_cat = $(this).find('[name="passive_cat"]').val();
+                var length = $(this).find('[name="length"]').val();
+                var width = $(this).find('[name="width"]').val();
 
-                    // Check if any relevant data is entered
-                    if (passive_cat || length || width) {
-                        // Add a new row to the summary table
-                        $('#signatorySummaryTable16 tbody').append(`
+                // Check if any relevant data is entered
+                if (passive_cat || length || width) {
+                    // Add a new row to the summary table
+                    $('#signatorySummaryTable16 tbody').append(`
                     <tr>
                         <td>${index + 1}</td>
                         <td>${passive_cat}</td>
@@ -9156,58 +9332,58 @@ function sendPDFViaEmail() {
                         <!-- Add more columns as needed -->
                     </tr>
                 `);
-                    }
-                });
-            }
+                }
+            });
+        }
 
-            // Add More Signatory Button Click Event
-            $('#addSignatory16').on('click', function() {
-                var signatoryEntryCount16 = $('#signatoryAccordion16 .signaccordion-item16').length + 1;
+        // Add More Signatory Button Click Event
+        $('#addSignatory16').on('click', function () {
+            var signatoryEntryCount16 = $('#signatoryAccordion16 .signaccordion-item16').length + 1;
 
-                var newSignatoryEntry16 = `
+            var newSignatoryEntry16 = `
             <!-- Your existing signatory accordion HTML goes here -->
             `;
-                console.log('Adding signatory entry:', signatoryEntryCount16);
-                $('#signatoryAccordion16').append(newSignatoryEntry16);
-            });
-
-            // Update Signatory Table Button Click Event
-            $('#updateSignatoryTable16').on('click', function() {
-                // Update the signatory summary table
-                updateSignatorySummaryTable16();
-            });
-
-            // View Signatory Button Click Event
-            $(document).on('click', '.view-signatory-button', function() {
-                var index = $(this).data('index');
-                var accordionItem = $('.signaccordion-item16').eq(index);
-
-                // Toggle the collapse state of the accordion item
-                accordionItem.find('.collapse').collapse('toggle');
-            });
-
-            // Remove Signatory Entry Button Click Event
-            $(document).on('click', '.removeSignatoryAccordion16', function() {
-                $(this).closest('.signaccordion-item16').remove();
-                // Update the signatory summary table
-                updateSignatorySummaryTable16();
-            });
-
-            // Prevent the default behavior of the Add More Signatory button
-            $('#addSignatory16').on('click', function(event) {
-                event.preventDefault();
-            });
+            console.log('Adding signatory entry:', signatoryEntryCount16);
+            $('#signatoryAccordion16').append(newSignatoryEntry16);
         });
-    </script>
+
+        // Update Signatory Table Button Click Event
+        $('#updateSignatoryTable16').on('click', function () {
+            // Update the signatory summary table
+            updateSignatorySummaryTable16();
+        });
+
+        // View Signatory Button Click Event
+        $(document).on('click', '.view-signatory-button', function () {
+            var index = $(this).data('index');
+            var accordionItem = $('.signaccordion-item16').eq(index);
+
+            // Toggle the collapse state of the accordion item
+            accordionItem.find('.collapse').collapse('toggle');
+        });
+
+        // Remove Signatory Entry Button Click Event
+        $(document).on('click', '.removeSignatoryAccordion16', function () {
+            $(this).closest('.signaccordion-item16').remove();
+            // Update the signatory summary table
+            updateSignatorySummaryTable16();
+        });
+
+        // Prevent the default behavior of the Add More Signatory button
+        $('#addSignatory16').on('click', function (event) {
+            event.preventDefault();
+        });
+    });
+</script>
 
 
-    <script>
-        $(document).ready(function() {
-            // Add More Button Click Event
-            $('#addSignatory17').on('click', function() {
-                var SignatoryAccordionCount17 = $('#signatoryAccordion17 .signaccordion-item17').length + 1;
+<script>
+    $(document).ready(function () {
+        // Add More Button Click Event
+        $('#addSignatory17').on('click', function () {
+            var SignatoryAccordionCount17 = $('#signatoryAccordion17 .signaccordion-item17').length + 1;
 
-                var newSignAccordion17 = `
+            var newSignAccordion17 = `
                 <div class="accordion-item signaccordion-item17" id="signatoryEntry17${SignatoryAccordionCount17}">
                 <h2 class="accordion-header" id="signatoryHeading17${SignatoryAccordionCount17}">
                     <button class="accordion-button" type="button" style="background-color: #34005A; color:white"  data-toggle="collapse" data-target="#signatoryCollapse17${SignatoryAccordionCount17}" aria-expanded="false" aria-controls="signatoryCollapse17${SignatoryAccordionCount17}">
@@ -9435,35 +9611,35 @@ function sendPDFViaEmail() {
             </div>
             `;
 
-                $('#signatoryAccordion17').append(newSignAccordion17);
-            });
-
-            // Remove Accordion Button Click Event
-            $(document).on('click', '.removeSignAccordion17', function() {
-                $(this).closest('.signaccordion-item17').remove();
-            });
+            $('#signatoryAccordion17').append(newSignAccordion17);
         });
-    </script>
+
+        // Remove Accordion Button Click Event
+        $(document).on('click', '.removeSignAccordion17', function () {
+            $(this).closest('.signaccordion-item17').remove();
+        });
+    });
+</script>
 
 
-    <!-- Script for show data in table and update of fire fighting Services -->
-    <script>
-        $(document).ready(function() {
-            // Function to update summary table for signatory entries
-            function updateSignatorySummaryTable17() {
-                // Clear existing rows
-                $('#signatorySummaryTable17 tbody').empty();
+<!-- Script for show data in table and update of fire fighting Services -->
+<script>
+    $(document).ready(function () {
+        // Function to update summary table for signatory entries
+        function updateSignatorySummaryTable17() {
+            // Clear existing rows
+            $('#signatorySummaryTable17 tbody').empty();
 
-                // Iterate through each signatory accordion item and update the summary table
-                $('.signaccordion-item17').each(function(index) {
-                    var equi_name = $(this).find('[name="equi_name"]').val();
-                    var arc_no = $(this).find('[name="arc_no"]').val();
-                    var mod = $(this).find('[name="mod"]').val();
+            // Iterate through each signatory accordion item and update the summary table
+            $('.signaccordion-item17').each(function (index) {
+                var equi_name = $(this).find('[name="equi_name"]').val();
+                var arc_no = $(this).find('[name="arc_no"]').val();
+                var mod = $(this).find('[name="mod"]').val();
 
-                    // Check if any relevant data is entered
-                    if (equi_name || arc_no || mod) {
-                        // Add a new row to the summary table
-                        $('#signatorySummaryTable17 tbody').append(`
+                // Check if any relevant data is entered
+                if (equi_name || arc_no || mod) {
+                    // Add a new row to the summary table
+                    $('#signatorySummaryTable17 tbody').append(`
                     <tr>
                         <td>${index + 1}</td>
                         <td>${equi_name}</td>
@@ -9473,49 +9649,49 @@ function sendPDFViaEmail() {
                         <!-- Add more columns as needed -->
                     </tr>
                 `);
-                    }
-                });
-            }
+                }
+            });
+        }
 
-            // Add More Signatory Button Click Event
-            $('#addSignatory16').on('click', function() {
-                var signatoryEntryCount17 = $('#signatoryAccordion17 .signaccordion-item17').length + 1;
+        // Add More Signatory Button Click Event
+        $('#addSignatory16').on('click', function () {
+            var signatoryEntryCount17 = $('#signatoryAccordion17 .signaccordion-item17').length + 1;
 
-                var newSignatoryEntry17 = `
+            var newSignatoryEntry17 = `
             <!-- Your existing signatory accordion HTML goes here -->
             `;
-                console.log('Adding signatory entry:', signatoryEntryCount17);
-                $('#signatoryAccordion17').append(newSignatoryEntry17);
-            });
-
-            // Update Signatory Table Button Click Event
-            $('#updateSignatoryTable17').on('click', function() {
-                // Update the signatory summary table
-                updateSignatorySummaryTable17();
-            });
-
-            // View Signatory Button Click Event
-            $(document).on('click', '.view-signatory-button', function() {
-                var index = $(this).data('index');
-                var accordionItem = $('.signaccordion-item17').eq(index);
-
-                // Toggle the collapse state of the accordion item
-                accordionItem.find('.collapse').collapse('toggle');
-            });
-
-            // Remove Signatory Entry Button Click Event
-            $(document).on('click', '.removeSignatoryAccordion17', function() {
-                $(this).closest('.signaccordion-item17').remove();
-                // Update the signatory summary table
-                updateSignatorySummaryTable17();
-            });
-
-            // Prevent the default behavior of the Add More Signatory button
-            $('#addSignatory17').on('click', function(event) {
-                event.preventDefault();
-            });
+            console.log('Adding signatory entry:', signatoryEntryCount17);
+            $('#signatoryAccordion17').append(newSignatoryEntry17);
         });
-    </script>
+
+        // Update Signatory Table Button Click Event
+        $('#updateSignatoryTable17').on('click', function () {
+            // Update the signatory summary table
+            updateSignatorySummaryTable17();
+        });
+
+        // View Signatory Button Click Event
+        $(document).on('click', '.view-signatory-button', function () {
+            var index = $(this).data('index');
+            var accordionItem = $('.signaccordion-item17').eq(index);
+
+            // Toggle the collapse state of the accordion item
+            accordionItem.find('.collapse').collapse('toggle');
+        });
+
+        // Remove Signatory Entry Button Click Event
+        $(document).on('click', '.removeSignatoryAccordion17', function () {
+            $(this).closest('.signaccordion-item17').remove();
+            // Update the signatory summary table
+            updateSignatorySummaryTable17();
+        });
+
+        // Prevent the default behavior of the Add More Signatory button
+        $('#addSignatory17').on('click', function (event) {
+            event.preventDefault();
+        });
+    });
+</script>
 
 <script>
     $(document).ready(function () {
@@ -10511,11 +10687,11 @@ function sendPDFViaEmail() {
     });
 </script>
 
-    <!-- Script for add more secuirty equipment Services -->
-    <script>
-    $(document).ready(function() {
+<!-- Script for add more secuirty equipment Services -->
+<script>
+    $(document).ready(function () {
         // Add More Button Click Event
-        $('#addSignatory8').on('click', function() {
+        $('#addSignatory8').on('click', function () {
             var SignatoryAccordionCount8 = $('#signatoryAccordion8 .signaccordion-item8').length + 1;
 
             var newSignAccordion8 = `
@@ -10734,23 +10910,23 @@ function sendPDFViaEmail() {
         });
 
         // Remove Accordion Button Click Event
-        $(document).on('click', '.removeSignAccordion8', function() {
+        $(document).on('click', '.removeSignAccordion8', function () {
             $(this).closest('.signaccordion-item8').remove();
         });
     });
-    </script>
+</script>
 
 
-    <!-- Script for show data in table and update of secuirty equipment Services -->
-    <Script>
-    $(document).ready(function() {
+<!-- Script for show data in table and update of secuirty equipment Services -->
+<Script>
+    $(document).ready(function () {
         // Function to update summary table for signatory entries
         function updateSignatorySummaryTable8() {
             // Clear existing rows
             $('#signatorySummaryTable8 tbody').empty();
 
             // Iterate through each signatory accordion item and update the summary table
-            $('.signaccordion-item8').each(function(index) {
+            $('.signaccordion-item8').each(function (index) {
                 var category_of_sec_eq = $(this).find('[name="categoryOfSecEqu"]').val();
                 var owner_ship_s = $(this).find('[name="onwerShipStatus"]').val();
                 var rental_for = $(this).find('[name="rentalFor"]').val();
@@ -10773,7 +10949,7 @@ function sendPDFViaEmail() {
         }
 
         // Add More Signatory Button Click Event
-        $('#addSignatory8').on('click', function() {
+        $('#addSignatory8').on('click', function () {
             var signatoryEntryCount8 = $('#signatoryAccordion8 .signaccordion-item8').length + 1;
 
             var newSignatoryEntry8 = `
@@ -10784,13 +10960,13 @@ function sendPDFViaEmail() {
         });
 
         // Update Signatory Table Button Click Event
-        $('#updateSignatoryTable8').on('click', function() {
+        $('#updateSignatoryTable8').on('click', function () {
             // Update the signatory summary table
             updateSignatorySummaryTable8();
         });
 
         // View Signatory Button Click Event
-        $(document).on('click', '.view-signatory-button', function() {
+        $(document).on('click', '.view-signatory-button', function () {
             var index = $(this).data('index');
             var accordionItem = $('.signaccordion-item8').eq(index);
 
@@ -10799,24 +10975,24 @@ function sendPDFViaEmail() {
         });
 
         // Remove Signatory Entry Button Click Event
-        $(document).on('click', '.removeSignatoryAccordion8', function() {
+        $(document).on('click', '.removeSignatoryAccordion8', function () {
             $(this).closest('.signaccordion-item8').remove();
             // Update the signatory summary table
             updateSignatorySummaryTable8();
         });
 
         // Prevent the default behavior of the Add More Signatory button
-        $('#addSignatory8').on('click', function(event) {
+        $('#addSignatory8').on('click', function (event) {
             event.preventDefault();
         });
     });
-    </Script>
+</Script>
 
-    <!-- Script for add more Electronic and web Services (CCTV) -->
-    <script>
-    $(document).ready(function() {
+<!-- Script for add more Electronic and web Services (CCTV) -->
+<script>
+    $(document).ready(function () {
         // Add More Button Click Event
-        $('#addSignatory9').on('click', function() {
+        $('#addSignatory9').on('click', function () {
             var SignatoryAccordionCount9 = $('#signatoryAccordion9 .signaccordion-item9').length + 1;
 
             var newSignAccordion9 = `
@@ -11159,23 +11335,23 @@ function sendPDFViaEmail() {
         });
 
         // Remove Accordion Button Click Event
-        $(document).on('click', '.removeSignAccordion9', function() {
+        $(document).on('click', '.removeSignAccordion9', function () {
             $(this).closest('.signaccordion-item9').remove();
         });
     });
-    </script>
+</script>
 
 
-    <!-- Script for show data in table and update of electronic and web Services (CCTV) -->
-    <Script>
-    $(document).ready(function() {
+<!-- Script for show data in table and update of electronic and web Services (CCTV) -->
+<Script>
+    $(document).ready(function () {
         // Function to update summary table for signatory entries
         function updateSignatorySummaryTable9() {
             // Clear existing rows
             $('#signatorySummaryTable9 tbody').empty();
 
             // Iterate through each signatory accordion item and update the summary table
-            $('.signaccordion-item9').each(function(index) {
+            $('.signaccordion-item9').each(function (index) {
                 var category_of_cctv = $(this).find('[name="categoryOfCCTV"]').val();
                 var cctv_Brand = $(this).find('[name="cctvBrand"]').val();
                 var pixels = $(this).find('[name="pixels"]').val();
@@ -11198,7 +11374,7 @@ function sendPDFViaEmail() {
         }
 
         // Add More Signatory Button Click Event
-        $('#addSignatory9').on('click', function() {
+        $('#addSignatory9').on('click', function () {
             var signatoryEntryCount9 = $('#signatoryAccordion9 .signaccordion-item9').length + 1;
 
             var newSignatoryEntry9 = `
@@ -11209,13 +11385,13 @@ function sendPDFViaEmail() {
         });
 
         // Update Signatory Table Button Click Event
-        $('#updateSignatoryTable9').on('click', function() {
+        $('#updateSignatoryTable9').on('click', function () {
             // Update the signatory summary table
             updateSignatorySummaryTable9();
         });
 
         // View Signatory Button Click Event
-        $(document).on('click', '.view-signatory-button', function() {
+        $(document).on('click', '.view-signatory-button', function () {
             var index = $(this).data('index');
             var accordionItem = $('.signaccordion-item9').eq(index);
 
@@ -11224,24 +11400,24 @@ function sendPDFViaEmail() {
         });
 
         // Remove Signatory Entry Button Click Event
-        $(document).on('click', '.removeSignatoryAccordion9', function() {
+        $(document).on('click', '.removeSignatoryAccordion9', function () {
             $(this).closest('.signaccordion-item9').remove();
             // Update the signatory summary table
             updateSignatorySummaryTable9();
         });
 
         // Prevent the default behavior of the Add More Signatory button
-        $('#addSignatory9').on('click', function(event) {
+        $('#addSignatory9').on('click', function (event) {
             event.preventDefault();
         });
     });
-    </Script>
+</Script>
 
-    <!-- Script for add more Electronic and web Services (Time Attendance Machine) -->
-    <script>
-    $(document).ready(function() {
+<!-- Script for add more Electronic and web Services (Time Attendance Machine) -->
+<script>
+    $(document).ready(function () {
         // Add More Button Click Event
-        $('#addSignatory9_1').on('click', function() {
+        $('#addSignatory9_1').on('click', function () {
             var SignatoryAccordionCount9_1 = $('#signatoryAccordion9_1 .signaccordion-item9_1').length +
                 1;
 
@@ -11298,22 +11474,22 @@ function sendPDFViaEmail() {
         });
 
         // Remove Accordion Button Click Event
-        $(document).on('click', '.removeSignAccordion9_1', function() {
+        $(document).on('click', '.removeSignAccordion9_1', function () {
             $(this).closest('.signaccordion-item9_1').remove();
         });
     });
-    </script>
+</script>
 
-    <!-- Script for show data in table and update of electronic and web Services (Time Attendance Machine) -->
-    <script>
-    $(document).ready(function() {
+<!-- Script for show data in table and update of electronic and web Services (Time Attendance Machine) -->
+<script>
+    $(document).ready(function () {
         // Function to update summary table for signatory entries
         function updateSignatorySummaryTable9_1() {
             // Clear existing rows
             $('#signatorySummaryTable9_1 tbody').empty();
 
             // Iterate through each signatory accordion item and update the summary table
-            $('.signaccordion-item9_1').each(function(index) {
+            $('.signaccordion-item9_1').each(function (index) {
                 var category_of_AttM = $(this).find('[name="categoryOfTimeAtteM"]').val();
                 var rete_per_unit = $(this).find('[name="retePerUnit"]').val();
 
@@ -11333,7 +11509,7 @@ function sendPDFViaEmail() {
         }
 
         // Add More Signatory Button Click Event
-        $('#addSignatory9_1').on('click', function() {
+        $('#addSignatory9_1').on('click', function () {
             var signatoryEntryCount9_1 = $('#signatoryAccordion9_1 .signaccordion-item9_1').length + 1;
 
             var newSignatoryEntry9_1 = `
@@ -11344,13 +11520,13 @@ function sendPDFViaEmail() {
         });
 
         // Update Signatory Table Button Click Event
-        $('#updateSignatoryTable9_1').on('click', function() {
+        $('#updateSignatoryTable9_1').on('click', function () {
             // Update the signatory summary table
             updateSignatorySummaryTable9_1();
         });
 
         // View Signatory Button Click Event
-        $(document).on('click', '.view-signatory-button9_1', function() {
+        $(document).on('click', '.view-signatory-button9_1', function () {
             var index = $(this).data('index');
             var accordionItem = $('.signaccordion-item9_1').eq(index);
 
@@ -11359,25 +11535,25 @@ function sendPDFViaEmail() {
         });
 
         // Remove Signatory Entry Button Click Event
-        $(document).on('click', '.removeSignatoryAccordion9_1', function() {
+        $(document).on('click', '.removeSignatoryAccordion9_1', function () {
             $(this).closest('.signaccordion-item9_1').remove();
             // Update the signatory summary table
             updateSignatorySummaryTable9_1();
         });
 
         // Prevent the default behavior of the Add More Signatory button
-        $('#addSignatory9_1').on('click', function(event) {
+        $('#addSignatory9_1').on('click', function (event) {
             event.preventDefault();
         });
     });
-    </script>
+</script>
 
 
-    <!-- Script for add more Electronic and web Services (Web Surveillance Solution) -->
-    <script>
-    $(document).ready(function() {
+<!-- Script for add more Electronic and web Services (Web Surveillance Solution) -->
+<script>
+    $(document).ready(function () {
         // Add More Button Click Event
-        $('#addSignatory9_2').on('click', function() {
+        $('#addSignatory9_2').on('click', function () {
             var SignatoryAccordionCount9_2 = $('#signatoryAccordion9_2 .signaccordion-item9_2').length +
                 1;
 
@@ -11426,22 +11602,22 @@ function sendPDFViaEmail() {
         });
 
         // Remove Accordion Button Click Event
-        $(document).on('click', '.removeSignAccordion9_2', function() {
+        $(document).on('click', '.removeSignAccordion9_2', function () {
             $(this).closest('.signaccordion-item9_2').remove();
         });
     });
-    </script>
+</script>
 
-    <!-- Script for show data in table and update of electronic and web Services (Web Surveillance Solution) -->
-    <script>
-    $(document).ready(function() {
+<!-- Script for show data in table and update of electronic and web Services (Web Surveillance Solution) -->
+<script>
+    $(document).ready(function () {
         // Function to update summary table for signatory entries
         function updateSignatorySummaryTable9_2() {
             // Clear existing rows
             $('#signatorySummaryTable9_2 tbody').empty();
 
             // Iterate through each signatory accordion item and update the summary table
-            $('.signaccordion-item9_2').each(function(index) {
+            $('.signaccordion-item9_2').each(function (index) {
                 var category_of_webSol = $(this).find('[name="categoryOfWebSol"]').val();
                 var scope_of_work = $(this).find('[name="scopOfWork"]').val();
                 var date_of_submittion = $(this).find('[name="dateOfSubmittion"]').val();
@@ -11463,7 +11639,7 @@ function sendPDFViaEmail() {
         }
 
         // Add More Signatory Button Click Event
-        $('#addSignatory9_2').on('click', function() {
+        $('#addSignatory9_2').on('click', function () {
             var signatoryEntryCount9_2 = $('#signatoryAccordion9_2 .signaccordion-item9_2').length + 1;
 
             var newSignatoryEntry9_2 = `
@@ -11474,13 +11650,13 @@ function sendPDFViaEmail() {
         });
 
         // Update Signatory Table Button Click Event
-        $('#updateSignatoryTable9_2').on('click', function() {
+        $('#updateSignatoryTable9_2').on('click', function () {
             // Update the signatory summary table
             updateSignatorySummaryTable9_2();
         });
 
         // View Signatory Button Click Event
-        $(document).on('click', '.view-signatory-button9_2', function() {
+        $(document).on('click', '.view-signatory-button9_2', function () {
             var index = $(this).data('index');
             var accordionItem = $('.signaccordion-item9_2').eq(index);
 
@@ -11489,23 +11665,23 @@ function sendPDFViaEmail() {
         });
 
         // Remove Signatory Entry Button Click Event
-        $(document).on('click', '.removeSignatoryAccordion9_2', function() {
+        $(document).on('click', '.removeSignatoryAccordion9_2', function () {
             $(this).closest('.signaccordion-item9_2').remove();
             // Update the signatory summary table
             updateSignatorySummaryTable9_2();
         });
 
         // Prevent the default behavior of the Add More Signatory button
-        $('#addSignatory9_2').on('click', function(event) {
+        $('#addSignatory9_2').on('click', function (event) {
             event.preventDefault();
         });
     });
-    </script>
+</script>
 
-    <!-- Script for show Required on daily basis and no of days staff required in men gaurding services -->
+<!-- Script for show Required on daily basis and no of days staff required in men gaurding services -->
 
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
         var monthlySelect = document.getElementById('monthlyRequirement');
         var dailySection = document.getElementById('dailyRequirementSection');
         var dailySelect = document.getElementById('dailyRequirement'); // Assuming this is your daily dropdown
@@ -11536,7 +11712,7 @@ function sendPDFViaEmail() {
 
         toggleDailyRequirement(); // Initial check
 
-        monthlySelect.addEventListener('change', function() {
+        monthlySelect.addEventListener('change', function () {
             toggleDailyRequirement();
             if (monthlySelect.value === 'Yes') {
                 noOfDayStaffRequired.style.display = 'none';
@@ -11544,12 +11720,12 @@ function sendPDFViaEmail() {
         });
         dailySelect.addEventListener('change', toggleNoOfDayStaffRequiredFor);
     });
-    </script>
+</script>
 
-    <!-- Script for show no of days Dogs required and
+<!-- Script for show no of days Dogs required and
     Required with Handler in Canine services -->
-    <Script>
-    document.addEventListener('DOMContentLoaded', function() {
+<Script>
+    document.addEventListener('DOMContentLoaded', function () {
         var requiredFor = document.getElementById('req_leadcategory');
         var noOfDayDogsRequired = document.getElementById('noOfDaysDogs');
 
@@ -11597,11 +11773,11 @@ function sendPDFViaEmail() {
         requiredFor.addEventListener('change', toggleNoOfDayDogsRequiredFor);
         reqWithHandler.addEventListener('change', toggleHandlerDetails);
     });
-    </Script>
+</Script>
 
-    <!-- Script for show (Rate of fuel per kilometer) field of privet jet -->
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
+<!-- Script for show (Rate of fuel per kilometer) field of privet jet -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
 
         var selectFuel = document.getElementById('leadcategoryfuel');
         var rateOfFuelField = document.getElementById('rateOfFuel');
@@ -11617,14 +11793,14 @@ function sendPDFViaEmail() {
 
         selectFuel.addEventListener('change', toggleRateOfFuelTextField);
     })
-    </script>
+</script>
 
-    <!-- Script for Add more with complains-Hidden WHT (in commercial section) -->
+<!-- Script for Add more with complains-Hidden WHT (in commercial section) -->
 
-    <script>
-    $(document).ready(function() {
+<script>
+    $(document).ready(function () {
         // Add More Button Click Event
-        $('#addSignatory11').on('click', function() {
+        $('#addSignatory11').on('click', function () {
             var SignatoryAccordionCount11 = $('#signatoryAccordion11 .signaccordion-item11').length + 1;
 
             var newSignAccordion11 = `
@@ -11784,23 +11960,23 @@ function sendPDFViaEmail() {
         });
 
         // Remove Accordion Button Click Event
-        $(document).on('click', '.removeSignAccordion11', function() {
+        $(document).on('click', '.removeSignAccordion11', function () {
             $(this).closest('.signaccordion-item11').remove();
         });
     });
-    </script>
+</script>
 
-    <!-- Script for show data in table of complains-Hidden WHT (in commercial section) -->
+<!-- Script for show data in table of complains-Hidden WHT (in commercial section) -->
 
-    <script>
-    $(document).ready(function() {
+<script>
+    $(document).ready(function () {
         // Function to update summary table for entries
         function updateSignatorySummaryTable11() {
             // Clear existing rows
             $('#signatorySummaryTable11 tbody').empty();
 
             // Iterate through each signatory accordion item and update the summary table
-            $('.signaccordion-item11').each(function(index) {
+            $('.signaccordion-item11').each(function (index) {
                 var category_of_G = $(this).find('[name="categoryOfG"]').val();
                 var salary = parseFloat($(this).find('[name="salry"]').val());
                 // var Reli_Allow = parseFloat($(this).find('[name="relieverAllowance"]').val());
@@ -11841,7 +12017,7 @@ function sendPDFViaEmail() {
 
                 // For Monthly Rate Per Unit
                 var monthly_Rate_Per_Unit = parseFloat((salary + reli_allowance + eobi + social_Sec +
-                        group_L_Ins + uniform_Cost + weapon_Amm_Cost + traninig_Cost + AdmiCost)
+                    group_L_Ins + uniform_Cost + weapon_Amm_Cost + traninig_Cost + AdmiCost)
                     .toFixed(2));
                 $(this).find('.monthly_Rate_Per_UnitFieldc').val(monthly_Rate_Per_Unit);
                 // $('#monthly_Rate_Per_UnitField').val(monthly_Rate_Per_Unit);
@@ -11905,7 +12081,7 @@ function sendPDFViaEmail() {
         }
 
         // Add More Signatory Button Click Event
-        $('#addSignatory11').on('click', function() {
+        $('#addSignatory11').on('click', function () {
             var signatoryEntryCount11 = $('#signatoryAccordion11 .signaccordion-item11')
                 .length + 1;
 
@@ -11918,13 +12094,13 @@ function sendPDFViaEmail() {
         });
 
         // Update Signatory Table Button Click Event
-        $('#updateSignatoryTable11').on('click', function() {
+        $('#updateSignatoryTable11').on('click', function () {
             // Update the signatory summary table
             updateSignatorySummaryTable11();
         });
 
         // View Signatory Button Click Event
-        $(document).on('click', '.view-signatory-button11', function() {
+        $(document).on('click', '.view-signatory-button11', function () {
             var index = $(this).data('index');
             var accordionItem11 = $('.signaccordion-item11').eq(index);
 
@@ -11933,24 +12109,24 @@ function sendPDFViaEmail() {
         });
 
         // Remove Signatory Entry Button Click Event
-        $(document).on('click', '.removeSignatoryAccordion11', function() {
+        $(document).on('click', '.removeSignatoryAccordion11', function () {
             $(this).closest('.signaccordion-item11').remove();
             // Update the signatory summary table
             updateSignatorySummaryTable11();
         });
 
         // Prevent the default behavior of the Add More Signatory button
-        $('#addSignatory11').on('click', function(event) {
+        $('#addSignatory11').on('click', function (event) {
             event.preventDefault();
         });
     });
-    </script>
+</script>
 
-    <!-- Script for Add more with complains-Shown WHT (in commercial section) -->
-    <script>
-    $(document).ready(function() {
+<!-- Script for Add more with complains-Shown WHT (in commercial section) -->
+<script>
+    $(document).ready(function () {
         // Add More Button Click Event
-        $('#addSignatory12').on('click', function() {
+        $('#addSignatory12').on('click', function () {
             var SignatoryAccordionCount12 = $('#signatoryAccordion12 .signaccordion-item12').length + 1;
 
             var newSignAccordion12 = `
@@ -12094,22 +12270,22 @@ function sendPDFViaEmail() {
         });
 
         // Remove Accordion Button Click Event
-        $(document).on('click', '.removeSignAccordion12', function() {
+        $(document).on('click', '.removeSignAccordion12', function () {
             $(this).closest('.signaccordion-item12').remove();
         });
     });
-    </script>
+</script>
 
-    <!-- Script for show data in table of complains-Shown WHT (in commercial section) -->
-    <script>
-    $(document).ready(function() {
+<!-- Script for show data in table of complains-Shown WHT (in commercial section) -->
+<script>
+    $(document).ready(function () {
         // Function to update summary table for entries
         function updateSignatorySummaryTable12() {
             // Clear existing rows
             $('#signatorySummaryTable12 tbody').empty();
 
             // Iterate through each signatory accordion item and update the summary table
-            $('.signaccordion-item12').each(function(index) {
+            $('.signaccordion-item12').each(function (index) {
                 var category_of_G = $(this).find('[name="categoryOfG"]').val();
                 var salary = parseFloat($(this).find('[name="salry"]').val());
                 var reli_allowance = parseFloat($(this).find('[name="hiderelieverAllowance"]').val());
@@ -12143,7 +12319,7 @@ function sendPDFViaEmail() {
 
                 // For Monthly Rate Per Unit
                 var monthly_Rate_Per_Unit = parseFloat((salary + reli_allowance + eobi + social_Sec +
-                        group_L_Ins + uniform_Cost + weapon_Amm_Cost + traninig_Cost + admin_Cost)
+                    group_L_Ins + uniform_Cost + weapon_Amm_Cost + traninig_Cost + admin_Cost)
                     .toFixed(2));
                 $(this).find('.monthly_Rate_Per_UnitFieldc1').val(monthly_Rate_Per_Unit);
                 // For Total Admin Cost
@@ -12197,7 +12373,7 @@ function sendPDFViaEmail() {
         }
 
         // Add More Signatory Button Click Event
-        $('#addSignatory12').on('click', function() {
+        $('#addSignatory12').on('click', function () {
             var signatoryEntryCount12 = $('#signatoryAccordion12 .signaccordion-item12')
                 .length + 1;
 
@@ -12210,13 +12386,13 @@ function sendPDFViaEmail() {
         });
 
         // Update Signatory Table Button Click Event
-        $('#updateSignatoryTable12').on('click', function() {
+        $('#updateSignatoryTable12').on('click', function () {
             // Update the signatory summary table
             updateSignatorySummaryTable12();
         });
 
         // View Signatory Button Click Event
-        $(document).on('click', '.view-signatory-button12', function() {
+        $(document).on('click', '.view-signatory-button12', function () {
             var index = $(this).data('index');
             var accordionItem12 = $('.signaccordion-item12').eq(index);
 
@@ -12225,24 +12401,24 @@ function sendPDFViaEmail() {
         });
 
         // Remove Signatory Entry Button Click Event
-        $(document).on('click', '.removeSignatoryAccordion12', function() {
+        $(document).on('click', '.removeSignatoryAccordion12', function () {
             $(this).closest('.signaccordion-item12').remove();
             // Update the signatory summary table
             updateSignatorySummaryTable12();
         });
 
         // Prevent the default behavior of the Add More Signatory button
-        $('#addSignatory12').on('click', function(event) {
+        $('#addSignatory12').on('click', function (event) {
             event.preventDefault();
         });
     });
-    </script>
+</script>
 
-    <!--  Script for Add more with Lump sum-Shown WHT (in commercial section)  -->
-    <script>
-    $(document).ready(function() {
+<!--  Script for Add more with Lump sum-Shown WHT (in commercial section)  -->
+<script>
+    $(document).ready(function () {
         // Add More Button Click Event
-        $('#addSignatory13').on('click', function() {
+        $('#addSignatory13').on('click', function () {
             var SignatoryAccordionCount13 = $('#signatoryAccordion13 .signaccordion-item13').length + 1;
 
             var newSignAccordion13 = `
@@ -12363,22 +12539,22 @@ function sendPDFViaEmail() {
         });
 
         // Remove Accordion Button Click Event
-        $(document).on('click', '.removeSignAccordion13', function() {
+        $(document).on('click', '.removeSignAccordion13', function () {
             $(this).closest('.signaccordion-item13').remove();
         });
     });
-    </script>
+</script>
 
-    <!-- Script for show data in table of Lump sum-Shown WHT (in commercial section) -->
-    <script>
-    $(document).ready(function() {
+<!-- Script for show data in table of Lump sum-Shown WHT (in commercial section) -->
+<script>
+    $(document).ready(function () {
         // Function to update summary table for entries
         function updateSignatorySummaryTable13() {
             // Clear existing rows
             $('#signatorySummaryTable13 tbody').empty();
 
             // Iterate through each signatory accordion item and update the summary table
-            $('.signaccordion-item13').each(function(index) {
+            $('.signaccordion-item13').each(function (index) {
                 var category_of_G = $(this).find('[name="categoryOfG"]').val();
                 var salary = parseFloat($(this).find('[name="salry"]').val());
                 // var Reli_Allow = parseFloat($(this).find('[name="relieverAllowance"]').val());
@@ -12466,7 +12642,7 @@ function sendPDFViaEmail() {
         }
 
         // Add More Signatory Button Click Event
-        $('#addSignatory13').on('click', function() {
+        $('#addSignatory13').on('click', function () {
             var signatoryEntryCount13 = $('#signatoryAccordion13 .signaccordion-item13')
                 .length + 1;
 
@@ -12479,13 +12655,13 @@ function sendPDFViaEmail() {
         });
 
         // Update Signatory Table Button Click Event
-        $('#updateSignatoryTable13').on('click', function() {
+        $('#updateSignatoryTable13').on('click', function () {
             // Update the signatory summary table
             updateSignatorySummaryTable13();
         });
 
         // View Signatory Button Click Event
-        $(document).on('click', '.view-signatory-button13', function() {
+        $(document).on('click', '.view-signatory-button13', function () {
             var index = $(this).data('index');
             var accordionItem13 = $('.signaccordion-item13').eq(index);
 
@@ -12494,24 +12670,24 @@ function sendPDFViaEmail() {
         });
 
         // Remove Signatory Entry Button Click Event
-        $(document).on('click', '.removeSignatoryAccordion13', function() {
+        $(document).on('click', '.removeSignatoryAccordion13', function () {
             $(this).closest('.signaccordion-item13').remove();
             // Update the signatory summary table
             updateSignatorySummaryTable13();
         });
 
         // Prevent the default behavior of the Add More Signatory button
-        $('#addSignatory13').on('click', function(event) {
+        $('#addSignatory13').on('click', function (event) {
             event.preventDefault();
         });
     });
-    </script>
+</script>
 
-    <!--  Script for Add more with Lump sum-Hidden WHT (in commercial section)  -->
-    <script>
-    $(document).ready(function() {
+<!--  Script for Add more with Lump sum-Hidden WHT (in commercial section)  -->
+<script>
+    $(document).ready(function () {
         // Add More Button Click Event
-        $('#addSignatory14').on('click', function() {
+        $('#addSignatory14').on('click', function () {
             var SignatoryAccordionCount14 = $('#signatoryAccordion14 .signaccordion-item14').length + 1;
 
             var newSignAccordion14 = `
@@ -12645,22 +12821,22 @@ function sendPDFViaEmail() {
         });
 
         // Remove Accordion Button Click Event
-        $(document).on('click', '.removeSignAccordion14', function() {
+        $(document).on('click', '.removeSignAccordion14', function () {
             $(this).closest('.signaccordion-item14').remove();
         });
     });
-    </script>
+</script>
 
-    <!-- Script for show data in table of Lump sum-Hidden WHT (in commercial section) -->
-    <script>
-    $(document).ready(function() {
+<!-- Script for show data in table of Lump sum-Hidden WHT (in commercial section) -->
+<script>
+    $(document).ready(function () {
         // Function to update summary table for entries
         function updateSignatorySummaryTable14() {
             // Clear existing rows
             $('#signatorySummaryTable14 tbody').empty();
 
             // Iterate through each signatory accordion item and update the summary table
-            $('.signaccordion-item14').each(function(index) {
+            $('.signaccordion-item14').each(function (index) {
                 var category_of_G = $(this).find('[name="categoryOfG"]').val();
                 var salary = parseFloat($(this).find('[name="salry"]').val());
                 // var Reli_Allow = parseFloat($(this).find('[name="relieverAllowance"]').val());
@@ -12703,7 +12879,7 @@ function sendPDFViaEmail() {
 
                 // For Monthly Rate Per Unit
                 var monthly_Rate_Per_Unit = parseFloat((salary + reli_allowance + eobi + social_Sec +
-                        group_L_Ins + uniform_Cost + weapon_Amm_Cost + traninig_Cost + AdmiCost)
+                    group_L_Ins + uniform_Cost + weapon_Amm_Cost + traninig_Cost + AdmiCost)
                     .toFixed(2));
                 $(this).find('.monthly_Rate_Per_UnitFieldc3').val(monthly_Rate_Per_Unit);
                 // $('#monthly_Rate_Per_UnitField').val(monthly_Rate_Per_Unit);
@@ -12763,7 +12939,7 @@ function sendPDFViaEmail() {
         }
 
         // Add More Signatory Button Click Event
-        $('#addSignatory14').on('click', function() {
+        $('#addSignatory14').on('click', function () {
             var signatoryEntryCount14 = $('#signatoryAccordion14 .signaccordion-item14')
                 .length + 1;
 
@@ -12776,13 +12952,13 @@ function sendPDFViaEmail() {
         });
 
         // Update Signatory Table Button Click Event
-        $('#updateSignatoryTable14').on('click', function() {
+        $('#updateSignatoryTable14').on('click', function () {
             // Update the signatory summary table
             updateSignatorySummaryTable14();
         });
 
         // View Signatory Button Click Event
-        $(document).on('click', '.view-signatory-button14', function() {
+        $(document).on('click', '.view-signatory-button14', function () {
             var index = $(this).data('index');
             var accordionItem14 = $('.signaccordion-item14').eq(index);
 
@@ -12791,32 +12967,32 @@ function sendPDFViaEmail() {
         });
 
         // Remove Signatory Entry Button Click Event
-        $(document).on('click', '.removeSignatoryAccordion14', function() {
+        $(document).on('click', '.removeSignatoryAccordion14', function () {
             $(this).closest('.signaccordion-item14').remove();
             // Update the signatory summary table
             updateSignatorySummaryTable14();
         });
 
         // Prevent the default behavior of the Add More Signatory button
-        $('#addSignatory14').on('click', function(event) {
+        $('#addSignatory14').on('click', function (event) {
             event.preventDefault();
         });
     });
-    </script>
+</script>
 
-    <!-- Script for Add more with Reverse working (in commercial section) -->
-
-
-
-    <!-- Script for show data in table of Reverse working (in commercial section) -->
+<!-- Script for Add more with Reverse working (in commercial section) -->
 
 
-    <!-- Script for Excel sheet upload or update in SOP of tender -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
-    <script>
-    document.getElementById('excelFile').addEventListener('change', function(event) {
+
+<!-- Script for show data in table of Reverse working (in commercial section) -->
+
+
+<!-- Script for Excel sheet upload or update in SOP of tender -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+<script>
+    document.getElementById('excelFile').addEventListener('change', function (event) {
         var reader = new FileReader();
-        reader.onload = function(event) {
+        reader.onload = function (event) {
             var data = new Uint8Array(event.target.result);
             var workbook = XLSX.read(data, {
                 type: 'array'
@@ -12842,7 +13018,7 @@ function sendPDFViaEmail() {
         var cells = table.getElementsByTagName('td');
         for (let i = 0; i < cells.length; i++) {
             cells[i].setAttribute('contenteditable', 'true');
-            cells[i].addEventListener('blur', function(event) {
+            cells[i].addEventListener('blur', function (event) {
                 // This is where you'd handle cell updates
                 // For now, it just logs the new value
                 console.log('Cell updated to:', event.target.innerText);
@@ -12850,12 +13026,12 @@ function sendPDFViaEmail() {
             });
         }
     }
-    </script>
+</script>
 
 
 
-    <!-- Script for automatically total admin cost text field updated -->
-    <!-- <script>
+<!-- Script for automatically total admin cost text field updated -->
+<!-- <script>
     $(document).on('input', '#hiddenAdminCostField', function() {
         var hidden_Admin_Cost = parseFloat($(this).val()) || 0;
 
@@ -12874,6 +13050,6 @@ function sendPDFViaEmail() {
 
 
 
-    </body>
+</body>
 
-    </html>
+</html>

@@ -53,11 +53,10 @@ class EmployeeLeaveController extends Controller
 
             $user = auth()->user();
             $hrm = Hrm::where('email', $user->email)->first();
-
             if (!$hrm) {
                 $role = strtolower($user->role ?? '');
 
-                if (in_array($role, ['admin', 'superadmin'])) {
+                if (in_array($role, ['admin', 'super admin'])) {
                     return response()->json([
                         'message' => ucfirst($role) . ' You Are Not Allowed To Send Leave Request'
                     ], 403);
