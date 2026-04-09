@@ -235,7 +235,12 @@ class Hrm extends Model
         'appraisal',
         'appraisal_attach',
         'appraisal_notes',
-        'sub_guard_id'
+        'sub_guard_id',
+        'last_whatsapp_interaction_at'
+    ];
+    
+    protected $casts = [
+        'last_whatsapp_interaction_at' => 'datetime',
     ];
 
     public function customer()

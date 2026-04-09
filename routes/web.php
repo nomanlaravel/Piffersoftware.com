@@ -46,6 +46,35 @@ use Illuminate\Support\Facades\Route;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
+
+use App\Models\Hrm; // adjust if your model namespace differs
+use App\Services\WhatsApp\WhatsAppNotificationManager;
+Route::get('/test-whatsapp-normal', function () {
+    // 🔍 Find the LATEST HRM that has a timestamp (so we can test "Normal Message")
+    $hrm = Hrm::whereNotNull('last_whatsapp_interaction_at')
+        ->latest('last_whatsapp_interaction_at')
+        ->first();
+
+    if (!$hrm) {
+        return "No HRM found with a session. Please create one at /posthrm first.";
+    }
+
+    $manager = app(WhatsAppNotificationManager::class);
+
+    $result = $manager->send(
+        phone: $hrm->cell,
+        message: 'This is a NORMAL text message test.', // This should go as "text" not "template"
+        eventType: 'test',
+        user: $hrm
+    );
+
+    return response()->json([
+        'info' => 'Testing Normal Message for HRM #' . $hrm->id,
+        'result' => $result
+    ]);
+});
+
+
 Route::get('/', function () {
     return redirect()->route('login');
 });
