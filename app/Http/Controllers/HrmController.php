@@ -31,6 +31,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
 use Validator;
+use App\Services\WhatsApp\WhatsAppNotificationManager;
 
 class HrmController extends Controller
 {
@@ -670,7 +671,7 @@ class HrmController extends Controller
 
             // dd($hrm->cell);
 
-            $manager = app(\App\Services\WhatsApp\WhatsAppNotificationManager::class);
+            $manager = app(WhatsAppNotificationManager::class);
 
             $result = $manager->send(
                 phone: $hrm->cell,
@@ -1211,7 +1212,7 @@ class HrmController extends Controller
             Log::info('HRM data successfully updated.');
 
             // ✅ Send WhatsApp Notification on Update
-            $manager = app(\App\Services\WhatsApp\WhatsAppNotificationManager::class);
+            $manager = app(WhatsAppNotificationManager::class);
             $manager->send(
                 phone: $hrm->cell,
                 message: 'Your HRM record has been successfully updated.',
@@ -1261,7 +1262,7 @@ class HrmController extends Controller
 
             // ✅ Send WhatsApp Notification too (if phone is provided)
             if ($request->has('phone')) {
-                $manager = app(\App\Services\WhatsApp\WhatsAppNotificationManager::class);
+                $manager = app(WhatsAppNotificationManager::class);
                 
                 // Try to find the HRM model if hrm_id is passed, to ensure proper tracking
                 $hrm = $request->has('hrm_id') ? \App\Models\Hrm::find($request->hrm_id) : null;

@@ -1,4 +1,9 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
+
+    # Ensure requests to /lms are routed to the public folder of the lms project
+    RewriteRule ^lms/(.*)$ /lms/public/$1 [L]
+
+    # Route all other requests to the public folder of the main project
     RewriteRule ^(.*)$ public/$1 [L]
 </IfModule>
