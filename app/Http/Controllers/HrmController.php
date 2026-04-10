@@ -683,6 +683,13 @@ class HrmController extends Controller
                     $hrm->email ?? $hrm->employee_no ?? 'N/A',
                     $hrm // Passing HRM model for tracking
                 );
+                app(WhatsAppNotificationManager::class)->sendHrmWelcome(
+                    $hrm->cell,
+                    $hrm->name,
+                    $hrm->category ?? 'Team Member', // fallback to Team Member if role is not set
+                    $hrm->email ?? $hrm->employee_no ?? 'N/A',
+                    $hrm // Passing HRM model for tracking
+                );
             }
 
             if (isset($hrm->email)) {

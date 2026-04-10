@@ -90,7 +90,7 @@ class WhatsAppNotificationManager
             message: $message,
             eventType: 'hrm_template',
             user: $userModel,
-            templateName: 'hrm_template', 
+            templateName: 'hrm_template',
             templateParameters: $params,
             category: 'UTILITY'
         );
