@@ -1,4 +1,5 @@
 @include('layouts.header') @yield('main')
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <!--End of the Navbar-->
 <div class="customer_form">
     <style>
@@ -2112,24 +2113,13 @@
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="pills-northregionalesreport-tab" data-bs-toggle="pill"
-                                data-bs-target="#pills-northregionalesreport" type="button" role="tab"
-                                aria-controls="pills-northregionalesreport" aria-selected="false">North Region Sales Report
-                            </button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="pills-centralregionalesreport-tab" data-bs-toggle="pill"
-                                data-bs-target="#pills-centralregionalesreport" type="button" role="tab"
-                                aria-controls="pills-centralregionalesreport" aria-selected="false">Central Region Sales Report
-                            </button>
-                        </li>
-                        <li class="nav-item" role="presentation">
                             <button class="nav-link" id="pills-southregionalesreport-tab" data-bs-toggle="pill"
                                 data-bs-target="#pills-southregionalesreport" type="button" role="tab"
-                                aria-controls="pills-southregionalesreport" aria-selected="false">South Region Sales Report
+                                aria-controls="pills-southregionalesreport" aria-selected="false">REGION WISE - DAILY SALES & FEEDBACK LOG
                             </button>
                         </li>
                     </ul>
+                    
                     <div class="tab-content" id="pills-tabContent">
 
                         <div class="tab-pane fade" id="pills-profile" role="tabpanel"
@@ -3549,90 +3539,288 @@
                     </div>
 
                 </div>
-  <div class="tab-content mt-3" id="pills-tabContent">
-
-    {{-- NORTH --}}
-    <div class="tab-pane fade show active"
-        id="pills-northregionalesreport"
-        role="tabpanel">
-
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Branch Name</th>
-                    <th>City</th>
-                    <th>Category</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($northBranches as $key => $branch)
-                <tr>
-                    <td>{{ $key + 1 }}</td>
-                    <td>{{ $branch->branch_office_name }}</td>
-                    <td>{{ $branch->branch_city }}</td>
-                    <td>{{ $branch->branch_category }}</td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-
-    </div>
-
-    {{-- CENTRAL --}}
-    <div class="tab-pane fade"
-        id="pills-centralregionalesreport"
-        role="tabpanel">
-
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Branch Name</th>
-                    <th>City</th>
-                    <th>Category</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($centralBranches as $key => $branch)
-                <tr>
-                    <td>{{ $key + 1 }}</td>
-                    <td>{{ $branch->branch_office_name }}</td>
-                    <td>{{ $branch->branch_city }}</td>
-                    <td>{{ $branch->branch_category }}</td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-
-    </div>
-
     {{-- SOUTH --}}
     <div class="tab-pane fade"
         id="pills-southregionalesreport"
         role="tabpanel">
+<div class="container mt-4">
 
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Branch Name</th>
-                    <th>City</th>
-                    <th>Category</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($southBranches as $key => $branch)
-                <tr>
-                    <td>{{ $key + 1 }}</td>
-                    <td>{{ $branch->branch_office_name }}</td>
-                    <td>{{ $branch->branch_city }}</td>
-                    <td>{{ $branch->branch_category }}</td>
-                </tr>
+    {{-- HEADER --}}
+    <div class="d-flex justify-content-between mb-3">
+        <h4>Region Reports</h4>
+
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
+            + Add Report
+        </button>
+    </div>
+
+    {{-- TABLE --}}
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Region</th>
+                <th>Branch Name</th>
+                <th>Branch ID</th>
+                <th>Employee Name</th>
+                <th>Designation</th>
+                <th>Monday</th>
+                <th>Tuesday</th>
+                <th>Wednesday</th>
+                <th>Thursday</th>
+                <th>Friday</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @forelse($reports as $key => $report)
+            <tr>
+                <td>{{ $key+1 }}</td>
+                <td>{{ $report->region->region_name ?? 'N/A' }}</td>
+                <td>{{ $report->admin->branch_office_name ?? 'N/A' }}</td>
+                <td>{{ $report->branch_id ?? 'N/A' }}</td>
+                <td>{{ $report->employee_name }}</td>
+                <td>{{ $report->designation }}</td>
+                <td>{{ $report->monday ?? '' }}</td>
+                <td>{{ $report->tuesday ?? '' }}</td>
+                <td>{{ $report->wednesday ?? '' }}</td>
+                <td>{{ $report->thursday ?? '' }}</td>
+                <td>{{ $report->friday ?? '' }}</td>
+               <td>
+    <button type="button"
+        class="btn btn-sm btn-info editBtn"
+        data-id="{{ $report->id }}">
+        Edit
+    </button>
+
+  <button type="button" class="btn btn-sm btn-danger deleteBtn" data-id="{{ $report->id }}">
+        Delete
+    </button>
+</td>
+            </tr>
+            @empty
+            <tr>
+                <td colspan="12" class="text-center">No reports found.</td>
+            </tr>
+            @endforelse
+        </tbody>
+    </table>
+
+    {{-- CREATE MODAL --}}
+    <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createModalLabel">Add Region Report</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+  <form id="createForm">
+    @csrf
+    <div class="modal-body">
+        <div class="mb-3">
+            <label class="form-label">Region</label>
+            <select name="region_id" id="create_region_id" class="form-control" required>
+                <option value="">-- Select Region --</option>
+                @foreach($regions as $region)
+                    <option value="{{ $region->id }}">{{ $region->region_name }}</option>
                 @endforeach
-            </tbody>
-        </table>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Branch (Admin)</label>
+            <select name="admin_id" id="create_admin_id" class="form-control" required>
+                <option value="">-- Select Branch --</option>
+                @foreach($admis as $admi)
+                    <option value="{{ $admi->id }}">
+                        {{ $admi->branch_office_name }} (ID: {{ $admi->branch_id }})
+                    </option>
+                @endforeach
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Employee Name</label>
+            <input type="text" name="employee_name" id="create_employee_name" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Designation</label>
+            <input type="text" name="designation" id="create_designation" class="form-control" required>
+        </div>
+        <div class="row">
+            <div class="col">
+                <input type="text" name="monday" id="create_monday" class="form-control" placeholder="Monday">
+            </div>
+            <div class="col">
+                <input type="text" name="tuesday" id="create_tuesday" class="form-control" placeholder="Tuesday">
+            </div>
+            <div class="col">
+                <input type="text" name="wednesday" id="create_wednesday" class="form-control" placeholder="Wednesday">
+            </div>
+            <div class="col">
+                <input type="text" name="thursday" id="create_thursday" class="form-control" placeholder="Thursday">
+            </div>
+            <div class="col">
+                <input type="text" name="friday" id="create_friday" class="form-control" placeholder="Friday">
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" id="createReportBtn" class="btn btn-primary">Save Report</button>
+    </div>
+</form>
+            </div>
+        </div>
+    </div>
 
+    {{-- EDIT MODAL --}}
+   <div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Region Report</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form id="editForm" method="POST">
+                @csrf
+                @method('PUT')
+
+                <div class="modal-body">
+
+                    <div class="mb-3">
+                        <label>Region</label>
+                        <select name="region_id" id="e_region_id" class="form-control">
+                            @foreach($regions as $region)
+                                <option value="{{ $region->id }}">{{ $region->region_name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Branch</label>
+                        <select name="admin_id" id="e_admin_id" class="form-control">
+                            @foreach($admis as $admi)
+                                <option value="{{ $admi->id }}">
+                                    {{ $admi->branch_office_name }} (ID: {{ $admi->branch_id }})
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Employee Name</label>
+                        <input type="text" name="employee_name" id="e_employee_name" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Designation</label>
+                        <input type="text" name="designation" id="e_designation" class="form-control">
+                    </div>
+
+                    <div class="row">
+                        <div class="col"><input type="text" name="monday" id="e_monday" class="form-control"></div>
+                        <div class="col"><input type="text" name="tuesday" id="e_tuesday" class="form-control"></div>
+                        <div class="col"><input type="text" name="wednesday" id="e_wednesday" class="form-control"></div>
+                        <div class="col"><input type="text" name="thursday" id="e_thursday" class="form-control"></div>
+                        <div class="col"><input type="text" name="friday" id="e_friday" class="form-control"></div>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<script>
+$(document).ready(function () {
+    // Edit functionality (existing)
+    $('.editBtn').click(function () {
+        let id = $(this).data('id');
+        $.ajax({
+            url: "/region-reports/edit/" + id,
+            type: "GET",
+            success: function (data) {
+                $('#e_region_id').val(data.region_id);
+                $('#e_admin_id').val(data.admin_id);
+                $('#e_employee_name').val(data.employee_name);
+                $('#e_designation').val(data.designation);
+                $('#e_monday').val(data.monday);
+                $('#e_tuesday').val(data.tuesday);
+                $('#e_wednesday').val(data.wednesday);
+                $('#e_thursday').val(data.thursday);
+                $('#e_friday').val(data.friday);
+                $('#editForm').attr('action', "/region-reports/update/" + id);
+                $('#editModal').modal('show');
+            },
+            error: function () {
+                alert('Error loading data');
+            }
+        });
+    });
+
+    // Create Report AJAX
+    $('#createReportBtn').click(function (e) {
+        e.preventDefault();
+        let formData = new FormData();
+        formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
+        formData.append('region_id', $('#create_region_id').val());
+        formData.append('admin_id', $('#create_admin_id').val());
+        formData.append('employee_name', $('#create_employee_name').val());
+        formData.append('designation', $('#create_designation').val());
+        formData.append('monday', $('#create_monday').val());
+        formData.append('tuesday', $('#create_tuesday').val());
+        formData.append('wednesday', $('#create_wednesday').val());
+        formData.append('thursday', $('#create_thursday').val());
+        formData.append('friday', $('#create_friday').val());
+        
+        $.ajax({
+            url: "{{ route('regionReport.store') }}",
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                $('#createModal').modal('hide');
+                location.reload();
+            },
+            error: function(xhr) {
+                alert('Error: ' + (xhr.responseJSON?.message || 'Failed to create report'));
+            }
+        });
+    });
+
+    // Delete Report AJAX
+    $('.deleteBtn').click(function () {
+        if (confirm('Delete this record?')) {
+            let id = $(this).data('id');
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url: "/region-reports/delete/" + id,
+                type: 'DELETE',
+                success: function(response) {
+                    location.reload();
+                },
+                error: function() {
+                    alert('Delete failed');
+                }
+            });
+        }
+    });
+});
+</script>
     </div>
 
 </div>
@@ -3650,7 +3838,7 @@
 <!-- </div> -->
 </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
     integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
@@ -5138,6 +5326,9 @@
         });
     });
 </script>
+
+
+
 </body>
 
 </html>
