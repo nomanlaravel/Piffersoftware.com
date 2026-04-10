@@ -1,4 +1,6 @@
 <?php
+// HRM WhatsApp Integration Refreshed: 2026-04-10
+
 
 namespace App\Http\Controllers;
 
@@ -57,18 +59,20 @@ class AccessController extends Controller
 
             Mail::to($user->email)->send(new UserRegisteredMail($user, $rawPassword));
 
-            // Send WhatsApp Welcome Message if customer name and phone exist
+            // Send WhatsApp Welcome Message if name and phone exist
             $whatsappSent = false;
-            if ($user->customer_name) {
+            if ($user->customer_name || $user->role != 'client') {
                 $customer = Customer::where('customers_name', $user->customer_name)->first();
-                if ($customer && $customer->phone) {
-                    $this->whatsappManager->sendWelcome(
-                        $customer->phone,
-                        $customer->customers_name,
-                        $user->email,
-                        $rawPassword,
-                        $user // Passing user model for tracking
-                    );
+                $phone = $customer ? $customer->phone : null;
+                $name = $customer ? $customer->customers_name : $user->name; // Use user name if customer not found
+
+                if ($phone) {
+                    if ($user->role == 'client') {
+                        $this->whatsappManager->sendWelcome($phone, $name, $user->email, $rawPassword, $user);
+                    } else {
+                        // Use HRM specific template for staff roles
+                        $this->whatsappManager->sendHrmWelcome($phone, $name, $user->role, $user->email, $user);
+                    }
                     $whatsappSent = true;
                 }
             }

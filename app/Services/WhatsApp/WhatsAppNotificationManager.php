@@ -61,4 +61,38 @@ class WhatsAppNotificationManager
             category: 'UTILITY'
         );
     }
+
+    public function sendHrmWelcome(string $to, string $employeeName, string $roleType, string $username, $userModel = null): array
+    {
+        $erpLink = config('app.url');
+        if ($erpLink === 'http://localhost') {
+            $erpLink = 'https://piffersoftware.com/';
+        }
+        $message = "Dear {$employeeName},\n\n" .
+            "You have been successfully added to the Piffers Security System as {$roleType}.\n\n" .
+            "You can now access your profile and relevant system features using the link below:\n\n" .
+            "Portal Link: {$erpLink}\n" .
+            "Username: {$username}\n\n" .
+            "To set your password securely, please visit the login page and use the \"Forgot Password\" option.\n" .
+            "If you face any issues while accessing your account, feel free to contact the admin team.\n\n" .
+            "Welcome aboard and thank you for being part of Piffers Security System.\n\n" .
+            "Best Regards,\n" .
+            "Piffers Security System";
+
+        $params = [
+            ['type' => 'text', 'text' => $employeeName],
+            ['type' => 'text', 'text' => $roleType],
+            ['type' => 'text', 'text' => $username],
+        ];
+
+        return $this->send(
+            phone: $to,
+            message: $message,
+            eventType: 'hrm_template',
+            user: $userModel,
+            templateName: 'hrm_template', 
+            templateParameters: $params,
+            category: 'UTILITY'
+        );
+    }
 }

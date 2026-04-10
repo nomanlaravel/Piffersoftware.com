@@ -641,6 +641,16 @@ class TrainingController extends Controller
                     Log::warning('Guard has no email', ['guard_id' => $guard->id]);
                 } else {
                     Mail::to($guard->email)->send(new TrainingNotificationMail($training, $guard));
+
+                    // Send WhatsApp Notification for Training
+                    if ($guard->cell) {
+                        app(\App\Services\WhatsApp\WhatsAppNotificationManager::class)->send(
+                            phone: $guard->cell,
+                            message: "Dear {$guard->name},\n\nYou have been assigned to a new Training session: " . ($training->training_no ?? 'N/A') . ".\n\nPlease check your email for the full schedule and details.\n\nRegards,\nPiffers Security System",
+                            eventType: 'training_assignment',
+                            user: $guard
+                        );
+                    }
                 }
 
                 if (!$guard->customer) {

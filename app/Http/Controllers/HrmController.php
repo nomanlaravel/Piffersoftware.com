@@ -1,4 +1,6 @@
 <?php
+// HRM WhatsApp Integration Updated: 2026-04-10
+
 
 namespace App\Http\Controllers;
 
@@ -674,11 +676,11 @@ class HrmController extends Controller
 
             // Send WhatsApp Welcome Message
             if ($hrm->cell) {
-                app(WhatsAppNotificationManager::class)->sendWelcome(
+                app(WhatsAppNotificationManager::class)->sendHrmWelcome(
                     $hrm->cell,
                     $hrm->name,
+                    $hrm->category ?? 'Team Member', // fallback to Team Member if role is not set
                     $hrm->email ?? $hrm->employee_no ?? 'N/A',
-                    $hrm->cnic ?? 'N/A',
                     $hrm // Passing HRM model for tracking
                 );
             }
@@ -730,6 +732,17 @@ class HrmController extends Controller
             $hrm->guarantors()->delete();
             $hrm->workExperiences()->delete();
             $hrm->education()->delete();
+            
+            // Send WhatsApp Notification before deleting the model completely (need cell number)
+            if ($hrm->cell) {
+                app(\App\Services\WhatsApp\WhatsAppNotificationManager::class)->send(
+                    phone: $hrm->cell,
+                    message: "Dear {$hrm->name},\n\nYour record has been successfully removed from the Piffers Security System. If you have any questions, please contact the admin team.",
+                    eventType: 'delete',
+                    user: null
+                );
+            }
+
             $hrm->delete();
 
             DB::commit();
@@ -1263,18 +1276,16 @@ class HrmController extends Controller
                     ->text($body);
             });
 
-            // ✅ Send WhatsApp Notification too (if phone is provided)
-            if ($request->has('phone')) {
-                $manager = app(WhatsAppNotificationManager::class);
-                
-                // Try to find the HRM model if hrm_id is passed, to ensure proper tracking
-                $hrm = $request->has('hrm_id') ? \App\Models\Hrm::find($request->hrm_id) : null;
+            // Send WhatsApp Notification for PDF sharing
+            $hrm = $request->has('hrm_id') ? \App\Models\Hrm::find($request->hrm_id) : null;
+            $phone = $request->input('phone') ?? ($hrm ? $hrm->cell : null);
 
-                $manager->send(
-                    phone: $request->phone,
-                    message: $body ?: 'Please find the document attached to your email.',
+            if ($phone) {
+                app(\App\Services\WhatsApp\WhatsAppNotificationManager::class)->send(
+                    phone: $phone,
+                    message: $body ?: "Please find the document attached to your email sent from Piffers Security System.",
                     eventType: 'share_pdf',
-                    user: $hrm // will be null if no ID provided, still sends message
+                    user: $hrm
                 );
             }
 
@@ -1559,6 +1570,16 @@ class HrmController extends Controller
     public function delete_hrm($id)
     {
         $delete = Hrm::find($id);
+        
+        if ($delete && $delete->cell) {
+            app(\App\Services\WhatsApp\WhatsAppNotificationManager::class)->send(
+                phone: $delete->cell,
+                message: "Dear {$delete->name},\n\nYour record has been successfully removed from the Piffers Security System. If you have any questions, please contact the admin team.",
+                eventType: 'delete',
+                user: null
+            );
+        }
+
         $delete->delete();
         return redirect()->back()->with('success', ' Deleted successfully');
     }
