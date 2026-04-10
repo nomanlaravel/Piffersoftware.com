@@ -8,7 +8,7 @@ use Throwable;
 
 class NeuapixWhatsAppService
 {
-    public function sendText(string $to, string $message, $user = null): array
+    public function sendText(string $to, string $message, $user = null, string $templateName = null, array $templateParameters = null, ?string $category = null): array
     {
         $to = $this->normalizePhone($to);  // ✅ ALWAYS use passed phone
 
@@ -47,27 +47,28 @@ class NeuapixWhatsAppService
                 'to' => $to,
                 'type' => 'text',
                 'text' => [
+                    'preview_url' => true,
                     'body' => $message,
                 ],
             ];
         } else {
+            // Default template if no session is active
+            $templateName = $templateName ?? 'welcome_message_new'; // User should ensure this exists in NeuAPIX
             $payload = [
                 'messaging_product' => 'whatsapp',
                 'recipient_type' => 'individual',
                 'to' => $to,
                 'type' => 'template',
                 'template' => [
-                    'name' => 'alarm_armed',
+                    'name' => $templateName,
                     'language' => [
                         'code' => 'en',
                     ],
                     'components' => [
                         [
                             'type' => 'body',
-                            'parameters' => [
+                            'parameters' => $templateParameters ?? [
                                 ['type' => 'text', 'text' => 'User'],
-                                ['type' => 'text', 'text' => 'Emergency'],
-                                ['type' => 'text', 'text' => 'Help needed'],
                             ],
                         ],
                     ],
@@ -101,13 +102,15 @@ class NeuapixWhatsAppService
 
             Log::info('NeuAPIX WhatsApp sent successfully.', [
                 'to' => $payload['to'],
+                'payload' => $payload,
                 'response' => $responseData,
             ]);
 
             return [
                 'success' => true,
                 'status' => $response->status(),
-                'message' => 'WhatsApp message sent successfully.',
+                'message' => 'WhatsApp request accepted. ID: ' . (data_get($responseData, 'messages.0.id') ?? 'N/A'),
+                'whatsapp_id' => data_get($responseData, 'messages.0.id'),
                 'response' => $responseData,
             ];
         } catch (Throwable $e) {
@@ -219,7 +222,7 @@ class NeuapixWhatsAppService
     //         return [
     //             'success' => true,
     //             'status' => $response->status(),
-    //             'message' => 'WhatsApp message sent successfully.',
+    //             'message' => 'WhatsApp request accepted by provider.',
     //             'response' => $responseData,
     //         ];
     //     } catch (Throwable $e) {

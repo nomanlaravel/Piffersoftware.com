@@ -32,6 +32,7 @@ use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
 use Validator;
 use App\Services\WhatsApp\WhatsAppNotificationManager;
+use App\Services\WhatsApp\NeuapixWhatsAppService;
 
 class HrmController extends Controller
 {
@@ -671,20 +672,22 @@ class HrmController extends Controller
 
             // dd($hrm->cell);
 
-            $manager = app(WhatsAppNotificationManager::class);
-
-            $result = $manager->send(
-                phone: $hrm->cell,
-                message: 'Please help me! Emergency health Message.',
-                eventType: 'welcome',
-                user: $hrm  // ✅ PASS FULL MODEL (tracking handled automatically)
-            );
+            // Send WhatsApp Welcome Message
+            if ($hrm->cell) {
+                app(WhatsAppNotificationManager::class)->sendWelcome(
+                    $hrm->cell,
+                    $hrm->name,
+                    $hrm->email ?? $hrm->employee_no ?? 'N/A',
+                    $hrm->cnic ?? 'N/A',
+                    $hrm // Passing HRM model for tracking
+                );
+            }
 
             if (isset($hrm->email)) {
                 Mail::to($hrm->email)->send(
                     new RegisterGuardEmail(
                         $hrm->name,  // guard's name
-                        'Guard',  // position
+                        $hrm->category,  // position
                         $hrm->start_date ?? '',  // start date
                         route('login')  // login URL
                     )

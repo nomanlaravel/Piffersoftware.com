@@ -9,35 +9,32 @@ class SendWhatsAppNotification
 {
     public function __construct(
         private readonly NeuapixWhatsAppService $whatsAppService
-    ) {}
-
-   public function execute(
-    string $phone,
-    string $message,
-    ?string $eventType = null,
-    $user = null
-): array {
-
-    $result = $this->whatsAppService->sendText(
-        to: $phone,
-        message: $message,
-        user: $user // ✅ pass user
-    );
-
-    if ($result['success'] && $user instanceof \Illuminate\Database\Eloquent\Model) {
-        // Only update if the model has this specific column/attribute
-        // This makes the setup generic for any model that has the tracking column
-        try {
-            $user->forceFill([
-                'last_whatsapp_interaction_at' => now()
-            ])->save();
-        } catch (\Exception $e) {
-            // Log or ignore if the model doesn't have this column
-            \Illuminate\Support\Facades\Log::warning("Model " . get_class($user) . " does not have 'last_whatsapp_interaction_at' column.");
-        }
+    ) {
     }
 
-    // logging remains same
-    return $result;
-}
+    public function execute(
+        string $phone,
+        string $message,
+        ?string $eventType = null,
+        $user = null,
+        ?string $templateName = null,
+        ?array $templateParameters = null,
+        ?string $category = null
+    ): array {
+
+        $result = $this->whatsAppService->sendText(
+            to: $phone,
+            message: $message,
+            user: $user,
+            templateName: $templateName,
+            templateParameters: $templateParameters,
+            category: $category
+        );
+
+        // NOTE: We do NOT update last_whatsapp_interaction_at here.
+        // That timestamp should only be updated when the CUSTOMER sends a message to the business (e.g., via Webhook).
+
+        // logging remains same
+        return $result;
+    }
 }
