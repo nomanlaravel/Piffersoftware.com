@@ -8,7 +8,7 @@ use Throwable;
 
 class NeuapixWhatsAppService
 {
-    public function sendText(string $to, string $message, $user = null, string $templateName = null, array $templateParameters = null, ?string $category = null): array
+    public function sendText($to, $message, $user = null, $templateName = null, $templateParameters = null, ?string $category = null): array
     {
         $to = $this->normalizePhone($to);  // ✅ ALWAYS use passed phone
 
@@ -238,7 +238,7 @@ class NeuapixWhatsAppService
     //     }
     // }
 
-    private function normalizePhone(string $phone): ?string
+    private function normalizePhone($phone): ?string
     {
         // Remove everything except digits
         $phone = preg_replace('/\D+/', '', $phone);

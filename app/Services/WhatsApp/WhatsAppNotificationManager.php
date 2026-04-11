@@ -7,8 +7,8 @@ use App\Actions\SendWhatsAppNotification;
 class WhatsAppNotificationManager
 {
     public function send(
-        string $phone,
-        string $message,
+        $phone,
+        $message,
         ?string $eventType = null,
         $user = null,
         ?string $templateName = null,
@@ -26,7 +26,7 @@ class WhatsAppNotificationManager
         );
     }
 
-    public function sendWelcome(string $to, string $customerName, string $username, string $password = null, $userModel = null): array
+    public function sendWelcome($to, $customerName, $username = null, $password = null, $userModel = null): array
     {
         $erpLink = config('app.url');
         if ($erpLink === 'http://localhost') {
@@ -48,11 +48,11 @@ class WhatsAppNotificationManager
         $params = [
             ['type' => 'text', 'text' => $customerName],
             ['type' => 'text', 'text' => $erpLink],
-            ['type' => 'text', 'text' => $username],
+            ['type' => 'text', 'text' => $username ?? 'N/A'],
         ];
 
         return $this->send(
-            phone: $to,
+            phone: (string)$to,
             message: $message,
             eventType: 'welcome',
             user: $userModel,
@@ -62,7 +62,7 @@ class WhatsAppNotificationManager
         );
     }
 
-    public function sendHrmWelcome(string $to, string $employeeName, string $roleType, string $username, $userModel = null): array
+    public function sendHrmWelcome($to, $employeeName, $roleType, $username = null, $userModel = null): array
     {
         $erpLink = config('app.url');
         if ($erpLink === 'http://localhost') {

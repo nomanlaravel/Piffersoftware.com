@@ -13,8 +13,8 @@ class SendWhatsAppNotification
     }
 
     public function execute(
-        string $phone,
-        string $message,
+        $phone,
+        $message,
         ?string $eventType = null,
         $user = null,
         ?string $templateName = null,
