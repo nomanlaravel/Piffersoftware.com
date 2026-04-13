@@ -879,3 +879,9 @@ Route::prefix('erp-lms')->name('dashboard.lms.')->group(function () {
 //     // Permission::where('name', 'view_leave_request')->first();
 // // return Permission::where('name', 'view_leave_request')->first();
 // });
+
+Route::post('/region-reports/store', [AdminController::class, 'storeRegionReport'])->name('regionReport.store');
+Route::get('/region-reports/edit/{id}', [AdminController::class, 'editRegionReport']);
+Route::put('/region-reports/update/{id}', [AdminController::class, 'updateRegionReport']);
+Route::delete('/region-reports/delete/{id}', [AdminController::class, 'deleteRegionReport']);
+Route::get('/search/region/report/export', [AdminController::class, 'export_region_report'])->name('regionwise.index');

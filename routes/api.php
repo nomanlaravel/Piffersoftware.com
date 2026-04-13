@@ -6,6 +6,7 @@ use App\Models\Training;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\InspectionController;
 use App\Http\Controllers\Api\CustomerInspectionController;
 use App\Models\Customer;
 /*

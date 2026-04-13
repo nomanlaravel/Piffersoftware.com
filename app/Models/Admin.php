@@ -119,7 +119,7 @@ public function WeaponBranch()
         return $this->hasMany(Hrm::class);
     }
 
-    public function customers()
+public function customers()
     {
         return $this->hasMany(Customer::class);
     }
@@ -133,5 +133,10 @@ public function WeaponBranch()
 {
     return $this->hasMany(Campaign::class, 'branch_id');
 }
+
+    public function regionReports()
+    {
+        return $this->hasMany(RegionReport::class, 'admin_id');
+    }
 
 }

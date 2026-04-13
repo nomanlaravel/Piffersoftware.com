@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\RegionReport;
 use Carbon\Carbon;
 use App\Models\Hrm;
 use App\Models\Admin;
@@ -48,7 +49,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 class AdminController extends Controller
 {
 
-    
+
     public function admin_moveable_assets(Request $request)
     {
         // $query  = Admin::with('moveables');
@@ -178,31 +179,31 @@ class AdminController extends Controller
     }
 
     public function clientReport(Request $request)
-{
-    $query = Admin::query();
+    {
+        $query = Admin::query();
 
-    if ($request->status == 'active') {
-        $query->where('status', 'active');
+        if ($request->status == 'active') {
+            $query->where('status', 'active');
+        }
+
+        if ($request->status == 'terminated') {
+            $query->where('status', 'terminated');
+        }
+
+        $clients = $query->get();
+
+        return view('admin.client', compact('clients'));
     }
 
-    if ($request->status == 'terminated') {
-        $query->where('status', 'terminated');
+    public function getBranches($category)
+    {
+        $branches = Admin::where('branch_category', $category)
+            ->select('id', 'branch_office_name')
+            ->distinct()
+            ->get();
+
+        return response()->json($branches);
     }
-
-    $clients = $query->get();
-
-    return view('admin.client', compact('clients'));
-}
-
-public function getBranches($category)
-{
-    $branches = Admin::where('branch_category', $category)
-        ->select('id', 'branch_office_name')
-        ->distinct()
-        ->get();
-
-    return response()->json($branches);
-}
 
     public function wnationwide_store(Request $request)
     {
@@ -286,7 +287,7 @@ public function getBranches($category)
 
         return view('admin.editadmin', compact('socials'));
     }
-public function admin()
+    public function admin()
     {
         $branches = Admin::with('reports')->get();
         $regions_city = Admin::whereNotNull('branch_city')
@@ -433,11 +434,11 @@ public function admin()
 
     public function filterReports(Request $request)
     {
-    
+
         $branches = Admin::all();
 
         $query = SocialMediaAnalytics::query()->with('admin');
-        
+
         // Date Filter  
         if ($request->filled('social_report_date')) {
             $query->whereDate('created_at', $request->social_report_date);
@@ -469,7 +470,7 @@ public function admin()
         }
 
         $analytics = $query->paginate(50);
-    
+
         return view('analytics.index', [
             'analytics' => $analytics,
             'branches' => $branches,
@@ -1188,11 +1189,12 @@ public function admin()
     }
     public function editadmin(Request $request, $id)
     {
-
+        $reports = RegionReport::with(['admin', 'region'])->latest()->get();
+        $regions = Region::all();
+        $admis = Admin::all();
         $admins = Admin::find($id);
         $records = WeaponRecord::with('Wbranch')->get();
 
-        // return $admins;
         $compaigns = Campaign::all();
         if (!$admins) {
             return false;
@@ -1211,7 +1213,6 @@ public function admin()
             ->where('report_name', 'feedback_register_report')
             ->get();
         $notices = Notice::all();
-        // return $quotationReports;
         $taskdeiry = TaskRecordDairy::all();
         $wnationswide = Wnationwide::all();
         $contractDetail = ContractDetail::all();
@@ -1251,7 +1252,7 @@ public function admin()
             'rifle_223_m4_bullets' => $records->sum('rifle_223_m4_bullets'),
         ];
         $uniformbranches = UniformRecord::with('Ubranch')->get();
-        return view('admin.editadmin', compact('admins', 'feedbackReports', 'compaigns', 'analytics', 'salesreports', 'quotationReports', 'wnationswide', 'taskdeiry', 'notices', 'records', 'contractDetail', 'totals', 'uniformbranches', 'northBranches', 'centralBranches', 'southBranches'));
+        return view('admin.editadmin', compact('admins', 'feedbackReports', 'compaigns', 'analytics', 'salesreports', 'quotationReports', 'wnationswide', 'taskdeiry', 'notices', 'records', 'contractDetail', 'totals', 'uniformbranches', 'northBranches', 'centralBranches', 'southBranches', 'reports', 'regions', 'admis'));
     }
 
     public function autoSave(Request $request)
@@ -2393,5 +2394,150 @@ public function admin()
     {
         DB::table('rentals')->where('id', $id)->delete();
         return redirect()->back();
+    }
+
+    public function storeRegionReport(Request $request)
+    {
+        $request->validate([
+            'admin_id' => 'required|exists:admins,id',
+            'region_id' => 'required|exists:regions,id',
+            'employee_name' => 'required|string|max:255',
+            'designation' => 'required|string|max:255',
+            'monday' => 'nullable|string|max:255',
+            'tuesday' => 'nullable|string|max:255',
+            'wednesday' => 'nullable|string|max:255',
+            'thursday' => 'nullable|string|max:255',
+            'friday' => 'nullable|string|max:255',
+        ]);
+
+        $admin = Admin::findOrFail($request->admin_id);
+
+        RegionReport::create([
+            'admin_id' => $request->admin_id,
+            'region_id' => $request->region_id,
+            'branch_office_name' => $admin->branch_office_name,
+            'branch_id' => $admin->branch_id,
+            'employee_name' => $request->employee_name,
+            'designation' => $request->designation,
+            'monday' => $request->monday,
+            'tuesday' => $request->tuesday,
+            'wednesday' => $request->wednesday,
+            'thursday' => $request->thursday,
+            'friday' => $request->friday,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Report created successfully'
+        ]);
+    }
+
+    public function editRegionReport($id)
+    {
+        $report = RegionReport::findOrFail($id);
+        return response()->json($report);
+    }
+
+    public function updateRegionReport(Request $request, $id)
+    {
+
+        $request->validate([
+            'region_id' => 'required|exists:regions,id',
+            'admin_id' => 'required|exists:admins,id',
+            'branch_office_name' => 'nullable|string|max:255',
+            'branch_id' => 'nullable|unsignedBigInteger',
+            'employee_name' => 'required|string|max:255',
+            'designation' => 'required|string|max:255',
+            'monday' => 'nullable|string|max:255',
+            'tuesday' => 'nullable|string|max:255',
+            'wednesday' => 'nullable|string|max:255',
+            'thursday' => 'nullable|string|max:255',
+            'friday' => 'nullable|string|max:255',
+        ]);
+
+        $report = RegionReport::findOrFail($id);
+        $admin = Admin::findOrFail($request->admin_id);
+
+        $report->update([
+            'region_id' => $request->region_id,
+            'admin_id' => $request->admin_id,
+            'branch_office_name' => $admin->branch_office_name,
+            'branch_id' => $admin->branch_id,
+            'employee_name' => $request->employee_name,
+            'designation' => $request->designation,
+            'monday' => $request->monday,
+            'tuesday' => $request->tuesday,
+            'wednesday' => $request->wednesday,
+            'thursday' => $request->thursday,
+            'friday' => $request->friday,
+        ]);
+
+        return back()->with('success', 'Report updated successfully');
+    }
+
+    public function deleteRegionReport(Request $request, $id)
+    {
+        $report = RegionReport::findOrFail($id);
+        $report->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Report deleted successfully'
+        ]);
+    }
+
+    public function filterRegionReports(Request $request)
+    {
+        $query = RegionReport::with(['region', 'admin']);
+
+        if ($request->filled('region_id')) {
+            $query->where('region_id', $request->region_id);
+        }
+
+        if ($request->filled('admin_id')) {
+            $query->where('admin_id', $request->admin_id);
+        }
+
+        $reports = $query->get();
+
+        return response()->json($reports);
+    }
+    public function export_region_report(Request $request)
+    {
+        $query = RegionReport::query();
+
+        // REGION FILTER
+        if ($request->filled('region') && $request->region != 'all') {
+            $query->whereHas('region', function ($q) use ($request) {
+                $q->where('region_name', $request->region);
+            });
+        }
+
+        // DATE RANGE FILTER
+        if ($request->filled('date_range')) {
+            try {
+                $range = explode(' to ', $request->date_range);
+
+                if (count($range) == 2) {
+                    $start = Carbon::parse(trim($range[0]))->startOfDay();
+                    $end = Carbon::parse(trim($range[1]))->endOfDay();
+
+                    $query->where(function ($q) use ($start, $end) {
+                        $q->whereBetween('created_at', [$start, $end])
+                            ->orWhereBetween('updated_at', [$start, $end]);
+                    });
+                }
+            } catch (\Exception $e) {
+                \Log::warning('Date range parse error: ' . $request->date_range . ' - ' . $e->getMessage());
+            }
+        }
+
+        $sales = $query->latest()->get();
+
+        return view('regionwise.index', [
+            'sales' => $sales,
+            'filters' => $request->all(),
+            'date_range' => $request->date_range ?? null
+        ]);
     }
 }

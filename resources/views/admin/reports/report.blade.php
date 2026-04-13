@@ -77,7 +77,11 @@
                     weekly sales report
                 </button>
             </li>
-
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="region-reports-tab" data-bs-toggle="tab" data-bs-target="#region-reports"
+                        type="button" role="tab" aria-controls="region-reports" aria-selected="false">
+                        Region Wise - Daily Sales & Feedback Log Reports
+                    </button>
         </ul>
 
         <!-- Tab Content -->
@@ -547,7 +551,7 @@
                     <!-- Date Range -->
                     <div class="col-md-3">
                         <label class="form-label">Date Range</label>
-                        <input type="text" id="dateRangeInput" name="date_range" class="form-control"
+                        <input type="text" id="dateRangeInputCro" name="date_range" class="form-control"
                             placeholder="Select date range" readonly value="{{ request('date_range') }}">
                     </div>
 
@@ -684,6 +688,41 @@
             </form>
 
         </div>
+        <div class="tab-pane fade " id="region-reports" role="tabpanel" aria-labelledby="region-reports-tab">
+            <form method="GET" action="{{ route('regionwise.index') }}" class="mb-3">
+                <div class="row mb-4">
+                    <!-- Region -->
+                    <div class="col-md-3">
+                        <label class="form-label">Region</label>
+                        <select name="region" class="form-control">
+                            <option value="">Select a region</option>
+                            <option value="all" {{ request('region') == 'all' ? 'selected' : '' }}>All Regions
+                            </option>
+                            @foreach (App\Models\Region::all() as $region)
+                                <option value="{{ $region->region_name }}" {{ request('region') == $region->region_name ? 'selected' : '' }}>
+                                    {{ $region->region_name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    
+                    <!-- Date Range -->
+                    <div class="col-md-3">
+                        <label class="form-label">Date Range</label>
+                        <input type="text" id="dateRangeInputRegion" name="date_range" class="form-control"
+                            placeholder="Select date range" readonly value="{{ request('date_range') }}">
+                    </div>
+                    <!-- Button -->
+                    <div class="col-md-1">
+                        <button type="submit" class="btn btn-outline-light mt-4">
+                            <img src="https://cdn-icons-png.flaticon.com/128/18444/18444736.png" width="25">
+                        </button>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+
     </div>
 </div>
 </div>
@@ -696,36 +735,33 @@
 <script src="https://cdn.jsdelivr.net/npm/daterangepicker@3.1/daterangepicker.min.js"></script>
 <script>
     $(function () {
-        $('#dateRangeInput').daterangepicker({
-            opens: 'right',               // position of calendar
-            autoUpdateInput: false,       // don't fill input automatically
+        // Initialize both pickers
+        $('#dateRangeInputCro, #dateRangeInputRegion').daterangepicker({
+            opens: 'right',
+            autoUpdateInput: false,
             locale: {
                 cancelLabel: 'Clear'
             },
-            // ranges: {
-            //    'Today': [moment(), moment()],
-            //    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-            //    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-            //    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-            //    'This Month': [moment().startOf('month'), moment().endOf('month')],
-            //    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-            // }
         });
 
-        // When a date range is selected
-        $('#dateRangeInput').on('apply.daterangepicker', function (ev, picker) {
+        // CroDailyTask handler
+        $('#dateRangeInputCro').on('apply.daterangepicker', function (ev, picker) {
             $(this).val(picker.startDate.format('YYYY-MM-DD') + ' to ' + picker.endDate.format('YYYY-MM-DD'));
-            console.log("Selected range:", picker.startDate.format('YYYY-MM-DD'), "to", picker.endDate.format('YYYY-MM-DD'));
-            // Call your filter function here
             filterByDate(picker.startDate.format('YYYY-MM-DD'), picker.endDate.format('YYYY-MM-DD'));
         });
 
-        $('#dateRangeInput').on('cancel.daterangepicker', function (ev, picker) {
+        // Region Reports handler
+        $('#dateRangeInputRegion').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('YYYY-MM-DD') + ' to ' + picker.endDate.format('YYYY-MM-DD'));
+            filterByDate(picker.startDate.format('YYYY-MM-DD'), picker.endDate.format('YYYY-MM-DD'));
+        });
+
+        // Shared cancel handler
+        $('#dateRangeInputCro, #dateRangeInputRegion').on('cancel.daterangepicker', function (ev, picker) {
             $(this).val('');
         });
     });
 
-    // Example filter function
     function filterByDate(start, end) {
         console.log("Filtering data from:", start, "to", end);
         // AJAX request to Laravel backend if needed
