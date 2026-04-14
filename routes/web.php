@@ -852,6 +852,7 @@ Route::get('/region-reports/edit/{id}', [AdminController::class, 'editRegionRepo
 Route::put('/region-reports/update/{id}', [AdminController::class, 'updateRegionReport']);
 Route::delete('/region-reports/delete/{id}', [AdminController::class, 'deleteRegionReport']);
 Route::get('/search/region/report/export', [AdminController::class, 'export_region_report'])->name('regionwise.index');
+Route::get('/search/visit/report/export', [AdminController::class, 'export_visit_report'])->name('visitsales.index');
 
 // pipeline sales report
 Route::get('/pipeline-reports', [AdminController::class, 'indexPipelineReport'])->name('pipelineReport.index');
@@ -860,3 +861,10 @@ Route::get('/pipeline-reports/edit/{id}', [AdminController::class, 'editPipeline
 Route::put('/pipeline-reports/update/{id}', [AdminController::class, 'updatePipelineReport'])->name('pipelineReport.update');
 Route::delete('/pipeline-reports/delete/{id}', [AdminController::class, 'deletePipelineReport'])->name('pipelineReport.delete');
 Route::get('/pipeline-reports/export', [AdminController::class, 'export_pipeline_report'])->name('pipelinesales.index');
+
+// Visit pipeline sales report
+Route::post('/visit-reports/store', [AdminController::class, 'storeVisitReport'])->name('visitReport.store');
+Route::get('/visit-reports/edit/{id}', [AdminController::class, 'editVisitReport'])->name('visitReport.edit');
+Route::put('/visit-reports/update/{id}', [AdminController::class, 'updateVisitReport'])->name('visitReport.update');
+Route::delete('/visit-reports/delete/{id}', [AdminController::class, 'deleteVisitReport'])->name('visitReport.delete');
+Route::get('/visit-pipeline-reports/export', [AdminController::class, 'export_visit_pipeline_report'])->name('visitPipelinesales.index');

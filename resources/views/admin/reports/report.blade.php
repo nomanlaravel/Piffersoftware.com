@@ -83,10 +83,22 @@
                         Region Wise - Daily Sales & Feedback Log Reports
                     </button>
                     </li>
+                    <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="region-visit-reports-tab" data-bs-toggle="tab" data-bs-target="#region-visit-reports"
+                        type="button" role="tab" aria-controls="region-visit-reports" aria-selected="false">
+                        Region Wise - Weekly Sales Visit Plan Reports
+                    </button>
+                    </li> 
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="region-pipeline-reports-tab" data-bs-toggle="tab" data-bs-target="#region-pipeline-reports"
                         type="button" role="tab" aria-controls="region-pipeline-reports" aria-selected="false">
                         Region Wise - Daily Pipeline Sales Reports
+                    </button>
+                    </li> 
+                    <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="region-visitpipeline-reports-tab" data-bs-toggle="tab" data-bs-target="#region-visitpipeline-reports"
+                        type="button" role="tab" aria-controls="region-visitpipeline-reports" aria-selected="false">
+                        Daily SALES VISITS/PIPELINE REPORT
                     </button>
                     </li>    
         </ul>
@@ -763,6 +775,74 @@
                 </div>
             </form>
         </div>
+        <div class="tab-pane fade " id="region-visit-reports" role="tabpanel" aria-labelledby="region-visit-reports-tab">
+            <form method="GET" action="{{ route('visitsales.index') }}" class="mb-3">
+                <div class="row mb-4">
+                    <!-- Region -->
+                    <div class="col-md-3">
+                        <label class="form-label">Region</label>
+                        <select name="region" class="form-control">
+                            <option value="">Select a region</option>
+                            <option value="all" {{ request('region') == 'all' ? 'selected' : '' }}>All Regions
+                            </option>
+                            @foreach (App\Models\Region::all() as $region)
+                                <option value="{{ $region->region_name }}" {{ request('region') == $region->region_name ? 'selected' : '' }}>
+                                    {{ $region->region_name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    
+                    <!-- Date Range -->
+                    <div class="col-md-3">
+                        <label class="form-label">Date Range</label>
+                        <input type="text" id="dateVisitInputRegion" name="date_range" class="form-control"
+                            placeholder="Select date range" readonly value="{{ request('date_range') }}">
+                    </div>
+                    <!-- Button -->
+                    <div class="col-md-1">
+                        <button type="submit" class="btn btn-outline-light mt-4">
+                            <img src="https://cdn-icons-png.flaticon.com/128/18444/18444736.png" width="25">
+                        </button>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+        <div class="tab-pane fade " id="region-visitpipeline-reports" role="tabpanel" aria-labelledby="region-visit-reports-tab">
+            <form method="GET" action="{{ route('visitPipelinesales.index') }}" class="mb-3">
+                <div class="row mb-4">
+                    <!-- Region -->
+                    <div class="col-md-3">
+                        <label class="form-label">Region</label>
+                        <select name="region" class="form-control">
+                            <option value="">Select a region</option>
+                            <option value="all" {{ request('region') == 'all' ? 'selected' : '' }}>All Regions
+                            </option>
+                            @foreach (App\Models\Region::all() as $region)
+                                <option value="{{ $region->region_name }}" {{ request('region') == $region->region_name ? 'selected' : '' }}>
+                                    {{ $region->region_name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    
+                    <!-- Date Range -->
+                    <div class="col-md-3">
+                        <label class="form-label">Date Range</label>
+                        <input type="text" id="dateVisitPipelineInputRegion" name="date_range" class="form-control"
+                            placeholder="Select date range" readonly value="{{ request('date_range') }}">
+                    </div>
+                    <!-- Button -->
+                    <div class="col-md-1">
+                        <button type="submit" class="btn btn-outline-light mt-4">
+                            <img src="https://cdn-icons-png.flaticon.com/128/18444/18444736.png" width="25">
+                        </button>
+                    </div>
+
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 </div>
@@ -776,7 +856,7 @@
 <script>
     $(function () {
         // Initialize both pickers
-        $('#dateRangeInputCro, #dateRangeInputRegion, #datePipelineInputRegion').daterangepicker({
+        $('#dateRangeInputCro, #dateRangeInputRegion, #datePipelineInputRegion, #dateVisitInputRegion, #dateVisitPipelineInputRegion').daterangepicker({
             opens: 'right',
             autoUpdateInput: false,
             locale: {
@@ -802,8 +882,20 @@
             filterByDate(picker.startDate.format('YYYY-MM-DD'), picker.endDate.format('YYYY-MM-DD'));
         });
 
+        // Visit Sales handler
+        $('#dateVisitInputRegion').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('YYYY-MM-DD') + ' to ' + picker.endDate.format('YYYY-MM-DD'));
+            filterByDate(picker.startDate.format('YYYY-MM-DD'), picker.endDate.format('YYYY-MM-DD'));
+        }); 
+
+        // Visit Pipeline Sales handler
+        $('#dateVisitPipelineInputRegion').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('YYYY-MM-DD') + ' to ' + picker.endDate.format('YYYY-MM-DD'));
+            filterByDate(picker.startDate.format('YYYY-MM-DD'), picker.endDate.format('YYYY-MM-DD'));
+        });
+
         // Shared cancel handler
-        $('#dateRangeInputCro, #dateRangeInputRegion, #datePipelineInputRegion').on('cancel.daterangepicker', function (ev, picker) {
+        $('#dateRangeInputCro, #dateRangeInputRegion, #datePipelineInputRegion, #dateVisitInputRegion, #dateVisitPipelineInputRegion').on('cancel.daterangepicker', function (ev, picker) {
             $(this).val('');
         });
     });

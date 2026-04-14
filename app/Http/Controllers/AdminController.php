@@ -20,7 +20,7 @@ use App\Models\TaskGroup;
 use App\Models\Wnationwide;
 use App\Models\PipelineReport;
 use Illuminate\Http\Request;
-use App\Models\UsageMovement;
+use App\Models\VisitPipelineReport;
 use App\Models\OfficeBranding;
 use App\Models\TaskAssignment;
 use App\Models\TrackerCompany;
@@ -1189,7 +1189,9 @@ class AdminController extends Controller
     }
     public function editadmin(Request $request, $id)
     {
-        $reports = RegionReport::with(['admin', 'region'])->latest()->get();
+        $reports = RegionReport::with(['admin', 'region'])->where('type', 'feedback_log')->latest()->get();
+        $visitPipelines = VisitPipelineReport::with(['admin', 'region'])->latest()->get();
+        $visitReports = RegionReport::with(['admin', 'region'])->where('type', 'visit_plan')->latest()->get();
         $pipelines = PipelineReport::with(['region'])->latest()->get();
         $regions = Region::all();
         $admis = Admin::all();
@@ -1253,7 +1255,7 @@ class AdminController extends Controller
             'rifle_223_m4_bullets' => $records->sum('rifle_223_m4_bullets'),
         ];
         $uniformbranches = UniformRecord::with('Ubranch')->get();
-        return view('admin.editadmin', compact('admins', 'feedbackReports', 'compaigns', 'analytics', 'salesreports', 'quotationReports', 'wnationswide', 'taskdeiry', 'notices', 'records', 'contractDetail', 'totals', 'uniformbranches', 'northBranches', 'centralBranches', 'southBranches', 'reports', 'regions', 'admis', 'pipelines'));
+        return view('admin.editadmin', compact('admins', 'feedbackReports', 'compaigns', 'analytics', 'salesreports', 'quotationReports', 'wnationswide', 'taskdeiry', 'notices', 'records', 'contractDetail', 'totals', 'uniformbranches', 'northBranches', 'centralBranches', 'southBranches', 'reports', 'regions', 'admis', 'pipelines', 'visitReports', 'visitPipelines'));
     }
 
     public function autoSave(Request $request)
@@ -2420,6 +2422,7 @@ class AdminController extends Controller
             'branch_id' => $admin->branch_id,
             'employee_name' => $request->employee_name,
             'designation' => $request->designation,
+            'type' => $request->type,
             'monday' => $request->monday,
             'tuesday' => $request->tuesday,
             'wednesday' => $request->wednesday,
@@ -2488,7 +2491,8 @@ class AdminController extends Controller
     }
     public function export_region_report(Request $request)
     {
-        $query = RegionReport::query();
+        $query = RegionReport::with(['admin', 'region'])
+            ->where('type', 'feedback_log');
 
         // REGION FILTER
         if ($request->filled('region') && $request->region != 'all') {
@@ -2524,6 +2528,47 @@ class AdminController extends Controller
             'date_range' => $request->date_range ?? null
         ]);
     }
+
+    public function export_visit_report(Request $request)
+    {
+        $query = RegionReport::with(['admin', 'region'])
+            ->where('type', 'visit_plan');
+
+        // REGION FILTER
+        if ($request->filled('region') && $request->region != 'all') {
+            $query->whereHas('region', function ($q) use ($request) {
+                $q->where('region_name', $request->region);
+            });
+        }
+
+        // DATE RANGE FILTER
+        if ($request->filled('date_range')) {
+            try {
+                $range = explode(' to ', $request->date_range);
+
+                if (count($range) == 2) {
+                    $start = Carbon::parse(trim($range[0]))->startOfDay();
+                    $end = Carbon::parse(trim($range[1]))->endOfDay();
+
+                    $query->where(function ($q) use ($start, $end) {
+                        $q->whereBetween('created_at', [$start, $end])
+                            ->orWhereBetween('updated_at', [$start, $end]);
+                    });
+                }
+            } catch (\Exception $e) {
+                \Log::warning('Date range parse error: ' . $request->date_range . ' - ' . $e->getMessage());
+            }
+        }
+
+        $sales = $query->latest()->get();
+
+        return view('visitsales.index', [
+            'sales' => $sales,
+            'filters' => $request->all(),
+            'date_range' => $request->date_range ?? null
+        ]);
+    }
+
      // ================= STORE =================
     public function storePipelineReport(Request $request)
     {
@@ -2631,4 +2676,131 @@ class AdminController extends Controller
         ]);
     }
 
+      // ================= STORE =================
+  public function storeVisitReport(Request $request)
+    {
+        $request->validate([
+            'customer_name' => 'required|string|max:255',
+            'admin_id' => 'required|exists:admins,id',
+            'region_id' => 'required|exists:regions,id',
+            'sales_visit' => 'required|string|max:255',
+            'proposal_sent' => 'nullable|string|max:255',
+            'quotation_sent' => 'nullable|string|max:255',
+            'guard_deployed_by_ho' => 'nullable|string|max:255',
+            'new_client_name' => 'nullable|string|max:255',
+            'contractual_value' => 'nullable|string|max:255',
+        ]);
+
+        $admin = Admin::findOrFail($request->admin_id);
+
+        VisitPipelineReport::create([
+            'customer_name' => $request->customer_name,
+            'admin_id' => $request->admin_id,
+            'region_id' => $request->region_id,
+            'branch_office_name' => $admin->branch_office_name,
+            'sales_visit' => $request->sales_visit,
+            'proposal_sent' => $request->proposal_sent,
+            'quotation_sent' => $request->quotation_sent,
+            'guard_deployed_by_ho' => $request->guard_deployed_by_ho,
+            'new_client_name' => $request->new_client_name,
+            'contractual_value' => $request->contractual_value,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Report created successfully'
+        ]);
+    }
+
+    public function editVisitReport($id)
+    {
+        $report = VisitPipelineReport::findOrFail($id);
+        return response()->json($report);
+    }
+
+    public function updateVisitReport(Request $request, $id)
+    {
+
+        $request->validate([    
+            'customer_name' => 'required|string|max:255',
+            'region_id' => 'required|exists:regions,id',
+            'admin_id' => 'required|exists:admins,id',
+            'branch_office_name' => 'nullable|string|max:255',
+            'sales_visit' => 'required|string|max:255',
+            'proposal_sent' => 'nullable|string|max:255',
+            'quotation_sent' => 'nullable|string|max:255',
+            'guard_deployed_by_ho' => 'nullable|string|max:255',
+            'new_client_name' => 'nullable|string|max:255',
+            'contractual_value' => 'nullable|string|max:255',   
+        ]);
+
+        $report = VisitPipelineReport::findOrFail($id);
+        $admin = Admin::findOrFail($request->admin_id);
+
+        $report->update([
+            'customer_name' => $request->customer_name,
+            'region_id' => $request->region_id,
+            'admin_id' => $request->admin_id,
+            'branch_office_name' => $admin->branch_office_name,
+            'sales_visit' => $request->sales_visit,
+            'proposal_sent' => $request->proposal_sent,
+            'quotation_sent' => $request->quotation_sent,
+            'guard_deployed_by_ho' => $request->guard_deployed_by_ho,
+            'new_client_name' => $request->new_client_name,
+            'contractual_value' => $request->contractual_value,
+        ]);
+
+        return back()->with('success', 'Report updated successfully');
+    }
+
+    // ================= DELETE =================
+    public function deleteVisitReport($id)
+    {
+        $pipelines = VisitPipelineReport::findOrFail($id);
+        $pipelines->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Deleted successfully'
+        ]);
+    }
+
+      public function export_visit_pipeline_report(Request $request)
+    {
+        $query = VisitPipelineReport::with(['admin', 'region']);
+
+        // REGION FILTER
+        if ($request->filled('region') && $request->region != 'all') {
+            $query->whereHas('region', function ($q) use ($request) {
+                $q->where('region_name', $request->region);
+            });
+        }
+
+        // DATE RANGE FILTER
+        if ($request->filled('date_range')) {
+            try {
+                $range = explode(' to ', $request->date_range);
+
+                if (count($range) == 2) {
+                    $start = Carbon::parse(trim($range[0]))->startOfDay();
+                    $end = Carbon::parse(trim($range[1]))->endOfDay();
+
+                    $query->where(function ($q) use ($start, $end) {
+                        $q->whereBetween('created_at', [$start, $end])
+                            ->orWhereBetween('updated_at', [$start, $end]);
+                    });
+                }
+            } catch (\Exception $e) {
+                \Log::warning('Date range parse error: ' . $request->date_range . ' - ' . $e->getMessage());
+            }
+        }
+
+        $sales = $query->latest()->get();
+
+        return view('visitPipelinesales.index', [
+            'sales' => $sales,
+            'filters' => $request->all(),
+            'date_range' => $request->date_range ?? null
+        ]);
+    }
 }

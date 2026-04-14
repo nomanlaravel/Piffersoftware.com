@@ -24,6 +24,7 @@
         .col-services { width: 40%; }
         .col-remarks { width: 30%; }
     </style>
+    <title>Region Wise Daily Sales Pipeline</title>
 </head>
 <body>
 
