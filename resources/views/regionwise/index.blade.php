@@ -192,7 +192,7 @@
             <table class="table table-bordered table-striped mt-0">
                 <thead>
                     <tr>
-                        <th>Sr no</th>
+                        <th>Sr No</th>
                         <th>Branch Name</th>
                         <th>Branch Id</th>
                         <th>Employee Name</th>

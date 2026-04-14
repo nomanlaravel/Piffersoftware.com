@@ -846,8 +846,17 @@ Route::prefix('erp-lms')->name('dashboard.lms.')->group(function () {
 // // return Permission::where('name', 'view_leave_request')->first();
 // });
 
+// region wise sales report
 Route::post('/region-reports/store', [AdminController::class, 'storeRegionReport'])->name('regionReport.store');
 Route::get('/region-reports/edit/{id}', [AdminController::class, 'editRegionReport']);
 Route::put('/region-reports/update/{id}', [AdminController::class, 'updateRegionReport']);
 Route::delete('/region-reports/delete/{id}', [AdminController::class, 'deleteRegionReport']);
 Route::get('/search/region/report/export', [AdminController::class, 'export_region_report'])->name('regionwise.index');
+
+// pipeline sales report
+Route::get('/pipeline-reports', [AdminController::class, 'indexPipelineReport'])->name('pipelineReport.index');
+Route::post('/pipeline-reports/store', [AdminController::class, 'storePipelineReport'])->name('pipelineReport.store');
+Route::get('/pipeline-reports/edit/{id}', [AdminController::class, 'editPipelineReport'])->name('pipelineReport.edit');
+Route::put('/pipeline-reports/update/{id}', [AdminController::class, 'updatePipelineReport'])->name('pipelineReport.update');
+Route::delete('/pipeline-reports/delete/{id}', [AdminController::class, 'deletePipelineReport'])->name('pipelineReport.delete');
+Route::get('/pipeline-reports/export', [AdminController::class, 'export_pipeline_report'])->name('pipelinesales.index');
