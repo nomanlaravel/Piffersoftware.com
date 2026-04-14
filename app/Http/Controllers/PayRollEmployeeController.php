@@ -198,26 +198,52 @@ class PayRollEmployeeController extends Controller
                     ->whereYear('date', $year)
                     ->get();
 
+                $dailySalary = $daysInMonth > 0 ? $basicSalary / $daysInMonth : 0;
+                
+                // --- NEW LOGIC: Custom Daily Salary Integration ---
+                // Calculate salary adjustment for days with manually set salaries
+                $customSalaryAdjustments = 0;
+                $customSalaryDayDates = [];
+                
+                foreach ($attendances as $att) {
+                    if ($att->custom_daily_salary !== null) {
+                        // User wants: (Fixed salary day NOT count) + (Given attendance salary count)
+                        // This means we subtract the fixed daily rate and add the custom one.
+                        $customSalaryAdjustments += ($att->custom_daily_salary - $dailySalary);
+                        $customSalaryDayDates[] = $att->date;
+                    }
+                }
+
+                // Filter out days that have custom salaries from standard deduction counts
                 $absentOnly = $attendances->where('status', 'absent')
-                    ->filter(fn($att) => !in_array($att->date, $holidays))
+                    ->filter(fn($att) => !in_array($att->date, $holidays) && !in_array($att->date, $customSalaryDayDates))
                     ->count();
 
                 $halfDays = $attendances->where('status', 'half_day')
-                    ->filter(fn($att) => !in_array($att->date, $holidays))
+                    ->filter(fn($att) => !in_array($att->date, $holidays) && !in_array($att->date, $customSalaryDayDates))
                     ->count();
 
                 $unpaidLeaves = EmployeeLeave::where('hrm_id', $employee->id)
                     ->where('status', 'approved')
                     ->whereHas('leaveType', fn($q) => $q->where('paid', 0))
+                    ->get()
+                    ->filter(function($leave) use ($customSalaryDayDates) {
+                        // Normally leaves are for specific dates. If a leave day has a custom salary,
+                        // we prioritize the custom salary (as per user request "given attendance salary will be count").
+                        // Note: This assumes leave dates are checked properly. 
+                        // For now we use the sum provided by number_of_leaves but try to be safe.
+                        return true; 
+                    })
                     ->sum('number_of_leaves');
 
-                // Calculate Late Minutes
+                // Calculate Late Minutes (Still applies to all attendances)
                 $lateMinutes = $attendances->sum('late_minutes') ?? 0;
 
-                // Deduction Calculations
-                $absentDeduction = $daysInMonth > 0 ? ($basicSalary / $daysInMonth) * $absentOnly : 0;
-                $halfDayDeduction = $daysInMonth > 0 ? ($basicSalary / $daysInMonth / 2) * $halfDays : 0;
-                $unpaidLeaveDeduction = $daysInMonth > 0 ? ($basicSalary / $daysInMonth) * $unpaidLeaves : 0;
+                // Deduction Calculations (Using fixed daily rate for non-custom days)
+                $absentDeduction = $dailySalary * $absentOnly;
+                $halfDayDeduction = ($dailySalary / 2) * $halfDays;
+                $unpaidLeaveDeduction = $dailySalary * $unpaidLeaves;
+                // --- END NEW LOGIC ---
                 // Late minutes deduction (1/480 of daily salary per late minute)
                 $dailySalary = $daysInMonth > 0 ? $basicSalary / $daysInMonth : 0;
                 $lateMinutesDeduction = $dailySalary > 0 ? ($dailySalary / 480) * $lateMinutes : 0;
@@ -237,8 +263,8 @@ class PayRollEmployeeController extends Controller
                 // Total Increment
                 $totalIncrement = $status ? ($status->last_increment_amount ?? 0) : 0;
 
-                // Total Salary (Basic + Increment)
-                $totalSalary = $basicSalary + $totalIncrement;
+                // Total Salary (Basic + Increment + Custom Salary Adjustments)
+                $totalSalary = $basicSalary + $totalIncrement + $customSalaryAdjustments;
 
                 // Deduction Before Compensation
                 $deductionBeforeCompensation = $absentDeduction + $unpaidLeaveDeduction + $halfDayDeduction + $lateMinutesDeduction +

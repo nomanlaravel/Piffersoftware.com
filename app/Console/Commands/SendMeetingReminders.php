@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\MeetingReminderMail;
 use App\Models\ReminderNotification;
 use Carbon\Carbon;
+use Log;
+use App\Services\WhatsApp\WhatsAppNotificationManager;
 
 class SendMeetingReminders extends Command
 {
@@ -45,6 +47,18 @@ class SendMeetingReminders extends Command
             $this->info("   - Next Meeting: " . $nextMeeting->format('Y-m-d'));
 
             if ($nextMeeting->isSameDay($today)) {
+                
+                // Whatsapp intergeration
+                   $whatsappTo = !empty($customer->whatsapp_number) ? $customer->whatsapp_number : $customer->phone;
+                        if (!empty($whatsappTo)) {
+                            app(WhatsAppNotificationManager::class)->sendMeetingReminder(
+                                to: $whatsappTo,
+                                customerName: $customer->customers_name,
+                                meetingDate: $nextMeeting->format('d M Y'),
+                                userModel: $customer
+                            );
+                            Log::info('Meeting Reminder WhatsApp sent to: ' . $whatsappTo);
+                        }
                 // Send email reminder
                 Mail::to($customer->email)->send(new MeetingReminderMail($customer));
                 Mail::to('Erp.piffers@gmail.com')->send(new MeetingReminderMail($customer));

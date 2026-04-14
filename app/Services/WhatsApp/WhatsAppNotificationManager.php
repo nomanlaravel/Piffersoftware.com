@@ -32,12 +32,15 @@ class WhatsAppNotificationManager
         if ($erpLink === 'http://localhost') {
             $erpLink = 'https://piffersoftware.com';
         }
+        $customerNameFallback = !empty($customerName) ? $customerName : 'N/A';
+        $usernameFallback = !empty($username) ? $username : 'N/A';
+
         $message = "Welcome to Piffers Security System!\n\n" .
-            "Dear *{$customerName}*,\n\n" .
+            "Dear *{$customerNameFallback}*,\n\n" .
             "We are pleased to inform you that your account has been successfully created on our portal.\n\n" .
             "You can now access your dashboard using the following details:\n\n" .
             "🔗 ERP Link: {$erpLink}\n" .
-            "👤 Username: {$username}\n\n" .
+            "👤 Username: {$usernameFallback}\n\n" .
             "To set your password securely, please use the \"Forgot Password\" option on the login page.\n\n" .
             "Through this portal, you will be able to manage your services, view reports, and stay updated with all activities related to your account.\n\n" .
             "If you face any issues while logging in or require assistance, feel free to contact our support team.\n\n" .
@@ -46,9 +49,9 @@ class WhatsAppNotificationManager
             "Piffers Security System";
 
         $params = [
-            ['type' => 'text', 'text' => $customerName],
+            ['type' => 'text', 'text' => $customerNameFallback],
             ['type' => 'text', 'text' => $erpLink],
-            ['type' => 'text', 'text' => $username ?? 'N/A'],
+            ['type' => 'text', 'text' => $usernameFallback],
         ];
 
         return $this->send(
@@ -62,17 +65,75 @@ class WhatsAppNotificationManager
         );
     }
 
+    public function sendMeetingReminder($to, $customerName, $meetingDate = null, $userModel = null): array
+    {
+        $erpLink = config('app.url');
+        if ($erpLink === 'http://localhost') {
+            $erpLink = 'https://piffersoftware.com';
+        }
+        $customerNameFallback = !empty($customerName) ? $customerName : 'N/A';
+        $meetingDateFallback = !empty($meetingDate) ? $meetingDate : 'N/A';
+
+        $message = "Dear *{$customerNameFallback}*, your next meeting is scheduled on *{$meetingDateFallback}*. Please be prepared.";
+
+        $params = [
+            ['type' => 'text', 'text' => $customerNameFallback],
+            ['type' => 'text', 'text' => $meetingDateFallback],
+        ];
+
+        return $this->send(
+            phone: (string)$to,
+            message: $message,
+            eventType: 'customer_meeting_reminder',
+            user: $userModel,
+            templateName: 'customer_meeting_reminder',
+            templateParameters: $params,
+            category: 'UTILITY'
+        );
+    }
+
+    public function sendArmourerReminder($to, $customerName, $issueDate = null, $userModel = null): array
+    {
+        $erpLink = config('app.url');
+        if ($erpLink === 'http://localhost') {
+            $erpLink = 'https://piffersoftware.com';
+        }
+        $customerNameFallback = !empty($customerName) ? $customerName : 'N/A';
+        $issueDateFallback = !empty($issueDate) ? $issueDate : 'N/A';
+
+        $message = "Dear *{$customerNameFallback}*, your next meeting is scheduled on *{$issueDateFallback}*. Please be prepared.";
+
+        $params = [
+            ['type' => 'text', 'text' => $customerNameFallback],
+            ['type' => 'text', 'text' => $issueDateFallback],
+        ];
+
+        return $this->send(
+            phone: (string)$to,
+            message: $message,
+            eventType: 'customer_meeting_reminder',
+            user: $userModel,
+            templateName: 'customer_meeting_reminder',
+            templateParameters: $params,
+            category: 'UTILITY'
+        );
+    }
+
     public function sendHrmWelcome($to, $employeeName, $roleType, $username = null, $userModel = null): array
     {
         $erpLink = config('app.url');
         if ($erpLink === 'http://localhost') {
             $erpLink = 'https://piffersoftware.com/';
         }
-        $message = "Dear {$employeeName},\n\n" .
-            "You have been successfully added to the Piffers Security System as {$roleType}.\n\n" .
+        $employeeNameFallback = !empty($employeeName) ? $employeeName : 'N/A';
+        $roleTypeFallback = !empty($roleType) ? $roleType : 'N/A';
+        $usernameFallback = !empty($username) ? $username : 'N/A';
+
+        $message = "Dear {$employeeNameFallback},\n\n" .
+            "You have been successfully added to the Piffers Security System as {$roleTypeFallback}.\n\n" .
             "You can now access your profile and relevant system features using the link below:\n\n" .
             "Portal Link: {$erpLink}\n" .
-            "Username: {$username}\n\n" .
+            "Username: {$usernameFallback}\n\n" .
             "To set your password securely, please visit the login page and use the \"Forgot Password\" option.\n" .
             "If you face any issues while accessing your account, feel free to contact the admin team.\n\n" .
             "Welcome aboard and thank you for being part of Piffers Security System.\n\n" .
@@ -80,9 +141,9 @@ class WhatsAppNotificationManager
             "Piffers Security System";
 
         $params = [
-            ['type' => 'text', 'text' => $employeeName],
-            ['type' => 'text', 'text' => $roleType],
-            ['type' => 'text', 'text' => $username],
+            ['type' => 'text', 'text' => $employeeNameFallback],
+            ['type' => 'text', 'text' => $roleTypeFallback],
+            ['type' => 'text', 'text' => $usernameFallback],
         ];
 
         return $this->send(

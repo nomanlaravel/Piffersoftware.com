@@ -1450,14 +1450,15 @@ class CustomerController extends Controller
 
             $customerId = $customer->id;
             // Send WhatsApp Confirmation using existing sendWelcome template
-                        if (!empty($customer->phone)) {
+                        $whatsappTo = !empty($customer->whatsapp_number) ? $customer->whatsapp_number : $customer->phone;
+                        if (!empty($whatsappTo)) {
                             app(\App\Services\WhatsApp\WhatsAppNotificationManager::class)->sendWelcome(
-                                to: $customer->phone,
+                                to: $whatsappTo,
                                 customerName: $customer->display_name_as,
                                 username: $customerData['email'],
                                 userModel: $customer
                             );
-                            Log::info('Confirmation WhatsApp sent to: ' . $customer->phone);
+                            Log::info('Confirmation WhatsApp sent to: ' . $whatsappTo);
                         }
             Log::info('Customer data successfully stored. Customer ID: ' . $customerId);
             // Send email if save_and_email is clicked
@@ -1653,14 +1654,21 @@ class CustomerController extends Controller
             });
 
             // Send WhatsApp message
-            if ($customerRecipient && !empty($customerRecipient->phone)) {
-                app(\App\Services\WhatsApp\WhatsAppNotificationManager::class)->send(
-                    phone: $customerRecipient->phone,
-                    message: "*" . $subject . "*\n\n" . strip_tags($body),
-                    eventType: 'pdf_via_email',
-                    user: $customerRecipient,
-                    category: 'UTILITY'
-                );
+            // Send WhatsApp message
+            if ($customerRecipient) {
+                $whatsappTo = !empty($customerRecipient->whatsapp_number) ? $customerRecipient->whatsapp_number : $customerRecipient->phone;
+                if (!empty($whatsappTo)) {
+                    $subjectFallback = !empty($subject) ? $subject : 'Notification';
+                    $bodyFallback = !empty($body) ? strip_tags($body) : 'Please find the details in your email.';
+                    
+                    app(\App\Services\WhatsApp\WhatsAppNotificationManager::class)->send(
+                        phone: $whatsappTo,
+                        message: "*" . $subjectFallback . "*\n\n" . $bodyFallback,
+                        eventType: 'pdf_via_email',
+                        user: $customerRecipient,
+                        category: 'UTILITY'
+                    );
+                }
             }
 
             return response()->json(['message' => 'Email sent successfully!'], 200);
@@ -1803,14 +1811,21 @@ class CustomerController extends Controller
             });
 
             // Send WhatsApp message
-            if ($customerRecipient && !empty($customerRecipient->phone)) {
-                app(\App\Services\WhatsApp\WhatsAppNotificationManager::class)->send(
-                    phone: $customerRecipient->phone,
-                    message: "Dear *{$customerRecipient->display_name_as}*,\n\nYour Customer Information PDF has been sent to your email: {$email}.",
-                    eventType: 'pdf_generated',
-                    user: $customerRecipient,
-                    category: 'UTILITY'
-                );
+            // Send WhatsApp message
+            if ($customerRecipient) {
+                $whatsappTo = !empty($customerRecipient->whatsapp_number) ? $customerRecipient->whatsapp_number : $customerRecipient->phone;
+                if (!empty($whatsappTo)) {
+                    $nameFallback = !empty($customerRecipient->display_name_as) ? $customerRecipient->display_name_as : 'Customer';
+                    $emailFallback = !empty($email) ? $email : 'your email';
+
+                    app(\App\Services\WhatsApp\WhatsAppNotificationManager::class)->send(
+                        phone: $whatsappTo,
+                        message: "Dear *{$nameFallback}*,\n\nYour Customer Information PDF has been sent to {$emailFallback}.",
+                        eventType: 'pdf_generated',
+                        user: $customerRecipient,
+                        category: 'UTILITY'
+                    );
+                }
             }
 
             // Log success message
