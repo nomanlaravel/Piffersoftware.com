@@ -755,12 +755,23 @@ class CustomerController extends Controller
                     ];
 
                     foreach ($customerInspectionFields as $field) {
-                        if ($request->hasFile($field) && isset($request->$field[$index])) {
-                            $file = $request->$field[$index];
-                            $extension = $file->getClientOriginalExtension();
-                            $file_name = time() . '_' . $file->getClientOriginalName();
-                            $file->move(public_path('uploads/images'), $file_name);
-                            $customerInspectionDataRow[$field] = 'uploads/images/' . $file_name;
+                        if ($request->hasFile("inspection_pic.{$index}") || $request->hasFile("inspection_attach.{$index}")) {
+                            $files = $request->file($field)[$index] ?? [];
+                            if (is_array($files)) {
+                                $filePaths = [];
+                                foreach ($files as $file) {
+                                    $extension = $file->getClientOriginalExtension();
+                                    $file_name = time() . '_' . uniqid() . '_' . $file->getClientOriginalName();
+                                    $file->move(public_path('uploads/images'), $file_name);
+                                    $filePaths[] = 'uploads/images/' . $file_name;
+                                }
+                                $customerInspectionDataRow[$field] = json_encode($filePaths);
+                            } else {
+                                $extension = $files->getClientOriginalExtension();
+                                $file_name = time() . '_' . $files->getClientOriginalName();
+                                $files->move(public_path('uploads/images'), $file_name);
+                                $customerInspectionDataRow[$field] = 'uploads/images/' . $file_name;
+                            }
                         }
                     }
 
@@ -1919,14 +1930,14 @@ class CustomerController extends Controller
             // Salary And Benefits
             $customerSalaryAndBenefitsData = $request->input('customersalary');
 
-            foreach ($customerSalaryAndBenefitsData as $customerSalaryAndBenefitsData) {
+foreach ($customerSalaryAndBenefitsData as $index => $customerSalaryAndBenefitsData) {
                 $customerSalaryAndBenefitsId = $customerSalaryAndBenefitsData['sal_id'];
 
                 $customerSalaryAndBenefitsFields = ['sal_attach'];
 
                 foreach ($customerSalaryAndBenefitsFields as $field) {
-                    if ($request->hasFile($field) && isset($customerSalaryAndBenefitsData[$field])) {
-                        $file = $request->$field;
+                    if ($request->hasFile($field) && isset($request->file($field)[$index])) {
+                        $file = $request->file($field)[$index];
                         $extension = $file->getClientOriginalExtension();
                         $file_name = time() . '_' . $file->getClientOriginalName();
                         $file->move(public_path('uploads/images'), $file_name);
@@ -1977,14 +1988,14 @@ class CustomerController extends Controller
 
             $customeremergenciesData = $request->input('customeremergencies');
 
-            foreach ($customeremergenciesData as $customeremergencyData) {
+foreach ($customeremergenciesData as $index => $customeremergencyData) {
                 $customeremergencyId = $customeremergencyData['e_id'];
 
                 $customeremergencyFields = ['emer_pic', 'emer_poc_attach', 'emer_loc', 'emer_attach'];
 
                 foreach ($customeremergencyFields as $field) {
-                    if ($request->hasFile($field) && isset($customeremergencyData[$field])) {
-                        $file = $request->$field;
+                    if ($request->hasFile($field) && isset($request->file($field)[$index])) {
+                        $file = $request->file($field)[$index];
                         $extension = $file->getClientOriginalExtension();
                         $file_name = time() . '_' . $file->getClientOriginalName();
                         $file->move(public_path('uploads/images'), $file_name);
@@ -2006,14 +2017,14 @@ class CustomerController extends Controller
 
             $customerdepartmentsData = $request->input('customerdepartments');
 
-            foreach ($customerdepartmentsData as $customerdepartmentData) {
+foreach ($customerdepartmentsData as $index => $customerdepartmentData) {
                 $customerdepartmentId = $customerdepartmentData['d_id'];
 
                 $customerdepartmentFields = ['dept_photo', 'dept_ex_attach'];
 
                 foreach ($customerdepartmentFields as $field) {
-                    if ($request->hasFile($field) && isset($customerdepartmentData[$field])) {
-                        $file = $request->$field;
+                    if ($request->hasFile($field) && isset($request->file($field)[$index])) {
+                        $file = $request->file($field)[$index];
                         $extension = $file->getClientOriginalExtension();
                         $file_name = time() . '_' . $file->getClientOriginalName();
                         $file->move(public_path('uploads/images'), $file_name);
@@ -2035,22 +2046,34 @@ class CustomerController extends Controller
 
             $customerinspectionsData = $request->input('customerinspections');
 
-            foreach ($customerinspectionsData as $customerinspectionData) {
-                $customerinspectionId = $customerinspectionData['i_id']; // Check the key for the inspection ID
+            foreach ($customerinspectionsData as $index => $customerinspectionData) {
+                $customerinspectionId = $customerinspectionData['i_id'] ?? null;
 
                 $customerinspectionFields = ['inspection_pic', 'inspection_attach'];
 
                 foreach ($customerinspectionFields as $field) {
-                    if ($request->hasFile($field) && isset($customerinspectionData[$field])) {
-                        $file = $request->$field;
-                        $extension = $file->getClientOriginalExtension();
-                        $file_name = time() . '_' . $file->getClientOriginalName();
-                        $file->move(public_path('uploads/images'), $file_name);
-                        $customerinspectionData[$field] = 'uploads/images/' . $file_name;
+                    if ($request->hasFile("customerinspections.{$index}.{$field}")) {
+                        $files = $request->file("customerinspections.{$index}.{$field}");
+                        if (is_array($files)) {
+                            $filePaths = [];
+                            foreach ($files as $file) {
+                                $extension = $file->getClientOriginalExtension();
+                                $file_name = time() . '_' . uniqid() . '_' . $file->getClientOriginalName();
+                                $file->move(public_path('uploads/images'), $file_name);
+                                $filePaths[] = 'uploads/images/' . $file_name;
+                            }
+                            $customerinspectionData[$field] = json_encode($filePaths); // Store as JSON array if multiple
+                        } else {
+                            $extension = $files->getClientOriginalExtension();
+                            $file_name = time() . '_' . $files->getClientOriginalName();
+                            $files->move(public_path('uploads/images'), $file_name);
+                            $customerinspectionData[$field] = 'uploads/images/' . $file_name;
+                        }
                     }
                 }
 
                 if (empty($customerinspectionId)) {
+                    $customerinspectionData['customers_id'] = $customer->id;
                     $customer->customerinspections()->create($customerinspectionData);
                 } else {
                     $customerinspection = CustomerInspection::find($customerinspectionId);
@@ -2990,14 +3013,17 @@ public function update(Request $request, $id)
         mkdir($uploadPath, 0777, true);
     }
 
+    if ($request->hasFile('inspection_pic')) {
+        $file = $request->file('inspection_pic');
+        $file_name = time() . '_' . $file->getClientOriginalName();
+        $file->move(public_path('uploads/images'), $file_name);
+        $data['inspection_pic'] = 'uploads/images/' . $file_name;
+    }
+
     if ($request->hasFile('inspection_attach')) {
-
         $file = $request->file('inspection_attach');
-
         $file_name = time().'_'.uniqid().'_'.$file->getClientOriginalName();
-
         $file->move($uploadPath, $file_name);
-
         $data['inspection_attach'] = 'uploads/inspections/'.$file_name;
     }
 
