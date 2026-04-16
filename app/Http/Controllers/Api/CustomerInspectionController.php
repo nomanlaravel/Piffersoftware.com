@@ -177,6 +177,7 @@ class CustomerInspectionController extends Controller
             ], 500);
         }
     }
+    
 
     public function getQuestions()
     {
