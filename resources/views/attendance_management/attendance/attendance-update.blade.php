@@ -1182,6 +1182,11 @@
             modal.find('.leave-content').hide();
             modal.find('.absent-content').hide();
             modal.find('.punch-btn-section').hide();
+            modal.find('.financial-adjustment-section').hide();
+        }
+
+        if (status) {
+            modal.find('.financial-adjustment-section').show();
         }
     }
 
@@ -1298,6 +1303,11 @@
                 }
             } else if (statusToSelect === 'absent') {
                 modal.find('.absent-content').find('textarea[name="remarks"]').val(data.notes);
+            }
+
+            // Populate custom salary if exists
+            if (data.custom_daily_salary) {
+                modal.find('input[name="custom_daily_salary"]').val(data.custom_daily_salary);
             }
         } else {
             statusBadge.text("New Record").addClass('badge-light').removeClass('badge-success badge-danger badge-warning');

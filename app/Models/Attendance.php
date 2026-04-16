@@ -18,6 +18,7 @@ class Attendance extends Model
         'status',
         'total_hours',
         'leave_type_id',
+        'custom_daily_salary',
         'notes',
     ];
 

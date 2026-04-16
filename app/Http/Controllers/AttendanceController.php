@@ -134,6 +134,7 @@ class AttendanceController extends Controller
             'leave_type_id' => $attendance ? $attendance->leave_type_id : null,
             'check_in' => $attendance ? $attendance->check_in : null,
             'check_out' => $attendance ? $attendance->check_out : null,
+            'custom_daily_salary' => $attendance ? $attendance->custom_daily_salary : null,
         ]);
     }
 
@@ -142,6 +143,7 @@ class AttendanceController extends Controller
         $request->validate([
             'employee_id' => 'required',
             'day_attendance' => 'required',
+            'custom_daily_salary' => 'nullable|numeric|min:0',
         ]);
 
         $status = 'present';
@@ -179,7 +181,8 @@ class AttendanceController extends Controller
                 'check_out' => $checkOut,
                 'status' => $status,
                 'notes' => $notes,
-                'leave_type_id' => $leaveTypeId
+                'leave_type_id' => $leaveTypeId,
+                'custom_daily_salary' => $request->custom_daily_salary
             ]
         );
 

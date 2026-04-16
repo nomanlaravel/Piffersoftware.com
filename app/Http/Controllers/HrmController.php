@@ -1,41 +1,43 @@
 <?php
+// HRM WhatsApp Integration Updated: 2026-04-10
+
 
 namespace App\Http\Controllers;
 
-use App\Models\Hrm;
-use App\Models\Eobi;
-use App\Models\Item;
-use App\Models\Work;
-use App\Models\Admin;
-use App\Models\Social;
-use App\Models\Disease;
-use App\Models\HiredAt;
-use App\Models\Payroll;
-use App\Models\Customer;
-use App\Models\Training;
-use App\Models\Education;
-use App\Models\Guarantor;
 use App\Imports\HrmsImport;
-use App\Models\Designation;
-use App\Models\hrmCategory;
-use App\Models\Observation;
-use Illuminate\Http\Request;
-use App\Models\TrainingGuard;
 use App\Mail\RegisterGuardEmail;
+use App\Models\Admin;
+use App\Models\Customer;
+use App\Models\Designation;
+use App\Models\Disease;
+use App\Models\Education;
+use App\Models\Eobi;
+use App\Models\Guarantor;
+use App\Models\HiredAt;
+use App\Models\Hrm;
+use App\Models\hrmCategory;
 use App\Models\InternalDispatch;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+use App\Models\Item;
+use App\Models\Observation;
+use App\Models\Payroll;
 use App\Models\ReminderNotification;
+use App\Models\Social;
+use App\Models\Training;
+use App\Models\TrainingGuard;
+use App\Models\Work;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
 use Validator;
+use App\Services\WhatsApp\WhatsAppNotificationManager;
+use App\Services\WhatsApp\NeuapixWhatsAppService;
 
 class HrmController extends Controller
 {
-
-
     public function hrm_notifications($id)
     {
         $hrm = Hrm::findOrFail($id);
@@ -55,12 +57,12 @@ class HrmController extends Controller
         //   return $payrolls;
         return view('training.payroll', compact('payrolls', 'hrm'));
     }
+
     public function delete_payroll(Request $request, $id)
     {
         DB::table('payrolls')->where('id', $id)->delete();
         return redirect()->back()->with('success', 'Deleted successfully');
     }
-
 
     public function saveItems(Request $request)
     {
@@ -73,8 +75,6 @@ class HrmController extends Controller
         return back()->with('success', 'Items saved successfully.');
     }
 
-
-
     public function payrollsearch(Request $request)
     {
         // Retrieve HRM data to pass to the view
@@ -86,10 +86,12 @@ class HrmController extends Controller
         // Filter by month and year if provided
         if ($request->has('month') && $request->has('year')) {
             $query->where(function ($q) use ($request) {
-                $q->whereMonth('created_at', $request->month)
+                $q
+                    ->whereMonth('created_at', $request->month)
                     ->whereYear('created_at', $request->year)
                     ->orWhere(function ($q) use ($request) {
-                        $q->whereMonth('updated_at', $request->month)
+                        $q
+                            ->whereMonth('updated_at', $request->month)
                             ->whereYear('updated_at', $request->year);
                     });
             });
@@ -107,7 +109,6 @@ class HrmController extends Controller
         // Return the view with the search results and HRM data
         return view('training.payroll', compact('payrolls', 'hrm'));
     }
-
 
     public function print_payroll($id)
     {
@@ -129,14 +130,12 @@ class HrmController extends Controller
             $hrmData = Hrm::with(['guarantors', 'trainings.guards'])
                 ->where('client_name', $customerName)
                 ->paginate(10);
-
         } else {
             $hrmData = Hrm::with(['guarantors', 'trainings.guards'])->paginate(10);
         }
         return view('Hrm.guards', compact('hrmData'));
-
-
     }
+
     public function hrm()
     {
         $userEmail = Auth::user()->email;
@@ -144,7 +143,8 @@ class HrmController extends Controller
         $customerName = $user->customer_name;
 
         if ($customerName) {
-            $hrmData = Hrm::whereNull('sub_guard_id')->with('guarantors')
+            $hrmData = Hrm::whereNull('sub_guard_id')
+                ->with('guarantors')
                 ->where('client_name', $customerName)
                 ->get();
         } else {
@@ -162,7 +162,7 @@ class HrmController extends Controller
         if ($request->filled('region')) {
             $query->where('hrm_region', $request->region);
         }
-        $hrms = $query->get(); // paginate if data is big
+        $hrms = $query->get();  // paginate if data is big
         // Always pass regions for dropdown
         $regions = Hrm::whereNotNull('hrm_region')->distinct()->pluck('hrm_region');
         return view('Hrm.staff_details_search', [
@@ -171,7 +171,6 @@ class HrmController extends Controller
             'filters' => $request->all(),
         ]);
     }
-
 
     public function search(Request $request)
     {
@@ -233,7 +232,6 @@ class HrmController extends Controller
             ->get();
         Log::info('Search Results: ' . $hrms->count());
 
-
         if ($hrms->isEmpty()) {
             return response()->json(['html' => '<tr><td colspan="6">No results found</td></tr>']);
         }
@@ -270,12 +268,14 @@ class HrmController extends Controller
 
         return view('Hrm.viewhrm', compact('hrms'));
     }
+
     public function showguarantors($id)
     {
         $hrm = Hrm::find($id);
         // return view('Hrm.viewguarantors', ['guarantor'=> $guarantor]);
         return view('Hrm.viewguarantors', compact('hrm'));
     }
+
     public function posthrm()
     {
         // return 2345;
@@ -292,10 +292,10 @@ class HrmController extends Controller
         $guards = Hrm::whereNull('sub_guard_id')->get();
         //  return $guards;
         $dispatches = InternalDispatch::all();
-
         //   return $dispatches;
         return view('Hrm.posthrm', compact('categories', 'diseases', 'eobis', 'socials', 'branches', 'designations', 'hiredats', 'customers', 'training', 'hrms', 'dispatches', 'guards'));
     }
+
     public function getNextSubGuard($id)
     {
         // Fetch the customer information based on the provided ID
@@ -309,6 +309,7 @@ class HrmController extends Controller
         // Return the hrm information in JSON format
         return response()->json($hrm);
     }
+
     public function sub_hrms($id)
     {
         $subGuards = Hrm::where('sub_guard_id', $id)->get();
@@ -517,8 +518,6 @@ class HrmController extends Controller
             // Save payroll data
             $hrm->payrolls()->createMany($payrollDataArray);
 
-
-
             $trainingdata = $request->only([
                 'general_trainer_name',
                 'training_no',
@@ -563,7 +562,6 @@ class HrmController extends Controller
 
             $hrm->trainingssecontion()->createMany($trainingdataArray);
 
-
             $workExperienceData = $request->only([
                 'org_name',
                 'email_oc',
@@ -591,7 +589,6 @@ class HrmController extends Controller
                     'end_date' => $workExperienceData['end_date'][$index],
                     't_exp' => $workExperienceData['t_exp'][$index],
                 ];
-
 
                 $workExperienceImageFields = [
                     'jec',
@@ -675,18 +672,31 @@ class HrmController extends Controller
 
             Log::info('HRM data successfully stored. hrm ID: ' . $hrmId);
 
+            // dd($hrm->cell);
+
+            // Send WhatsApp Welcome Message
+            if ($hrm->cell) {
+                app(WhatsAppNotificationManager::class)->sendHrmWelcome(
+                    $hrm->cell,
+                    $hrm->name,
+                    $hrm->category ?? 'Team Member', // fallback to Team Member if role is not set
+                    $hrm->email ?? $hrm->employee_no ?? 'N/A',
+                    $hrm // Passing HRM model for tracking
+                );
+            }
+
             if (isset($hrm->email)) {
                 Mail::to($hrm->email)->send(
                     new RegisterGuardEmail(
-                        $hrm->name,             // guard's name
-                        'Guard',                // position
-                        $hrm->start_date ?? '', // start date
-                        route('login')          // login URL
+                        $hrm->name,  // guard's name
+                        $hrm->category,  // position
+                        $hrm->start_date ?? '',  // start date
+                        route('login')  // login URL
                     )
                 );
-                $message = "HRM record was saved successfully.";
+                $message = 'HRM record was saved successfully.';
             } else {
-                $message = "HRM record was saved successfully. Email not sent because hrm email is missing.";
+                $message = 'HRM record was saved successfully. Email not sent because hrm email is missing.';
             }
 
             if ($request->has('save_and_email')) {
@@ -699,7 +709,6 @@ class HrmController extends Controller
             } else {
                 return redirect()->route('hrm')->with('success', $message);
             }
-
         } catch (\Exception $e) {
             DB::rollback();
 
@@ -708,8 +717,6 @@ class HrmController extends Controller
             return redirect()->back()->with('error', 'An error occurred while saving data.');
         }
     }
-
-
 
     public function deleteHrm($id)
     {
@@ -725,6 +732,17 @@ class HrmController extends Controller
             $hrm->guarantors()->delete();
             $hrm->workExperiences()->delete();
             $hrm->education()->delete();
+            
+            // Send WhatsApp Notification before deleting the model completely (need cell number)
+            if ($hrm->cell) {
+                app(\App\Services\WhatsApp\WhatsAppNotificationManager::class)->send(
+                    phone: $hrm->cell,
+                    message: "Dear {$hrm->name},\n\nYour record has been successfully removed from the Piffers Security System. If you have any questions, please contact the admin team.",
+                    eventType: 'delete',
+                    user: null
+                );
+            }
+
             $hrm->delete();
 
             DB::commit();
@@ -760,13 +778,12 @@ class HrmController extends Controller
             $params = [];
         }
 
-
         $response = Http::withoutVerifying()->get('https://guardstrainingmoodle.piffers.net/certapi.php', $params);
 
         // Convert JSON to array
         $certificates = $response->json();
         //  dd($response->body(), $certificates);
-//    return $certificates;
+        //    return $certificates;
         // Pass certificates to Blade too
         return view('Hrm.edithrm', compact(
             'hrms',
@@ -779,7 +796,6 @@ class HrmController extends Controller
             'certificates'
         ));
     }
-
 
     //   public function update_hrm(Request $request, $id)
     // {
@@ -907,8 +923,6 @@ class HrmController extends Controller
     //             }
     //         }
 
-
-
     //         DB::commit();
 
     //         Log::info('HRM data successfully updated.');
@@ -926,7 +940,6 @@ class HrmController extends Controller
 
     public function update_hrm(Request $request, $id)
     {
-
         //  return $request->all();
         DB::beginTransaction();
 
@@ -995,7 +1008,7 @@ class HrmController extends Controller
                     $files = $request->file($field);
 
                     if (!is_array($files)) {
-                        $files = [$files]; // Convert single file to array
+                        $files = [$files];  // Convert single file to array
                     }
 
                     $filePaths = [];
@@ -1031,7 +1044,6 @@ class HrmController extends Controller
                 }
             }
 
-
             //     foreach ($hrmImageFields as $field) {
             //     if ($request->hasFile($field)) {
             //         $files = $request->file($field);
@@ -1053,7 +1065,6 @@ class HrmController extends Controller
             //         $hrm->$field = count($filePaths) > 1 ? json_encode($filePaths) : $filePaths[0];
             //     }
             // }
-
 
             if ($request->has('activation')) {
                 $hrm->activation = $request->input('activation');
@@ -1149,7 +1160,6 @@ class HrmController extends Controller
                 }
             }
 
-
             // Update Work Experiences
             $workExperienceData = $request->input('workExperiences', []);
 
@@ -1217,8 +1227,16 @@ class HrmController extends Controller
 
             Log::info('HRM data successfully updated.');
 
-            return redirect()->back()->with('success', 'HRM data successfully updated.');
+            // ✅ Send WhatsApp Notification on Update
+            $manager = app(WhatsAppNotificationManager::class);
+            $manager->send(
+                phone: $hrm->cell,
+                message: 'Your HRM record has been successfully updated.',
+                eventType: 'update',
+                user: $hrm
+            );
 
+            return redirect()->back()->with('success', 'HRM data successfully updated.');
         } catch (\Exception $e) {
             DB::rollback();
 
@@ -1227,7 +1245,6 @@ class HrmController extends Controller
             return redirect()->back()->with('error', 'An error occurred while updating data.');
         }
     }
-
 
     public function sendPDFViaEmail(Request $request)
     {
@@ -1240,7 +1257,8 @@ class HrmController extends Controller
             $pdf = $request->file('pdf');
 
             Mail::send([], [], function ($message) use ($email, $cc, $bcc, $subject, $body, $pdf) {
-                $message->to($email)
+                $message
+                    ->to($email)
                     ->subject($subject);
 
                 // Check if CC is provided
@@ -1253,19 +1271,31 @@ class HrmController extends Controller
                     $message->bcc($bcc);
                 }
 
-                $message->attach($pdf, ['as' => 'hrm_information.pdf'])
+                $message
+                    ->attach($pdf, ['as' => 'hrm_information.pdf'])
                     ->text($body);
             });
 
-            return response()->json(['message' => 'Email sent successfully!'], 200);
+            // Send WhatsApp Notification for PDF sharing
+            $hrm = $request->has('hrm_id') ? \App\Models\Hrm::find($request->hrm_id) : null;
+            $phone = $request->input('phone') ?? ($hrm ? $hrm->cell : null);
+
+            if ($phone) {
+                app(\App\Services\WhatsApp\WhatsAppNotificationManager::class)->send(
+                    phone: $phone,
+                    message: $body ?: "Please find the document attached to your email sent from Piffers Security System.",
+                    eventType: 'share_pdf',
+                    user: $hrm
+                );
+            }
+
+            return response()->json(['message' => 'Email and WhatsApp sent successfully!'], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to send email.'], 500);
         }
     }
 
-
-
-    //Hrm Categories
+    // Hrm Categories
 
     public function hrmcategory()
     {
@@ -1304,8 +1334,8 @@ class HrmController extends Controller
         return redirect()->back()->with('success', 'Category deleted successfully');
     }
 
-    //Hired At
-    //Hrm Categories
+    // Hired At
+    // Hrm Categories
 
     public function hiredat()
     {
@@ -1329,7 +1359,7 @@ class HrmController extends Controller
         return redirect()->back()->with('success', 'Hired At deleted successfully');
     }
 
-    //Hrm Designations
+    // Hrm Designations
 
     public function designation()
     {
@@ -1377,7 +1407,7 @@ class HrmController extends Controller
         }
     }
 
-    //Hrm Diseases
+    // Hrm Diseases
 
     public function disease()
     {
@@ -1425,7 +1455,7 @@ class HrmController extends Controller
         }
     }
 
-    //Hrm Old Age EOBI Cities
+    // Hrm Old Age EOBI Cities
     public function eobi()
     {
         $eobiCities = Eobi::all();
@@ -1469,7 +1499,7 @@ class HrmController extends Controller
         return redirect()->back()->with('success', 'Fall In EOBI City deleted successfully.');
     }
 
-    //Hrm Old Age EOBI Cities (Social Security)
+    // Hrm Old Age EOBI Cities (Social Security)
     public function social()
     {
         $socialCities = Social::all();
@@ -1521,6 +1551,7 @@ class HrmController extends Controller
         $observations = Observation::all();
         return view('Hrm.observation', compact('observations'));
     }
+
     public function storeobservation(Request $request)
     {
         $observations = new Observation();
@@ -1539,6 +1570,16 @@ class HrmController extends Controller
     public function delete_hrm($id)
     {
         $delete = Hrm::find($id);
+        
+        if ($delete && $delete->cell) {
+            app(\App\Services\WhatsApp\WhatsAppNotificationManager::class)->send(
+                phone: $delete->cell,
+                message: "Dear {$delete->name},\n\nYour record has been successfully removed from the Piffers Security System. If you have any questions, please contact the admin team.",
+                eventType: 'delete',
+                user: null
+            );
+        }
+
         $delete->delete();
         return redirect()->back()->with('success', ' Deleted successfully');
     }
@@ -1563,5 +1604,4 @@ class HrmController extends Controller
             'data' => $hrm
         ]);
     }
-
 }

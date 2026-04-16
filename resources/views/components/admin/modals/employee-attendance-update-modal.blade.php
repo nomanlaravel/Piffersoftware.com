@@ -209,6 +209,33 @@
 
 
 
+                    <!-- Financial Adjustment: Custom Day Salary -->
+                    <div class="financial-adjustment-section attendance-section mt-4" style="display: none;">
+                        <div class="row justify-content-center">
+                            <div class="col-md-10">
+                                <div class="info-card salary-card">
+                                    <div class="card-icon">
+                                        <i class="fa fa-money"></i>
+                                    </div>
+                                    <h6 class="card-title-sm">Financial Adjustment</h6>
+                                    
+                                    <div class="modern-input-group">
+                                        <label>
+                                            <i class="fa fa-dollar mr-2"></i>Day Salary (Custom)
+                                        </label>
+                                        <div class="input-with-icon">
+                                            <i class="fa fa-money"></i>
+                                            <input type="number" step="0.01" class="modern-input" name="custom_daily_salary" placeholder="Enter custom salary for this day (Optional)">
+                                        </div>
+                                        <small class="text-muted mt-2 d-block">
+                                            <i class="fa fa-info-circle mr-1"></i> If set, this will override the fixed daily salary calculation for this specific date.
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Submit Button -->
                     <div class="modal-footer-custom punch-btn-section" style="display: none;">
                         <button type="submit" class="btn-modern btn-primary-gradient punch-btn">
@@ -529,6 +556,10 @@
 
     .absent-card::before {
         background: linear-gradient(90deg, #ee0979, #ff6a00);
+    }
+
+    .salary-card::before {
+        background: linear-gradient(90deg, #11998e, #38ef7d);
     }
 
     .card-icon {

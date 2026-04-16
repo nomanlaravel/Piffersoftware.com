@@ -630,8 +630,6 @@
                     @endcan
 
                     {{-- Attendance sub-menu --}}
-                    {{-- Attendance sub-menu --}}
-                    @auth
                       @if(auth()->user()->role === 'Super Admin')
                         <li class="nav-item">
                           <a class="nav-link" data-toggle="collapse" href="#attendanceSubMenu" aria-expanded="false"
@@ -645,28 +643,6 @@
                           </div>
                         </li>
                       @endif
-                    @endauth
-
-                    <!-- {{-- Leaves sub-menu --}}
-                        @canany(['view_leave_type', 'view_leave_request'])
-                          <li class="nav-item">
-                            <a class="nav-link" data-toggle="collapse" href="#employeeLeaveSubMenu" aria-expanded="false"
-                              aria-controls="employeeLeaveSubMenu">Employee Leaves</a>
-                            <div class="collapse" id="employeeLeaveSubMenu">
-                              <ul class="nav flex-column sub-menu">
-                                @can('view_leave_type')
-                                  <li class="nav-item"><a class="nav-link"
-                                      href="{{route('dashboard.leave-types.index')}}">Add/View Leave Types</a></li>
-                                @endcan
-                                @can('view_leave_request')
-                                  <li class="nav-item"><a class="nav-link"
-                                      href="{{route('dashboard.employee-leaves.index')}}">Approve/Disapprove Leave Requests</a>
-                                  </li>
-                                @endcan
-                              </ul>
-                            </div>
-                          </li>
-                        @endcanany -->
 
                     {{-- Leaves sub-menu --}}
                     @canany(['view_leave_type', 'view_leave_request'])

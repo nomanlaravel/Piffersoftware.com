@@ -1460,6 +1460,17 @@ class CustomerController extends Controller
             DB::commit();
 
             $customerId = $customer->id;
+            // Send WhatsApp Confirmation using existing sendWelcome template
+                        $whatsappTo = !empty($customer->whatsapp_number) ? $customer->whatsapp_number : $customer->phone;
+                        if (!empty($whatsappTo)) {
+                            app(\App\Services\WhatsApp\WhatsAppNotificationManager::class)->sendWelcome(
+                                to: $whatsappTo,
+                                customerName: $customer->display_name_as,
+                                username: $customerData['email'],
+                                userModel: $customer
+                            );
+                            Log::info('Confirmation WhatsApp sent to: ' . $whatsappTo);
+                        }
             Log::info('Customer data successfully stored. Customer ID: ' . $customerId);
             // Send email if save_and_email is clicked
             if ($request->has('save_and_email') && !empty($customerData['email'])) {
@@ -1467,6 +1478,8 @@ class CustomerController extends Controller
                     try {
                         Mail::to($customerData['email'])->send(new CustomerConfirmation($customer));
                         Log::info('Confirmation email sent to: ' . $customerData['email']);
+
+                        
                     } catch (\Exception $e) {
                         Log::error('Error sending email to ' . $customerData['email'] . ': ' . $e->getMessage());
                     }
@@ -1651,6 +1664,24 @@ class CustomerController extends Controller
                     ->text($body);
             });
 
+            // Send WhatsApp message
+            // Send WhatsApp message
+            if ($customerRecipient) {
+                $whatsappTo = !empty($customerRecipient->whatsapp_number) ? $customerRecipient->whatsapp_number : $customerRecipient->phone;
+                if (!empty($whatsappTo)) {
+                    $subjectFallback = !empty($subject) ? $subject : 'Notification';
+                    $bodyFallback = !empty($body) ? strip_tags($body) : 'Please find the details in your email.';
+                    
+                    app(\App\Services\WhatsApp\WhatsAppNotificationManager::class)->send(
+                        phone: $whatsappTo,
+                        message: "*" . $subjectFallback . "*\n\n" . $bodyFallback,
+                        eventType: 'pdf_via_email',
+                        user: $customerRecipient,
+                        category: 'UTILITY'
+                    );
+                }
+            }
+
             return response()->json(['message' => 'Email sent successfully!'], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to send email.'], 500);
@@ -1807,6 +1838,24 @@ public function viewcustomer($id)
                     ->subject('Customer Information PDF')
                     ->attachData($pdf->output(), 'customer_information.pdf');
             });
+
+            // Send WhatsApp message
+            // Send WhatsApp message
+            if ($customerRecipient) {
+                $whatsappTo = !empty($customerRecipient->whatsapp_number) ? $customerRecipient->whatsapp_number : $customerRecipient->phone;
+                if (!empty($whatsappTo)) {
+                    $nameFallback = !empty($customerRecipient->display_name_as) ? $customerRecipient->display_name_as : 'Customer';
+                    $emailFallback = !empty($email) ? $email : 'your email';
+
+                    app(\App\Services\WhatsApp\WhatsAppNotificationManager::class)->send(
+                        phone: $whatsappTo,
+                        message: "Dear *{$nameFallback}*,\n\nYour Customer Information PDF has been sent to {$emailFallback}.",
+                        eventType: 'pdf_generated',
+                        user: $customerRecipient,
+                        category: 'UTILITY'
+                    );
+                }
+            }
 
             // Log success message
             Log::info('Email sent successfully to ' . $email);
@@ -2383,6 +2432,30 @@ foreach ($customerdepartmentsData as $index => $customerdepartmentData) {
                                 );
 
                                 Log::info('Update confirmation email sent to dept_email: ' . $department['dept_email']);
+
+                                // Send WhatsApp Confirmation to department cell using generic send method
+                                if (!empty($department['dept_cell'])) {
+                                    $viewUrl = route('viewcustomer', ['id' => $customer->id]);
+                                    $message = "Welcome, *{$customer->display_name_as}*!\n\n" .
+                                        "Your customer profile has been successfully created/updated.\n\n" .
+                                        "*Customer ID:* {$customer->id}\n\n" .
+                                        "You can view the details here: {$viewUrl}\n\n" .
+                                        "*Department Details:*\n" .
+                                        "Name: " . ($department['dept_name'] ?? '-') . "\n" .
+                                        "Designation: " . ($department['dept_desig'] ?? '-') . "\n" .
+                                        "City: " . ($department['dept_city'] ?? '-') . "\n\n" .
+                                        "Best regards,\n" .
+                                        "Piffers Security System";
+
+                                    app(\App\Services\WhatsApp\WhatsAppNotificationManager::class)->send(
+                                        phone: $department['dept_cell'],
+                                        message: $message,
+                                        eventType: 'department_confirmation',
+                                        user: $customer,
+                                        category: 'UTILITY'
+                                    );
+                                    Log::info('Update confirmation WhatsApp sent to dept_cell: ' . $department['dept_cell']);
+                                }
                             } catch (\Exception $e) {
                                 Log::error('Error sending email to dept_email ' . $department['dept_email'] . ': ' . $e->getMessage());
                             }

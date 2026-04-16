@@ -9,6 +9,8 @@ use App\Models\CustomerArmourer;
 use App\Models\ReminderNotification;
 use App\Mail\ArmourerVisitReminder;
 use App\Notifications\ArmourerReminderNotification;
+use App\Services\WhatsApp\WhatsAppNotificationManager;
+use Log;
 
 class SendArmourerReminders extends Command
 {
@@ -51,6 +53,18 @@ class SendArmourerReminders extends Command
         $customer = $armourer->customer;
         $email = $customer->email;
         $issueDate = $armourer->arm_auth_issue;
+
+        // Whatsapp intergeration
+         $whatsappTo = !empty($customer->whatsapp_number) ? $customer->whatsapp_number : $customer->phone;
+                        if (!empty($whatsappTo)) {
+                            app(WhatsAppNotificationManager::class)->sendMeetingReminder(
+                                to: $whatsappTo,
+                                customerName: $customer->customers_name,
+                                meetingDate: Carbon::parse($issueDate)->format('d M Y'),
+                                userModel: $customer
+                            );
+                            Log::info('Armourer Reminder WhatsApp sent to: ' . $whatsappTo);
+                        }
 
         // Send email to customer
         Mail::to($email)->send(new ArmourerVisitReminder($armourer));
