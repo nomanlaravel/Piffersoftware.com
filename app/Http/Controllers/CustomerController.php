@@ -51,6 +51,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Mail\DepartmentConfirmationMail;
+use App\Services\WhatsApp\WhatsAppNotificationManager;
 
 class CustomerController extends Controller
 {
@@ -1452,7 +1453,7 @@ class CustomerController extends Controller
             // Send WhatsApp Confirmation using existing sendWelcome template
                         $whatsappTo = !empty($customer->whatsapp_number) ? $customer->whatsapp_number : $customer->phone;
                         if (!empty($whatsappTo)) {
-                            app(\App\Services\WhatsApp\WhatsAppNotificationManager::class)->sendWelcome(
+                            app(WhatsAppNotificationManager::class)->sendWelcome(
                                 to: $whatsappTo,
                                 customerName: $customer->display_name_as,
                                 username: $customerData['email'],
@@ -1551,6 +1552,19 @@ class CustomerController extends Controller
 
             Log::info('Email sent successfully to ' . $recipientEmail);
 
+            // Send WhatsApp message
+            if ($customerRecipient) {
+                $whatsappTo = !empty($customerRecipient->whatsapp_number) ? $customerRecipient->whatsapp_number : $customerRecipient->phone;
+                if (!empty($whatsappTo)) {
+                    app(WhatsAppNotificationManager::class)->sendCustomerReport(
+                        to: $whatsappTo,
+                        recipientName: $customerRecipient->customers_name,
+                        date: now()->format('Y-m-d'),
+                        userModel: $customerRecipient
+                    );
+                }
+            }
+
             return response()->json(['status' => 'success', 'message' => 'Email sent successfully.']);
         } catch (\Exception $e) {
             Log::error('Failed to send email. Error: ' . $e->getMessage());
@@ -1611,6 +1625,19 @@ class CustomerController extends Controller
 
             Log::info('Email sent successfully to ' . $recipientEmail);
 
+            // Send WhatsApp message
+            if ($customerRecipient) {
+                $whatsappTo = !empty($customerRecipient->whatsapp_number) ? $customerRecipient->whatsapp_number : $customerRecipient->phone;
+                if (!empty($whatsappTo)) {
+                    app(WhatsAppNotificationManager::class)->sendCustomerReport(
+                        to: $whatsappTo,
+                        recipientName: $customerRecipient->customers_name,
+                        date: now()->format('Y-m-d'),
+                        userModel: $customerRecipient
+                    );
+                }
+            }
+
             return response()->json(['status' => 'success', 'message' => 'Email sent successfully.']);
         } catch (\Exception $e) {
             Log::error('Failed to send email. Error: ' . $e->getMessage());
@@ -1654,19 +1681,14 @@ class CustomerController extends Controller
             });
 
             // Send WhatsApp message
-            // Send WhatsApp message
             if ($customerRecipient) {
                 $whatsappTo = !empty($customerRecipient->whatsapp_number) ? $customerRecipient->whatsapp_number : $customerRecipient->phone;
                 if (!empty($whatsappTo)) {
-                    $subjectFallback = !empty($subject) ? $subject : 'Notification';
-                    $bodyFallback = !empty($body) ? strip_tags($body) : 'Please find the details in your email.';
-                    
-                    app(\App\Services\WhatsApp\WhatsAppNotificationManager::class)->send(
-                        phone: $whatsappTo,
-                        message: "*" . $subjectFallback . "*\n\n" . $bodyFallback,
-                        eventType: 'pdf_via_email',
-                        user: $customerRecipient,
-                        category: 'UTILITY'
+                    app(WhatsAppNotificationManager::class)->sendCustomerReport(
+                        to: $whatsappTo,
+                        recipientName: $customerRecipient->customers_name,
+                        date: now()->format('Y-m-d'),
+                        userModel: $customerRecipient
                     );
                 }
             }
@@ -1818,7 +1840,7 @@ class CustomerController extends Controller
                     $nameFallback = !empty($customerRecipient->display_name_as) ? $customerRecipient->display_name_as : 'Customer';
                     $emailFallback = !empty($email) ? $email : 'your email';
 
-                    app(\App\Services\WhatsApp\WhatsAppNotificationManager::class)->send(
+                    app(WhatsAppNotificationManager::class)->send(
                         phone: $whatsappTo,
                         message: "Dear *{$nameFallback}*,\n\nYour Customer Information PDF has been sent to {$emailFallback}.",
                         eventType: 'pdf_generated',
@@ -1949,7 +1971,7 @@ class CustomerController extends Controller
             $customer->update($customerData);
 
             // Signatory Details
-            $customerSignatureData = $request->input('customersignatories');
+            $customerSignatureData = $request->input('customersignatories', []);
 
             foreach ($customerSignatureData as $customerSignatureDatum) {
                 $customersignatoryId = $customerSignatureDatum['s_id'];
@@ -1966,7 +1988,7 @@ class CustomerController extends Controller
 
 
             // Salary And Benefits
-            $customerSalaryAndBenefitsData = $request->input('customersalary');
+            $customerSalaryAndBenefitsData = $request->input('customersalary', []);
 
             foreach ($customerSalaryAndBenefitsData as $customerSalaryAndBenefitsData) {
                 $customerSalaryAndBenefitsId = $customerSalaryAndBenefitsData['sal_id'];
@@ -1995,7 +2017,7 @@ class CustomerController extends Controller
 
             //Customers ManPower Data :
 
-            $customermansData = $request->input('customermanpowers');
+            $customermansData = $request->input('customermanpowers', []);
 
             foreach ($customermansData as $customermanData) {
                 $customermanId = $customermanData['m_id'];
@@ -2024,7 +2046,7 @@ class CustomerController extends Controller
 
             //Customers Emergency Data :
 
-            $customeremergenciesData = $request->input('customeremergencies');
+            $customeremergenciesData = $request->input('customeremergencies', []);
 
             foreach ($customeremergenciesData as $customeremergencyData) {
                 $customeremergencyId = $customeremergencyData['e_id'];
@@ -2052,8 +2074,7 @@ class CustomerController extends Controller
             }
 
             //Customers Departments Data :
-
-            $customerdepartmentsData = $request->input('customerdepartments');
+            $customerdepartmentsData = $request->input('customerdepartments', []);
 
             foreach ($customerdepartmentsData as $customerdepartmentData) {
                 $customerdepartmentId = $customerdepartmentData['d_id'];
@@ -2082,7 +2103,7 @@ class CustomerController extends Controller
 
             //Customers Inspections Data :
 
-            $customerinspectionsData = $request->input('customerinspections');
+            $customerinspectionsData = $request->input('customerinspections', []);
 
             foreach ($customerinspectionsData as $customerinspectionData) {
                 $customerinspectionId = $customerinspectionData['i_id']; // Check the key for the inspection ID
@@ -2111,7 +2132,7 @@ class CustomerController extends Controller
 
             //Customers Armourer Data :
 
-            $customerarmsData = $request->input('customerarmourers');
+            $customerarmsData = $request->input('customerarmourers', []);
 
             foreach ($customerarmsData as $customerarmData) {
                 $customerarmId = $customerarmData['a_id']; // Update the variable name to reflect the correct ID
@@ -2140,7 +2161,7 @@ class CustomerController extends Controller
 
             //Customers Incident Form Data :
 
-            $customerincidentsData = $request->input('customerincidents');
+            $customerincidentsData = $request->input('customerincidents', []);
 
             foreach ($customerincidentsData as $customerincidentData) {
                 $customerincidentId = $customerincidentData['in_id'];
@@ -2169,7 +2190,7 @@ class CustomerController extends Controller
 
             //Customers Assignment Form Data :
 
-            $customerassigmentsData = $request->input('customerassigments');
+            $customerassigmentsData = $request->input('customerassigments', []);
 
             foreach ($customerassigmentsData as $customerassigmentData) {
                 $customerassigmentId = $customerassigmentData['asig_id'];
@@ -2198,7 +2219,7 @@ class CustomerController extends Controller
 
             //Customers Audits Form Data :
 
-            $customerauditsData = $request->input('customeraudits');
+            $customerauditsData = $request->input('customeraudits', []);
 
             foreach ($customerauditsData as $customerauditData) {
                 $customerauditId = $customerauditData['au_id'];
@@ -2227,7 +2248,7 @@ class CustomerController extends Controller
 
             //Customers Bussiness Data :
 
-            $customerbussinessesData = $request->input('customerbussinesses');
+            $customerbussinessesData = $request->input('customerbussinesses', []);
 
             foreach ($customerbussinessesData as $customerbussinessData) {
                 $customerbussinessId = $customerbussinessData['b_id'];
@@ -2256,7 +2277,7 @@ class CustomerController extends Controller
 
             //Promotional Activities :
 
-            $customeractivitiesData = $request->input('customeractivities');
+            $customeractivitiesData = $request->input('customeractivities', []);
 
             foreach ($customeractivitiesData as $customeractivityData) {
                 $customeractivityId = $customeractivityData['act_id'];
@@ -2285,7 +2306,7 @@ class CustomerController extends Controller
 
             //Feedbacks Data :
 
-            $customerfeedbacksData = $request->input('customerfeedbacks');
+            $customerfeedbacksData = $request->input('customerfeedbacks', []);
 
             foreach ($customerfeedbacksData as $customerfeedbackData) {
                 $customerfeedbackId = $customerfeedbackData['f_id'];
@@ -2314,7 +2335,7 @@ class CustomerController extends Controller
 
             //Complaints Data :
 
-            $customercomplaintsData = $request->input('customercomplaints');
+            $customercomplaintsData = $request->input('customercomplaints', []);
 
             foreach ($customercomplaintsData as $customercomplaintData) {
                 $customercomplaintId = $customercomplaintData['com_id'];
@@ -2352,7 +2373,7 @@ class CustomerController extends Controller
 
             //Notifications Data :
 
-            $customernotificationsData = $request->input('customernotifications');
+            $customernotificationsData = $request->input('customernotifications', []);
 
             foreach ($customernotificationsData as $customernotificationData) {
                 $customernotificationId = $customernotificationData['n_id'];
@@ -2380,49 +2401,71 @@ class CustomerController extends Controller
             }
             DB::commit();
             $customerId = $customer->id;
-            // Send email to all POCs (sign_email and dept_email) if save_and_email is clicked
-            if ($request->has('save_and_email')) {
-                if ($customer->notification_status == 1) {
+
+            if ($customer->notification_status == 1) {
+                    $viewUrl = route('viewcustomer', ['id' => $customer->id]);
+
+                    // 1. Send WhatsApp Confirmation to the Primary Customer Number (if available)
+                    $primaryPhone = $customer->whatsapp_number ?: $customer->phone;
+                    if (!empty($primaryPhone)) {
+                        try {
+                            app(WhatsAppNotificationManager::class)->sendCustomerUpdate(
+                                to: $primaryPhone,
+                                recipientName: $customer->customers_name,
+                                customerId: $customer->id,
+                                deptName: 'Head Office',
+                                viewUrl: $viewUrl,
+                                userModel: $customer
+                            );
+                            Log::info('Update confirmation WhatsApp sent to primary customer cell: ' . $primaryPhone);
+                        } catch (\Exception $e) {
+                            Log::error('Error sending WhatsApp to primary customer ' . $primaryPhone . ': ' . $e->getMessage());
+                        }
+                    }else{
+
+                            Log::info('WhatsApp not sent to primary customer cell: '. $primaryPhone);
+                        }
+
+                    // 2. Send Email and/or WhatsApp to Department POCs
                     foreach ($customerdepartmentsData as $department) {
+                        // Send Email if dept_email is provided
                         if (!empty($department['dept_email'])) {
                             try {
                                 Mail::to($department['dept_email'])->send(
                                     new DepartmentConfirmationMail($customer, $department)
                                 );
-
                                 Log::info('Update confirmation email sent to dept_email: ' . $department['dept_email']);
-
-                                // Send WhatsApp Confirmation to department cell using generic send method
-                                if (!empty($department['dept_cell'])) {
-                                    $viewUrl = route('viewcustomer', ['id' => $customer->id]);
-                                    $message = "Welcome, *{$customer->display_name_as}*!\n\n" .
-                                        "Your customer profile has been successfully created/updated.\n\n" .
-                                        "*Customer ID:* {$customer->id}\n\n" .
-                                        "You can view the details here: {$viewUrl}\n\n" .
-                                        "*Department Details:*\n" .
-                                        "Name: " . ($department['dept_name'] ?? '-') . "\n" .
-                                        "Designation: " . ($department['dept_desig'] ?? '-') . "\n" .
-                                        "City: " . ($department['dept_city'] ?? '-') . "\n\n" .
-                                        "Best regards,\n" .
-                                        "Piffers Security System";
-
-                                    app(\App\Services\WhatsApp\WhatsAppNotificationManager::class)->send(
-                                        phone: $department['dept_cell'],
-                                        message: $message,
-                                        eventType: 'department_confirmation',
-                                        user: $customer,
-                                        category: 'UTILITY'
-                                    );
-                                    Log::info('Update confirmation WhatsApp sent to dept_cell: ' . $department['dept_cell']);
-                                }
                             } catch (\Exception $e) {
                                 Log::error('Error sending email to dept_email ' . $department['dept_email'] . ': ' . $e->getMessage());
                             }
+                        }
+
+                        // Send WhatsApp if dept_cell is provided
+                        if (!empty($department['dept_cell'])) {
+                            try {
+                                app(WhatsAppNotificationManager::class)->sendCustomerUpdate(
+                                    to: $department['dept_cell'],
+                                    recipientName: $customer->customers_name,
+                                    customerId: $customer->id,
+                                    deptName: $department['dept_name'] ?? '-',
+                                    viewUrl: $viewUrl,
+                                    userModel: $customer
+                                );
+                                Log::info('Update confirmation WhatsApp sent to dept_cell: ' . $department['dept_cell']);
+                            } catch (\Exception $e) {
+                                Log::error('Error sending WhatsApp to dept_cell ' . $department['dept_cell'] . ': ' . $e->getMessage());
+                            }
+                        }else{
+                            Log::info('WhatsApp not sent to dept_cell: ');
                         }
                     }
                 } else {
                     Log::info('Update confirmation email skipped. Customer notification status is OFF.');
                 }
+                
+            // Send email to all POCs (sign_email and dept_email) if save_and_email is clicked
+            if ($request->has('save_and_email')) {
+                
                 $url = route('viewcustomer', ['id' => $customerId]);
                 if ($customer->notification_status == 1) {
                     return redirect()->to($url)->with('success', 'Customer data updated and emails sent to POCs and department contacts.');
@@ -2473,6 +2516,17 @@ class CustomerController extends Controller
             $customer->customercomplaints()->delete();
             $customer->customernotifications()->delete();
             $customer->delete();
+
+            // Notify about deletion
+            $whatsappTo = !empty($customer->whatsapp_number) ? $customer->whatsapp_number : $customer->phone;
+            if (!empty($whatsappTo)) {
+                app(WhatsAppNotificationManager::class)->sendCustomerReport(
+                    to: $whatsappTo,
+                    recipientName: $customer->customers_name,
+                    date: now()->format('Y-m-d'),
+                    userModel: $customer
+                );
+            }
 
             DB::commit();
 
@@ -3025,6 +3079,17 @@ class CustomerController extends Controller
         $customer->save();
 
         $status = $customer->notification_status ? 'enabled' : 'disabled';
+
+        // Notify about status change via WhatsApp
+        $whatsappTo = !empty($customer->whatsapp_number) ? $customer->whatsapp_number : $customer->phone;
+        if (!empty($whatsappTo)) {
+            app(WhatsAppNotificationManager::class)->sendCustomerReport(
+                to: $whatsappTo,
+                recipientName: $customer->customers_name,
+                date: now()->format('Y-m-d'),
+                userModel: $customer
+            );
+        }
 
         return redirect()->back()->with('success', 'Notifications have been ' . $status . ' for this customer.');
     }

@@ -8,6 +8,8 @@ use Illuminate\Console\Command;
 use App\Mail\CNICExpiryReminderMail;
 use App\Models\ReminderNotification;
 use Illuminate\Support\Facades\Mail;
+use Log;
+use App\Services\WhatsApp\WhatsAppNotificationManager;
 
 class SendCNICExpiryReminders extends Command
 {
@@ -33,6 +35,19 @@ class SendCNICExpiryReminders extends Command
             $this->info("   - Reminder Date: {$reminderDate->format('Y-m-d')}");
 
             if ($reminderDate->isSameDay($today)) {
+
+                   // Whatsapp intergeration
+                $whatsappTo = $hrm->cell;
+                if ($whatsappTo) {
+                    app(WhatsAppNotificationManager::class)->sendCnicExpiryReminder(
+                        to: $whatsappTo,
+                        hrmName: $hrm->name,
+                        expiry_date: Carbon::parse($hrm->cnic_expire)->format('d M Y'),
+                        userModel: $hrm
+                    );
+                    Log::info('CNIC Expiry Reminder WhatsApp sent to: ' . $whatsappTo);
+                }
+
                 // send email
                 Mail::to($hrm->email)->send(new CNICExpiryReminderMail($hrm));
                 $this->info("✅ Reminder sent to {$hrm->name} ({$hrm->email})");

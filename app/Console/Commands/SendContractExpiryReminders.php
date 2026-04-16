@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Log;
 use App\Mail\ContractExpiryReminder;
 use App\Models\ReminderNotification;
 use Illuminate\Support\Facades\Mail;
+use App\Services\WhatsApp\WhatsAppNotificationManager;
 
 class SendContractExpiryReminders extends Command
 {
@@ -32,6 +33,20 @@ class SendContractExpiryReminders extends Command
         $count = 0;
 
         foreach ($customers as $customer) {
+            
+        // Whatsapp intergeration
+         $whatsappTo = !empty($customer->whatsapp_number) ? $customer->whatsapp_number : $customer->phone;
+                        if (!empty($whatsappTo)) {
+                            app(WhatsAppNotificationManager::class)->sendContractExpiry(
+                                to: $whatsappTo,
+                                customerName: $customer->customers_name,
+                                contract_end_date: Carbon::parse($targetDate)->format('d M Y'),
+                                userModel: $customer
+                            );
+                            Log::info('Contract Reminder WhatsApp sent to: ' . $whatsappTo);
+                        }
+
+
             if ($customer->email) {
                 // Send Email
                 Log::info("Sending email to: " . $customer->email);
@@ -43,7 +58,7 @@ class SendContractExpiryReminders extends Command
                     'entity_type' => 'customer',
                     'entity_id' => $customer->id,
                     'title' => 'Contract Expiry Reminder',
-                    'message' => "Dear {$customer->customer_name}, your contract will expire on {$customer->c_end_date}.",
+                    'message' => "Dear {$customer->customer_name}, your contract will expire on {$customer->c_end_date} date.",
                     'is_read' => false,
                 ]);
                 $count++;

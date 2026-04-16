@@ -885,3 +885,98 @@ Route::get('/region-reports/edit/{id}', [AdminController::class, 'editRegionRepo
 Route::put('/region-reports/update/{id}', [AdminController::class, 'updateRegionReport']);
 Route::delete('/region-reports/delete/{id}', [AdminController::class, 'deleteRegionReport']);
 Route::get('/search/region/report/export', [AdminController::class, 'export_region_report'])->name('regionwise.index');
+
+
+
+// Temporary Test Route for PDF Email WhatsApp Notification
+Route::get('/test-pdf-notification', function () {
+    $customer = \App\Models\Customer::first();
+    if (!$customer) {
+        return "Error: No customer records found in the database.";
+    }
+
+    // Mocking the Request
+    $request = new \Illuminate\Http\Request();
+    $request->setMethod('POST');
+    $request->request->add([
+        'email' => $customer->email,
+        'subject' => 'Test Report Notification',
+        'body' => 'This is a test message to confirm the PDF attachment flow and WhatsApp notification.',
+    ]);
+
+    // Create a fake PDF file
+    $file = \Illuminate\Http\UploadedFile::fake()->create('test_report.pdf', 100, 'application/pdf');
+    $request->files->add(['pdf' => $file]);
+
+    try {
+        $controller = app(\App\Http\Controllers\CustomerController::class);
+        $response = $controller->sendPDFViaEmail($request);
+        
+        return response()->json([
+            'status' => 'Test Executed',
+            'customer_targeted' => $customer->customers_name,
+            'customer_email' => $customer->email,
+            'controller_response' => $response->getData()
+        ]);
+    } catch (\Exception $e) {
+        return "An error occurred during testing: " . $e->getMessage();
+    }
+});
+
+// Test Route for sendReportEmail
+Route::get('/test-report-notification', function () {
+    $customer = \App\Models\Customer::first();
+    if (!$customer) return "Error: No customer found.";
+
+    $request = new \Illuminate\Http\Request();
+    $request->setMethod('POST');
+    $request->request->add([
+        'subject' => 'General Inspection Report',
+        'body' => 'Hello, please find the general inspection report for your site.',
+        'recipientEmail' => $customer->email,
+    ]);
+
+    // Simulate dummy attachments
+    $file1 = \Illuminate\Http\UploadedFile::fake()->create('site_photo.jpg', 50, 'image/jpeg');
+    $request->files->add(['attachments' => [$file1]]);
+
+    try {
+        $controller = app(\App\Http\Controllers\CustomerController::class);
+        $response = $controller->sendReportEmail($request);
+        
+        return response()->json([
+            'status' => 'Test Executed (Report)',
+            'customer_targeted' => $customer->customers_name,
+            'controller_response' => $response->getData()
+        ]);
+    } catch (\Exception $e) {
+        return "An error occurred during testing: " . $e->getMessage();
+    }
+});
+
+// Test Route for sendEditReportEmail
+Route::get('/test-edit-report-notification', function () {
+    $customer = \App\Models\Customer::first();
+    if (!$customer) return "Error: No customer found.";
+
+    $request = new \Illuminate\Http\Request();
+    $request->setMethod('POST');
+    $request->request->add([
+        'subject' => 'REVISED: Inspection Report',
+        'body' => 'The site inspection report has been updated with corrections.',
+        'recipientEmail' => $customer->email,
+    ]);
+
+    try {
+        $controller = app(\App\Http\Controllers\CustomerController::class);
+        $response = $controller->sendEditReportEmail($request);
+        
+        return response()->json([
+            'status' => 'Test Executed (Edit Report)',
+            'customer_targeted' => $customer->customers_name,
+            'controller_response' => $response->getData()
+        ]);
+    } catch (\Exception $e) {
+        return "An error occurred during testing: " . $e->getMessage();
+    }
+});
