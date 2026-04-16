@@ -136,6 +136,7 @@ class CustomerInspectionController extends Controller
             $inspectionForm = InspectionForm::create([
                 'rider_id' => $request->inspection_emp_id,
                 'customer_id' => $customer->id,
+                'customer_inspection_id' => $customerInspection->id,
                 'submitted_at' => now(),
             ]);
 
@@ -184,6 +185,19 @@ class CustomerInspectionController extends Controller
         return response()->json([
             'success' => true,
             'data' => $questions
+        ]);
+    }
+
+    public function getInspectionQuestions($customerId, $inspectionId)
+    {
+        $inspection = CustomerInspection::with(['inspectionForms.answers.question.options', 'inspectionForms.answers.option'])
+            ->where('customers_id', $customerId)
+            ->where('id', $inspectionId)
+            ->firstOrFail();
+
+        return response()->json([
+            'success' => true,
+            'data' => $inspection->inspectionForms
         ]);
     }
 }

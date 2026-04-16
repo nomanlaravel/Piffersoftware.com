@@ -13,6 +13,7 @@ class InspectionForm extends Model
         'rider_id',
         'customer_id',
         'submitted_at',
+        'customer_inspection_id',
     ];
 
     /**
@@ -27,7 +28,15 @@ class InspectionForm extends Model
      * Get the answers for the inspection form.
      */
     public function answers()
-    {
-        return $this->hasMany(InspectionAnswer::class);
-    }
+{
+    return $this->hasMany(InspectionAnswer::class, 'inspection_form_id');
+}
+
+    /**
+     * Get the customer inspection associated with the form.
+     */
+    public function customerInspection()
+{
+    return $this->belongsTo(CustomerInspection::class, 'customer_inspection_id');
+}
 }

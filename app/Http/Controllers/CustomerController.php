@@ -1743,10 +1743,28 @@ class CustomerController extends Controller
         return $subCustomers;
     }
 
-    public function viewcustomer($id)
+public function viewcustomer($id)
     {
-        $customers = Customer::find($id);
-        // return $customers;
+        $customers = Customer::with([
+            'hrms', 
+            'customersignatories', 
+            'customersalary', 
+            'customermanpowers', 
+            'customeremergencies', 
+            'customerdepartments', 
+            'customerinspections.inspectionForms.answers.question.options',
+            'customerinspections.inspectionForms.answers.option',
+            'customerarmourers', 
+            'customerincidents', 
+            'customerassigments', 
+            'customeraudits', 
+            'customerbussinesses', 
+            'customeractivities', 
+            'customerfeedbacks', 
+            'customercomplaints', 
+            'customernotifications'
+        ])->findOrFail($id);
+
         return view('customers.viewcustomer', compact('customers'));
     }
 
