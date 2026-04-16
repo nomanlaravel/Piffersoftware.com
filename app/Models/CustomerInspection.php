@@ -27,4 +27,14 @@ class CustomerInspection extends Model
     {
         return $this->belongsTo(Customer::class, 'customers_id');
     }
+
+    public function answers()
+{
+    return $this->hasMany(InspectionAnswer::class, 'inspection_form_id');
+}
+
+   public function inspectionForms()
+{
+    return $this->hasMany(InspectionForm::class, 'customer_inspection_id');
+}
 }

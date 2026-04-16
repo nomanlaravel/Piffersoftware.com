@@ -16,6 +16,7 @@ protected $fillable = [
     'branch_id',
     'employee_name',
     'designation',
+    'type',
     'monday',
     'tuesday',
     'wednesday',

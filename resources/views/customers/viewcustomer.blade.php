@@ -1709,7 +1709,7 @@
                         </div> --}}
                         <!-- Inspection Summary Table -->
                         <div class="table-responsive bg-light p-3">
-                            <table class="table table-striped table-bordered table-light text-center mb-0">
+                            <table class="table table-striped table-bordered table-light text-center mb-0" id="inspectionTable">
                                 <thead class="table">
                                     <tr>
                                         <th>Inspection Number</th>
@@ -1722,6 +1722,7 @@
                                         <th>Remarks</th>
                                         <th>Notes</th>
                                         <th>Attachments</th>
+                                        <th>View Questions</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -1757,7 +1758,12 @@
                                                     </div>
                                                 @endif
                                             </td>
-                                            <td>
+                                            <td><button class="btn btn-sm btn-info view-questions-btn me-1" data-inspection-id="{{ $inspection->id }}" data-customer-id="{{ $customers->id }}">
+                                                    <i class="bi bi-eye"></i> View
+                                                </button></td>
+                                                
+
+                                                <td>
                                                 <!-- Edit Button triggers modal -->
                                                 <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
                                                     data-bs-target="#editInspectionModal{{ $inspection->id }}">
@@ -1781,6 +1787,8 @@
                             </table>
                         </div>
 
+                      
+
                         <!-- Pagination Controls -->
                         <nav aria-label="Inspection pagination" class="mt-3">
                             <ul class="pagination justify-content-center mb-0">
@@ -1796,7 +1804,7 @@
                                 </li>
                             </ul>
                         </nav>
-                        <script>
+                        <!-- <script>
                             let currentPage = 1;
                             const recordsPerPage = 10;
                             let totalRecords = {{ $customers->customerinspections->count() }};
@@ -1842,9 +1850,249 @@
                                 if (totalRecords > 0) {
                                     showPage(1);
                                 }
-                            });
-                        </script>
 
+                                // View Questions Modal functionality
+                                document.querySelectorAll('.view-questions-btn').forEach(btn => {
+                                    btn.addEventListener('click', function() {
+                                        const inspectionId = this.dataset.inspectionId;
+                                        const customerId = this.dataset.customerId;
+                                        loadQuestions(customerId, inspectionId);
+                                    });
+                                });
+                            });
+
+                            async function loadQuestions(customerId, inspectionId) {
+                                const modal = new bootstrap.Modal(document.getElementById('questionsModal'));
+                                const content = document.getElementById('questionsContent');
+                                
+                                content.innerHTML = `
+                                    <div class="text-center">
+                                        <div class="spinner-border" role="status">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                    </div>
+                                `;
+                                
+                                modal.show();
+
+                                try {
+                                    const response = await fetch(`/api/customer/${customerId}/inspection/${inspectionId}/questions`);
+                                    const data = await response.json();
+                                    
+                                    if (data.success && data.data.length > 0) {
+                                        let html = '<div class="accordion" id="questionsAccordion">';
+                                        
+                                        data.data.forEach((form, formIndex) => {
+                                            html += `<div class="accordion-item">
+                                                <h2 class="accordion-header">
+                                                    <button class="accordion-button ${formIndex === 0 ? '' : 'collapsed'}" type="button" data-bs-toggle="collapse" data-bs-target="#formCollapse${formIndex}">
+                                                        Form ${formIndex + 1} - Submitted: ${form.submitted_at}
+                                                    </button>
+                                                </h2>
+                                                <div id="formCollapse${formIndex}" class="accordion-collapse collapse ${formIndex === 0 ? 'show' : ''}" data-bs-parent="#questionsAccordion">
+                                                    <div class="accordion-body">
+                                                        <div class="row g-3">`;
+                                            
+                                            form.answers.forEach(answer => {
+                                                const question = answer.question;
+                                                const selectedOption = answer.option ? answer.option.option_text : 'Custom';
+                                                const customAnswer = answer.custom_answer || '';
+                                                
+                                                html += `
+                                                        <div class="col-md-6">
+                                                            <div class="card h-100 shadow-sm">
+                                                                <div class="card-body">
+                                                                    <h6 class="card-title fw-bold">${question.question}</h6>
+                                                                    <div class="mb-2">
+                                                                        <strong>Selected:</strong> ${selectedOption}
+                                                                    </div>`;
+                                            
+                                                if (customAnswer) {
+                                                    html += `<div class="mb-2">
+                                                                <strong>Custom Answer:</strong> ${customAnswer}
+                                                            </div>`;
+                                                }
+                                                
+                                                if (question.options && question.options.length > 0) {
+                                                    html += `<div><strong>Options:</strong><ul class="list-unstyled small text-muted">`;
+                                                    question.options.forEach(option => {
+                                                        html += `<li>${option.option_text}</li>`;
+                                                    });
+                                                    html += `</ul></div>`;
+                                                }
+                                                
+                                                html += `</div></div></div>`;
+                                            });
+                                            
+                                            html += `</div></div></div>`;
+                                        });
+                                        
+                                        html += '</div>';
+                                        content.innerHTML = html;
+                                    } else {
+                                        content.innerHTML = '<p class="text-center text-muted">No questions found for this inspection.</p>';
+                                    }
+                                } catch (error) {
+                                    content.innerHTML = '<p class="text-center text-danger">Error loading questions. Please try again.</p>';
+                                    console.error('Error:', error);
+                                }
+                            }
+                        </script> -->
+                        <script>
+    let currentPage = 1;
+    const recordsPerPage = 10;
+    let totalRecords = {{ $customers->customerinspections->count() }};
+
+    function showPage(page) {
+        const rows = document.querySelectorAll('#inspectionTable tbody tr');
+        rows.forEach(row => row.style.display = 'none');
+
+        const start = (page - 1) * recordsPerPage;
+        const end = Math.min(start + recordsPerPage, totalRecords);
+
+        for (let i = start; i < end; i++) {
+            if (rows[i]) rows[i].style.display = 'table-row';
+        }
+
+        const totalPages = Math.ceil(totalRecords / recordsPerPage);
+        document.getElementById('pageInfo').innerHTML = `Page ${page} of ${totalPages}`;
+        currentPage = page;
+
+        document.getElementById('prevBtn').parentElement.classList.toggle('disabled', page === 1);
+        document.getElementById('nextBtn').parentElement.classList.toggle('disabled', page === totalPages);
+
+        // Mobile labels
+        const headers = ['Inspection Number', 'Employee ID', 'Name', 'Cell Number', 'Department', 'Date', 'Picture', 'Remarks', 'Notes', 'Attachments'];
+        const cells = document.querySelectorAll('#inspectionTable td');
+        cells.forEach((cell, index) => {
+            const colIndex = index % 10;
+            if (headers[colIndex]) cell.dataset.label = headers[colIndex];
+        });
+    }
+
+    function changePage(direction) {
+        const totalPages = Math.ceil(totalRecords / recordsPerPage);
+        let newPage = currentPage + direction;
+
+        if (newPage < 1) newPage = 1;
+        if (newPage > totalPages) newPage = totalPages;
+
+        showPage(newPage);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        if (totalRecords > 0) {
+            showPage(1);
+        }
+
+        // View Questions Button
+        document.querySelectorAll('.view-questions-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const inspectionId = this.dataset.inspectionId;
+                const customerId = this.dataset.customerId;
+                loadQuestions(customerId, inspectionId);
+            });
+        });
+    });
+
+    async function loadQuestions(customerId, inspectionId) {
+        const modal = new bootstrap.Modal(document.getElementById('questionsModal'));
+        const content = document.getElementById('questionsContent');
+
+        content.innerHTML = `
+            <div class="text-center">
+                <div class="spinner-border" role="status"></div>
+            </div>
+        `;
+
+        modal.show();
+
+        try {
+            const response = await fetch(`/api/customer/${customerId}/inspection/${inspectionId}/questions`);
+            const data = await response.json();
+
+            if (data.success && data.data.length > 0) {
+                let html = '<div class="accordion" id="questionsAccordion">';
+
+                data.data.forEach((form, formIndex) => {
+                    html += `
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button ${formIndex === 0 ? '' : 'collapsed'}"
+                                    type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#formCollapse${formIndex}">
+                                    Form ${formIndex + 1} - Submitted: ${form.submitted_at}
+                                </button>
+                            </h2>
+
+                            <div id="formCollapse${formIndex}"
+                                class="accordion-collapse collapse ${formIndex === 0 ? 'show' : ''}"
+                                data-bs-parent="#questionsAccordion">
+
+                                <div class="accordion-body">
+
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-striped">
+                                            <thead class="table-dark">
+                                                <tr>
+                                                    <th>Question</th>
+                                                    <th>All Options</th>
+                                                    <th>Custom Answer</th>
+                                                    <th>Selected Option</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                    `;
+
+                    form.answers.forEach(answer => {
+                        const question = answer.question;
+                        const selectedOption = answer.option ? answer.option.option_text : 'Custom';
+                        const customAnswer = answer.custom_answer || '-';
+
+                        let optionsHtml = '-';
+                        if (question.options && question.options.length > 0) {
+                            optionsHtml = '<ul class="mb-0">';
+                            question.options.forEach(option => {
+                                optionsHtml += `<li>${option.option_text}</li>`;
+                            });
+                            optionsHtml += '</ul>';
+                        }
+
+                        html += `
+                            <tr>
+                                <td>${question.question}</td>
+                                <td>${optionsHtml}</td>
+                                <td>${customAnswer}</td>
+                                <td>${selectedOption}</td>
+                            </tr>
+                        `;
+                    });
+
+                    html += `
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                html += '</div>';
+                content.innerHTML = html;
+
+            } else {
+                content.innerHTML = '<p class="text-center text-muted">No questions found for this inspection.</p>';
+            }
+
+        } catch (error) {
+            content.innerHTML = '<p class="text-center text-danger">Error loading questions. Please try again.</p>';
+            console.error('Error:', error);
+        }
+    }
+</script>
                         <style>
                             #inspectionTable th,
                             #inspectionTable td {
@@ -7644,6 +7892,23 @@ document.getElementById('inspection_attach').addEventListener('change', function
 });
 </script>
 
-
+  <!-- Questions Modal -->
+                        <div class="modal fade" id="questionsModal" tabindex="-1" aria-labelledby="questionsModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-xl">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="questionsModalLabel">Inspection Questions</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body" id="questionsContent">
+                                        <div class="text-center">
+                                            <div class="spinner-border" role="status">
+                                                <span class="visually-hidden">Loading...</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
 </html>

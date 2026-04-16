@@ -83,11 +83,11 @@
 
         /*  */
         .report-body2 {
-            background-color: #e7aa5b;
+            background-color: #f1d0a3;
             color: #080808;
             padding: 10px;
             text-align: center;
-            border: 1px solid #2f5597;
+            border: 1px solid;
         }
 
         .report-subtext3 {
@@ -101,7 +101,7 @@
             color: #080808;
             padding: 10px;
             text-align: center;
-            border: 1px solid #2f5597;
+            border: 1px solid;
         }
 
         .report-subtext4 {
@@ -163,29 +163,15 @@
             <h4 class="mb-0"><b>PIFFERS Security Services (Pvt) Ltd</b></h4>
         </div>
         <div class="report-body">
-            <p class="report-subtext1 mb-0">If You've Missed your Last 2 Months Sales Targets You're Unlikely to hit the
-                Next One, Unless You Change Something Choose Change.</p>
+            <p class="report-subtext1 mb-0">if You've Missed your Last 2 Months Sales Targets You're Unlikely to hit the Next One, Unless You Change Something Choose Change.</p>
         </div>
         <div class="report-body1">
-            <p class="report-subtext2 mb-0"><b>REGION WISE - DAILY SALES & FEEDBACK LOG REPORT</b></p>
+            <p class="report-subtext2 mb-0"><b>WEEKLY SALES VISIT PLAN</b></p>
         </div>
 
         <!-- Color Coded Legend/Status Bar -->
-        <div class="status-bar">
-            <div class="status-green">90% Observation</div>
-            <div class="status-yellow">70% Explanation</div>
-            <div class="status-red">Below 50% Warning</div>
-        </div>
         <div class="report-body2">
-            <p class="report-subtext3 mb-0">GMs are required to make 5 calls per day to the Head of Security
-                (Monday–Friday) and conduct 8 site visits per week (Monday–Thursday).
-                DGMs are required to make 7 calls to Security Managers from Monday to Friday and conduct 10 site visits
-                per week (Monday to Thursday).</p>
-        </div>
-        <div class="report-body3">
-            <p class="report-subtext4 mb-0">In case of non-compliance, three (3) observations will be issued; if
-                non-compliance continues, a written explanation will be required, followed by a formal warning, and
-                persistent non-compliance thereafter will result in the imposition of penalties.</p>
+            <p class="report-subtext3 mb-0">The weekly deadline for submission of this report is Friday at 5:00 PM</p>
         </div>
 
         <div class="table-responsive">
