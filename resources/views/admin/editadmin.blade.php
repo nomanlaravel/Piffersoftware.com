@@ -2118,6 +2118,24 @@
                                 aria-controls="pills-southregionalesreport" aria-selected="false">REGION WISE - DAILY SALES & FEEDBACK LOG
                             </button>
                         </li>
+                         <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="pills-southvisitsalesreport-tab" data-bs-toggle="pill"
+                                data-bs-target="#pills-southvisitsalesreport" type="button" role="tab"
+                                aria-controls="pills-southvisitsalesreport" aria-selected="false">REGION WISE - WEEKLY SALES VISIT PLAN
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="pills-regionpipelinereport-tab" data-bs-toggle="pill"
+                                data-bs-target="#pills-regionpipelinereport" type="button" role="tab"
+                                aria-controls="pills-regionpipelinereport" aria-selected="false">REGION WISE - DAILY PIPELINE SALES REPORT
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="pills-regionvisitpipelinereport-tab" data-bs-toggle="pill"
+                                data-bs-target="#pills-regionvisitpipelinereport" type="button" role="tab"
+                                aria-controls="pills-regionvisitpipelinereport" aria-selected="false">REGION WISE - DAILY PIPELINE SALES REPORT
+                            </button>
+                        </li>
                     </ul>
                     
                     <div class="tab-content" id="pills-tabContent">
@@ -3539,7 +3557,7 @@
                     </div>
 
                 </div>
-    {{-- SOUTH --}}
+    {{--Region wise Feedback log  --}}
     <div class="tab-pane fade"
         id="pills-southregionalesreport"
         role="tabpanel">
@@ -3547,7 +3565,7 @@
 
     {{-- HEADER --}}
     <div class="d-flex justify-content-between mb-3">
-        <h4>Region Reports</h4>
+        <h4>DAILY SALES & FEEDBACK LOG REPORT</h4>
 
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
             + Add Report
@@ -3619,6 +3637,7 @@
     @csrf
     <div class="modal-body">
         <div class="mb-3">
+            <input type="hidden" name="type" id="create_type" value="feedback_log">
             <label class="form-label">Region</label>
             <select name="region_id" id="create_region_id" class="form-control" required>
                 <option value="">-- Select Region --</option>
@@ -3767,7 +3786,7 @@ $(document).ready(function () {
         });
     });
 
-    // Create Report AJAX
+// Create Report AJAX - Fixed syntax and toast timing
     $('#createReportBtn').click(function (e) {
         e.preventDefault();
         let formData = new FormData();
@@ -3776,6 +3795,7 @@ $(document).ready(function () {
         formData.append('admin_id', $('#create_admin_id').val());
         formData.append('employee_name', $('#create_employee_name').val());
         formData.append('designation', $('#create_designation').val());
+        formData.append('type', $('#create_type').val());
         formData.append('monday', $('#create_monday').val());
         formData.append('tuesday', $('#create_tuesday').val());
         formData.append('wednesday', $('#create_wednesday').val());
@@ -3789,19 +3809,26 @@ $(document).ready(function () {
             processData: false,
             contentType: false,
             success: function(response) {
+                toastr.success('Report created successfully!');
                 $('#createModal').modal('hide');
-                location.reload();
+                location.reload(); // Reload last to ensure toast shows before page refresh
             },
             error: function(xhr) {
-                alert('Error: ' + (xhr.responseJSON?.message || 'Failed to create report'));
+                toastr.error('Error: ' + (xhr.responseJSON?.message || 'Failed to create report'));
             }
         });
     });
 
-    // Delete Report AJAX
+// Delete Report AJAX - Fixed dynamic removal
     $('.deleteBtn').click(function () {
-        if (confirm('Delete this record?')) {
-            let id = $(this).data('id');
+        if (confirm('Are you sure you want to delete this report?')) {
+            let $btn = $(this);
+            let id = $btn.data('id');
+            
+            // Find correct accordion item - use data-id or closest with hidden input
+            let $reportContainer = $btn.closest('.accordion-body').parent().parent(); // h2 -> accordion-item
+            let $accordionItem = $reportContainer.closest('.accordion-item');
+
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -3812,9 +3839,13 @@ $(document).ready(function () {
                 type: 'DELETE',
                 success: function(response) {
                     location.reload();
+                    toastr.success('Report deleted successfully!');
+                    $accordionItem.slideUp(300, function() {
+                        $(this).remove();
+                    });
                 },
-                error: function() {
-                    alert('Delete failed');
+                error: function(xhr, status, error) {
+                    toastr.error('Delete failed: ' + (xhr.responseJSON?.message || error));
                 }
             });
         }
@@ -3824,6 +3855,828 @@ $(document).ready(function () {
     </div>
 
 </div>
+<!-- WEEKLY SALES VISIT PLAN -->
+<div class="tab-pane fade"
+    id="pills-southvisitsalesreport"
+    role="tabpanel">
+<div class="container mt-4">
+
+    {{-- HEADER --}}
+    <div class="d-flex justify-content-between mb-3">
+    <h4>WEEKLY SALES VISIT PLAN</h4>
+
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModalRegionReport">
+        + Add Report
+    </button>
+    </div>
+
+    {{-- TABLE --}}
+    <table class="table table-bordered">
+    <thead>
+        <tr>
+        <th>#</th>
+        <th>Region</th>
+        <th>Branch Name</th>
+        <th>Branch ID</th>
+        <th>Employee Name</th>
+        <th>Designation</th>
+        <th>Monday</th>
+        <th>Tuesday</th>
+        <th>Wednesday</th>
+        <th>Thursday</th>
+        <th>Friday</th>
+        <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @forelse($visitReports as $key => $visitReport)
+        <tr>
+        <td>{{ $key+1 }}</td>
+        <td>{{ $visitReport->region->region_name ?? 'N/A' }}</td>
+        <td>{{ $visitReport->admin->branch_office_name ?? 'N/A' }}</td>
+        <td>{{ $visitReport->branch_id ?? 'N/A' }}</td>
+        <td>{{ $visitReport->employee_name }}</td>
+        <td>{{ $visitReport->designation }}</td>
+        <td>{{ $visitReport->monday ?? '' }}</td>
+        <td>{{ $visitReport->tuesday ?? '' }}</td>
+        <td>{{ $visitReport->wednesday ?? '' }}</td>
+        <td>{{ $visitReport->thursday ?? '' }}</td>
+        <td>{{ $visitReport->friday ?? '' }}</td>
+           <td>
+    <button type="button"
+    class="btn btn-sm btn-info regionReportEditBtn"
+    data-id="{{ $visitReport->id }}">
+    Edit
+    </button>
+
+  <button type="button" class="btn btn-sm btn-danger regionReportDeleteBtn" data-id="{{ $visitReport->id }}">
+    Delete
+    </button>
+</td>
+        </tr>
+        @empty
+        <tr>
+        <td colspan="12" class="text-center">No reports found.</td>
+        </tr>
+        @endforelse
+    </tbody>
+    </table>
+
+    {{-- CREATE MODAL --}}
+    <div class="modal fade" id="createModalRegionReport" tabindex="-1" aria-labelledby="createModalRegionReportLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="createModalRegionReportLabel">Add Region Report</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+  <form id="createFormRegionReport">
+    @csrf
+    <div class="modal-body">
+    <div class="mb-3">
+        <input type="hidden" name="type" id="create_type_region_report" value="visit_plan">
+        <label class="form-label">Region</label>
+        <select name="region_id" id="create_region_id_report" class="form-control" required>
+        <option value="">-- Select Region --</option>
+        @foreach($regions as $region)
+            <option value="{{ $region->id }}">{{ $region->region_name }}</option>
+        @endforeach
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Branch (Admin)</label>
+        <select name="admin_id" id="create_admin_id_report" class="form-control" required>
+        <option value="">-- Select Branch --</option>
+        @foreach($admis as $admi)
+            <option value="{{ $admi->id }}">
+            {{ $admi->branch_office_name }} (ID: {{ $admi->branch_id }})
+            </option>
+        @endforeach
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Employee Name</label>
+        <input type="text" name="employee_name" id="create_employee_name_report" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Designation</label>
+        <input type="text" name="designation" id="create_designation_report" class="form-control" required>
+    </div>
+    <div class="row">
+        <div class="col">
+        <input type="text" name="monday" id="create_monday_report" class="form-control" placeholder="Monday">
+        </div>
+        <div class="col">
+        <input type="text" name="tuesday" id="create_tuesday_report" class="form-control" placeholder="Tuesday">
+        </div>
+        <div class="col">
+        <input type="text" name="wednesday" id="create_wednesday_report" class="form-control" placeholder="Wednesday">
+        </div>
+        <div class="col">
+        <input type="text" name="thursday" id="create_thursday_report" class="form-control" placeholder="Thursday">
+        </div>
+        <div class="col">
+        <input type="text" name="friday" id="create_friday_report" class="form-control" placeholder="Friday">
+        </div>
+    </div>
+    </div>
+    <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    <button type="button" id="createReportBtnRegionReport" class="btn btn-primary">Save Report</button>
+    </div>
+</form>
+        </div>
+    </div>
+    </div>
+
+    {{-- EDIT MODAL --}}
+   <div class="modal fade" id="editModalRegionReport" tabindex="-1">
+    <div class="modal-dialog">
+    <div class="modal-content">
+
+        <div class="modal-header">
+        <h5 class="modal-title">Edit Region Report</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <form id="editFormRegionReport" method="POST">
+        @csrf
+        @method('PUT')
+
+        <div class="modal-body">
+
+            <div class="mb-3">
+            <label>Region</label>
+            <select name="region_id" id="e_region_id_report" class="form-control">
+                @foreach($regions as $region)
+                <option value="{{ $region->id }}">{{ $region->region_name }}</option>
+                @endforeach
+            </select>
+            </div>
+
+            <div class="mb-3">
+            <label>Branch</label>
+            <select name="admin_id" id="e_admin_id_report" class="form-control">
+                @foreach($admis as $admi)
+                <option value="{{ $admi->id }}">
+                    {{ $admi->branch_office_name }} (ID: {{ $admi->branch_id }})
+                </option>
+                @endforeach
+            </select>
+            </div>
+
+            <div class="mb-3">
+            <label>Employee Name</label>
+            <input type="text" name="employee_name" id="e_employee_name_report" class="form-control">
+            </div>
+
+            <div class="mb-3">
+            <label>Designation</label>
+            <input type="text" name="designation" id="e_designation_report" class="form-control">
+            </div>
+
+            <div class="row">
+            <div class="col"><input type="text" name="monday" id="e_monday_report" class="form-control"></div>
+            <div class="col"><input type="text" name="tuesday" id="e_tuesday_report" class="form-control"></div>
+            <div class="col"><input type="text" name="wednesday" id="e_wednesday_report" class="form-control"></div>
+            <div class="col"><input type="text" name="thursday" id="e_thursday_report" class="form-control"></div>
+            <div class="col"><input type="text" name="friday" id="e_friday_report" class="form-control"></div>
+            </div>
+
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Update</button>
+        </div>
+
+        </form>
+
+    </div>
+    </div>
+</div>
+
+<script>
+$(document).ready(function () {
+    // Edit functionality (existing)
+    $(document).on('click', '.regionReportEditBtn', function () {
+    let id = $(this).data('id');
+    $.ajax({
+        url: "/region-reports/edit/" + id,
+        type: "GET",
+        success: function (data) {
+        $('#e_region_id_report').val(data.region_id);
+        $('#e_admin_id_report').val(data.admin_id);
+        $('#e_employee_name_report').val(data.employee_name);
+        $('#e_designation_report').val(data.designation);
+        $('#e_monday_report').val(data.monday);
+        $('#e_tuesday_report').val(data.tuesday);
+        $('#e_wednesday_report').val(data.wednesday);
+        $('#e_thursday_report').val(data.thursday);
+        $('#e_friday_report').val(data.friday);
+        $('#editFormRegionReport').attr('action', "/region-reports/update/" + id);
+        $('#editModalRegionReport').modal('show');
+        },
+        error: function () {
+        alert('Error loading data');
+        }
+    });
+    });
+
+// Create Report AJAX - Fixed syntax and toast timing
+    $('#createReportBtnRegionReport').click(function (e) {
+    e.preventDefault();
+    let formData = new FormData();
+    formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
+    formData.append('region_id', $('#create_region_id_report').val());
+    formData.append('admin_id', $('#create_admin_id_report').val());
+    formData.append('employee_name', $('#create_employee_name_report').val());
+    formData.append('designation', $('#create_designation_report').val());
+    formData.append('type', $('#create_type_region_report').val());
+    formData.append('monday', $('#create_monday_report').val());
+    formData.append('tuesday', $('#create_tuesday_report').val());
+    formData.append('wednesday', $('#create_wednesday_report').val());
+    formData.append('thursday', $('#create_thursday_report').val());
+    formData.append('friday', $('#create_friday_report').val());
+    
+    $.ajax({
+        url: "{{ route('regionReport.store') }}",
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+        toastr.success('Report created successfully!');
+        $('#createModalRegionReport').modal('hide');
+        location.reload();
+        },
+        error: function(xhr) {
+        toastr.error('Error: ' + (xhr.responseJSON?.message || 'Failed to create report'));
+        }
+    });
+    });
+
+// Delete Report AJAX - Fixed dynamic removal
+    $(document).on('click', '.regionReportDeleteBtn', function () {
+    if (confirm('Are you sure you want to delete this report?')) {
+        let id = $(this).data('id');
+
+        $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+        });
+        $.ajax({
+        url: "/region-reports/delete/" + id,
+        type: 'DELETE',
+        success: function(response) {
+            toastr.success('Report deleted successfully!');
+            location.reload();
+        },
+        error: function(xhr, status, error) {
+            toastr.error('Delete failed: ' + (xhr.responseJSON?.message || error));
+        }
+        });
+    }
+    });
+});
+</script>
+    </div>
+
+</div>
+<!-- Pipeline Reports -->
+<div class="tab-pane fade"
+     id="pills-regionpipelinereport"
+     role="tabpanel"
+     aria-labelledby="pills-regionpipelinereport-tab">
+
+     <!-- pipeline reports -->
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between mb-3">
+        <h4>Region Wise Daily Sales Pipeline</h4>
+
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createPipelineModal">
+            + Add Pipeline Report
+        </button>
+    </div>
+
+    {{-- TABLE --}}
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Region</th>
+                <th>Prospect Name</th>
+                <th>Required Services</th>
+                <th>Remarks</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @forelse($pipelines as $key => $pipeline)
+            <tr>
+                <td>{{ $key+1 }}</td>
+                <td>{{ $pipeline->region->region_name ?? 'N/A' }}</td>
+                <td>{{ $pipeline->prospect_name ?? 'N/A' }}</td>
+                <td>{{ $pipeline->required_services }}</td>
+                <td>{{ $pipeline->remarks }}</td>
+                <td>
+                    <button class="btn btn-sm btn-info pipelineEditBtn" data-id="{{ $pipeline->id }}">Edit</button>
+                    <button class="btn btn-sm btn-danger pipelineDeleteBtn" data-id="{{ $pipeline->id }}">Delete</button>
+                </td>
+            </tr>
+            @empty
+            <tr>
+                <td colspan="6" class="text-center">No pipelines reports found</td>
+            </tr>
+            @endforelse
+        </tbody>
+    </table>
+
+</div>
+
+{{-- ================= CREATE MODAL ================= --}}
+<div class="modal fade" id="createPipelineModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5>Add Pipeline Report</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form id="createPipelineForm">
+                @csrf
+                <div class="modal-body">
+
+                    <div class="mb-3">
+                        <label>Region</label>
+                        <select id="pipeline_create_region_id" class="form-control">
+                            <option value="">-- Select Region --</option>
+                            @foreach($regions as $region)
+                                <option value="{{ $region->id }}">{{ $region->region_name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label>Prospect Name</label>
+                        <input type="text" id="pipeline_create_prospect_name" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Required Services</label>
+                        <input type="text" id="pipeline_create_required_services" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Remarks</label>
+                        <input type="text" id="pipeline_create_remarks" class="form-control">
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" id="pipelineCreateBtn" class="btn btn-primary">Save</button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+{{-- ================= EDIT MODAL ================= --}}
+<div class="modal fade" id="editPipelineModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5>Edit Pipeline Report</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form id="editPipelineForm">
+                @csrf
+                @method('PUT')
+
+                <div class="modal-body">
+
+                    <div class="mb-3">
+                        <label>Region</label>
+                        <select id="pipeline_edit_region_id" class="form-control">
+                            @foreach($regions as $region)
+                                <option value="{{ $region->id }}">{{ $region->region_name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Prospect Name</label>
+                        <input type="text" id="pipeline_edit_prospect_name" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Required Services</label>
+                        <input type="text" id="pipeline_edit_required_services" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Remarks</label>
+                        <input type="text" id="pipeline_edit_remarks" class="form-control">
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+{{-- ================= AJAX ================= --}}
+<script>
+$(document).ready(function(){
+
+// CREATE
+$('#pipelineCreateBtn').click(function(){
+    $.ajax({
+        url: "{{ route('pipelineReport.store') }}",
+        type: "POST",
+        data: {
+            _token: "{{ csrf_token() }}",
+            region_id: $('#pipeline_create_region_id').val(),
+            prospect_name: $('#pipeline_create_prospect_name').val(),
+            required_services: $('#pipeline_create_required_services').val(),
+            remarks: $('#pipeline_create_remarks').val(),
+        },
+        success: function(){
+            toastr.success('Created Successfully');
+            location.reload();
+        }
+    });
+});
+
+// EDIT LOAD
+$('.pipelineEditBtn').click(function(){
+    let id = $(this).data('id');
+
+    $.get("/pipeline-reports/edit/"+id, function(data){
+        $('#pipeline_edit_region_id').val(data.region_id);
+        $('#pipeline_edit_prospect_name').val(data.prospect_name);
+        $('#pipeline_edit_required_services').val(data.required_services);
+        $('#pipeline_edit_remarks').val(data.remarks);
+
+        $('#editPipelineForm').attr('action', "/pipeline-reports/update/"+id);
+        $('#editPipelineModal').modal('show');
+    });
+});
+
+// UPDATE
+$('#editPipelineForm').submit(function(e){
+    e.preventDefault();
+
+    let action = $(this).attr('action');
+
+    $.ajax({
+        url: action,
+        type: "POST",
+        data: {
+            _token: "{{ csrf_token() }}",
+            _method: "PUT",
+            region_id: $('#pipeline_edit_region_id').val(),
+            prospect_name: $('#pipeline_edit_prospect_name').val(),
+            required_services: $('#pipeline_edit_required_services').val(),
+            remarks: $('#pipeline_edit_remarks').val(),
+        },
+        success: function(){
+            toastr.success('Updated Successfully');
+            location.reload();
+        }
+    });
+});
+
+// DELETE
+$('.pipelineDeleteBtn').click(function(){
+    if(confirm('Delete this record?')){
+        let id = $(this).data('id');
+
+        $.ajax({
+            url: "/pipeline-reports/delete/"+id,
+            type: "POST",
+            data: {
+                _token: "{{ csrf_token() }}",
+                _method: "DELETE"
+            },
+            success: function(){
+                toastr.success('Deleted Successfully');
+                location.reload();
+            }
+        });
+    }
+});
+
+});
+</script>
+    
+</div>
+<!-- ///////////////////////////////////////////// -->
+<div class="tab-pane fade"
+    id="pills-regionvisitpipelinereport"
+    role="tabpanel"
+    aria-labelledby="pills-regionvisitpipelinereport-tab">
+
+    <!-- pipeline reports -->
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between mb-3">
+       <h4>Daily SALES VISITS/PIPELINE REPORT</h4>
+
+       <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createVisitPipelineModal">
+          + Add Pipeline Report
+       </button>
+    </div>
+
+    {{-- TABLE --}}
+    <table class="table table-bordered">
+       <thead>
+          <tr>
+             <th>#</th>
+             <th>Customer Name</th>
+             <th>Branch Name</th>
+             <th>Region</th>
+             <th>No of sales visits</th>
+             <th>Technical proposals Sent</th>
+             <th>Quotations sent</th>
+             <th>No of Guards Deployed</th>
+             <th>New Client Name</th>
+             <th>Contractual Value</th>
+             <th>Actions</th>
+          </tr>
+       </thead>
+
+       <tbody>
+          @forelse($visitPipelines as $key => $visitPipeline)
+          <tr>
+             <td>{{ $key+1 }}</td>
+             <td>{{ $visitPipeline->customer_name ?? 'N/A' }}</td>
+             <td>{{ $visitPipeline->branch_office_name ?? 'N/A' }}</td>
+             <td>{{ $visitPipeline->region->region_name ?? 'N/A' }}</td>
+             <td>{{ $visitPipeline->sales_visit }}</td>
+             <td>{{ $visitPipeline->proposal_sent }}</td>
+             <td>{{ $visitPipeline->quotation_sent }}</td>
+             <td>{{ $visitPipeline->guard_deployed_by_ho }}</td>
+             <td>{{ $visitPipeline->new_client_name }}</td>
+             <td>{{ $visitPipeline->contractual_value }}</td>
+             <td>
+                <button class="btn btn-sm btn-info visitPipelineEditBtn" data-id="{{ $visitPipeline->id }}">Edit</button>
+                <button class="btn btn-sm btn-danger visitPipelineDeleteBtn" data-id="{{ $visitPipeline->id }}">Delete</button>
+             </td>
+          </tr>
+          @empty
+          <tr>
+             <td colspan="11" class="text-center">No pipelines reports found</td>
+          </tr>
+          @endforelse
+       </tbody>
+    </table>
+
+</div>
+
+{{-- CREATE MODAL --}}
+    <div class="modal fade" id="createVisitPipelineModal" tabindex="-1" aria-labelledby="createVisitPipelineModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+       <div class="modal-content">
+       <div class="modal-header">
+          <h5 class="modal-title" id="createVisitPipelineModalLabel">Add Visit Pipeline Report</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+       </div>
+  <form id="createVisitPipelineForm">
+    @csrf
+    <div class="modal-body">
+    <div class="mb-3">
+       <label class="form-label">Customer Name</label>
+       <input type="text" name="customer_name" id="vp_create_customer_name" class="form-control" required>
+    </div>
+    <div class="mb-3">
+       <label class="form-label">Branch (Admin)</label>
+       <select name="admin_id" id="vp_create_admin_id" class="form-control" required>
+       <option value="">-- Select Branch --</option>
+       @foreach($admis as $admi)
+          <option value="{{ $admi->id }}">
+          {{ $admi->branch_office_name }} (ID: {{ $admi->branch_id }})
+          </option>
+       @endforeach
+       </select>
+    </div>
+    <div class="mb-3">
+       <label class="form-label">Region</label>
+       <select name="region_id" id="vp_create_region_id" class="form-control" required>
+       <option value="">-- Select Region --</option>
+       @foreach($regions as $region)
+          <option value="{{ $region->id }}">{{ $region->region_name }}</option>
+       @endforeach
+       </select>
+    </div>
+    <div class="mb-3">
+       <label class="form-label">Sales Visit</label>
+       <input type="text" name="sales_visit" id="vp_create_sales_visit" class="form-control" required>
+    </div>
+    <div class="mb-3">
+       <label class="form-label">Proposal Sent</label>
+       <input type="text" name="proposal_sent" id="vp_create_proposal_sent" class="form-control" required>
+    </div>
+    <div class="mb-3">
+       <label class="form-label">Quotation Sent</label>
+       <input type="text" name="quotation_sent" id="vp_create_quotation_sent" class="form-control" required>
+    </div>
+    <div class="mb-3">
+       <label class="form-label">Guard Deployed By</label>
+       <input type="text" name="guard_deployed_by_ho" id="vp_create_guard_deployed" class="form-control" required>
+    </div>
+    <div class="mb-3">
+       <label class="form-label">New Client Name</label>
+       <input type="text" name="new_client_name" id="vp_create_new_client_name" class="form-control" required>
+    </div>
+    <div class="mb-3">
+       <label class="form-label">Contractual Value</label>
+       <input type="text" name="contractual_value" id="vp_create_contractual_value" class="form-control" required>
+    </div>
+    </div>
+    <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    <button type="button" id="vp_createReportBtn" class="btn btn-primary">Save Report</button>
+    </div>
+</form>
+       </div>
+    </div>
+    </div>
+
+{{-- EDIT MODAL --}}
+<div class="modal fade" id="editVisitPipelineModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Visit Pipeline Report</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form id="editVisitPipelineForm" method="POST">
+                @csrf
+                @method('PUT')
+
+                <div class="modal-body">            
+                    <div class="mb-3">
+                        <label>Customer Name</label>
+                        <input type="text" name="customer_name" id="vp_e_customer_name" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label>Branch</label>
+                        <select name="admin_id" id="vp_e_admin_id" class="form-control">
+                            @foreach($admis as $admi)
+                                <option value="{{ $admi->id }}">
+                                    {{ $admi->branch_office_name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label>Region</label>
+                        <select name="region_id" id="vp_e_region_id" class="form-control">
+                            @foreach($regions as $region)
+                                <option value="{{ $region->id }}">{{ $region->region_name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label>Sales Visit</label>
+                        <input type="text" name="sales_visit" id="vp_e_sales_visit" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label>Proposal Sent</label>
+                        <input type="text" name="proposal_sent" id="vp_e_proposal_sent" class="form-control">
+                    </div>
+                    <div class="mb-3">  
+                        <label>Quotation Sent</label>
+                        <input type="text" name="quotation_sent" id="vp_e_quotation_sent" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label>Guard Deployed By</label>
+                        <input type="text" name="guard_deployed_by_ho" id="vp_e_guard_deployed" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label>New Client Name</label>
+                        <input type="text" name="new_client_name" id="vp_e_new_client_name" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label>Contractual Value</label>
+                        <input type="text" name="contractual_value" id="vp_e_contractual_value" class="form-control">
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+$(document).ready(function () {
+    // Edit functionality
+    $(document).on('click', '.visitPipelineEditBtn', function () {
+    let id = $(this).data('id');
+    $.ajax({
+       url: "/visit-reports/edit/" + id,
+       type: "GET",
+       success: function (data) {
+       $('#vp_e_region_id').val(data.region_id);
+       $('#vp_e_admin_id').val(data.admin_id);
+       $('#vp_e_customer_name').val(data.customer_name);
+       $('#vp_e_sales_visit').val(data.sales_visit);
+       $('#vp_e_proposal_sent').val(data.proposal_sent);
+       $('#vp_e_quotation_sent').val(data.quotation_sent);
+       $('#vp_e_guard_deployed').val(data.guard_deployed_by_ho);
+       $('#vp_e_new_client_name').val(data.new_client_name);
+       $('#vp_e_contractual_value').val(data.contractual_value);
+       $('#editVisitPipelineForm').attr('action', "/visit-reports/update/" + id);
+       $('#editVisitPipelineModal').modal('show');
+       },
+       error: function () {
+       alert('Error loading data');
+       }
+    });
+    });
+
+    // Create Report AJAX
+    $('#vp_createReportBtn').click(function (e) {
+    e.preventDefault();
+    let formData = new FormData();
+    formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
+    formData.append('region_id', $('#vp_create_region_id').val());
+    formData.append('admin_id', $('#vp_create_admin_id').val());
+    formData.append('customer_name', $('#vp_create_customer_name').val());
+    formData.append('sales_visit', $('#vp_create_sales_visit').val());
+    formData.append('proposal_sent', $('#vp_create_proposal_sent').val());
+    formData.append('quotation_sent', $('#vp_create_quotation_sent').val());
+    formData.append('guard_deployed_by_ho', $('#vp_create_guard_deployed').val());
+    formData.append('new_client_name', $('#vp_create_new_client_name').val());
+    formData.append('contractual_value', $('#vp_create_contractual_value').val());
+    
+    $.ajax({
+       url: "{{ route('visitReport.store') }}",
+       type: 'POST',
+       data: formData,
+       processData: false,
+       contentType: false,
+       success: function(response) {
+       toastr.success('Report created successfully!');
+       $('#createVisitPipelineModal').modal('hide');
+       location.reload();
+       },
+       error: function(xhr) {
+       toastr.error('Error: ' + (xhr.responseJSON?.message || 'Failed to create report'));
+       }
+    });
+    });
+
+    // Delete Report AJAX
+    $(document).on('click', '.visitPipelineDeleteBtn', function () {
+    if (confirm('Are you sure you want to delete this report?')) {
+       let id = $(this).data('id');
+
+       $.ajaxSetup({
+       headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+       }
+       });
+       $.ajax({
+       url: "/visit-reports/delete/" + id,
+       type: 'DELETE',
+       success: function(response) {
+          toastr.success('Report deleted successfully!');
+          location.reload();
+       },
+       error: function(xhr, status, error) {
+          toastr.error('Delete failed: ' + (xhr.responseJSON?.message || error));
+       }
+       });
+    }
+    });
+});
+</script>
+
+</div>
+
+<!-- /////////////////////////////////////////////// -->
                 <div class="tab-pane fade m-3" style="opacity: 90%;" id="internal_dispatches" role="tabpanel"
                     aria-labelledby="nav-home-tab">
 
@@ -5326,9 +6179,6 @@ $(document).ready(function () {
         });
     });
 </script>
-
-
-
 </body>
 
 </html>

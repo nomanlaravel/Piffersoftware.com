@@ -880,6 +880,7 @@ Route::prefix('erp-lms')->name('dashboard.lms.')->group(function () {
 // // return Permission::where('name', 'view_leave_request')->first();
 // });
 
+// region wise sales report
 Route::post('/region-reports/store', [AdminController::class, 'storeRegionReport'])->name('regionReport.store');
 Route::get('/region-reports/edit/{id}', [AdminController::class, 'editRegionReport']);
 Route::put('/region-reports/update/{id}', [AdminController::class, 'updateRegionReport']);

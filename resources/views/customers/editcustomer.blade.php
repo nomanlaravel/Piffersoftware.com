@@ -256,7 +256,8 @@
                       @foreach ($compliances as $compliance)
                         <option value="{{ $compliance->compliance_name }}"
                           @if($compliance->compliance_name == $customers->applicable_compliances) selected @endif>
-                          {{ $compliance->compliance_name }}</option>
+                          {{ $compliance->compliance_name }}
+                        </option>
                       @endforeach
                     </select>
                     <div class="input-group-append" style="width: 30%;">
@@ -1102,7 +1103,8 @@
                         @foreach ($currencies as $currency)
                           <option value="{{ $currency->currency_name }}"
                             @if($currency->currency_name == $customers->list_curr) selected @endif>
-                            {{ $currency->currency_name }}</option>
+                            {{ $currency->currency_name }}
+                          </option>
                           {{--
                           <option value="{{ $currency->currency_name }}">{{ $currency->currency_name }}</option>
                           --}}
@@ -1211,7 +1213,8 @@
                                   --}}
                                   <option value="{{ $saobcategory->saob_category_name }}"
                                     @if($saobcategory->saob_category_name == $salary->cat_name) selected @endif>
-                                    {{ $saobcategory->saob_category_name }}</option>
+                                    {{ $saobcategory->saob_category_name }}
+                                  </option>
                                 @endforeach
                               </select>
                               <div class="input-group-append" style="width: 30%;">
@@ -1358,7 +1361,8 @@
                                     @foreach ($emerser as $emerse)
                                       <option value="{{ $emerse->emerser_name }}"
                                         @if($emerse->emerser_name == $emergencies->emer_ser) selected @endif>
-                                        {{ $emerse->emerser_name }}</option>
+                                        {{ $emerse->emerser_name }}
+                                      </option>
                                     @endforeach
                                   </select>
                                   <div class="input-group-append" style="width: 30%;">
@@ -1545,7 +1549,7 @@
                             <textarea id="w3review6" class="form-control"
                               name="customeremergencies[{{ $index }}][emer_note]" oninput="trimSpaces6()"
                               onclick="moveCursorToStart6()" rows="2" cols="38">{{ $emergencies->emer_note }}
-                    </textarea>
+                      </textarea>
                           </div>
                           <hr>
                         </div>
@@ -1589,7 +1593,8 @@
                               @foreach ($departments as $department)
                                 <option value="{{ $department->department_name }}"
                                   @if($department->department_name == $departmentss->dept_type) selected @endif>
-                                  {{ $department->department_name}}</option>
+                                  {{ $department->department_name}}
+                                </option>
                               @endforeach
                             </select>
                             <div class="input-group-append" style="width: 30%;">
@@ -1648,7 +1653,7 @@
                               <textarea id="w3review7" class="form-control"
                                 name="customerdepartments[{{ $index }}][dept_notes]" oninput="trimSpaces7()"
                                 onclick="moveCursorToStart7()" rows="2" cols="24">{{ $departmentss->dept_notes }}
-                      </textarea>
+                        </textarea>
                             </div>
                             <div class="col-lg-6 spacing-right">
                               Attachments <br> <input class="form-control"
@@ -1744,7 +1749,7 @@
                               <textarea id="w3review8" class="form-control"
                                 name="customerdepartments[{{ $index }}][dept_ex_notes]" oninput="trimSpaces8()"
                                 onclick="moveCursorToStart8()" rows="2" cols="38">{{ $departmentss->dept_ex_notes }}
-                      </textarea>
+                        </textarea>
                             </div>
                           </div>
                         </div>
@@ -1928,16 +1933,23 @@
                               <div class="col-lg-4 spacing-left">
                                 Picture of Inspection <br> <input class="form-control basic-info-attachements"
                                   id="inpFile22" type="file" name="customerinspections[{{ $index }}][inspection_pic]"
-                                  value="{{ $inspections->inspection_pic }}" placeholder="..." style="width: 100%;"
-                                  multiple>
+                                  accept="image/*" placeholder="..." style="width: 100%;" multiple>
                                 <div class="col-lg-5 spacing-right">
                                   <div class="image-preview42" id="imagePreview42">
+
                                     @if($inspections->inspection_pic)
-                                      <img src="{{ asset($inspections->inspection_pic) }}" alt="Image Preview42"
-                                        class="image-preview__image42" style="height: 100%; width:100%; margin-left:-13px;">
+                                      <div class="file-preview" style="cursor:pointer; display:inline-block;"
+                                        data-file="{{ asset($inspections->inspection_pic) }}"
+                                        data-extension="{{ pathinfo($inspections->inspection_pic, PATHINFO_EXTENSION) }}"
+                                        onclick="openFileModal(this)">
+
+                                        {!! getFilePreview($inspections->inspection_pic) !!}
+
+                                      </div>
                                     @else
-                                      <img src="{{asset('noimage.jpg')}}" alt="no image" width="70px" height="70px">
+                                      <img src="{{ asset('noimage.jpg') }}" width="70px" height="70px">
                                     @endif
+
                                   </div>
                                 </div>
                               </div>
@@ -1950,26 +1962,42 @@
                             </div>
                             <div class="row">
                               <div class="col-lg-3">
-                                Notes <br> <textarea class="form-control basic-info-attachements" type="text"
+                                Notes <br> <textarea class="form-control basic-info-attachements"
                                   name="customerinspections[{{ $index }}][inspection_note]" placeholder="..."
                                   style="width: 100%;">{{ $inspections->inspection_note }}</textarea>
                               </div>
-                              <div class="col-lg-3 spacing-left">
-                                Attachments <br> <input class="form-control basic-info-attachements" id="" type="file"
-                                  name="customerinspections[{{ $index }}][inspection_attach]"
-                                  value="{{ $inspections->inspection_attach }}" placeholder="..." style="width: 100%;"
-                                  multiple>
-                                <div class="col-lg-5 spacing-right">
-                                  <div class="image-preview42" id="imagePreview42">
-                                    @if($inspections->inspection_attach)
-                                      <img src="{{ asset($inspections->inspection_attach) }}" alt="Image Preview42"
-                                        class="image-preview__image42" style="height: 100%; width:100%; margin-left:-13px;">
-                                    @else
-                                      <img src="{{asset('noimage.jpg')}}" alt="no image" width="70px" height="70px">
-                                    @endif
-                                  </div>
-                                </div>
-                              </div>
+                             <div class="col-lg-3 spacing-left">
+    Attachments <br>
+
+    <input class="form-control basic-info-attachements"
+        type="file"
+        name="customerinspections[{{ $index }}][inspection_attach]"
+        accept="image/*,video/*,.pdf,.doc,.docx"
+        style="width: 100%;"
+        multiple>
+
+    <div class="col-lg-5 spacing-right">
+        <div class="image-preview42">
+
+            @if($inspections->inspection_attach)
+
+                <div class="file-preview"
+                    style="cursor:pointer; display:inline-block;"
+                    data-file="{{ asset($inspections->inspection_attach) }}"
+                    data-extension="{{ pathinfo($inspections->inspection_attach, PATHINFO_EXTENSION) }}"
+                    onclick="openFileModal(this)">
+
+                    {!! getFilePreview($inspections->inspection_attach) !!}
+
+                </div>
+
+            @else
+                <img src="{{ asset('noimage.jpg') }}" width="70" height="70">
+            @endif
+
+        </div>
+    </div>
+</div>
                             </div>
                           </div>
                         </div>
@@ -1985,6 +2013,14 @@
                 </div>
               </div>
             </div>
+            <div class="modal fade" id="fileModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body text-center" id="fileModalContent">
+            </div>
+        </div>
+    </div>
+</div>
             <!--Armourer-->
             <div class="tab-pane fade m-3" style="opacity: 90%;" id="arm" role="tabpanel"
               aria-labelledby="nav-loto-tab">
@@ -2149,7 +2185,7 @@
                               <textarea id="w3review9" class="form-control"
                                 name="customerarmourers[{{ $index }}][arm_next_clean]" oninput="trimSpaces9()"
                                 onclick="moveCursorToStart9()" rows="2" cols="38">{{ $armourers->arm_next_clean }}
-                      </textarea>
+                        </textarea>
                             </div>
                             <div class="col-lg-4 spacing-left spacing-right mt-2">
                               Attachments <br> <input class="form-control"
@@ -2426,7 +2462,7 @@
                               <textarea id="w3review10" class="form-control" oninput="trimSpaces10()"
                                 onclick="moveCursorToStart10()" name="customerincidents[{{ $index }}][incident_note]"
                                 rows="2" cols="38">{{ $incidents->incident_note }}
-                      </textarea>
+                        </textarea>
                             </div>
                           </div>
                         </div>
@@ -2702,7 +2738,7 @@
                             <textarea id="w3review11" class="form-control"
                               name="customerassigments[{{ $index }}][asig_ex_notes]" oninput="trimSpaces11()"
                               onclick="moveCursorToStart11()" rows="2" cols="38">{{ $assigments->asig_ex_notes }}
-                    </textarea>
+                      </textarea>
                           </div>
                         </div>
                       </div>
@@ -2776,7 +2812,8 @@
                                 @foreach ($checkedby as $checked)
                                   <option value="{{ $checked->checkedby_name }}"
                                     @if($checked->checkedby_name == $audits->audit_checked_by) selected @endif>
-                                    {{ $checked->checkedby_name}}</option>
+                                    {{ $checked->checkedby_name}}
+                                  </option>
                                 @endforeach
                               </select>
                               <div class="input-group-append" style="width: 30%;">
@@ -2808,7 +2845,7 @@
                             Notes <br>
                             <textarea id="w3review12" class="form-control" name="customeraudits[{{ $index }}][audit_note]"
                               oninput="trimSpaces12()" onclick="moveCursorToStart12()" rows="2" cols="38">{{ $audits->audit_note }}
-                    </textarea>
+                      </textarea>
                           </div>
                         </div>
                       </div>
@@ -2883,7 +2920,8 @@
                                 style="width: 70%; border-radius: 4px 0 0 4px; ">
                                 <option value=""></option>
                                 @foreach ($mpoc as $mpoc)
-                                  <option value="{{  $mpoc->mpoc_name }}" @if($mpoc->mpoc_name == $customers->meeting_main_point) selected @endif>
+                                  <option value="{{  $mpoc->mpoc_name }}"
+                                    @if($mpoc->mpoc_name == $customers->meeting_main_point) selected @endif>
                                     {{ $mpoc->mpoc_name }}
                                   </option>
                                 @endforeach
@@ -3514,7 +3552,7 @@
                                 <textarea id="w3review13" class="form-control"
                                   name="customerbussinesses[{{ $index }}][bussiness_notes]" oninput="trimSpaces13()"
                                   onclick="moveCursorToStart13()" rows="2" cols="38">{{ $bussinesses->bussiness_notes }}
-                        </textarea>
+                          </textarea>
                               </div>
                               <div class="col-lg-4 spacing-left spacing-right mt-2">
                                 Attachements <br> <input class="form-control" value="{{ $bussinesses->bussiness_attach }}"
@@ -3570,7 +3608,8 @@
                                 @foreach ($activities as $activity)
                                   <option value="{{ $activity->activity_name }}"
                                     @if($activity->activity_name == $activitiess->promotional_act) selected @endif>
-                                    {{ $activity->activity_name }}</option>
+                                    {{ $activity->activity_name }}
+                                  </option>
                                 @endforeach
                               </select>
                               <div class="input-group-append" style="width: 30%;">
@@ -3602,7 +3641,7 @@
                             Notes <br> <textarea id="w3review14" class="form-control"
                               name="customeractivities[{{ $index }}][promotional_notes]" oninput="trimSpaces14()"
                               onclick="moveCursorToStart14()" rows="2" cols="38">{{ $activitiess->promotional_notes }}
-                    </textarea>
+                      </textarea>
                           </div>
                           <div class="col-lg-6 mb-3">
                             Attachments <br> <input class="form-control" type="file"
@@ -3671,58 +3710,58 @@
               </div>
             </div>
             <!--Feedback-->
-<div class="tab-pane fade m-3" style="opacity: 90%;" id="verifications" role="tabpanel"
+            <div class="tab-pane fade m-3" style="opacity: 90%;" id="verifications" role="tabpanel"
               aria-labelledby="nav-contact-tab">
               <h5 class="mt-4"><u><b>Feedback</b></u></h5>
 
               <script>
-              document.addEventListener('DOMContentLoaded', function() {
+                document.addEventListener('DOMContentLoaded', function () {
                   // Listen for Bootstrap collapse events on feedback accordions
-                  const feedbackObserver = new MutationObserver(function(mutations) {
-                      mutations.forEach(function(mutation) {
-                          if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                              const target = mutation.target;
-                              if (target.classList.contains('show') && target.id.startsWith('feedbackCollapse')) {
-                                  const index = target.id.match(/feedbackCollapse(\d+)/)[1] - 1;
-                                  autoFillFeedback(index);
-                              }
-                          }
-                      });
+                  const feedbackObserver = new MutationObserver(function (mutations) {
+                    mutations.forEach(function (mutation) {
+                      if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                        const target = mutation.target;
+                        if (target.classList.contains('show') && target.id.startsWith('feedbackCollapse')) {
+                          const index = target.id.match(/feedbackCollapse(\d+)/)[1] - 1;
+                          autoFillFeedback(index);
+                        }
+                      }
+                    });
                   });
 
                   // Observe all collapse elements
-                  document.querySelectorAll('.collapse').forEach(function(el) {
-                      feedbackObserver.observe(el, { attributes: true });
+                  document.querySelectorAll('.collapse').forEach(function (el) {
+                    feedbackObserver.observe(el, { attributes: true });
                   });
 
                   function autoFillFeedback(index) {
-                      // Get values from main customer form fields
-                      const customerName = document.querySelector('input[name="customers_name"]').value || '';
-                      const customerDisplayName = document.querySelector('input[name="display_name_as"]').value || '';
-                      const customerEmail = document.querySelector('input[name="email"]').value || '';
-                      const customerId = document.querySelector('input[name="customers_id"]').value || '';
-                      const cityDeployment = document.querySelector('input[name="city_of_deployment"]').value || '';
-                      const natureBusiness = document.querySelector('input[name="nature_of_business"]').value || '';
-                      const customerPhone = document.querySelector('input[name="phone"]').value || '';
+                    // Get values from main customer form fields
+                    const customerName = document.querySelector('input[name="customers_name"]').value || '';
+                    const customerDisplayName = document.querySelector('input[name="display_name_as"]').value || '';
+                    const customerEmail = document.querySelector('input[name="email"]').value || '';
+                    const customerId = document.querySelector('input[name="customers_id"]').value || '';
+                    const cityDeployment = document.querySelector('input[name="city_of_deployment"]').value || '';
+                    const natureBusiness = document.querySelector('input[name="nature_of_business"]').value || '';
+                    const customerPhone = document.querySelector('input[name="phone"]').value || '';
 
-                      // Fill feedback fields
-                      const clientNameInput = document.querySelector(`input[name="customerfeedbacks[${index}][feed_client_name]"]`);
-                      const pocNameInput = document.querySelector(`input[name="customerfeedbacks[${index}][feed_client_poc_name]"]`);
-                      const emailInput = document.querySelector(`input[name="customerfeedbacks[${index}][feed_client_email]"]`);
-                      const clientIdInput = document.querySelector(`input[name="customerfeedbacks[${index}][feed_client_id]"]`);
-                      const siteIdInput = document.querySelector(`input[name="customerfeedbacks[${index}][feed_client_site_id]"]`);
-                      const desigInput = document.querySelector(`input[name="customerfeedbacks[${index}][feed_desig]"]`);
-                      const cellInput = document.querySelector(`input[name="customerfeedbacks[${index}][feed_cell]"]`);
+                    // Fill feedback fields
+                    const clientNameInput = document.querySelector(`input[name="customerfeedbacks[${index}][feed_client_name]"]`);
+                    const pocNameInput = document.querySelector(`input[name="customerfeedbacks[${index}][feed_client_poc_name]"]`);
+                    const emailInput = document.querySelector(`input[name="customerfeedbacks[${index}][feed_client_email]"]`);
+                    const clientIdInput = document.querySelector(`input[name="customerfeedbacks[${index}][feed_client_id]"]`);
+                    const siteIdInput = document.querySelector(`input[name="customerfeedbacks[${index}][feed_client_site_id]"]`);
+                    const desigInput = document.querySelector(`input[name="customerfeedbacks[${index}][feed_desig]"]`);
+                    const cellInput = document.querySelector(`input[name="customerfeedbacks[${index}][feed_cell]"]`);
 
-                      if (clientNameInput) clientNameInput.value = customerName;
-                      if (pocNameInput) pocNameInput.value = customerDisplayName;
-                      if (emailInput) emailInput.value = customerEmail;
-                      if (clientIdInput) clientIdInput.value = customerId;
-                      if (siteIdInput) siteIdInput.value = cityDeployment;
-                      if (desigInput) desigInput.value = natureBusiness;
-                      if (cellInput) cellInput.value = customerPhone;
+                    if (clientNameInput) clientNameInput.value = customerName;
+                    if (pocNameInput) pocNameInput.value = customerDisplayName;
+                    if (emailInput) emailInput.value = customerEmail;
+                    if (clientIdInput) clientIdInput.value = customerId;
+                    if (siteIdInput) siteIdInput.value = cityDeployment;
+                    if (desigInput) desigInput.value = natureBusiness;
+                    if (cellInput) cellInput.value = customerPhone;
                   }
-              });
+                });
               </script>
               <div class="feedback">
                 <div id="feedbackAccordion">
@@ -4099,8 +4138,10 @@
                                     style="width: 70%; border-radius: 4px 0 0 4px; ">
                                     <option value=""></option>
                                     @foreach ($duties as $duty)
-                                      <option value="{{  $duty->duty_name }}" @if($duty->duty_name == $complaints->complaint_guards_duty) selected @endif>
-                                        {{ $duty->duty_name }}</option>
+                                      <option value="{{  $duty->duty_name }}"
+                                        @if($duty->duty_name == $complaints->complaint_guards_duty) selected @endif>
+                                        {{ $duty->duty_name }}
+                                      </option>
                                     @endforeach
                                   </select>
                                   <div class="input-group-append" style="width: 30%;">
@@ -4120,7 +4161,7 @@
                                 Notes <br> <textarea id="w3review15" class="form-control"
                                   name="customercomplaints[{{ $index }}][complaint_gaurd_note]" oninput="trimSpaces15()"
                                   onclick="moveCursorToStart15()" rows="2" cols="40">{{ $complaints->complaint_gaurd_note }}
-                        </textarea>
+                          </textarea>
                               </div>
                               <div class="col-lg-3 spacing-left spacing-right">
                                 Attachments <br> <input class="form-control"
@@ -4164,7 +4205,8 @@
                                     @foreach ($equipments as $equipment)
                                       <option value="{{ $equipment->equipment_name }}"
                                         @if($equipment->equipment_name == $complaints->wea_uni_equip) selected @endif>
-                                        {{ $equipment->equipment_name }}</option>
+                                        {{ $equipment->equipment_name }}
+                                      </option>
                                     @endforeach
                                   </select>
                                   <div class="input-group-append" style="width: 30%;">
@@ -4179,7 +4221,7 @@
                                 Notes <br> <textarea id="w3review16" oninput="trimSpaces16()"
                                   onclick="moveCursorToStart16()" class="form-control"
                                   name="customercomplaints[{{ $index }}][wue_note]" rows="2" cols="40">{{ $complaints->wue_note }}
-                        </textarea>
+                          </textarea>
                               </div>
                               <div class="col-lg-3 spacing-left spacing-right">
                                 Attachments <br> <input class="form-control"
@@ -4220,8 +4262,10 @@
                                     style="width: 70%; border-radius: 4px 0 0 4px; ">
                                     <option value=""></option>
                                     @foreach ($finances as $finance)
-                                      <option value="{{  $finance->finance_name }}" @if($finance->finance_name == $complaints->finance_dept) selected @endif>
-                                        {{ $finance->finance_name }}</option>
+                                      <option value="{{  $finance->finance_name }}"
+                                        @if($finance->finance_name == $complaints->finance_dept) selected @endif>
+                                        {{ $finance->finance_name }}
+                                      </option>
                                     @endforeach
                                   </select>
                                   <div class="input-group-append" style="width: 30%;">
@@ -4236,7 +4280,7 @@
                                 Notes <br> <textarea id="w3review17" class="form-control"
                                   name="customercomplaints[{{ $index }}][fd_note]" oninput="trimSpaces17()"
                                   onclick="moveCursorToStart17()" rows="2" cols="40">{{ $complaints->fd_note }}
-                        </textarea>
+                          </textarea>
                               </div>
                               <div class="col-lg-3 spacing-left spacing-right">
                                 Attachments <br> <input class="form-control"
@@ -4270,7 +4314,8 @@
                                     @foreach ($sources as $source)
                                       <option value="{{ $source->source_name }}"
                                         @if($source->source_name == $complaints->src_complaint) selected @endif>
-                                        {{ $source->source_name }}</option>
+                                        {{ $source->source_name }}
+                                      </option>
                                     @endforeach
                                   </select>
                                   <div class="input-group-append" style="width: 30%;">
@@ -4284,7 +4329,7 @@
                               <div class="col-lg-5 spacing-left" style="margin-left: 12px">
                                 Notes <br> <textarea id="w3review" class="form-control"
                                   name="customercomplaints[{{ $index }}][src_note]" rows="2" cols="40">{{ $complaints->src_note }}
-                        </textarea>
+                          </textarea>
                               </div>
                               <div class="col-lg-3 spacing-left spacing-right">
                                 Attachments <br> <input class="form-control"
@@ -4333,7 +4378,7 @@
                                 Notes <br> <textarea id="w3review18" class="form-control"
                                   name="customercomplaints[{{ $index }}][mng_note]" oninput="trimSpaces18()"
                                   onclick="moveCursorToStart18()" rows="2" cols="40">{{ $complaints->mng_note }}
-                        </textarea>
+                          </textarea>
                               </div>
                             </div>
                           </div>
@@ -4420,7 +4465,8 @@
                                     @foreach ($complaintsto as $complaintto)
                                       <option value="{{ $complaintto->tagged_to_name }}"
                                         @if($complaintto->tagged_to_name == $complaints->complaint_tagged) selected @endif>
-                                        {{ $complaintto->tagged_to_name }}</option>
+                                        {{ $complaintto->tagged_to_name }}
+                                      </option>
                                     @endforeach
                                   </select>
                                   <div class="input-group-append" style="width: 30%;">
@@ -4477,7 +4523,7 @@
                               <textarea id="w3review19" class="form-control" oninput="trimSpaces19()"
                                 onclick="moveCursorToStart19()"
                                 name="customercomplaints[{{ $index }}][complaint_addressed_note]" rows="2" cols="38">{{ $complaints->complaint_addressed_note }}
-                      </textarea>
+                        </textarea>
                             </div>
                           </div>
                           <hr>
@@ -4555,12 +4601,11 @@
                                   style="width: 70%; border-radius: 4px 0 0 4px; ">
                                   <option value=""></option>
                                   @foreach ($notificationshared as $notificationshare)
-                                    <option value="{{ $notificationshare->notification_shared_name}}"
-                                      @if(
-                                          $notificationshare->notification_shared_name ==
-                                          $notificationss->notification_shared
-                                        )
-                                      selected @endif>{{ $notificationshare->notification_shared_name }}</option>
+                                    <option value="{{ $notificationshare->notification_shared_name}}" @if(
+                                        $notificationshare->notification_shared_name ==
+                                        $notificationss->notification_shared
+                                      )
+                                    selected @endif>{{ $notificationshare->notification_shared_name }}</option>
                                   @endforeach
                                 </select>
                                 <div class="input-group-append" style="width: 30%;">
@@ -4621,7 +4666,7 @@
                               Notes <br>
                               <textarea id="w3review" class="form-control"
                                 name="customernotifications[{{ $index }}][notification_ex_note]" rows="2" cols="38">{{ $notificationss->notification_ex_note }}
-                      </textarea>
+                        </textarea>
                             </div>
                           </div>
                           <hr>
@@ -8912,184 +8957,184 @@ class="image-preview__image42" style="height: 100%; width:100%; margin-left:-13p
       var accordionCount = {{ $index + 1 }};
 
       var accordionHtml = `
-                <div class="accordion-item" id="manpowerEntry${accordionCount}">
-                    <h2 class="accordion-header" id="manpowerHeading${accordionCount}">
-                        <button class="accordion-button" style="background-color: #34005A; color:white"  type="button" data-toggle="collapse" data-target="#collapse${accordionCount}" aria-expanded="false" aria-controls="collapse${accordionCount}">
-                            Manpower Entry ${accordionCount}
-                        </button>
-                    </h2>
-                    <div id="collapse${accordionCount}" class="collapse" aria-labelledby="manpowerHeading${accordionCount}">
-                        <div class="accordion-body">
-                            <input type="hidden" name="customermanpowers[${accordionCount - 1}][m_id]" value="{{ $manpowers->id }}">
-                            <div class="row col-lg-12 manpower">
-                                <div class="col-lg-6 spacing-right">
-                                    <div class="row mb-2">
+                  <div class="accordion-item" id="manpowerEntry${accordionCount}">
+                      <h2 class="accordion-header" id="manpowerHeading${accordionCount}">
+                          <button class="accordion-button" style="background-color: #34005A; color:white"  type="button" data-toggle="collapse" data-target="#collapse${accordionCount}" aria-expanded="false" aria-controls="collapse${accordionCount}">
+                              Manpower Entry ${accordionCount}
+                          </button>
+                      </h2>
+                      <div id="collapse${accordionCount}" class="collapse" aria-labelledby="manpowerHeading${accordionCount}">
+                          <div class="accordion-body">
+                              <input type="hidden" name="customermanpowers[${accordionCount - 1}][m_id]" value="{{ $manpowers->id }}">
+                              <div class="row col-lg-12 manpower">
+                                  <div class="col-lg-6 spacing-right">
+                                      <div class="row mb-2">
 
 
-                                        <div class="col-lg-5 spacing-left  ">
-                                            Guard Post No <br>
-                                            <div class="input-group" style="width: 100%;">
-                                                <select id="dropdown" class="form-control mt-1" name="customermanpowers[${accordionCount - 1}][man_post]" value="{{ $manpowers->man_post }}" style="width: 70%; border-radius: 4px 0 0 4px; ">
-                                                    <option value=""></option>
-                                                    @foreach ($guardposts as $guardpost)
-                                                      <option value="{{ $guardpost->guard_post }}" @if($guardpost->guard_post == $manpowers->man_post) selected @endif>{{ $guardpost->guard_post}}</option>
+                                          <div class="col-lg-5 spacing-left  ">
+                                              Guard Post No <br>
+                                              <div class="input-group" style="width: 100%;">
+                                                  <select id="dropdown" class="form-control mt-1" name="customermanpowers[${accordionCount - 1}][man_post]" value="{{ $manpowers->man_post }}" style="width: 70%; border-radius: 4px 0 0 4px; ">
+                                                      <option value=""></option>
+                                                      @foreach ($guardposts as $guardpost)
+                                                        <option value="{{ $guardpost->guard_post }}" @if($guardpost->guard_post == $manpowers->man_post) selected @endif>{{ $guardpost->guard_post}}</option>
 
-                                                    @endforeach
-                                                </select>
-                                                <div class="input-group-append" style="width: 30%;">
-                                                    <a href="{{ route('guardpost') }}">
-                                                        <button class="btn btn-primary" id="submit-category" type="button" style="width: 100%; height: 38px; border-radius: 0 4px 4px 0; margin-top:4px;">Add</button>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-5  spacing-right form-group">
-                                            Category <br>
-                                            <div class="input-group" style="width: 100%;">
-                                                <select id="dropdown" class="form-control mt-1" name="customermanpowers[${accordionCount - 1}][man_cat]" value="{{ $manpowers->man_cat }}" style="width: 70%; border-radius: 4px 0 0 4px; ">
-                                                    <option value=""></option>
-                                                    @foreach ($categories as $category)
-                                                      <option value="{{ $category->category_name }}" @if($category->category_name == $manpowers->man_cat) selected @endif>{{ $category->category_name}}</option>
+                                                      @endforeach
+                                                  </select>
+                                                  <div class="input-group-append" style="width: 30%;">
+                                                      <a href="{{ route('guardpost') }}">
+                                                          <button class="btn btn-primary" id="submit-category" type="button" style="width: 100%; height: 38px; border-radius: 0 4px 4px 0; margin-top:4px;">Add</button>
+                                                      </a>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                          <div class="col-lg-5  spacing-right form-group">
+                                              Category <br>
+                                              <div class="input-group" style="width: 100%;">
+                                                  <select id="dropdown" class="form-control mt-1" name="customermanpowers[${accordionCount - 1}][man_cat]" value="{{ $manpowers->man_cat }}" style="width: 70%; border-radius: 4px 0 0 4px; ">
+                                                      <option value=""></option>
+                                                      @foreach ($categories as $category)
+                                                        <option value="{{ $category->category_name }}" @if($category->category_name == $manpowers->man_cat) selected @endif>{{ $category->category_name}}</option>
 
-                                                    @endforeach
-                                                </select>
-                                                <div class="input-group-append" style="width: 30%;">
-                                                    <a href="{{ route('category') }}">
-                                                        <button class="btn btn-primary" id="submit-category" type="button" style="width: 100%; height: 38px; border-radius: 0 4px 4px 0; margin-top:4px;">Add</button>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
+                                                      @endforeach
+                                                  </select>
+                                                  <div class="input-group-append" style="width: 30%;">
+                                                      <a href="{{ route('category') }}">
+                                                          <button class="btn btn-primary" id="submit-category" type="button" style="width: 100%; height: 38px; border-radius: 0 4px 4px 0; margin-top:4px;">Add</button>
+                                                      </a>
+                                                  </div>
+                                              </div>
+                                          </div>
 
-                                        <div class="col-lg-5 spacing-left spacing-right form-group">
-                                            Uniform Type <br>
-                                            <div class="input-group" style="width: 100%;">
-                                                <input class="form-control" name="customermanpowers[${accordionCount - 1}][man_uni]" type="text" value="{{ $manpowers->man_uni }}" placeholder="..." style="width: 100%;">
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-5 spacing-left spacing-right form-group">
-                                                Uniform Number <br>
-                                                <div class="input-group" style="width: 100%;">
-                                                    <input class="form-control" name="customermanpowers[${accordionCount - 1}][man_uni_no]"  type="text" value="{{ $manpowers->man_uni_no }}" placeholder="..." style="width: 100%;">
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-5 spacing-left spacing-right form-group">
-                                                Weapon Type <br>
-                                                <div class="input-group" style="width: 100%;">
-                                                    <input class="form-control" name="customermanpowers[${accordionCount - 1}][man_weapon]"  type="text" value="{{ $manpowers->man_weapon }}" placeholder="..." style="width: 100%;">
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-5 spacing-left spacing-right form-group">
-                                                Ammunition Type <br>
-                                                <div class="input-group" style="width: 100%;">
-                                                    <input class="form-control" name="customermanpowers[${accordionCount - 1}][man_ammu]"  type="text" value="{{ $manpowers->man_ammu }}" placeholder="..." style="width: 100%;">
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-5 spacing-left spacing-right form-group">
-                                                Equipment <br>
-                                                <div class="input-group" style="width: 100%;">
-                                                    <input class="form-control" name="customermanpowers[${accordionCount - 1}][man_equip]"  type="text" value="{{ $manpowers->man_equip }}" placeholder="..." style="width: 100%;">
-                                                </div>
-                                            </div>
-                                            <div class="form-type col-lg-5 spacing-right">
-                                                Picture of Equipment <br> <input class="form-control" name="customermanpowers[${accordionCount - 1}][man_equip_attach]"  type="file" value="{{ $manpowers->man_equip_attach }}" placeholder="..." style="width: 100%;">
-                                                <div class="col-lg-5 spacing-right">
-                                                    <div class="image-preview42" id="imagePreview42">
-                                                        @if($manpowers->man_equip_attach)
-                                                          <img src="{{ asset($manpowers->man_equip_attach) }}" alt="Image Preview42" class="image-preview__image42" style="height: 100%; width:100%; margin-left:-13px;">
-                                                        @else
-                                                          <img src ="{{asset('noimage.jpg')}}"  alt="no image" width="70px" height="70px">
-                                                        @endif
-                                                    </div>
-                                                </div>
-                                            </div>
+                                          <div class="col-lg-5 spacing-left spacing-right form-group">
+                                              Uniform Type <br>
+                                              <div class="input-group" style="width: 100%;">
+                                                  <input class="form-control" name="customermanpowers[${accordionCount - 1}][man_uni]" type="text" value="{{ $manpowers->man_uni }}" placeholder="..." style="width: 100%;">
+                                              </div>
+                                          </div>
+                                          <div class="col-lg-5 spacing-left spacing-right form-group">
+                                                  Uniform Number <br>
+                                                  <div class="input-group" style="width: 100%;">
+                                                      <input class="form-control" name="customermanpowers[${accordionCount - 1}][man_uni_no]"  type="text" value="{{ $manpowers->man_uni_no }}" placeholder="..." style="width: 100%;">
+                                                  </div>
+                                              </div>
+                                              <div class="col-lg-5 spacing-left spacing-right form-group">
+                                                  Weapon Type <br>
+                                                  <div class="input-group" style="width: 100%;">
+                                                      <input class="form-control" name="customermanpowers[${accordionCount - 1}][man_weapon]"  type="text" value="{{ $manpowers->man_weapon }}" placeholder="..." style="width: 100%;">
+                                                  </div>
+                                              </div>
+                                              <div class="col-lg-5 spacing-left spacing-right form-group">
+                                                  Ammunition Type <br>
+                                                  <div class="input-group" style="width: 100%;">
+                                                      <input class="form-control" name="customermanpowers[${accordionCount - 1}][man_ammu]"  type="text" value="{{ $manpowers->man_ammu }}" placeholder="..." style="width: 100%;">
+                                                  </div>
+                                              </div>
+                                              <div class="col-lg-5 spacing-left spacing-right form-group">
+                                                  Equipment <br>
+                                                  <div class="input-group" style="width: 100%;">
+                                                      <input class="form-control" name="customermanpowers[${accordionCount - 1}][man_equip]"  type="text" value="{{ $manpowers->man_equip }}" placeholder="..." style="width: 100%;">
+                                                  </div>
+                                              </div>
+                                              <div class="form-type col-lg-5 spacing-right">
+                                                  Picture of Equipment <br> <input class="form-control" name="customermanpowers[${accordionCount - 1}][man_equip_attach]"  type="file" value="{{ $manpowers->man_equip_attach }}" placeholder="..." style="width: 100%;">
+                                                  <div class="col-lg-5 spacing-right">
+                                                      <div class="image-preview42" id="imagePreview42">
+                                                          @if($manpowers->man_equip_attach)
+                                                            <img src="{{ asset($manpowers->man_equip_attach) }}" alt="Image Preview42" class="image-preview__image42" style="height: 100%; width:100%; margin-left:-13px;">
+                                                          @else
+                                                            <img src ="{{asset('noimage.jpg')}}"  alt="no image" width="70px" height="70px">
+                                                          @endif
+                                                      </div>
+                                                  </div>
+                                              </div>
 
-                                    </div>
+                                      </div>
 
-                                </div>
-                                <div class="col-lg-6 spacing-left">
-                                    <div class="row mb-3">
-                                        <div class="form-type col-lg-6 spacing-right">
-                                            Shift Start date. <br> <input class="form-control" name="customermanpowers[${accordionCount - 1}][s_start_date]" value="{{ $manpowers->s_start_date }}" type="date" placeholder="..." style="width: 100%;">
-                                        </div>
-                                        <div class="form-type col-lg-6 spacing-right">
-                                            Shift End date. <br> <input class="form-control" name="customermanpowers[${accordionCount - 1}][s_end_date]" value="{{ $manpowers->s_end_date }}" type="date" placeholder="..." style="width: 100%;">
-                                            <div id="shiftEndDateError" style="color: red;"></div>
-                                        </div>
-                                    </div>
-                                    <div class="row mb-3">
-                                        <div class="form-type col-lg-6 spacing-right">
-                                            Shift Start time. <br> <input class="form-control" name="customermanpowers[${accordionCount - 1}][s_start_time]" type="time" value="{{ $manpowers->s_start_time }}" placeholder="..." style="width: 100%;">
-                                        </div>
-                                        <div class="form-type col-lg-6 spacing-right">
-                                            Shift End time. <br> <input class="form-control" name="customermanpowers[${accordionCount - 1}][s_end_time]" type="time" value="{{ $manpowers->s_end_time }}" placeholder="..." style="width: 100%;">
-                                            <div id="shiftEndTimeError" style="color: red;"></div>
-                                        </div>
-                                    </div>
+                                  </div>
+                                  <div class="col-lg-6 spacing-left">
+                                      <div class="row mb-3">
+                                          <div class="form-type col-lg-6 spacing-right">
+                                              Shift Start date. <br> <input class="form-control" name="customermanpowers[${accordionCount - 1}][s_start_date]" value="{{ $manpowers->s_start_date }}" type="date" placeholder="..." style="width: 100%;">
+                                          </div>
+                                          <div class="form-type col-lg-6 spacing-right">
+                                              Shift End date. <br> <input class="form-control" name="customermanpowers[${accordionCount - 1}][s_end_date]" value="{{ $manpowers->s_end_date }}" type="date" placeholder="..." style="width: 100%;">
+                                              <div id="shiftEndDateError" style="color: red;"></div>
+                                          </div>
+                                      </div>
+                                      <div class="row mb-3">
+                                          <div class="form-type col-lg-6 spacing-right">
+                                              Shift Start time. <br> <input class="form-control" name="customermanpowers[${accordionCount - 1}][s_start_time]" type="time" value="{{ $manpowers->s_start_time }}" placeholder="..." style="width: 100%;">
+                                          </div>
+                                          <div class="form-type col-lg-6 spacing-right">
+                                              Shift End time. <br> <input class="form-control" name="customermanpowers[${accordionCount - 1}][s_end_time]" type="time" value="{{ $manpowers->s_end_time }}" placeholder="..." style="width: 100%;">
+                                              <div id="shiftEndTimeError" style="color: red;"></div>
+                                          </div>
+                                      </div>
 
-                                    <div class="row mb-3">
-                                        <div class="form-type col-lg-6 spacing-right">
-                                        Deployment Start date. <br> <input class="form-control" name="customermanpowers[${accordionCount - 1}][man_start_date]"  type="date" value="{{ $manpowers->man_start_date }}" placeholder="..." style="width: 100%;">
-                                        </div>
-                                        <div class="form-type col-lg-6 spacing-right">
-                                        Deployment End date. <br> <input class="form-control" name="customermanpowers[${accordionCount - 1}][man_end_date]"  type="date" value="{{ $manpowers->man_end_date }}" placeholder="..." style="width: 100%;">
-                                        <div id="deploymentEndDateError" style="color: red;"></div>
-                                        </div>
-                                    </div>
-                                    <div class="row mb-3">
-                                        <div class="form-type col-lg-6 spacing-right">
-                                        Deployment Start time. <br> <input class="form-control" name="customermanpowers[${accordionCount - 1}][man_start_time]"  type="time" value="{{ $manpowers->man_start_time }}" placeholder="..." style="width: 100%;">
-                                        </div>
-                                        <div class="form-type col-lg-6 spacing-right">
-                                        Deployment End time. <br> <input class="form-control"  name="customermanpowers[${accordionCount - 1}][man_end_time]"  type="time" value="{{ $manpowers->man_end_date }}" placeholder="..." style="width: 100%;">
-                                        <div id="deploymentEndTimeError" style="color: red;"></div>
-                                        </div>
-                                    </div>
-                                    <div class="row mb-3">
-                                        <div class="form-type col-lg-6 spacing-right">
-                                        Quantity. <br> <input class="form-control" name="customermanpowers[${accordionCount - 1}][man_quan]"  type="text" value="{{ $manpowers->man_quan }}" placeholder="..." style="width: 100%;">
-                                        </div>
-                                        <div class="form-type col-lg-6 spacing-right">
-                                        Duty Hours. <br> <input class="form-control"  name="customermanpowers[${accordionCount - 1}][man_hours]"  type="text" value="{{ $manpowers->man_hours }}" placeholder="..." style="width: 100%;">
-                                        </div>
-                                    </div>
-                                    <div class="row mb-3">
-                                        <div class="form-type col-lg-6 spacing-right">
-                                        Post Orders / JD of Guard Post. <br>
-                                        <input class="form-control" name="customermanpowers[${accordionCount - 1}][man_jd_attach]"  type="file" value="{{ $manpowers->man_jd_attach }}" placeholder="..." style="width: 100%;">
-                                            <div class="col-lg-5 spacing-right">
-                                                <div class="image-preview42" id="imagePreview42">
-                                                    @if($manpowers->man_jd_attach)
-                                                      <img src="{{ asset($manpowers->man_jd_attach) }}" alt="Image Preview42" class="image-preview__image42" style="height: 100%; width:100%; margin-left:-13px;">
-                                                    @else
-                                                      <img src ="{{asset('noimage.jpg')}}"  alt="no image" width="70px" height="70px">
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-type col-lg-6 spacing-right">
-                                        Any Special Instructions. <br>
-                                        <textarea class="form-control" id="w3review5" name="customermanpowers[${accordionCount - 1}][man_any_sp]" type="notes" oninput="trimSpaces5()" onclick="moveCursorToStart5()"  placeholder="..." style="width: 100%;">{{ $manpowers->man_any_sp }}</textarea>
-                                        </div>
-                                    </div>
-                                    <div class="row mb-3">
-                                        <div class="form-type col-lg-6 spacing-right">
-                                            Approved Leaves. <br> <input class="form-control"name="customermanpowers[${accordionCount - 1}][man_apr_l]"  value="{{ $manpowers->man_apr_l }}" type="text" placeholder="..." style="width: 100%;">
-                                        </div>
-                                        <div class="form-type col-lg-6 spacing-right">
-                                            Salary of total days. <br> <input class="form-control" name="customermanpowers[${accordionCount - 1}][man_salary]"  value="{{ $manpowers->man_salary }}" type="text" placeholder="..." style="width: 100%;">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div style="width: 50%;">
-                                    <button class="btn btn-primary removeAccordion" type="button">Remove</button>
-                                </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
+                                      <div class="row mb-3">
+                                          <div class="form-type col-lg-6 spacing-right">
+                                          Deployment Start date. <br> <input class="form-control" name="customermanpowers[${accordionCount - 1}][man_start_date]"  type="date" value="{{ $manpowers->man_start_date }}" placeholder="..." style="width: 100%;">
+                                          </div>
+                                          <div class="form-type col-lg-6 spacing-right">
+                                          Deployment End date. <br> <input class="form-control" name="customermanpowers[${accordionCount - 1}][man_end_date]"  type="date" value="{{ $manpowers->man_end_date }}" placeholder="..." style="width: 100%;">
+                                          <div id="deploymentEndDateError" style="color: red;"></div>
+                                          </div>
+                                      </div>
+                                      <div class="row mb-3">
+                                          <div class="form-type col-lg-6 spacing-right">
+                                          Deployment Start time. <br> <input class="form-control" name="customermanpowers[${accordionCount - 1}][man_start_time]"  type="time" value="{{ $manpowers->man_start_time }}" placeholder="..." style="width: 100%;">
+                                          </div>
+                                          <div class="form-type col-lg-6 spacing-right">
+                                          Deployment End time. <br> <input class="form-control"  name="customermanpowers[${accordionCount - 1}][man_end_time]"  type="time" value="{{ $manpowers->man_end_date }}" placeholder="..." style="width: 100%;">
+                                          <div id="deploymentEndTimeError" style="color: red;"></div>
+                                          </div>
+                                      </div>
+                                      <div class="row mb-3">
+                                          <div class="form-type col-lg-6 spacing-right">
+                                          Quantity. <br> <input class="form-control" name="customermanpowers[${accordionCount - 1}][man_quan]"  type="text" value="{{ $manpowers->man_quan }}" placeholder="..." style="width: 100%;">
+                                          </div>
+                                          <div class="form-type col-lg-6 spacing-right">
+                                          Duty Hours. <br> <input class="form-control"  name="customermanpowers[${accordionCount - 1}][man_hours]"  type="text" value="{{ $manpowers->man_hours }}" placeholder="..." style="width: 100%;">
+                                          </div>
+                                      </div>
+                                      <div class="row mb-3">
+                                          <div class="form-type col-lg-6 spacing-right">
+                                          Post Orders / JD of Guard Post. <br>
+                                          <input class="form-control" name="customermanpowers[${accordionCount - 1}][man_jd_attach]"  type="file" value="{{ $manpowers->man_jd_attach }}" placeholder="..." style="width: 100%;">
+                                              <div class="col-lg-5 spacing-right">
+                                                  <div class="image-preview42" id="imagePreview42">
+                                                      @if($manpowers->man_jd_attach)
+                                                        <img src="{{ asset($manpowers->man_jd_attach) }}" alt="Image Preview42" class="image-preview__image42" style="height: 100%; width:100%; margin-left:-13px;">
+                                                      @else
+                                                        <img src ="{{asset('noimage.jpg')}}"  alt="no image" width="70px" height="70px">
+                                                      @endif
+                                                  </div>
+                                              </div>
+                                          </div>
+                                          <div class="form-type col-lg-6 spacing-right">
+                                          Any Special Instructions. <br>
+                                          <textarea class="form-control" id="w3review5" name="customermanpowers[${accordionCount - 1}][man_any_sp]" type="notes" oninput="trimSpaces5()" onclick="moveCursorToStart5()"  placeholder="..." style="width: 100%;">{{ $manpowers->man_any_sp }}</textarea>
+                                          </div>
+                                      </div>
+                                      <div class="row mb-3">
+                                          <div class="form-type col-lg-6 spacing-right">
+                                              Approved Leaves. <br> <input class="form-control"name="customermanpowers[${accordionCount - 1}][man_apr_l]"  value="{{ $manpowers->man_apr_l }}" type="text" placeholder="..." style="width: 100%;">
+                                          </div>
+                                          <div class="form-type col-lg-6 spacing-right">
+                                              Salary of total days. <br> <input class="form-control" name="customermanpowers[${accordionCount - 1}][man_salary]"  value="{{ $manpowers->man_salary }}" type="text" placeholder="..." style="width: 100%;">
+                                          </div>
+                                      </div>
+                                  </div>
+                                  <div style="width: 50%;">
+                                      <button class="btn btn-primary removeAccordion" type="button">Remove</button>
+                                  </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              `;
 
       $('#manpowerAccordion').append(accordionHtml);
     @endforeach
@@ -9747,6 +9792,33 @@ class="image-preview__image42" style="height: 100%; width:100%; margin-left:-13p
     });
 
   });
+  function openFileModal(element) {
+
+    let file = element.getAttribute('data-file');
+    let ext = element.getAttribute('data-extension').toLowerCase();
+
+    let content = '';
+
+    if (['jpg','jpeg','png','gif','webp'].includes(ext)) {
+        content = `<img src="${file}" style="width:100%">`;
+
+    } else if (['mp4','webm'].includes(ext)) {
+        content = `<video controls style="width:100%">
+                        <source src="${file}">
+                   </video>`;
+
+    } else if (ext === 'pdf') {
+        content = `<iframe src="${file}" width="100%" height="500px"></iframe>`;
+
+    } else {
+        content = `<a href="${file}" target="_blank">Download File</a>`;
+    }
+
+    document.getElementById('fileModalContent').innerHTML = content;
+
+    let modal = new bootstrap.Modal(document.getElementById('fileModal'));
+    modal.show();
+}
 </script>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
   integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
