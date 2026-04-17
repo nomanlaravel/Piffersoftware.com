@@ -196,6 +196,7 @@ public function getInspectionQuestions(Request $request)
             'inspectionId' => 'required|exists:customer_inspections,id'
         ]);
 
+        
         $customerId = $request->customerId;
         $inspectionId = $request->inspectionId;
 
