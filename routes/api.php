@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\InspectionController;
 use App\Http\Controllers\Api\CustomerInspectionController;
+use App\Http\Controllers\Api\WhatsAppFlowController;
 use App\Models\Customer;
 /*
 |--------------------------------------------------------------------------
@@ -38,6 +39,10 @@ Route::get('/customer/{customerId}/inspection/{inspectionId}/questions', [Custom
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+// WhatsApp Flow Response Endpoint (NeuAPIx Webhook)
+// This receives feedback data when a customer completes the WhatsApp feedback flow
+Route::post('/whatsapp/flow-response', [WhatsAppFlowController::class, 'handleFlowResponse']);
 
 Route::prefix('inspections')->group(function () {
     Route::get('/questions', [CustomerInspectionController::class, 'getQuestions']);

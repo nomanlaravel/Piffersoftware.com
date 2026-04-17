@@ -19,7 +19,8 @@ class SendWhatsAppNotification
         $user = null,
         ?string $templateName = null,
         ?array $templateParameters = null,
-        ?string $category = null
+        ?string $category = null,
+        ?array $fullComponents = null
     ): array {
 
         $result = $this->whatsAppService->sendText(
@@ -28,7 +29,8 @@ class SendWhatsAppNotification
             user: $user,
             templateName: $templateName,
             templateParameters: $templateParameters,
-            category: $category
+            category: $category,
+            fullComponents: $fullComponents
         );
 
         // NOTE: We do NOT update last_whatsapp_interaction_at here.

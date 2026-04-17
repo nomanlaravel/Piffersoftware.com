@@ -8,7 +8,7 @@ use Throwable;
 
 class NeuapixWhatsAppService
 {
-    public function sendText($to, $message, $user = null, $templateName = null, $templateParameters = null, ?string $category = null): array
+    public function sendText($to, $message, $user = null, $templateName = null, $templateParameters = null, ?string $category = null, ?array $fullComponents = null): array
     {
         $to = $this->normalizePhone($to);  // ✅ ALWAYS use passed phone
 
@@ -64,7 +64,7 @@ class NeuapixWhatsAppService
                     'language' => [
                         'code' => 'en',
                     ],
-                    'components' => [
+                    'components' => $fullComponents ?? [
                         [
                             'type' => 'body',
                             'parameters' => $templateParameters ?? [

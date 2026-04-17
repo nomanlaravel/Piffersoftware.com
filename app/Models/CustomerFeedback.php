@@ -11,6 +11,7 @@ class CustomerFeedback extends Model
     use HasFactory;
 
     protected $fillable = [
+        'customers_id',
         'feed_client_name',
         'feed_client_poc_name',
         'feed_client_email',

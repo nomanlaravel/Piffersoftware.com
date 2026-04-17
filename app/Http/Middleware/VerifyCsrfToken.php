@@ -13,5 +13,6 @@ class VerifyCsrfToken extends Middleware
      */
       protected $except = [
         'update_train/*',
+        'api/whatsapp/flow-response',
     ];
 }

@@ -13,7 +13,8 @@ class WhatsAppNotificationManager
         $user = null,
         ?string $templateName = null,
         ?array $templateParameters = null,
-        ?string $category = null
+        ?string $category = null,
+        ?array $fullComponents = null
     ): array {
         return app(SendWhatsAppNotification::class)->execute(
             phone: $phone,
@@ -22,7 +23,8 @@ class WhatsAppNotificationManager
             user: $user,
             templateName: $templateName,
             templateParameters: $templateParameters,
-            category: $category
+            category: $category,
+            fullComponents: $fullComponents
         );
     }
 
@@ -383,6 +385,43 @@ class WhatsAppNotificationManager
             templateName: 'hrm_assignment_to_customer',
             templateParameters: $params,
             category: 'UTILITY'
+        );
+    }
+
+    /**
+     * Trigger a feedback flow for the customer.
+     */
+    public function sendFeedbackFlow($to, $recipientName, $userModel = null): array
+    {
+        $nameFallback = !empty($recipientName) ? $recipientName : 'Customer';
+
+        $message = "Hello {$nameFallback}, \n" .
+            "we value your feedback. Please click the button below to start our short feedback survey.";
+
+        // For templates with FLOW buttons, we must provide the button component structure
+        $fullComponents = [
+            [
+                'type' => 'body',
+                'parameters' => [
+                    ['type' => 'text', 'text' => $nameFallback], // {{1}}
+                ],
+            ],
+            [
+                'type' => 'button',
+                'sub_type' => 'flow',
+                'index' => '0',
+                'parameters' => [] 
+            ]
+        ];
+
+        return $this->send(
+            phone: (string) $to,
+            message: $message,
+            eventType: 'trigger_feedback_flow',
+            user: $userModel,
+            templateName: 'trigger_feedback_flow',
+            category: 'UTILITY',
+            fullComponents: $fullComponents
         );
     }
 }

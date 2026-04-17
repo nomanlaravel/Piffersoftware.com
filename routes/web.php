@@ -912,7 +912,7 @@ Route::get('/test-pdf-notification', function () {
     try {
         $controller = app(\App\Http\Controllers\CustomerController::class);
         $response = $controller->sendPDFViaEmail($request);
-        
+
         return response()->json([
             'status' => 'Test Executed',
             'customer_targeted' => $customer->customers_name,
@@ -927,7 +927,8 @@ Route::get('/test-pdf-notification', function () {
 // Test Route for sendReportEmail
 Route::get('/test-report-notification', function () {
     $customer = \App\Models\Customer::first();
-    if (!$customer) return "Error: No customer found.";
+    if (!$customer)
+        return "Error: No customer found.";
 
     $request = new \Illuminate\Http\Request();
     $request->setMethod('POST');
@@ -944,7 +945,7 @@ Route::get('/test-report-notification', function () {
     try {
         $controller = app(\App\Http\Controllers\CustomerController::class);
         $response = $controller->sendReportEmail($request);
-        
+
         return response()->json([
             'status' => 'Test Executed (Report)',
             'customer_targeted' => $customer->customers_name,
@@ -958,7 +959,8 @@ Route::get('/test-report-notification', function () {
 // Test Route for sendEditReportEmail
 Route::get('/test-edit-report-notification', function () {
     $customer = \App\Models\Customer::first();
-    if (!$customer) return "Error: No customer found.";
+    if (!$customer)
+        return "Error: No customer found.";
 
     $request = new \Illuminate\Http\Request();
     $request->setMethod('POST');
@@ -971,7 +973,7 @@ Route::get('/test-edit-report-notification', function () {
     try {
         $controller = app(\App\Http\Controllers\CustomerController::class);
         $response = $controller->sendEditReportEmail($request);
-        
+
         return response()->json([
             'status' => 'Test Executed (Edit Report)',
             'customer_targeted' => $customer->customers_name,
@@ -979,5 +981,29 @@ Route::get('/test-edit-report-notification', function () {
         ]);
     } catch (\Exception $e) {
         return "An error occurred during testing: " . $e->getMessage();
+    }
+});
+
+// Test Route for Feedback Flow Template
+Route::get('/test-feedback-flow', function () {
+    $customer = \App\Models\Customer::first();
+    if (!$customer)
+        return "Error: No customer found.";
+
+    try {
+        $manager = app(\App\Services\WhatsApp\WhatsAppNotificationManager::class);
+        $result = $manager->sendFeedbackFlow(
+            $customer->whatsapp_number ?? $customer->phone,
+            $customer->customers_name,
+            $customer
+        );
+
+        return response()->json([
+            'status' => 'Feedback Flow Triggered',
+            'customer_targeted' => $customer->customers_name,
+            'whatsapp_result' => $result
+        ]);
+    } catch (\Exception $e) {
+        return "An error occurred: " . $e->getMessage();
     }
 });
