@@ -189,8 +189,16 @@ class CustomerInspectionController extends Controller
         ]);
     }
 
-    public function getInspectionQuestions($customerId, $inspectionId)
+public function getInspectionQuestions(Request $request)
     {
+        $request->validate([
+            'customerId' => 'required|exists:customers,id',
+            'inspectionId' => 'required|exists:customer_inspections,id'
+        ]);
+
+        $customerId = $request->customerId;
+        $inspectionId = $request->inspectionId;
+
         $inspection = CustomerInspection::with(['inspectionForms.answers.question.options', 'inspectionForms.answers.option'])
             ->where('customers_id', $customerId)
             ->where('id', $inspectionId)
