@@ -125,6 +125,22 @@ class WhatsAppFlowController extends Controller
                 'feed_remarks' => 'Submitted via WhatsApp Feedback Flow',
             ]);
 
+            // Update customer record with info from flow if provided
+            $customerUpdateData = [];
+            if (!empty($responseData['name']) || !empty($responseData['poc_name'])) {
+                $customerUpdateData['poc_name'] = $responseData['poc_name'] ?? $responseData['name'];
+            }
+            if (!empty($responseData['designation']) || !empty($responseData['desig'])) {
+                $customerUpdateData['poc_desig'] = $responseData['designation'] ?? $responseData['desig'];
+            }
+            if (!empty($responseData['email'])) {
+                $customerUpdateData['poc_email'] = $responseData['email'];
+            }
+
+            if (!empty($customerUpdateData)) {
+                $customer->update($customerUpdateData);
+            }
+
             Log::info('WhatsApp Flow: Feedback stored successfully', [
                 'feedback_id' => $feedback->id,
                 'customer_id' => $customer->id,

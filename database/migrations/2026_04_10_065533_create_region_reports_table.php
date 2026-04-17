@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -13,22 +12,22 @@ return new class extends Migration
     {
         Schema::create('region_reports', function (Blueprint $table) {
             $table->id();
-    $table->foreignId('admin_id')->constrained('admins')->onDelete('cascade');
-    $table->foreignId('region_id')->constrained('regions')->onDelete('cascade');
-    $table->string('branch_office_name')->nullable();
-    $table->unsignedBigInteger('branch_id')->nullable();
-    $table->string('employee_name');
-    $table->string('designation');
+            $table->foreignId('admin_id')->constrained('admins')->onDelete('cascade');
+            $table->unsignedInteger('region_id');
+            $table->foreign('region_id')->references('id')->on('regions')->onDelete('cascade');
+            $table->string('branch_office_name')->nullable();
+            $table->unsignedBigInteger('branch_id')->nullable();
+            $table->string('employee_name');
+            $table->string('designation');
 
-    $table->string('monday')->nullable();
-    $table->string('tuesday')->nullable();
-    $table->string('wednesday')->nullable();
-    $table->string('thursday')->nullable();
-    $table->string('friday')->nullable();
+            $table->string('monday')->nullable();
+            $table->string('tuesday')->nullable();
+            $table->string('wednesday')->nullable();
+            $table->string('thursday')->nullable();
+            $table->string('friday')->nullable();
 
-   
             $table->timestamps();
-            
+
         });
     }
 
