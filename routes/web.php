@@ -886,7 +886,19 @@ Route::get('/region-reports/edit/{id}', [AdminController::class, 'editRegionRepo
 Route::put('/region-reports/update/{id}', [AdminController::class, 'updateRegionReport']);
 Route::delete('/region-reports/delete/{id}', [AdminController::class, 'deleteRegionReport']);
 Route::get('/search/region/report/export', [AdminController::class, 'export_region_report'])->name('regionwise.index');
+Route::get('/search/region/report', [AdminController::class, 'export_visit_report'])->name('visitsales.index');
 
+Route::post('/pipeline-reports/store', [AdminController::class, 'storePipelineReport'])->name('pipelineReport.store');
+Route::get('/pipeline-reports/edit/{id}', [AdminController::class, 'editPipelineReport']);
+Route::put('/pipeline-reports/update/{id}', [AdminController::class, 'updatePipelineReport']);
+Route::delete('/pipeline-reports/delete/{id}', [AdminController::class, 'deletePipelineReport']);
+Route::get('/search/pipeline/report/export', [AdminController::class, 'export_pipeline_report'])->name('pipelinesales.index');
+
+Route::post('/visit-pipeline-reports/store', [AdminController::class, 'storeVisitReport'])->name('visitReport.store');
+Route::get('/visit-reports/edit/{id}', [AdminController::class, 'editVisitReport']);
+Route::put('/visit-reports/update/{id}', [AdminController::class, 'updateVisitReport']);
+Route::delete('/visit-reports/delete/{id}', [AdminController::class, 'deleteVisitReport']);
+Route::get('/search/visit/report/export', [AdminController::class, 'export_visit_report'])->name('visitPipelinesales.index');
 
 
 // Temporary Test Route for PDF Email WhatsApp Notification

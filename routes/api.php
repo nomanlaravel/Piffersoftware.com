@@ -33,7 +33,7 @@ Route::get('all/customer-data', [CustomerController::class, 'getallCustomerData'
 Route::get('/customer', [TrainingController::class, 'sendInactiveEmail']);
 
 Route::post('/customer-inspection', [CustomerInspectionController::class, 'InspectionStore']);
-Route::get('/customer/{customerId}/inspection/{inspectionId}/questions', [CustomerInspectionController::class, 'getInspectionQuestions']);
+Route::post('/customer/inspection/questions', [CustomerInspectionController::class, 'getInspectionQuestions']);
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
