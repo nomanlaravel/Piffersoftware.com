@@ -8,6 +8,9 @@ use Illuminate\Console\Command;
 use App\Mail\LookBackReminderMail;
 use App\Models\ReminderNotification;
 use Illuminate\Support\Facades\Mail;
+use Log;
+use App\Services\WhatsApp\WhatsAppNotificationManager;
+
 
 class SendLookBackReminders extends Command
 {
@@ -19,12 +22,12 @@ class SendLookBackReminders extends Command
         $today = Carbon::today();
         $count = 0;
 
-        $hrms = Hrm::all();
+        $hrms = Hrm::all();                                              
 
         foreach ($hrms as $hrm) {
             // loop through 1 to 14
             for ($i = 1; $i <= 14; $i++) {
-                $lookBackField = "look_back{$i}";
+                $lookBackField = "look_back{$i}";                                                                                                                                  
                 $frequencyField = "frequency{$i}";
                 $notesField = "notes{$i}";
 
@@ -65,6 +68,20 @@ class SendLookBackReminders extends Command
                             'message'     => "Dear {$hrm->name}, Reminder {$i} triggered. Notes: {$notes}",
                             'is_read'     => false,
                         ]);
+
+                        // Whatsapp intergeration
+                $whatsappTo = $hrm->cell;
+                if ($whatsappTo) {
+                    app(WhatsAppNotificationManager::class)->sendLookBackReminder(
+                        to: $whatsappTo,
+                        hrmName: $hrm->name,
+                        count: $i,
+                        notes: $notes,
+                        userModel: $hrm
+                    );
+                    Log::info('Look Back Reminder WhatsApp sent to: ' . $whatsappTo);
+                }
+
                         if ($hrm->email) { // make sure HRM has email
                           Mail::to($hrm->email)->send(new LookBackReminderMail($hrm, $notes, $i));
                           }

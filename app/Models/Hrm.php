@@ -245,7 +245,7 @@ class Hrm extends Model
 
     public function customer()
     {
-        return $this->belongsTo(Customer::class, 'client_id', 'id');
+        return $this->belongsTo(Customer::class, 'client_id', 'customers_id');
     }
 
     public function guarantors()

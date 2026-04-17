@@ -2724,8 +2724,8 @@
                               value="{{ $assigments->asig_ex_attach }}" placeholder="..." style="width: 70%;" multiple>
                             <div class="col-lg-5 spacing-right">
                               <div class="image-preview42" id="imagePreview42">
-                                @if($armourers->asig_ex_attach)
-                                  <img src="{{ asset($armourers->asig_ex_attach) }}" alt="Image Preview42"
+                                @if($assigments->asig_ex_attach)
+                                  <img src="{{ asset($assigments->asig_ex_attach) }}" alt="Image Preview42"
                                     class="image-preview__image42" style="height: 100%; width:100%; margin-left:-13px;">
                                 @else
                                   <img src="{{asset('noimage.jpg')}}" alt="no image" width="70px" height="70px">
@@ -6990,14 +6990,10 @@ class="image-preview__image42" style="height: 100%; width:100%; margin-left:-13p
                   <h3></h3>
                   <div class="row mb-2">
                       <div class="col-lg-6 spacing-left spacing-right mt-2">
-                          Attachments <br> <input class="form-control" type="file" name="customerassigments[${assignmentRoom - 1}][asig_ex_attach]" value="{{ $assigments->asig_ex_attach }}" placeholder="..." style="width: 70%;" multiple>
+                          Attachments <br> <input class="form-control" type="file" name="customerassigments[${assignmentRoom - 1}][asig_ex_attach]" value="" placeholder="..." style="width: 70%;" multiple>
                           <div class="col-lg-5 spacing-right">
                               <div class="image-preview42" id="imagePreview42">
-                                  @if($armourers->asig_ex_attach)
-                                    <img src="{{ asset($armourers->asig_ex_attach) }}" alt="Image Preview42" class="image-preview__image42" style="height: 100%; width:100%; margin-left:-13px;">
-                                  @else
-                                    <img src ="{{asset('noimage.jpg')}}"  alt="no image" width="70px" height="70px">
-                                  @endif
+                                    <img src="{{asset('noimage.jpg')}}"  alt="no image" width="70px" height="70px">
                               </div>
                           </div>
                       </div>
@@ -7093,11 +7089,7 @@ class="image-preview__image42" style="height: 100%; width:100%; margin-left:-13p
                               Picture before cleaning <br> <input class="form-control" id="" name="customerarmourers[${cleaningRoom - 1}][arm_pic_b]" type="file" value=""  placeholder="..." style="width: 100%;">
                               <div class="col-lg-5 spacing-right">
                                   <div class="image-preview42" id="imagePreview42">
-                                      @if($armourers->arm_pic_b)
-                                        <img src="{{ asset($armourers->arm_pic_b) }}" alt="Image Preview42" class="image-preview__image42" style="height: 100%; width:100%; margin-left:-13px;">
-                                      @else
-                                        <img src ="{{asset('noimage.jpg')}}"  alt="no image" width="70px" height="70px">
-                                      @endif
+                                        <img src="{{asset('noimage.jpg')}}" alt="no image" width="70px" height="70px">
                                   </div>
                               </div>
                           </div>
@@ -7105,11 +7097,7 @@ class="image-preview__image42" style="height: 100%; width:100%; margin-left:-13p
                               Picture after cleaning <br> <input class="form-control" id="" name="customerarmourers[${cleaningRoom - 1}][arm_pic_a]" type="file" value="" placeholder="..." style="width: 100%;">
                               <div class="col-lg-5 spacing-right">
                                   <div class="image-preview42" id="imagePreview42">
-                                      @if($armourers->arm_pic_a)
-                                        <img src="{{ asset($armourers->arm_pic_a) }}" alt="Image Preview42" class="image-preview__image42" style="height: 100%; width:100%; margin-left:-13px;">
-                                      @else
-                                        <img src ="{{asset('noimage.jpg')}}"  alt="no image" width="70px" height="70px">
-                                      @endif
+                                        <img src="{{asset('noimage.jpg')}}" alt="no image" width="70px" height="70px">
                                   </div>
                               </div>
                           </div>
@@ -7120,11 +7108,7 @@ class="image-preview__image42" style="height: 100%; width:100%; margin-left:-13p
                               Cost Bill <br> <input class="form-control" id="" name="customerarmourers[${cleaningRoom - 1}][arm_cost_bill]" value="" type="file" placeholder="..." style="width: 100%;">
                               <div class="col-lg-5 spacing-right">
                                   <div class="image-preview42" id="imagePreview42">
-                                      @if($armourers->arm_cost_bill)
-                                        <img src="{{ asset($armourers->arm_cost_bill) }}" alt="Image Preview42" class="image-preview__image42" style="height: 100%; width:100%; margin-left:-13px;">
-                                      @else
-                                        <img src ="{{asset('noimage.jpg')}}"  alt="no image" width="70px" height="70px">
-                                      @endif
+                                        <img src="{{asset('noimage.jpg')}}" alt="no image" width="70px" height="70px">
                                   </div>
                               </div>
                           </div>
@@ -7135,18 +7119,14 @@ class="image-preview__image42" style="height: 100%; width:100%; margin-left:-13p
                       <div class="row mb-2">
                           <div class="col-lg-4 spacing-right mt-2">
                               Notes <br>
-                              <textarea id="w3review9" class="form-control" name="customerarmourers[${cleaningRoom - 1}][arm_next_clean]" oninput="trimSpaces9()" onclick="moveCursorToStart9()" rows="2" cols="38">{{ $armourers->arm_next_clean }}
+                              <textarea id="w3review9" class="form-control" name="customerarmourers[${cleaningRoom - 1}][arm_next_clean]" oninput="trimSpaces9()" onclick="moveCursorToStart9()" rows="2" cols="38">
                               </textarea>
                           </div>
                           <div class="col-lg-4 spacing-left spacing-right mt-2">
                               Attachments <br> <input class="form-control" name="customerarmourers[${cleaningRoom - 1}][arm_auth_attach]" value="" type="file" placeholder="..." style="width: 70%;" multiple>
                               <div class="col-lg-5 spacing-right">
                                   <div class="image-preview42" id="imagePreview42">
-                                      @if($armourers->arm_auth_attach)
-                                        <img src="{{ asset($armourers->arm_auth_attach) }}" alt="Image Preview42" class="image-preview__image42" style="height: 100%; width:100%; margin-left:-13px;">
-                                      @else
-                                        <img src ="{{asset('noimage.jpg')}}"  alt="no image" width="70px" height="70px">
-                                      @endif
+                                        <img src="{{asset('noimage.jpg')}}" alt="no image" width="70px" height="70px">
                                   </div>
                               </div>
                           </div>

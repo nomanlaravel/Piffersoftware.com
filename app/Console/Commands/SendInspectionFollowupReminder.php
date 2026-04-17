@@ -8,6 +8,8 @@ use Illuminate\Console\Command;
 use App\Models\ReminderNotification;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\InspectionFollowupReminderMail;
+use Log;
+use App\Services\WhatsApp\WhatsAppNotificationManager;
 
 class SendInspectionFollowupReminder extends Command
 {
@@ -31,6 +33,19 @@ class SendInspectionFollowupReminder extends Command
             $this->info("   - Insp Date: {$inspDate->format('Y-m-d')} | Reminder Date: {$reminderDate->format('Y-m-d')}");
 
             if ($reminderDate->isSameDay($today)) {
+
+                   // Whatsapp intergeration
+                $whatsappTo = $hrm->cell;
+                if ($whatsappTo) {
+                    app(WhatsAppNotificationManager::class)->sendInspectionFollowUpReminder(
+                        to: $whatsappTo,
+                        hrmName: $hrm->name,
+                        inspection_date: Carbon::parse($hrm->insp_date)->format('d M Y'),
+                        userModel: $hrm
+                    );
+                    Log::info('Look Back Reminder WhatsApp sent to: ' . $whatsappTo);
+                }
+
                 Mail::to($hrm->email)->send(new InspectionFollowupReminderMail($hrm));
                 Mail::to('Erp.piffers@gmail.com')->send(new InspectionFollowupReminderMail($hrm));
                 $this->info("✅ Reminder sent to {$hrm->name} ({$hrm->email})");

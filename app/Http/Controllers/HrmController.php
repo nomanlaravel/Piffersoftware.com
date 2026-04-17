@@ -685,6 +685,23 @@ class HrmController extends Controller
                 );
             }
 
+            // ✅ Notify Customer if assigned
+            $hrm->load('customer'); // Ensure customer is loaded
+
+            if ($hrm->customer) {
+                $customer = $hrm->customer;
+                $customerPhone = $customer->poc_cell ?? $customer->phone;
+                if ($customerPhone) {
+                    app(WhatsAppNotificationManager::class)->sendHrmAssignmentToCustomer(
+                        $customerPhone,
+                        $customer->customers_name,
+                        $hrm->name,
+                        $hrm->category ?? $hrm->designation ?? 'Staff Member',
+                        $hrm
+                    );
+                }
+            }
+
             if (isset($hrm->email)) {
                 Mail::to($hrm->email)->send(
                     new RegisterGuardEmail(
@@ -1235,6 +1252,24 @@ class HrmController extends Controller
                 eventType: 'update',
                 user: $hrm
             );
+
+            // ✅ Notify Customer if assignment changed or newly set
+            if ($hrm->wasChanged('client_id') && $hrm->client_id) {
+                $hrm->load('customer');
+                if ($hrm->customer) {
+                    $customer = $hrm->customer;
+                    $customerPhone = $customer->poc_cell ?? $customer->phone;
+                    if ($customerPhone) {
+                        $manager->sendHrmAssignmentToCustomer(
+                            $customerPhone,
+                            $customer->customers_name,
+                            $hrm->name,
+                            $hrm->category ?? $hrm->designation ?? 'Staff Member',
+                            $hrm
+                        );
+                    }
+                }
+            }
 
             return redirect()->back()->with('success', 'HRM data successfully updated.');
         } catch (\Exception $e) {

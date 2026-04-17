@@ -83,7 +83,6 @@ class SendArmourerReminders extends Command
             'is_read' => false,
         ]);
         $this->info("Reminder saved for: {$email} and Admin.");
-
     }
 
 }
