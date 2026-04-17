@@ -1766,7 +1766,7 @@
                                                 <td>
                                                 <!-- Edit Button triggers modal -->
                                                 <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
-                                                    data-bs-target="#editInspectionModal{{ $inspection->id }}">
+                                                data-bs-toggle="modal" data-bs-target="#editInspectionModal{{ $inspection->id }}">
                                                     <i class="fa fa-edit"></i>
                                                 </button>
 
@@ -1986,8 +1986,9 @@
         }
 
         // View Questions Button
-        document.querySelectorAll('.view-questions-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
+document.querySelectorAll('.view-questions-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
                 const inspectionId = this.dataset.inspectionId;
                 const customerId = this.dataset.customerId;
                 loadQuestions(customerId, inspectionId);
@@ -1995,103 +1996,167 @@
         });
     });
 
-    async function loadQuestions(customerId, inspectionId) {
-        const modal = new bootstrap.Modal(document.getElementById('questionsModal'));
-        const content = document.getElementById('questionsContent');
+async function loadQuestions(customerId, inspectionId) {
+    // Safety: truncate and validate IDs to prevent 414 errors
+    customerId = String(customerId).substring(0, 100).trim();
+    inspectionId = String(inspectionId).substring(0, 100).trim();
+    
+    if (!customerId || !inspectionId) {
+        showModalError('Invalid inspection ID');
+        return;
+    }
 
-        content.innerHTML = `
-            <div class="text-center">
-                <div class="spinner-border" role="status"></div>
-            </div>
-        `;
+    const modal = new bootstrap.Modal(document.getElementById('questionsModal'));
+    const content = document.getElementById('questionsContent');
+    content.innerHTML = showModalLoading();
 
-        modal.show();
+    // Store modal state for persistence
+    sessionStorage.setItem('questionsModalState', JSON.stringify({
+        isOpen: true,
+        customerId,
+        inspectionId,
+        timestamp: Date.now()
+    }));
 
-        try {
-            const response = await fetch(`/api/customer/${customerId}/inspection/${inspectionId}/questions`);
-            const data = await response.json();
+    modal.show();
 
-            if (data.success && data.data.length > 0) {
-                let html = '<div class="accordion" id="questionsAccordion">';
+    try {
+        // Use POST instead of GET to avoid URL length limits
+        const response = await fetch('/api/customer/inspection/questions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({ customerId, inspectionId })
+        });
 
-                data.data.forEach((form, formIndex) => {
-                    html += `
-                        <div class="accordion-item">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button ${formIndex === 0 ? '' : 'collapsed'}"
-                                    type="button"
-                                    data-bs-toggle="collapse"
-                                    data-bs-target="#formCollapse${formIndex}">
-                                    Form ${formIndex + 1} - Submitted: ${form.submitted_at}
-                                </button>
-                            </h2>
-
-                            <div id="formCollapse${formIndex}"
-                                class="accordion-collapse collapse ${formIndex === 0 ? 'show' : ''}"
-                                data-bs-parent="#questionsAccordion">
-
-                                <div class="accordion-body">
-
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-striped">
-                                            <thead class="table-dark">
-                                                <tr>
-                                                    <th>Question</th>
-                                                    <th>All Options</th>
-                                                    <th>Custom Answer</th>
-                                                    <th>Selected Option</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                    `;
-
-                    form.answers.forEach(answer => {
-                        const question = answer.question;
-                        const selectedOption = answer.option ? answer.option.option_text : 'Custom';
-                        const customAnswer = answer.custom_answer || '-';
-
-                        let optionsHtml = '-';
-                        if (question.options && question.options.length > 0) {
-                            optionsHtml = '<ul class="mb-0">';
-                            question.options.forEach(option => {
-                                optionsHtml += `<li>${option.option_text}</li>`;
-                            });
-                            optionsHtml += '</ul>';
-                        }
-
-                        html += `
-                            <tr>
-                                <td>${question.question}</td>
-                                <td>${optionsHtml}</td>
-                                <td>${customAnswer}</td>
-                                <td>${selectedOption}</td>
-                            </tr>
-                        `;
-                    });
-
-                    html += `
-                                            </tbody>
-                                        </table>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                });
-
-                html += '</div>';
-                content.innerHTML = html;
-
-            } else {
-                content.innerHTML = '<p class="text-center text-muted">No questions found for this inspection.</p>';
+        if (!response.ok) {
+            if (response.status === 414) {
+                throw new Error('Request too large - please contact support');
             }
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
 
-        } catch (error) {
-            content.innerHTML = '<p class="text-center text-danger">Error loading questions. Please try again.</p>';
-            console.error('Error:', error);
+        const data = await response.json();
+
+        if (data.success && data.data && data.data.length > 0) {
+            content.innerHTML = renderQuestionsAccordion(data.data);
+        } else {
+            content.innerHTML = '<div class="alert alert-info text-center"><i class="bi bi-info-circle me-2"></i>No questions found for this inspection.</div>';
+        }
+
+    } catch (error) {
+        console.error('Questions load error:', error);
+        content.innerHTML = showModalError(`Failed to load questions: ${error.message}`);
+    }
+}
+
+function showModalLoading() {
+    return `
+        <div class="d-flex justify-content-center align-items-center p-5">
+            <div class="spinner-border text-primary me-3" role="status" style="width: 3rem; height: 3rem;">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <div>
+                <div class="fw-bold">Loading inspection questions...</div>
+                <small class="text-muted">Please wait</small>
+            </div>
+        </div>
+    `;
+}
+
+function showModalError(message) {
+    return `
+        <div class="alert alert-danger alert-dismissible fade show m-3" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <div class="text-center p-4">
+            <button class="btn btn-outline-primary" onclick="location.reload()">
+                <i class="bi bi-arrow-clockwise"></i> Try Again
+            </button>
+        </div>
+    `;
+}
+
+function renderQuestionsAccordion(forms) {
+    let html = '<div class="accordion accordion-flush" id="questionsAccordion">';
+    
+    forms.forEach((form, formIndex) => {
+        html += `
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button ${formIndex === 0 ? '' : 'collapsed'}" type="button" 
+                            data-bs-toggle="collapse" data-bs-target="#formCollapse${formIndex}">
+                        <i class="bi bi-clipboard-check me-2"></i>Form ${formIndex + 1} 
+                        <span class="badge bg-info ms-2">${form.answers?.length || 0} Questions</span>
+                        <small class="ms-2 text-muted">${form.submitted_at}</small>
+                    </button>
+                </h2>
+                <div id="formCollapse${formIndex}" class="accordion-collapse collapse ${formIndex === 0 ? 'show' : ''}" 
+                     data-bs-parent="#questionsAccordion">
+                    <div class="accordion-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Question</th>
+                                        <th>Options</th>
+                                        <th>Custom Answer</th>
+                                        <th>Selected</th>
+                                    </tr>
+                                </thead>
+                                <tbody>`;
+        
+        if (form.answers && form.answers.length > 0) {
+            form.answers.forEach(answer => {
+                const question = answer.question || {};
+                const selectedOption = answer.option ? answer.option.option_text : 'Custom Answer';
+                const customAnswer = answer.custom_answer || '-';
+                
+                let optionsHtml = question.options?.length > 0 
+                    ? question.options.map(opt => `<li>${opt.option_text}</li>`).join('')
+                    : '<li class="text-muted">No options</li>';
+                
+                html += `
+                    <tr>
+                        <td class="fw-medium">${question.question || 'N/A'}</td>
+                        <td><ul class="mb-0 small">${optionsHtml}</ul></td>
+                        <td class="text-muted">${customAnswer}</td>
+                        <td><span class="badge bg-success">${selectedOption}</span></td>
+                    </tr>`;
+            });
+        } else {
+            html += '<tr><td colspan="4" class="text-center text-muted py-4">No answers recorded</td></tr>';
+        }
+        
+        html += `</tbody></table></div></div></div></div>`;
+    });
+    
+    html += '</div>';
+    return html;
+}
+
+// Restore modal state on page load
+document.addEventListener('DOMContentLoaded', function() {
+    const savedState = sessionStorage.getItem('questionsModalState');
+    if (savedState) {
+        try {
+            const state = JSON.parse(savedState);
+            if (state.isOpen && Date.now() - state.timestamp < 30000) { // 30s timeout
+                // Re-trigger modal after DOM ready
+                setTimeout(() => {
+                    const btn = document.querySelector(`[data-inspection-id="${state.currentInspectionId}"]`);
+                    if (btn) btn.click();
+                }, 1000);
+            }
+        } catch (e) {
+            console.warn('Invalid saved modal state');
         }
     }
+});
 </script>
                         <style>
                             #inspectionTable th,
@@ -7688,6 +7753,7 @@
     integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
     </script>
 </body>
+@foreach ($customers->customerinspections as $inspection)
 <div class="modal fade" id="editInspectionModal{{ $inspection->id }}" data-bs-backdrop="static" data-bs-keyboard="false"
     data-bs-container="body" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -7780,15 +7846,17 @@
         </div>
     </div>
 </div>
+@endforeach
 <form id="deleteInspectionForm" method="POST">
     @csrf
     @method('DELETE')
 </form>
+
 <script>
     function deleteInspection(id) {
         if (confirm('Are you sure you want to delete this inspection?')) {
             let form = document.getElementById('deleteInspectionForm');
-            form.action = '/inspection/' + id;
+            form.action = "{{ route('inspection.destroy', ':id') }}".replace(':id', id);
             form.submit();
         }
     }
