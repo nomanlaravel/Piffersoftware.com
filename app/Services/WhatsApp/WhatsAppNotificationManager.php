@@ -396,7 +396,7 @@ class WhatsAppNotificationManager
         $nameFallback = !empty($recipientName) ? $recipientName : 'Customer';
 
         $message = "Hello {$nameFallback}, \n" .
-            "we value your feedback. Please click the button below to start our short feedback survey.";
+"we value your feedback. Please click the button below to start our short feedback survey.";
 
         // For templates with FLOW buttons, we must provide the button component structure
         $fullComponents = [
@@ -417,9 +417,9 @@ class WhatsAppNotificationManager
         return $this->send(
             phone: (string) $to,
             message: $message,
-            eventType: 'trigger_feedback_flow',
+            eventType: 'trigger_feedbacks_flow',
             user: $userModel,
-            templateName: 'trigger_feedback_flow',
+            templateName: 'trigger_feedbacks_flow',
             category: 'UTILITY',
             fullComponents: $fullComponents
         );
