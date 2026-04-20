@@ -349,7 +349,7 @@
       position: relative
     }
 
-    @media screen and (min-width:992px) {
+@media screen and (min-width:992px) {
 
       .navbar,
       .navbar-expand-lg,
@@ -372,9 +372,13 @@
       .navbar {
         width: 15%;
         height: 100vh;
+        max-height: 100vh;
         float: left;
         align-items: flex-start;
         position: fixed;
+        top: 0;
+        overflow-y: auto;
+        z-index: 1000;
       }
 
       .navbar .container-fluid {
@@ -384,7 +388,7 @@
 
       .customer_form {
         width: 75%;
-        margin-left: 20%;
+        margin-left: 16%;
       }
 
       .navbar-expand-lg .navbar-nav .dropdown-menu {
@@ -392,7 +396,7 @@
         left: 122%;
         top: 0%;
         padding: 0%;
-        background-color: (60, 60, 60);
+        background-color: rgb(60, 60, 60);
         color: #fff;
       }
 
