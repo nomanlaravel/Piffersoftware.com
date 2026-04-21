@@ -3335,8 +3335,8 @@
                                                 <td>{{ $visitPipeline->proposal_sent }}</td>
                                                 <td>{{ $visitPipeline->quotation_sent }}</td>
                                                 <td>{{ $visitPipeline->guard_deployed_by_ho }}</td>
-                                                <td>{{ $visitPipeline->new_client_name }}</td>
                                                 <td>{{ $visitPipeline->contractual_value }}</td>
+                                                <td>{{ $visitPipeline->total_margin }}</td>
                                                 <td>
                                                     <button type="button" class="btn btn-sm btn-info visitPipelineEditBtn"
                                                         data-id="{{ $visitPipeline->id }}">Edit</button>
@@ -3370,7 +3370,7 @@
                                                 $('#vp_e_proposal_sent').val(data.proposal_sent);
                                                 $('#vp_e_quotation_sent').val(data.quotation_sent);
                                                 $('#vp_e_guard_deployed').val(data.guard_deployed_by_ho);
-                                                $('#vp_e_new_client_name').val(data.new_client_name);
+                                                $('#vp_e_total_margin').val(data.total_margin);
                                                 $('#vp_e_contractual_value').val(data.contractual_value);
                                                 $('#editVisitPipelineForm').attr('action', "/visit-reports/update/" + id);
                                                 $('#editVisitPipelineModal').modal('show');
@@ -3393,7 +3393,7 @@
                                         formData.append('proposal_sent', $('#vp_create_proposal_sent').val());
                                         formData.append('quotation_sent', $('#vp_create_quotation_sent').val());
                                         formData.append('guard_deployed_by_ho', $('#vp_create_guard_deployed').val());
-                                        formData.append('new_client_name', $('#vp_create_new_client_name').val());
+                                        formData.append('new_total_margin', $('#vp_create_total_margin').val());
                                         formData.append('contractual_value', $('#vp_create_contractual_value').val());
 
                                         $.ajax({
@@ -6177,14 +6177,14 @@
                                                         id="vp_create_guard_deployed" class="form-control" required>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label class="form-label">New Client Name</label>
-                                                    <input type="text" name="new_client_name"
-                                                        id="vp_create_new_client_name" class="form-control" required>
-                                                </div>
-                                                <div class="mb-3">
                                                     <label class="form-label">Contractual Value</label>
                                                     <input type="text" name="contractual_value"
                                                         id="vp_create_contractual_value" class="form-control" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Total Margin</label>
+                                                    <input type="text" name="total_margin"
+                                                        id="vp_create_total_margin" class="form-control" required>
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
@@ -6257,15 +6257,15 @@
                                                         id="vp_e_guard_deployed" class="form-control">
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label>New Client Name</label>
-                                                    <input type="text" name="new_client_name" id="vp_e_new_client_name"
-                                                        class="form-control">
-                                                </div>
-                                                <div class="mb-3">
                                                     <label>Contractual Value</label>
                                                     <input type="text" name="contractual_value"
                                                         id="vp_e_contractual_value" class="form-control">
                                                 </div>
+                                                <div class="mb-3">
+                                                    <label>Total Margin</label>
+                                                    <input type="text" name="total_margin" id="vp_e_total_margin"
+                                                        class="form-control">
+                                                </div>       
                                             </div>
 
                                             <div class="modal-footer">

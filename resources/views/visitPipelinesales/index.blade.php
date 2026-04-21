@@ -32,7 +32,7 @@
         }
         .table-responsive { overflow-x: auto; }
     </style>
-    <title>Daily Sales Visit/Pipeline Report</title>
+    <title>Region wise Daily Finalize Sales report</title>
 </head>
 <body>
 
@@ -41,14 +41,9 @@
         <thead>
             <!-- Main Title Row -->
             <tr class="title-header">
-                <th colspan="11">DAILY SALES VISIT/PIPELINE REPORT</th>
+                <th colspan="11">REGION WISE DAILY FINALIZE SALES REPORT</th>
             </tr>
             <!-- Date/Sub-Title Row -->
-            <tr class="date-header">
-                <th colspan="11">
-                    Region Wise Daily SALES Report
-                </th>
-            </tr>
             <tr class="date-header ranges">
                 <th colspan="11"> 
                     @if(!empty($date_range)) 
@@ -66,6 +61,7 @@
                 <th>Quotations Sent</th>
                 <th>No of Guards Deployed By HO</th>
                 <th>Contractual Value</th>
+                <th>Total Margin</th>
             </tr>
         </thead>
         <tbody>
@@ -88,6 +84,7 @@
                     <td>{{ $sale->quotation_sent }}</td>
                     <td>{{ $sale->guard_deployed_by_ho }}</td>
                     <td>{{ $sale->contractual_value }}</td>
+                    <td>{{ $sale->total_margin }}</td>
                 </tr>
             @endforeach
         </tbody>

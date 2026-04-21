@@ -10,17 +10,18 @@ class VisitPipelineReport extends Model
     use HasFactory;
 
     protected $fillable = [
-        'admin_id',
         'region_id',
+        'admin_id',
         'branch_office_name',
         'customer_name',
         'sales_visit',
         'proposal_sent',
         'quotation_sent',
         'guard_deployed_by_ho',
-        'new_client_name',
         'contractual_value',
+        'total_margin',
     ];
+    protected $guarded = [];
 
     public function admin()
     {

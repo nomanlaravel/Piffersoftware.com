@@ -896,9 +896,9 @@ Route::get('/search/pipeline/report/export', [AdminController::class, 'export_pi
 
 Route::post('/visit-pipeline-reports/store', [AdminController::class, 'storeVisitReport'])->name('visitReport.store');
 Route::get('/visit-reports/edit/{id}', [AdminController::class, 'editVisitReport']);
-Route::put('/visit-reports/update/{id}', [AdminController::class, 'updateVisitReport']);
+Route::put('/visit-reports/update/{id}', [AdminController::class, 'updateVisitReport'])->name('visitpipeline.update');
 Route::delete('/visit-reports/delete/{id}', [AdminController::class, 'deleteVisitReport']);
-Route::get('/search/visit/report/export', [AdminController::class, 'export_visit_report'])->name('visitPipelinesales.index');
+Route::get('/search/visit/report/export', [AdminController::class, 'export_visit_pipeline_report'])->name('visitPipelinesales.index');
 
 
 // Temporary Test Route for PDF Email WhatsApp Notification
