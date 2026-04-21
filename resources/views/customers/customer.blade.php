@@ -35,7 +35,9 @@
                         Customer Management
                     </button>
                 </h2>
-                <div id="collapseTotalCustomer" class="accordion-collapse collapse"
+
+                    <div id="collapseTotalCustomer" class="accordion-collapse collapse show"
+
                     aria-labelledby="headingTotalCustomer" data-bs-parent="#totalCustomerAccordion">
                     <div class="accordion-body">
                         @if (Auth::user()->role != 'customer')
@@ -54,13 +56,14 @@
                                 <div class="col-lg-6">
                                     <h4><i><b>Search Customers:</b></i></h4>
 
-                                    <!-- Search Form -->
                                     <div class="input-group mb-3">
-                                        <input type="text" id="customer-search" class="form-control"
+                                        <input type="text" id="customer-search-top" class="form-control"
                                             placeholder="Search here...">
                                     </div>
 
-                                    <div id="search-results"></div>
+
+
+
 
                                 </div>
                             </div>
@@ -384,36 +387,33 @@
 
 
 <script>
-    $(document).ready(function () {
-        function searchCustomers() {
-            var searchText = $('#customer-search').val().toLowerCase();
-            $.ajax({
-                url: "{{ route('search.customers') }}",
-                type: 'GET',
-                data: { search: searchText },
-                success: function (data) {
-                    // Update the table body with the new rows
-                    $('table tbody').html(data.html);
-                },
-                error: function (xhr, status, error) {
-                    console.error("AJAX error: ", status, error);
-                    console.error("Response: ", xhr.responseText);
-                    $('table tbody').html('<tr><td colspan="4">There was an error processing your request.</td></tr>');
-                }
-            });
-        }
 
-        $('#search-button').click(searchCustomers);
-
-        $('#customer-search').on('input', searchCustomers);
-    });
+    // Sync top search with DataTables search
 
     $(document).ready(function () {
-        // INIT DATATABLE
         var table = $('#customersTable').DataTable({
             responsive: true,
             pageLength: 10,
             lengthMenu: [5, 10, 25, 50, 100],
+            dom: 'lfrtip',
+            language: {
+                search: "Search customers:",
+                searchPlaceholder: "Search..."
+            }
+        });
+
+        // Sync top search input with DataTable search
+        $('#customer-search-top').on('input keyup', function() {
+            var value = $(this).val();
+            table.search(value).draw();
+        });
+
+        // Optional: Sync DataTable search back to top input
+        $('.dataTables_filter input').on('input keyup', function() {
+            $('#customer-search-top').val($(this).val());
         });
     });
+
+
+
 </script>
