@@ -20,7 +20,7 @@
 
         /* Column Specifics */
         .col-sr { width: 5%; }
-        .col-prospect { width: 25%; text-align: left; padding-left: 15px; }
+        .col-prospect { width: 25%; text-align: center; padding-left: 15px; }
         .col-services { width: 40%; }
         .col-remarks { width: 30%; }
     </style>
@@ -33,10 +33,14 @@
         <div class="instruction-title">Enter data from the Quotation Log Register and Sales Visit Report.</div>
 
         <table>
-            <thead>
+            <thead class="text-center">
                 <tr>
                     <th class="col-sr">Sr#</th>
+                    <th class="col-prospect">Branch Name</th>
                     <th class="col-prospect">Prospect name</th>
+                    <th class="col-prospect">Sales Perform by</th>
+                    <th class="col-prospect">Number of Technical Proposal Sent</th>
+                    <th class="col-prospect">Number of Quotation Shared</th>
                     <th class="col-services">Required Services</th>
                     <th class="col-remarks">Remarks</th>
                 </tr>
@@ -60,7 +64,11 @@
                         @endif
                         <tr>
                             <td>{{ $index + 1 }}</td>
+                            <td>{{ $salesreport->admin->branch_office_name }}</td>
                             <td>{{ $salesreport->prospect_name }}</td>
+                            <td>{{ $salesreport->sales_visit }}</td>
+                            <td>{{ $salesreport->proposal_sent }}</td>
+                            <td>{{ $salesreport->quotation_sent }}</td>
                             <td>{{ $salesreport->required_services }}</td>
                             <td>{{ $salesreport->remarks }}</td>
                         </tr>
@@ -68,6 +76,20 @@
                 </tbody>
         </table>
     </div>
+<style> 
 
+    th { 
+
+        border: 1px solid black; 
+
+        padding: 5px; 
+
+        /* THIS IS THE KEY PROPERTY */ 
+
+        white-space: nowrap;  
+
+    } 
+
+    </style> 
 </body>
 </html>

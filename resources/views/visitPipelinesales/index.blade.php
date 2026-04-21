@@ -56,10 +56,10 @@
                 <th>Sr #</th>
                 <th>Customer Name</th>
                 <th>Branch Name</th>
-                <th>No of sales visits</th>
-                <th>Technical proposals sent</th>
-                <th>Quotations Sent</th>
-                <th>No of Guards Deployed By HO</th>
+                <th>Sales Perform by</th>
+                <th>Number of Technical Proposal Sent</th>
+                <th>Number of Quotation Shared</th>
+                <th>Number Of Guard Deployed</th>
                 <th>Contractual Value</th>
                 <th>Total Margin</th>
             </tr>
@@ -90,6 +90,20 @@
         </tbody>
     </table>
 </div>
+<style> 
 
+    th { 
+
+        border: 1px solid black; 
+
+        padding: 5px; 
+
+        /* THIS IS THE KEY PROPERTY */ 
+
+        white-space: nowrap;  
+
+    } 
+
+    </style> 
 </body>
 </html>
