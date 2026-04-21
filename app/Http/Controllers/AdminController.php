@@ -2571,26 +2571,38 @@ class AdminController extends Controller
 
      // ================= STORE =================
     public function storePipelineReport(Request $request)
-    {
-        $request->validate([
-            'prospect_name' => 'required|string|max:255',
-            'region_id' => 'required|exists:regions,id',
-            'required_services' => 'required|string|max:255',
-            'remarks' => 'nullable|string|max:255',
-        ]);
+{
+    $request->validate([
+        'admin_id' => 'required|exists:admins,id',
+        'prospect_name' => 'required|string|max:255',
+        'region_id' => 'required|exists:regions,id',
+        'sales_visit' => 'nullable|string|max:255',
+        'proposal_sent' => 'nullable|string|max:255',
+        'quotation_sent' => 'nullable|string|max:255',
+        'required_services' => 'required|string|max:255',
+        'remarks' => 'nullable|string|max:255',
+    ]);
 
-        PipelineReport::create([
-            'prospect_name' => $request->prospect_name,
-            'region_id' => $request->region_id,
-            'required_services' => $request->required_services,
-            'remarks' => $request->remarks
-        ]);
+    $admin = Admin::findOrFail($request->admin_id);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Report created successfully'
-        ]);
-    }
+    $pipeline = PipelineReport::create([
+        'admin_id' => $request->admin_id,
+        'prospect_name' => $request->prospect_name,
+        'branch_office_name' => $admin->branch_office_name,
+        'region_id' => $request->region_id,
+        'sales_visit' => $request->sales_visit,
+        'proposal_sent' => $request->proposal_sent,
+        'quotation_sent' => $request->quotation_sent,
+        'required_services' => $request->required_services,
+        'remarks' => $request->remarks
+    ]);
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Report created successfully',
+        'data' => $pipeline
+    ]);
+}
 
     // ================= EDIT =================
     public function editPipelineReport($id)
@@ -2603,17 +2615,27 @@ class AdminController extends Controller
     public function updatePipelineReport(Request $request, $id)
     {
         $request->validate([
+            'admin_id' => 'required|exists:admins,id',   
             'prospect_name' => 'required|string|max:255',
             'region_id' => 'required|exists:regions,id',
+            'sales_visit' => 'nullable|string|max:255',
+            'proposal_sent' => 'nullable|string|max:255',
+            'quotation_sent' => 'nullable|string|max:255',
             'required_services' => 'required|string|max:255',
             'remarks' => 'nullable|string|max:255',
         ]);
 
         $pipelines = PipelineReport::findOrFail($id);
+        $admin = Admin::findOrFail($request->admin_id);
 
         $pipelines->update([
             'prospect_name' => $request->prospect_name,
             'region_id' => $request->region_id,
+            'admin_id' => $request->admin_id,
+            'branch_office_name' => $admin->branch_office_name,
+            'sales_visit' => $request->sales_visit,
+            'proposal_sent' => $request->proposal_sent,
+            'quotation_sent' => $request->quotation_sent,
             'required_services' => $request->required_services,
             'remarks' => $request->remarks
         ]);

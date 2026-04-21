@@ -3171,8 +3171,12 @@
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>Region</th>
+                                            <th>Branch Name</th>
+                                            <th>Region Name</th>
                                             <th>Prospect Name</th>
+                                            <th>Sales Perform by</th>
+                                            <th>Number of Technical Proposal Sent</th>
+                                            <th>Number of Quotation Shared</th>
                                             <th>Required Services</th>
                                             <th>Remarks</th>
                                             <th>Actions</th>
@@ -3183,8 +3187,12 @@
                                         @forelse($pipelines as $key => $pipeline)
                                             <tr>
                                                 <td>{{ $key + 1 }}</td>
+                                                <td>{{ $pipeline->admin->branch_office_name ?? 'N/A' }}</td>
                                                 <td>{{ $pipeline->region->region_name ?? 'N/A' }}</td>
                                                 <td>{{ $pipeline->prospect_name ?? 'N/A' }}</td>
+                                                <td>{{ $pipeline->sales_visit }}</td>
+                                                <td>{{ $pipeline->proposal_sent }}</td>
+                                                <td>{{ $pipeline->quotation_sent }}</td>
                                                 <td>{{ $pipeline->required_services }}</td>
                                                 <td>{{ $pipeline->remarks }}</td>
                                                 <td>
@@ -3215,8 +3223,12 @@
                                             type: "POST",
                                             data: {
                                                 _token: "{{ csrf_token() }}",
+                                                admin_id: $('#pipeline_create_admin_id').val(),
                                                 region_id: $('#pipeline_create_region_id').val(),
                                                 prospect_name: $('#pipeline_create_prospect_name').val(),
+                                                sales_visit: $('#pipeline_create_sales_visit').val(),
+                                                proposal_sent: $('#pipeline_create_proposal_sent').val(),
+                                                quotation_sent: $('#pipeline_create_quotation_sent').val(),
                                                 required_services: $('#pipeline_create_required_services').val(),
                                                 remarks: $('#pipeline_create_remarks').val(),
                                             },
@@ -3232,8 +3244,12 @@
                                         let id = $(this).data('id');
 
                                         $.get("/pipeline-reports/edit/" + id, function (data) {
+                                            $('#pipeline_edit_admin_id').val(data.admin_id);
                                             $('#pipeline_edit_region_id').val(data.region_id);
                                             $('#pipeline_edit_prospect_name').val(data.prospect_name);
+                                            $('#pipeline_edit_sales_visit').val(data.sales_visit);
+                                            $('#pipeline_edit_proposal_sent').val(data.proposal_sent);
+                                            $('#pipeline_edit_quotation_sent').val(data.quotation_sent);
                                             $('#pipeline_edit_required_services').val(data.required_services);
                                             $('#pipeline_edit_remarks').val(data.remarks);
 
@@ -3254,8 +3270,12 @@
                                             data: {
                                                 _token: "{{ csrf_token() }}",
                                                 _method: "PUT",
+                                                admin_id: $('#pipeline_edit_admin_id').val(),
                                                 region_id: $('#pipeline_edit_region_id').val(),
                                                 prospect_name: $('#pipeline_edit_prospect_name').val(),
+                                                sales_visit: $('#pipeline_edit_sales_visit').val(),
+                                                proposal_sent: $('#pipeline_edit_proposal_sent').val(),
+                                                quotation_sent: $('#pipeline_edit_quotation_sent').val(),
                                                 required_services: $('#pipeline_edit_required_services').val(),
                                                 remarks: $('#pipeline_edit_remarks').val(),
                                             },
@@ -3313,11 +3333,11 @@
                                             <th>#</th>
                                             <th>Customer Name</th>
                                             <th>Branch Name</th>
-                                            <th>Region</th>
-                                            <th>No of sales visits</th>
-                                            <th>Technical proposals Sent</th>
-                                            <th>Quotations sent</th>
-                                            <th>No of Guards Deployed</th>
+                                            <th>Region Name</th>
+                                            <th>Sales Perform by</th>
+                                            <th>Number of Technical Proposal Sent</th>
+                                            <th>Number of Quotation Shared</th>
+                                            <th>Number Of Guard Deployed</th>
                                             <th>New Client Name</th>
                                             <th>Contractual Value</th>
                                             <th>Actions</th>
@@ -6016,7 +6036,19 @@
                                         <form id="createPipelineForm">
                                             @csrf
                                             <div class="modal-body">
-
+                                                <div class="mb-3">
+                                                        <label class="form-label">Branch (Admin)</label>
+                                                        <select name="admin_id" id="pipeline_create_admin_id"
+                                                            class="form-control" required>
+                                                            <option value="">-- Select Branch --</option>
+                                                            @foreach($admis as $admi)
+                                                                <option value="{{ $admi->id }}">
+                                                                    {{ $admi->branch_office_name }} (ID:
+                                                                    {{ $admi->branch_id }})
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
                                                 <div class="mb-3">
                                                     <label>Region</label>
                                                     <select id="pipeline_create_region_id" class="form-control">
@@ -6029,19 +6061,33 @@
                                                 </div>
                                                 <div class="mb-3">
                                                     <label>Prospect Name</label>
-                                                    <input type="text" id="pipeline_create_prospect_name"
+                                                    <input type="text" name="prospect_name" id="pipeline_create_prospect_name"
                                                         class="form-control">
                                                 </div>
-
+                                                <div class="mb-3">
+                                                    <label>Sales Perform by</label>
+                                                    <input type="text" name="sales_visit" id="pipeline_create_sales_visit"
+                                                        class="form-control">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label>Number of Technical Proposal Sent</label>
+                                                    <input type="text" name="proposal_sent" id="pipeline_create_proposal_sent"
+                                                        class="form-control">
+                                                </div>
+                                                 <div class="mb-3">
+                                                    <label>Number of Quotation Sent</label>
+                                                    <input type="text" name="quotation_sent" id="pipeline_create_quotation_sent"
+                                                        class="form-control">
+                                                </div>
                                                 <div class="mb-3">
                                                     <label>Required Services</label>
-                                                    <input type="text" id="pipeline_create_required_services"
+                                                    <input type="text" name="required_services" id="pipeline_create_required_services"
                                                         class="form-control">
                                                 </div>
 
                                                 <div class="mb-3">
                                                     <label>Remarks</label>
-                                                    <input type="text" id="pipeline_create_remarks"
+                                                    <input type="text" name="remarks" id="pipeline_create_remarks"
                                                         class="form-control">
                                                 </div>
 
@@ -6073,7 +6119,18 @@
                                             @method('PUT')
 
                                             <div class="modal-body">
-
+                                                <div class="mb-3">
+                                                        <label>Branch</label>
+                                                        <select name="admin_id" id="pipeline_edit_admin_id"
+                                                            class="form-control">
+                                                            @foreach($admis as $admi)
+                                                                <option value="{{ $admi->id }}">
+                                                                    {{ $admi->branch_office_name }} (ID:
+                                                                    {{ $admi->branch_id }})
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
                                                 <div class="mb-3">
                                                     <label>Region</label>
                                                     <select id="pipeline_edit_region_id" class="form-control">
@@ -6086,19 +6143,33 @@
 
                                                 <div class="mb-3">
                                                     <label>Prospect Name</label>
-                                                    <input type="text" id="pipeline_edit_prospect_name"
+                                                    <input type="text" name="prospect_name" id="pipeline_edit_prospect_name"
                                                         class="form-control">
                                                 </div>
-
+                                                <div class="mb-3">
+                                                    <label>Sales Perform by</label>
+                                                    <input type="text" name="sales_visit" id="pipeline_edit_sales_visit"
+                                                        class="form-control">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label>Number of Technical Proposal Sent</label>
+                                                    <input type="text" name="proposal_sent" id="pipeline_edit_proposal_sent"
+                                                        class="form-control">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label>Number of Quotation Sent</label>
+                                                    <input type="text" name="quotation_sent" id="pipeline_edit_quotation_sent"
+                                                        class="form-control">
+                                                </div>
                                                 <div class="mb-3">
                                                     <label>Required Services</label>
-                                                    <input type="text" id="pipeline_edit_required_services"
+                                                    <input type="text" name="required_services" id="pipeline_edit_required_services"
                                                         class="form-control">
                                                 </div>
 
                                                 <div class="mb-3">
                                                     <label>Remarks</label>
-                                                    <input type="text" id="pipeline_edit_remarks" class="form-control">
+                                                    <input type="text" name="remarks" id="pipeline_edit_remarks" class="form-control">
                                                 </div>
 
                                             </div>
@@ -6134,7 +6205,7 @@
                                                         class="form-control" required>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label class="form-label">Branch (Admin)</label>
+                                                    <label class="form-label">Branch Name</label>
                                                     <select name="admin_id" id="vp_create_admin_id" class="form-control"
                                                         required>
                                                         <option value="">-- Select Branch --</option>
@@ -6146,7 +6217,7 @@
                                                     </select>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label class="form-label">Region</label>
+                                                    <label class="form-label">Region Name</label>
                                                     <select name="region_id" id="vp_create_region_id"
                                                         class="form-control" required>
                                                         <option value="">-- Select Region --</option>
@@ -6157,22 +6228,22 @@
                                                     </select>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label class="form-label">Sales Visit</label>
+                                                    <label class="form-label">Sales Perform by</label>
                                                     <input type="text" name="sales_visit" id="vp_create_sales_visit"
                                                         class="form-control" required>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label class="form-label">Proposal Sent</label>
+                                                    <label class="form-label">Number of Technical Proposal Send</label>
                                                     <input type="text" name="proposal_sent" id="vp_create_proposal_sent"
                                                         class="form-control" required>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label class="form-label">Quotation Sent</label>
+                                                    <label class="form-label">Number of Quotation Shared</label>
                                                     <input type="text" name="quotation_sent"
                                                         id="vp_create_quotation_sent" class="form-control" required>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label class="form-label">Guard Deployed By</label>
+                                                    <label class="form-label">Number Of Guard Deployed</label>
                                                     <input type="text" name="guard_deployed_by_ho"
                                                         id="vp_create_guard_deployed" class="form-control" required>
                                                 </div>
@@ -6218,7 +6289,7 @@
                                                         class="form-control">
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label>Branch</label>
+                                                    <label>Branch Name</label>
                                                     <select name="admin_id" id="vp_e_admin_id" class="form-control">
                                                         @foreach($admis as $admi)
                                                             <option value="{{ $admi->id }}">
@@ -6228,7 +6299,7 @@
                                                     </select>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label>Region</label>
+                                                    <label>Region Name</label>
                                                     <select name="region_id" id="vp_e_region_id" class="form-control">
                                                         @foreach($regions as $region)
                                                             <option value="{{ $region->id }}">{{ $region->region_name }}
@@ -6237,22 +6308,22 @@
                                                     </select>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label>Sales Visit</label>
+                                                    <label>Sales Perform by</label>
                                                     <input type="text" name="sales_visit" id="vp_e_sales_visit"
                                                         class="form-control">
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label>Proposal Sent</label>
+                                                    <label>Number of Technical Proposal Sent</label>
                                                     <input type="text" name="proposal_sent" id="vp_e_proposal_sent"
                                                         class="form-control">
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label>Quotation Sent</label>
+                                                    <label>Number of Quotation Shared</label>
                                                     <input type="text" name="quotation_sent" id="vp_e_quotation_sent"
                                                         class="form-control">
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label>Guard Deployed By</label>
+                                                    <label>Number Of Guard Deployed</label>
                                                     <input type="text" name="guard_deployed_by_ho"
                                                         id="vp_e_guard_deployed" class="form-control">
                                                 </div>
