@@ -3338,8 +3338,8 @@
                                             <th>Number of Technical Proposal Sent</th>
                                             <th>Number of Quotation Shared</th>
                                             <th>Number Of Guard Deployed</th>
-                                            <th>New Client Name</th>
                                             <th>Contractual Value</th>
+                                            <th>Total Margin</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
@@ -3389,9 +3389,9 @@
                                                 $('#vp_e_sales_visit').val(data.sales_visit);
                                                 $('#vp_e_proposal_sent').val(data.proposal_sent);
                                                 $('#vp_e_quotation_sent').val(data.quotation_sent);
-                                                $('#vp_e_guard_deployed').val(data.guard_deployed_by_ho);
-                                                $('#vp_e_total_margin').val(data.total_margin);
+                                                $('#vp_e_guard_deployed').val(data.guard_deployed_by_ho);                                        
                                                 $('#vp_e_contractual_value').val(data.contractual_value);
+                                                $('#vp_e_total_margin').val(data.total_margin);
                                                 $('#editVisitPipelineForm').attr('action', "/visit-reports/update/" + id);
                                                 $('#editVisitPipelineModal').modal('show');
                                             },
@@ -3413,9 +3413,8 @@
                                         formData.append('proposal_sent', $('#vp_create_proposal_sent').val());
                                         formData.append('quotation_sent', $('#vp_create_quotation_sent').val());
                                         formData.append('guard_deployed_by_ho', $('#vp_create_guard_deployed').val());
-                                        formData.append('new_total_margin', $('#vp_create_total_margin').val());
                                         formData.append('contractual_value', $('#vp_create_contractual_value').val());
-
+                                        formData.append('total_margin', $('#vp_create_total_margin').val());
                                         $.ajax({
                                             url: "{{ route('visitReport.store') }}",
                                             type: 'POST',
