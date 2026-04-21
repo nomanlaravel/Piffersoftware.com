@@ -2687,8 +2687,8 @@ class AdminController extends Controller
             'proposal_sent' => 'nullable|string|max:255',
             'quotation_sent' => 'nullable|string|max:255',
             'guard_deployed_by_ho' => 'nullable|string|max:255',
-            'new_client_name' => 'nullable|string|max:255',
             'contractual_value' => 'nullable|string|max:255',
+            'total_margin' => 'nullable|string|max:255',
         ]);
 
         $admin = Admin::findOrFail($request->admin_id);
@@ -2702,7 +2702,7 @@ class AdminController extends Controller
             'proposal_sent' => $request->proposal_sent,
             'quotation_sent' => $request->quotation_sent,
             'guard_deployed_by_ho' => $request->guard_deployed_by_ho,
-            'new_client_name' => $request->new_client_name,
+            'total_margin' => $request->total_margin,
             'contractual_value' => $request->contractual_value,
         ]);
 
@@ -2730,7 +2730,7 @@ class AdminController extends Controller
             'proposal_sent' => 'nullable|string|max:255',
             'quotation_sent' => 'nullable|string|max:255',
             'guard_deployed_by_ho' => 'nullable|string|max:255',
-            'new_client_name' => 'nullable|string|max:255',
+            'total_margin' => 'nullable|string|max:255',
             'contractual_value' => 'nullable|string|max:255',   
         ]);
 
@@ -2746,7 +2746,7 @@ class AdminController extends Controller
             'proposal_sent' => $request->proposal_sent,
             'quotation_sent' => $request->quotation_sent,
             'guard_deployed_by_ho' => $request->guard_deployed_by_ho,
-            'new_client_name' => $request->new_client_name,
+            'total_margin' => $request->total_margin,
             'contractual_value' => $request->contractual_value,
         ]);
 
