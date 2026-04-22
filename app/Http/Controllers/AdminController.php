@@ -3028,7 +3028,7 @@ class AdminController extends Controller
         
         $pipelineSales = $query->latest()->get();
         
-        $pdf = \PDF::loadView('Pipelinesales.pdf', compact('pipelineSales', 'date_range'))
+        $pdf = \PDF::loadView('pipelinesales.pdf', compact('pipelineSales', 'date_range'))
             ->setPaper('a4', 'landscape')
             ->setOptions([
                 'defaultFont' => 'sans-serif',
