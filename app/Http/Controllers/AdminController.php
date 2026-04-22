@@ -2787,7 +2787,7 @@ class AdminController extends Controller
         ]);
     }
 
-      public function export_visit_pipeline_report(Request $request)
+    public function export_visit_pipeline_report(Request $request)
     {
         $query = VisitPipelineReport::with(['admin', 'region']);
 
@@ -2824,5 +2824,361 @@ class AdminController extends Controller
             'filters' => $request->all(),
             'date_range' => $request->date_range ?? null
         ]);
+    }
+
+    public function visitPipelinesalesPdf(Request $request)
+    {
+        $date_range = $request->date_range;
+        $query = VisitPipelineReport::with(['admin', 'region']);
+        
+        if ($date_range) {
+            try {
+                $range = explode(' to ', $date_range);
+                if (count($range) == 2) {
+                    $start = Carbon::parse(trim($range[0]))->startOfDay();
+                    $end = Carbon::parse(trim($range[1]))->endOfDay();
+                    $query->where(function ($q) use ($start, $end) {
+                        $q->whereBetween('created_at', [$start, $end])
+                          ->orWhereBetween('updated_at', [$start, $end]);
+                    });
+                }
+            } catch (\Exception $e) {
+                \Log::warning('PDF Date parse error: ' . $e->getMessage());
+            }
+        }
+        
+        $sales = $query->latest()->get();
+        
+        $pdf = \PDF::loadView('visitPipelinesales.pdf', compact('sales', 'date_range'))
+            ->setPaper('a4', 'landscape')
+            ->setOptions([
+                'defaultFont' => 'sans-serif',
+                'isRemoteEnabled' => true,
+                'isHtml5ParserEnabled' => true,
+                'no-stop-slow-scripts' => true
+            ]);
+        return $pdf->download('region-wise-daily-finalize-sales-report.pdf');
+    }
+
+    public function visitPipelinesalesExcel(Request $request)
+    {
+        $date_range = $request->date_range;
+        $query = VisitPipelineReport::with(['admin', 'region']);
+        
+        if ($date_range) {
+            try {
+                $range = explode(' to ', $date_range);
+                if (count($range) == 2) {
+                    $start = Carbon::parse(trim($range[0]))->startOfDay();
+                    $end = Carbon::parse(trim($range[1]))->endOfDay();
+                    $query->where(function ($q) use ($start, $end) {
+                        $q->whereBetween('created_at', [$start, $end])
+                          ->orWhereBetween('updated_at', [$start, $end]);
+                    });
+                }
+            } catch (\Exception $e) {
+                \Log::warning('Excel Date parse error: ' . $e->getMessage());
+            }
+        }
+        
+        $sales = $query->latest()->get();
+        
+        $filename = 'visit-pipelinesales-report-' . now()->format('Y-m-d') . '.csv';
+        
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ];
+        
+        $callback = function() use ($sales) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, ['Sr#', 'Region', 'Customer Name', 'Branch', 'Sales Visit', 'Proposal Sent', 'Quotation Sent', 'Guards Deployed', 'Contract Value', 'Total Margin']);
+            
+            foreach ($sales as $index => $sale) {
+                fputcsv($file, [
+                    $index + 1,
+                    $sale->region->region_name ?? 'N/A',
+                    $sale->customer_name ?? 'N/A',
+                    $sale->admin->branch_office_name ?? 'N/A',
+                    $sale->sales_visit ?? '',
+                    $sale->proposal_sent ?? '',
+                    $sale->quotation_sent ?? '',
+                    $sale->guard_deployed_by_ho ?? '',
+                    $sale->contractual_value ?? '',
+                    $sale->total_margin ?? ''
+                ]);
+            }
+            
+            fclose($file);
+        };
+        
+        return response()->stream($callback, 200, $headers);
+    }
+
+    public function visitsalesPdf(Request $request)
+    {
+        $date_range = $request->date_range;
+        $query = RegionReport::with(['admin', 'region'])->where('type', 'visit_plan');
+        
+        if ($date_range) {
+            try {
+                $range = explode(' to ', $date_range);
+                if (count($range) == 2) {
+                    $start = Carbon::parse(trim($range[0]))->startOfDay();
+                    $end = Carbon::parse(trim($range[1]))->endOfDay();
+                    $query->where(function ($q) use ($start, $end) {
+                        $q->whereBetween('created_at', [$start, $end])
+                          ->orWhereBetween('updated_at', [$start, $end]);
+                    });
+                }
+            } catch (\Exception $e) {
+                \Log::warning('VisitSales PDF Date parse error: ' . $e->getMessage());
+            }
+        }
+        
+        $sales = $query->latest()->get();
+        
+        $pdf = \PDF::loadView('visitsales.pdf', compact('sales', 'date_range'))
+            ->setPaper('a4', 'landscape')
+            ->setOptions([
+                'defaultFont' => 'sans-serif',
+                'isRemoteEnabled' => true,
+                'isHtml5ParserEnabled' => true,
+                'no-stop-slow-scripts' => true
+            ]);
+        return $pdf->download('weekly-sales-visit-plan-report.pdf');
+    }
+
+    public function visitsalesExcel(Request $request)
+    {
+        $date_range = $request->date_range;
+        $query = RegionReport::with(['admin', 'region'])->where('type', 'visit_plan');
+        
+        if ($date_range) {
+            try {
+                $range = explode(' to ', $date_range);
+                if (count($range) == 2) {
+                    $start = Carbon::parse(trim($range[0]))->startOfDay();
+                    $end = Carbon::parse(trim($range[1]))->endOfDay();
+                    $query->where(function ($q) use ($start, $end) {
+                        $q->whereBetween('created_at', [$start, $end])
+                          ->orWhereBetween('updated_at', [$start, $end]);
+                    });
+                }
+            } catch (\Exception $e) {
+                \Log::warning('VisitSales Excel Date parse error: ' . $e->getMessage());
+            }
+        }
+        
+        $sales = $query->latest()->get();
+        
+        $filename = 'weekly-sales-visit-plan-report-' . now()->format('Y-m-d') . '.csv';
+        
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ];
+        
+        $callback = function() use ($sales) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, ['Sr#', 'Region', 'Branch Name', 'Branch ID', 'Employee', 'Designation', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri']);
+            
+            foreach ($sales as $index => $sale) {
+                fputcsv($file, [
+                    $index + 1,
+                    $sale->region->region_name ?? 'N/A',
+                    $sale->branch_office_name ?? 'N/A',
+                    $sale->branch_id ?? '',
+                    $sale->employee_name ?? '',
+                    $sale->designation ?? '',
+                    $sale->monday ?? '',
+                    $sale->tuesday ?? '',
+                    $sale->wednesday ?? '',
+                    $sale->thursday ?? '',
+                    $sale->friday ?? ''
+                ]);
+            }
+            
+            fclose($file);
+        };
+        
+        return response()->stream($callback, 200, $headers);
+    }
+
+      public function PipelinesalesPdf(Request $request)
+    {
+        $date_range = $request->date_range;
+        $query = PipelineReport::with(['admin', 'region']);
+        
+        if ($date_range) {
+            try {
+                $range = explode(' to ', $date_range);
+                if (count($range) == 2) {
+                    $start = Carbon::parse(trim($range[0]))->startOfDay();
+                    $end = Carbon::parse(trim($range[1]))->endOfDay();
+                    $query->where(function ($q) use ($start, $end) {
+                        $q->whereBetween('created_at', [$start, $end])
+                          ->orWhereBetween('updated_at', [$start, $end]);
+                    });
+                }
+            } catch (\Exception $e) {
+                \Log::warning('PDF Date parse error: ' . $e->getMessage());
+            }
+        }
+        
+        $pipelineSales = $query->latest()->get();
+        
+        $pdf = \PDF::loadView('Pipelinesales.pdf', compact('pipelineSales', 'date_range'))
+            ->setPaper('a4', 'landscape')
+            ->setOptions([
+                'defaultFont' => 'sans-serif',
+                'isRemoteEnabled' => true,
+                'isHtml5ParserEnabled' => true,
+                'no-stop-slow-scripts' => true
+            ]);
+        return $pdf->download('region-wise-daily-finalize-sales-report.pdf');
+    }
+
+    public function PipelinesalesExcel(Request $request)
+    {
+        $date_range = $request->date_range;
+        $query = PipelineReport::with(['admin', 'region']);
+        
+        if ($date_range) {
+            try {
+                $range = explode(' to ', $date_range);
+                if (count($range) == 2) {
+                    $start = Carbon::parse(trim($range[0]))->startOfDay();
+                    $end = Carbon::parse(trim($range[1]))->endOfDay();
+                    $query->where(function ($q) use ($start, $end) {
+                        $q->whereBetween('created_at', [$start, $end])
+                          ->orWhereBetween('updated_at', [$start, $end]);
+                    });
+                }
+            } catch (\Exception $e) {
+                \Log::warning('Excel Date parse error: ' . $e->getMessage());
+            }
+        }
+        $pipelineSales = $query->latest()->get();
+        
+        $filename = 'visit-pipelinesales-report-' . now()->format('Y-m-d') . '.csv';
+        
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ];
+        
+        $callback = function() use ($pipelineSales) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, ['Sr#', 'Region', 'Prospect name', 'Branch Name', 'Sales Perform by', 'Number of Technical Proposal Sent', 'Number of Quotation Shared', 'Required Services', 'Remarks']);
+            
+            foreach ($pipelineSales as $index => $pipelineSale) {
+                fputcsv($file, [
+                    $index + 1,
+                    $pipelineSale->region->region_name ?? 'N/A',
+                    $pipelineSale->prospect_name ?? 'N/A',
+                    $pipelineSale->admin->branch_office_name ?? 'N/A',
+                    $pipelineSale->sales_visit ?? '',
+                    $pipelineSale->proposal_sent ?? '',
+                    $pipelineSale->quotation_sent ?? '',
+                    $pipelineSale->required_services ?? '',
+                    $pipelineSale->remarks ?? ''
+                ]);
+            }
+            
+            fclose($file);
+        };
+        
+        return response()->stream($callback, 200, $headers);
+    }
+    
+     public function RegionWisePdf(Request $request)
+    {
+        $date_range = $request->date_range;
+        $query = RegionReport::with(['admin', 'region'])->where('type', 'feedback_log');
+        
+        if ($date_range) {
+            try {
+                $range = explode(' to ', $date_range);
+                if (count($range) == 2) {
+                    $start = Carbon::parse(trim($range[0]))->startOfDay();
+                    $end = Carbon::parse(trim($range[1]))->endOfDay();
+                    $query->where(function ($q) use ($start, $end) {
+                        $q->whereBetween('created_at', [$start, $end])
+                          ->orWhereBetween('updated_at', [$start, $end]);
+                    });
+                }
+            } catch (\Exception $e) {
+                \Log::warning('RegionWise PDF Date parse error: ' . $e->getMessage());
+            }
+        }
+        
+        $sales = $query->latest()->get();
+        
+        $pdf = \PDF::loadView('regionwise.pdf', compact('sales', 'date_range'))
+            ->setPaper('a4', 'landscape')
+            ->setOptions([
+                'defaultFont' => 'sans-serif',
+                'isRemoteEnabled' => true,
+                'isHtml5ParserEnabled' => true,
+                'no-stop-slow-scripts' => true
+            ]);
+        return $pdf->download('weekly-sales-visit-plan-report.pdf');
+    }
+
+    public function RegionWiseExcel(Request $request)
+    {
+        $date_range = $request->date_range;
+        $query = RegionReport::with(['admin', 'region'])->where('type', 'feedback_log');
+        
+        if ($date_range) {
+            try {
+                $range = explode(' to ', $date_range);
+                if (count($range) == 2) {
+                    $start = Carbon::parse(trim($range[0]))->startOfDay();
+                    $end = Carbon::parse(trim($range[1]))->endOfDay();
+                    $query->where(function ($q) use ($start, $end) {
+                        $q->whereBetween('created_at', [$start, $end])
+                          ->orWhereBetween('updated_at', [$start, $end]);
+                    });
+                }
+            } catch (\Exception $e) {
+                \Log::warning('RegionWise Excel Date parse error: ' . $e->getMessage());
+            }
+        }
+        
+        $sales = $query->latest()->get();
+        
+        $filename = 'weekly-sales-visit-plan-report-' . now()->format('Y-m-d') . '.csv';
+        
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ];
+        
+        $callback = function() use ($sales) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, ['Sr#', 'Region', 'Branch Name', 'Branch ID', 'Employee', 'Designation', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri']);
+            
+            foreach ($sales as $index => $sale) {
+                fputcsv($file, [
+                    $index + 1,
+                    $sale->region->region_name ?? 'N/A',
+                    $sale->branch_office_name ?? 'N/A',
+                    $sale->branch_id ?? '',
+                    $sale->employee_name ?? '',
+                    $sale->designation ?? '',
+                    $sale->monday ?? '',
+                    $sale->tuesday ?? '',
+                    $sale->wednesday ?? '',
+                    $sale->thursday ?? '',
+                    $sale->friday ?? ''
+                ]);
+            }
+            
+            fclose($file);
+        };
+        
+        return response()->stream($callback, 200, $headers);
     }
 }

@@ -152,12 +152,74 @@
                 background-color: #4472c4 !important;
             }
         }
+        .action-buttons {
+    margin-bottom: 20px;
+    text-align: right;
+}
+
+.action-buttons form {
+    display: inline;
+}
+
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    color: white;
+    font-size: 14px;
+    margin-left: 5px;
+    transition: all 0.2s ease-in-out;
+}
+
+/* PDF - Elegant Red */
+.btn-pdf {
+    background-color: #dc3545;
+}
+
+.btn-pdf:hover {
+    background-color: #c82333;
+}
+
+/* Excel - Clean Green */
+.btn-excel {
+    background-color: #28a745;
+}
+
+.btn-excel:hover {
+    background-color: #218838;
+}
+
+/* Print - Neutral Blue */
+.btn-print {
+    background-color: #007bff;
+}
+
+.btn-print:hover {
+    background-color: #0056b3;
+}
     </style>
 </head>
 
 <body>
 
     <div class="container-fluid mt-3">
+        <!-- Server-side Export Buttons -->
+          <div class="action-buttons">
+    <form method="POST" action="{{ route('regionwise.pdf') }}">
+        @csrf
+        <input type="hidden" name="date_range" value="{{ $date_range ?? '' }}">
+        <button type="submit" class="btn btn-pdf">📄 Download PDF</button>
+    </form>
+
+    <form method="POST" action="{{ route('regionwise.excel') }}">
+        @csrf
+        <input type="hidden" name="date_range" value="{{ $date_range ?? '' }}">
+        <button type="submit" class="btn btn-excel">📊 Download Excel</button>
+    </form>
+
+    <button onclick="window.print()" class="btn btn-print">🖨️ Print</button>
+</div>
         <!-- Main Header -->
         <div class="report-header">
             <h4 class="mb-0"><b>PIFFERS Security Services (Pvt) Ltd</b></h4>
