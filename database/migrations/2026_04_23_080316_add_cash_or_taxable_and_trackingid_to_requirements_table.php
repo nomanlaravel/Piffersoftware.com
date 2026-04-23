@@ -12,7 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('requirements', function (Blueprint $table) {
-             $table->string('cash_or_taxable')->nullable();
             $table->string('trackingId')->nullable();
         });
     }
