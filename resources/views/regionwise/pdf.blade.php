@@ -90,11 +90,12 @@
             border: 1px solid #2f5597;
         }
 
-        .report-subtext3 {
-            font-size: 0.85rem;
-            margin-top: 5px;
-            color: #080808;
-        }
+.report-subtext3 {
+    font-size: 0.85rem;
+    margin-top: 5px;
+    color: #080808;
+    text-align: center;
+}
 
         .report-body3 {
             background-color: #e73131;
@@ -183,10 +184,18 @@
                 per week (Monday to Thursday).</p>
         </div>
         <div class="report-body3">
-            <p class="report-subtext4 mb-0">In case of non-compliance, three (3) observations will be issued; if
+                <p class="report-subtext4 mb-0">In case of non-compliance, three (3) observations will be issued; if
                 non-compliance continues, a written explanation will be required, followed by a formal warning, and
                 persistent non-compliance thereafter will result in the imposition of penalties.</p>
-        </div>
+            </div>
+
+            @if(!empty($date_range))
+            <div class="report-body2">
+                <p class="report-subtext3 mb-0">
+                    <b>Date Range: {{ $date_range }}</b>
+                </p>
+            </div>
+            @endif
 
         <div class="table-responsive">
             <table class="table table-bordered table-striped mt-0">
@@ -205,13 +214,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @if(!empty($date_range))
-                        <div class="report-body2">
-                            <p class="report-subtext3 mb-0">
-                                <b>Date Range: {{ $date_range }}</b>
-                            </p>
-                        </div>
-                    @endif
+
                     @php $currentRegion = null; @endphp
                     @foreach($sales as $index => $sale)
                         {{-- Adds a divider row if the region changes --}}
