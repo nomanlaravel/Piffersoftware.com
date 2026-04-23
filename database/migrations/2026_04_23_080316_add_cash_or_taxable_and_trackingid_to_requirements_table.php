@@ -12,9 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('requirements', function (Blueprint $table) {
-            $table->enum('cash_or_taxable', ['cash', 'taxable'])
-      ->default('cash')
-      ->comment('cash, taxable');
+             $table->string('cash_or_taxable')->nullable();
+            $table->string('trackingId')->nullable();
         });
     }
 
@@ -24,7 +23,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('requirements', function (Blueprint $table) {
-             $table->dropColumn('cash_or_taxable');
+            //
         });
     }
 };
