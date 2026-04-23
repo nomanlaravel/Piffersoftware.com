@@ -10547,7 +10547,7 @@
                               </div>
                               <div class="col-lg-4 spacing-right">
                                  Technical Proposal : <br> <input class="form-control" name="tecPro" type="text"
-                                    placeholder="..." style="width: 100%;" required>
+                                    placeholder="..." style="width: 100%;">
                               </div>
                               <div class="col-lg-4 spacing-right">
                                  Financial Proposal : <br> <input class="form-control" name="finPro" type="file"
@@ -10599,7 +10599,7 @@
                                     </div>
                                     <div class="col-lg-4 spacing-right">
                                        Tracking Id : <br> <input class="form-control" name="trackingId" type="text"
-                                          placeholder="..." style="width: 100%;" required>
+                                          placeholder="..." style="width: 100%;">
                                     </div>
                                  </div>
                               </div>
