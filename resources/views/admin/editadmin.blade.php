@@ -2136,8 +2136,7 @@
                         <li class="nav-item" role="presentation">
                             <button class="nav-link" id="pills-regionvisitpipelinereport-tab" data-bs-toggle="pill"
                                 data-bs-target="#pills-regionvisitpipelinereport" type="button" role="tab"
-                                aria-controls="pills-regionvisitpipelinereport" aria-selected="false">REGION WISE -
-                                DAILY PIPELINE SALES REPORT
+                                aria-controls="pills-regionvisitpipelinereport" aria-selected="false">Region wise Daily Finalize Sales report
                             </button>
                         </li>
                     </ul>
@@ -2842,8 +2841,7 @@
                                 <div class="d-flex justify-content-between mb-3">
                                     <h4>DAILY SALES & FEEDBACK LOG REPORT</h4>
 
-                                    <button class="btn btn-primary" data-bs-toggle="modal"
-                                        data-bs-target="#createModal">
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
                                         + Add Report
                                     </button>
                                 </div>
@@ -2900,168 +2898,6 @@
                                         @endforelse
                                     </tbody>
                                 </table>
-
-                                {{-- CREATE MODAL --}}
-                                <div class="modal fade" id="createModal" tabindex="-1"
-                                    aria-labelledby="createModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="createModalLabel">Add Region Report</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
-                                            </div>
-                                            <form id="createForm">
-                                                @csrf
-                                                <div class="modal-body">
-                                                    <div class="mb-3">
-                                                        <input type="hidden" name="type" id="create_type"
-                                                            value="feedback_log">
-                                                        <label class="form-label">Region</label>
-                                                        <select name="region_id" id="create_region_id"
-                                                            class="form-control" required>
-                                                            <option value="">-- Select Region --</option>
-                                                            @foreach($regions as $region)
-                                                                <option value="{{ $region->id }}">{{ $region->region_name }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label class="form-label">Branch (Admin)</label>
-                                                        <select name="admin_id" id="create_admin_id"
-                                                            class="form-control" required>
-                                                            <option value="">-- Select Branch --</option>
-                                                            @foreach($admis as $admi)
-                                                                <option value="{{ $admi->id }}">
-                                                                    {{ $admi->branch_office_name }} (ID:
-                                                                    {{ $admi->branch_id }})
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label class="form-label">Employee Name</label>
-                                                        <input type="text" name="employee_name"
-                                                            id="create_employee_name" class="form-control" required>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label class="form-label">Designation</label>
-                                                        <input type="text" name="designation" id="create_designation"
-                                                            class="form-control" required>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col">
-                                                            <input type="text" name="monday" id="create_monday"
-                                                                class="form-control" placeholder="Monday">
-                                                        </div>
-                                                        <div class="col">
-                                                            <input type="text" name="tuesday" id="create_tuesday"
-                                                                class="form-control" placeholder="Tuesday">
-                                                        </div>
-                                                        <div class="col">
-                                                            <input type="text" name="wednesday" id="create_wednesday"
-                                                                class="form-control" placeholder="Wednesday">
-                                                        </div>
-                                                        <div class="col">
-                                                            <input type="text" name="thursday" id="create_thursday"
-                                                                class="form-control" placeholder="Thursday">
-                                                        </div>
-                                                        <div class="col">
-                                                            <input type="text" name="friday" id="create_friday"
-                                                                class="form-control" placeholder="Friday">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary"
-                                                        data-bs-dismiss="modal">Close</button>
-                                                    <button type="button" id="createReportBtn"
-                                                        class="btn btn-primary">Save Report</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {{-- EDIT MODAL --}}
-                                <div class="modal fade" id="editModal" tabindex="-1">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">Edit Region Report</h5>
-                                                <button type="button" class="btn-close"
-                                                    data-bs-dismiss="modal"></button>
-                                            </div>
-
-                                            <form id="editForm" method="POST">
-                                                @csrf
-                                                @method('PUT')
-
-                                                <div class="modal-body">
-
-                                                    <div class="mb-3">
-                                                        <label>Region</label>
-                                                        <select name="region_id" id="e_region_id" class="form-control">
-                                                            @foreach($regions as $region)
-                                                                <option value="{{ $region->id }}">{{ $region->region_name }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-
-                                                    <div class="mb-3">
-                                                        <label>Branch</label>
-                                                        <select name="admin_id" id="e_admin_id" class="form-control">
-                                                            @foreach($admis as $admi)
-                                                                <option value="{{ $admi->id }}">
-                                                                    {{ $admi->branch_office_name }} (ID:
-                                                                    {{ $admi->branch_id }})
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-
-                                                    <div class="mb-3">
-                                                        <label>Employee Name</label>
-                                                        <input type="text" name="employee_name" id="e_employee_name"
-                                                            class="form-control">
-                                                    </div>
-
-                                                    <div class="mb-3">
-                                                        <label>Designation</label>
-                                                        <input type="text" name="designation" id="e_designation"
-                                                            class="form-control">
-                                                    </div>
-
-                                                    <div class="row">
-                                                        <div class="col"><input type="text" name="monday" id="e_monday"
-                                                                class="form-control"></div>
-                                                        <div class="col"><input type="text" name="tuesday"
-                                                                id="e_tuesday" class="form-control"></div>
-                                                        <div class="col"><input type="text" name="wednesday"
-                                                                id="e_wednesday" class="form-control"></div>
-                                                        <div class="col"><input type="text" name="thursday"
-                                                                id="e_thursday" class="form-control"></div>
-                                                        <div class="col"><input type="text" name="friday" id="e_friday"
-                                                                class="form-control"></div>
-                                                    </div>
-
-                                                </div>
-
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary"
-                                                        data-bs-dismiss="modal">Close</button>
-                                                    <button type="submit" class="btn btn-primary">Update</button>
-                                                </div>
-
-                                            </form>
-
-                                        </div>
-                                    </div>
-                                </div>
-
                                 <script>
                                     $(document).ready(function () {
                                         // Edit functionality (existing)
@@ -3166,7 +3002,7 @@
                                 <div class="d-flex justify-content-between mb-3">
                                     <h4>WEEKLY SALES VISIT PLAN</h4>
 
-                                    <button class="btn btn-primary" data-bs-toggle="modal"
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                         data-bs-target="#createModalRegionReport">
                                         + Add Report
                                     </button>
@@ -3225,174 +3061,6 @@
                                         @endforelse
                                     </tbody>
                                 </table>
-
-                                {{-- CREATE MODAL --}}
-                                <div class="modal fade" id="createModalRegionReport" tabindex="-1"
-                                    aria-labelledby="createModalRegionReportLabel" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="createModalRegionReportLabel">Add Region
-                                                    Report</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
-                                            </div>
-                                            <form id="createFormRegionReport">
-                                                @csrf
-                                                <div class="modal-body">
-                                                    <div class="mb-3">
-                                                        <input type="hidden" name="type" id="create_type_region_report"
-                                                            value="visit_plan">
-                                                        <label class="form-label">Region</label>
-                                                        <select name="region_id" id="create_region_id_report"
-                                                            class="form-control" required>
-                                                            <option value="">-- Select Region --</option>
-                                                            @foreach($regions as $region)
-                                                                <option value="{{ $region->id }}">{{ $region->region_name }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label class="form-label">Branch (Admin)</label>
-                                                        <select name="admin_id" id="create_admin_id_report"
-                                                            class="form-control" required>
-                                                            <option value="">-- Select Branch --</option>
-                                                            @foreach($admis as $admi)
-                                                                <option value="{{ $admi->id }}">
-                                                                    {{ $admi->branch_office_name }} (ID:
-                                                                    {{ $admi->branch_id }})
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label class="form-label">Employee Name</label>
-                                                        <input type="text" name="employee_name"
-                                                            id="create_employee_name_report" class="form-control"
-                                                            required>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label class="form-label">Designation</label>
-                                                        <input type="text" name="designation"
-                                                            id="create_designation_report" class="form-control"
-                                                            required>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col">
-                                                            <input type="text" name="monday" id="create_monday_report"
-                                                                class="form-control" placeholder="Monday">
-                                                        </div>
-                                                        <div class="col">
-                                                            <input type="text" name="tuesday" id="create_tuesday_report"
-                                                                class="form-control" placeholder="Tuesday">
-                                                        </div>
-                                                        <div class="col">
-                                                            <input type="text" name="wednesday"
-                                                                id="create_wednesday_report" class="form-control"
-                                                                placeholder="Wednesday">
-                                                        </div>
-                                                        <div class="col">
-                                                            <input type="text" name="thursday"
-                                                                id="create_thursday_report" class="form-control"
-                                                                placeholder="Thursday">
-                                                        </div>
-                                                        <div class="col">
-                                                            <input type="text" name="friday" id="create_friday_report"
-                                                                class="form-control" placeholder="Friday">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary"
-                                                        data-bs-dismiss="modal">Close</button>
-                                                    <button type="button" id="createReportBtnRegionReport"
-                                                        class="btn btn-primary">Save Report</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {{-- EDIT MODAL --}}
-                                <div class="modal fade" id="editModalRegionReport" tabindex="-1">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">Edit Region Report</h5>
-                                                <button type="button" class="btn-close"
-                                                    data-bs-dismiss="modal"></button>
-                                            </div>
-
-                                            <form id="editFormRegionReport" method="POST">
-                                                @csrf
-                                                @method('PUT')
-
-                                                <div class="modal-body">
-
-                                                    <div class="mb-3">
-                                                        <label>Region</label>
-                                                        <select name="region_id" id="e_region_id_report"
-                                                            class="form-control">
-                                                            @foreach($regions as $region)
-                                                                <option value="{{ $region->id }}">{{ $region->region_name }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-
-                                                    <div class="mb-3">
-                                                        <label>Branch</label>
-                                                        <select name="admin_id" id="e_admin_id_report"
-                                                            class="form-control">
-                                                            @foreach($admis as $admi)
-                                                                <option value="{{ $admi->id }}">
-                                                                    {{ $admi->branch_office_name }} (ID:
-                                                                    {{ $admi->branch_id }})
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-
-                                                    <div class="mb-3">
-                                                        <label>Employee Name</label>
-                                                        <input type="text" name="employee_name"
-                                                            id="e_employee_name_report" class="form-control">
-                                                    </div>
-
-                                                    <div class="mb-3">
-                                                        <label>Designation</label>
-                                                        <input type="text" name="designation" id="e_designation_report"
-                                                            class="form-control">
-                                                    </div>
-
-                                                    <div class="row">
-                                                        <div class="col"><input type="text" name="monday"
-                                                                id="e_monday_report" class="form-control"></div>
-                                                        <div class="col"><input type="text" name="tuesday"
-                                                                id="e_tuesday_report" class="form-control"></div>
-                                                        <div class="col"><input type="text" name="wednesday"
-                                                                id="e_wednesday_report" class="form-control"></div>
-                                                        <div class="col"><input type="text" name="thursday"
-                                                                id="e_thursday_report" class="form-control"></div>
-                                                        <div class="col"><input type="text" name="friday"
-                                                                id="e_friday_report" class="form-control"></div>
-                                                    </div>
-
-                                                </div>
-
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary"
-                                                        data-bs-dismiss="modal">Close</button>
-                                                    <button type="submit" class="btn btn-primary">Update</button>
-                                                </div>
-
-                                            </form>
-
-                                        </div>
-                                    </div>
-                                </div>
 
                                 <script>
                                     $(document).ready(function () {
@@ -3492,7 +3160,7 @@
                                 <div class="d-flex justify-content-between mb-3">
                                     <h4>Region Wise Daily Sales Pipeline</h4>
 
-                                    <button class="btn btn-primary" data-bs-toggle="modal"
+                                    <button  type="button" class="btn btn-primary" data-bs-toggle="modal"
                                         data-bs-target="#createPipelineModal">
                                         + Add Pipeline Report
                                     </button>
@@ -3503,8 +3171,12 @@
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>Region</th>
+                                            <th>Branch Name</th>
+                                            <th>Region Name</th>
                                             <th>Prospect Name</th>
+                                            <th>Sales Perform by</th>
+                                            <th>Number of Technical Proposal Sent</th>
+                                            <th>Number of Quotation Shared</th>
                                             <th>Required Services</th>
                                             <th>Remarks</th>
                                             <th>Actions</th>
@@ -3515,12 +3187,16 @@
                                         @forelse($pipelines as $key => $pipeline)
                                             <tr>
                                                 <td>{{ $key + 1 }}</td>
+                                                <td>{{ $pipeline->admin->branch_office_name ?? 'N/A' }}</td>
                                                 <td>{{ $pipeline->region->region_name ?? 'N/A' }}</td>
                                                 <td>{{ $pipeline->prospect_name ?? 'N/A' }}</td>
+                                                <td>{{ $pipeline->sales_visit }}</td>
+                                                <td>{{ $pipeline->proposal_sent }}</td>
+                                                <td>{{ $pipeline->quotation_sent }}</td>
                                                 <td>{{ $pipeline->required_services }}</td>
                                                 <td>{{ $pipeline->remarks }}</td>
                                                 <td>
-                                                    <button class="btn btn-sm btn-info pipelineEditBtn"
+                                                    <button type="button" class="btn btn-sm btn-info pipelineEditBtn"
                                                         data-id="{{ $pipeline->id }}">Edit</button>
                                                     <button class="btn btn-sm btn-danger pipelineDeleteBtn"
                                                         data-id="{{ $pipeline->id }}">Delete</button>
@@ -3536,116 +3212,6 @@
 
                             </div>
 
-                            {{-- ================= CREATE MODAL ================= --}}
-                            <div class="modal fade" id="createPipelineModal">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-
-                                        <div class="modal-header">
-                                            <h5>Add Pipeline Report</h5>
-                                            <button class="btn-close" data-bs-dismiss="modal"></button>
-                                        </div>
-
-                                        <form id="createPipelineForm">
-                                            @csrf
-                                            <div class="modal-body">
-
-                                                <div class="mb-3">
-                                                    <label>Region</label>
-                                                    <select id="pipeline_create_region_id" class="form-control">
-                                                        <option value="">-- Select Region --</option>
-                                                        @foreach($regions as $region)
-                                                            <option value="{{ $region->id }}">{{ $region->region_name }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label>Prospect Name</label>
-                                                    <input type="text" id="pipeline_create_prospect_name"
-                                                        class="form-control">
-                                                </div>
-
-                                                <div class="mb-3">
-                                                    <label>Required Services</label>
-                                                    <input type="text" id="pipeline_create_required_services"
-                                                        class="form-control">
-                                                </div>
-
-                                                <div class="mb-3">
-                                                    <label>Remarks</label>
-                                                    <input type="text" id="pipeline_create_remarks"
-                                                        class="form-control">
-                                                </div>
-
-                                            </div>
-
-                                            <div class="modal-footer">
-                                                <button type="button" id="pipelineCreateBtn"
-                                                    class="btn btn-primary">Save</button>
-                                            </div>
-
-                                        </form>
-
-                                    </div>
-                                </div>
-                            </div>
-
-                            {{-- ================= EDIT MODAL ================= --}}
-                            <div class="modal fade" id="editPipelineModal">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-
-                                        <div class="modal-header">
-                                            <h5>Edit Pipeline Report</h5>
-                                            <button class="btn-close" data-bs-dismiss="modal"></button>
-                                        </div>
-
-                                        <form id="editPipelineForm">
-                                            @csrf
-                                            @method('PUT')
-
-                                            <div class="modal-body">
-
-                                                <div class="mb-3">
-                                                    <label>Region</label>
-                                                    <select id="pipeline_edit_region_id" class="form-control">
-                                                        @foreach($regions as $region)
-                                                            <option value="{{ $region->id }}">{{ $region->region_name }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-
-                                                <div class="mb-3">
-                                                    <label>Prospect Name</label>
-                                                    <input type="text" id="pipeline_edit_prospect_name"
-                                                        class="form-control">
-                                                </div>
-
-                                                <div class="mb-3">
-                                                    <label>Required Services</label>
-                                                    <input type="text" id="pipeline_edit_required_services"
-                                                        class="form-control">
-                                                </div>
-
-                                                <div class="mb-3">
-                                                    <label>Remarks</label>
-                                                    <input type="text" id="pipeline_edit_remarks" class="form-control">
-                                                </div>
-
-                                            </div>
-
-                                            <div class="modal-footer">
-                                                <button type="submit" class="btn btn-primary">Update</button>
-                                            </div>
-
-                                        </form>
-
-                                    </div>
-                                </div>
-                            </div>
-
                             {{-- ================= AJAX ================= --}}
                             <script>
                                 $(document).ready(function () {
@@ -3657,8 +3223,12 @@
                                             type: "POST",
                                             data: {
                                                 _token: "{{ csrf_token() }}",
+                                                admin_id: $('#pipeline_create_admin_id').val(),
                                                 region_id: $('#pipeline_create_region_id').val(),
                                                 prospect_name: $('#pipeline_create_prospect_name').val(),
+                                                sales_visit: $('#pipeline_create_sales_visit').val(),
+                                                proposal_sent: $('#pipeline_create_proposal_sent').val(),
+                                                quotation_sent: $('#pipeline_create_quotation_sent').val(),
                                                 required_services: $('#pipeline_create_required_services').val(),
                                                 remarks: $('#pipeline_create_remarks').val(),
                                             },
@@ -3674,8 +3244,12 @@
                                         let id = $(this).data('id');
 
                                         $.get("/pipeline-reports/edit/" + id, function (data) {
+                                            $('#pipeline_edit_admin_id').val(data.admin_id);
                                             $('#pipeline_edit_region_id').val(data.region_id);
                                             $('#pipeline_edit_prospect_name').val(data.prospect_name);
+                                            $('#pipeline_edit_sales_visit').val(data.sales_visit);
+                                            $('#pipeline_edit_proposal_sent').val(data.proposal_sent);
+                                            $('#pipeline_edit_quotation_sent').val(data.quotation_sent);
                                             $('#pipeline_edit_required_services').val(data.required_services);
                                             $('#pipeline_edit_remarks').val(data.remarks);
 
@@ -3696,8 +3270,12 @@
                                             data: {
                                                 _token: "{{ csrf_token() }}",
                                                 _method: "PUT",
+                                                admin_id: $('#pipeline_edit_admin_id').val(),
                                                 region_id: $('#pipeline_edit_region_id').val(),
                                                 prospect_name: $('#pipeline_edit_prospect_name').val(),
+                                                sales_visit: $('#pipeline_edit_sales_visit').val(),
+                                                proposal_sent: $('#pipeline_edit_proposal_sent').val(),
+                                                quotation_sent: $('#pipeline_edit_quotation_sent').val(),
                                                 required_services: $('#pipeline_edit_required_services').val(),
                                                 remarks: $('#pipeline_edit_remarks').val(),
                                             },
@@ -3740,9 +3318,9 @@
                             <div class="container mt-4">
 
                                 <div class="d-flex justify-content-between mb-3">
-                                    <h4>Daily SALES VISITS/PIPELINE REPORT</h4>
+                                    <h4>Region wise Daily Finalize Sales report</h4>
 
-                                    <button class="btn btn-primary" data-bs-toggle="modal"
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                         data-bs-target="#createVisitPipelineModal">
                                         + Add Pipeline Report
                                     </button>
@@ -3755,13 +3333,13 @@
                                             <th>#</th>
                                             <th>Customer Name</th>
                                             <th>Branch Name</th>
-                                            <th>Region</th>
-                                            <th>No of sales visits</th>
-                                            <th>Technical proposals Sent</th>
-                                            <th>Quotations sent</th>
-                                            <th>No of Guards Deployed</th>
-                                            <th>New Client Name</th>
+                                            <th>Region Name</th>
+                                            <th>Sales Perform by</th>
+                                            <th>Number of Technical Proposal Sent</th>
+                                            <th>Number of Quotation Shared</th>
+                                            <th>Number Of Guard Deployed</th>
                                             <th>Contractual Value</th>
+                                            <th>Total Margin</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
@@ -3777,10 +3355,10 @@
                                                 <td>{{ $visitPipeline->proposal_sent }}</td>
                                                 <td>{{ $visitPipeline->quotation_sent }}</td>
                                                 <td>{{ $visitPipeline->guard_deployed_by_ho }}</td>
-                                                <td>{{ $visitPipeline->new_client_name }}</td>
                                                 <td>{{ $visitPipeline->contractual_value }}</td>
+                                                <td>{{ $visitPipeline->total_margin }}</td>
                                                 <td>
-                                                    <button class="btn btn-sm btn-info visitPipelineEditBtn"
+                                                    <button type="button" class="btn btn-sm btn-info visitPipelineEditBtn"
                                                         data-id="{{ $visitPipeline->id }}">Edit</button>
                                                     <button class="btn btn-sm btn-danger visitPipelineDeleteBtn"
                                                         data-id="{{ $visitPipeline->id }}">Delete</button>
@@ -3794,170 +3372,6 @@
                                     </tbody>
                                 </table>
 
-                            </div>
-
-                            {{-- CREATE MODAL --}}
-                            <div class="modal fade" id="createVisitPipelineModal" tabindex="-1"
-                                aria-labelledby="createVisitPipelineModalLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="createVisitPipelineModalLabel">Add Visit
-                                                Pipeline Report</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                        </div>
-                                        <form id="createVisitPipelineForm">
-                                            @csrf
-                                            <div class="modal-body">
-                                                <div class="mb-3">
-                                                    <label class="form-label">Customer Name</label>
-                                                    <input type="text" name="customer_name" id="vp_create_customer_name"
-                                                        class="form-control" required>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label">Branch (Admin)</label>
-                                                    <select name="admin_id" id="vp_create_admin_id" class="form-control"
-                                                        required>
-                                                        <option value="">-- Select Branch --</option>
-                                                        @foreach($admis as $admi)
-                                                            <option value="{{ $admi->id }}">
-                                                                {{ $admi->branch_office_name }} (ID: {{ $admi->branch_id }})
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label">Region</label>
-                                                    <select name="region_id" id="vp_create_region_id"
-                                                        class="form-control" required>
-                                                        <option value="">-- Select Region --</option>
-                                                        @foreach($regions as $region)
-                                                            <option value="{{ $region->id }}">{{ $region->region_name }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label">Sales Visit</label>
-                                                    <input type="text" name="sales_visit" id="vp_create_sales_visit"
-                                                        class="form-control" required>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label">Proposal Sent</label>
-                                                    <input type="text" name="proposal_sent" id="vp_create_proposal_sent"
-                                                        class="form-control" required>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label">Quotation Sent</label>
-                                                    <input type="text" name="quotation_sent"
-                                                        id="vp_create_quotation_sent" class="form-control" required>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label">Guard Deployed By</label>
-                                                    <input type="text" name="guard_deployed_by_ho"
-                                                        id="vp_create_guard_deployed" class="form-control" required>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label">New Client Name</label>
-                                                    <input type="text" name="new_client_name"
-                                                        id="vp_create_new_client_name" class="form-control" required>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label">Contractual Value</label>
-                                                    <input type="text" name="contractual_value"
-                                                        id="vp_create_contractual_value" class="form-control" required>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary"
-                                                    data-bs-dismiss="modal">Close</button>
-                                                <button type="button" id="vp_createReportBtn"
-                                                    class="btn btn-primary">Save Report</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {{-- EDIT MODAL --}}
-                            <div class="modal fade" id="editVisitPipelineModal" tabindex="-1">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">Edit Visit Pipeline Report</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                        </div>
-
-                                        <form id="editVisitPipelineForm" method="POST">
-                                            @csrf
-                                            @method('PUT')
-
-                                            <div class="modal-body">
-                                                <div class="mb-3">
-                                                    <label>Customer Name</label>
-                                                    <input type="text" name="customer_name" id="vp_e_customer_name"
-                                                        class="form-control">
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label>Branch</label>
-                                                    <select name="admin_id" id="vp_e_admin_id" class="form-control">
-                                                        @foreach($admis as $admi)
-                                                            <option value="{{ $admi->id }}">
-                                                                {{ $admi->branch_office_name }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label>Region</label>
-                                                    <select name="region_id" id="vp_e_region_id" class="form-control">
-                                                        @foreach($regions as $region)
-                                                            <option value="{{ $region->id }}">{{ $region->region_name }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label>Sales Visit</label>
-                                                    <input type="text" name="sales_visit" id="vp_e_sales_visit"
-                                                        class="form-control">
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label>Proposal Sent</label>
-                                                    <input type="text" name="proposal_sent" id="vp_e_proposal_sent"
-                                                        class="form-control">
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label>Quotation Sent</label>
-                                                    <input type="text" name="quotation_sent" id="vp_e_quotation_sent"
-                                                        class="form-control">
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label>Guard Deployed By</label>
-                                                    <input type="text" name="guard_deployed_by_ho"
-                                                        id="vp_e_guard_deployed" class="form-control">
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label>New Client Name</label>
-                                                    <input type="text" name="new_client_name" id="vp_e_new_client_name"
-                                                        class="form-control">
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label>Contractual Value</label>
-                                                    <input type="text" name="contractual_value"
-                                                        id="vp_e_contractual_value" class="form-control">
-                                                </div>
-                                            </div>
-
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary"
-                                                    data-bs-dismiss="modal">Close</button>
-                                                <button type="submit" class="btn btn-primary">Update</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
                             </div>
 
                             <script>
@@ -3975,9 +3389,9 @@
                                                 $('#vp_e_sales_visit').val(data.sales_visit);
                                                 $('#vp_e_proposal_sent').val(data.proposal_sent);
                                                 $('#vp_e_quotation_sent').val(data.quotation_sent);
-                                                $('#vp_e_guard_deployed').val(data.guard_deployed_by_ho);
-                                                $('#vp_e_new_client_name').val(data.new_client_name);
+                                                $('#vp_e_guard_deployed').val(data.guard_deployed_by_ho);                                        
                                                 $('#vp_e_contractual_value').val(data.contractual_value);
+                                                $('#vp_e_total_margin').val(data.total_margin);
                                                 $('#editVisitPipelineForm').attr('action', "/visit-reports/update/" + id);
                                                 $('#editVisitPipelineModal').modal('show');
                                             },
@@ -3999,9 +3413,8 @@
                                         formData.append('proposal_sent', $('#vp_create_proposal_sent').val());
                                         formData.append('quotation_sent', $('#vp_create_quotation_sent').val());
                                         formData.append('guard_deployed_by_ho', $('#vp_create_guard_deployed').val());
-                                        formData.append('new_client_name', $('#vp_create_new_client_name').val());
                                         formData.append('contractual_value', $('#vp_create_contractual_value').val());
-
+                                        formData.append('total_margin', $('#vp_create_total_margin').val());
                                         $.ajax({
                                             url: "{{ route('visitReport.store') }}",
                                             type: 'POST',
@@ -6279,6 +5692,663 @@
         });
     });
 </script>
+    {{-- CREATE MODAL --}}
+                                <div class="modal fade" id="createModal" tabindex="-1"
+                                    aria-labelledby="createModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="createModalLabel">Add Region Report</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <form id="createForm">
+                                                @csrf
+                                                <div class="modal-body">
+                                                    <div class="mb-3">
+                                                        <input type="hidden" name="type" id="create_type"
+                                                            value="feedback_log">
+                                                        <label class="form-label">Region</label>
+                                                        <select name="region_id" id="create_region_id"
+                                                            class="form-control" required>
+                                                            <option value="">-- Select Region --</option>
+                                                            @foreach($regions as $region)
+                                                                <option value="{{ $region->id }}">{{ $region->region_name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Branch (Admin)</label>
+                                                        <select name="admin_id" id="create_admin_id"
+                                                            class="form-control" required>
+                                                            <option value="">-- Select Branch --</option>
+                                                            @foreach($admis as $admi)
+                                                                <option value="{{ $admi->id }}">
+                                                                    {{ $admi->branch_office_name }} (ID:
+                                                                    {{ $admi->branch_id }})
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Employee Name</label>
+                                                        <input type="text" name="employee_name"
+                                                            id="create_employee_name" class="form-control" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Designation</label>
+                                                        <input type="text" name="designation" id="create_designation"
+                                                            class="form-control" required>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <input type="text" name="monday" id="create_monday"
+                                                                class="form-control" placeholder="Monday">
+                                                        </div>
+                                                        <div class="col">
+                                                            <input type="text" name="tuesday" id="create_tuesday"
+                                                                class="form-control" placeholder="Tuesday">
+                                                        </div>
+                                                        <div class="col">
+                                                            <input type="text" name="wednesday" id="create_wednesday"
+                                                                class="form-control" placeholder="Wednesday">
+                                                        </div>
+                                                        <div class="col">
+                                                            <input type="text" name="thursday" id="create_thursday"
+                                                                class="form-control" placeholder="Thursday">
+                                                        </div>
+                                                        <div class="col">
+                                                            <input type="text" name="friday" id="create_friday"
+                                                                class="form-control" placeholder="Friday">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">Close</button>
+                                                    <button type="button" id="createReportBtn"
+                                                        class="btn btn-primary">Save Report</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- EDIT MODAL --}}
+                                <div class="modal fade" id="editModal" tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Edit Region Report</h5>
+                                                <button type="button" class="btn-close"
+                                                    data-bs-dismiss="modal"></button>
+                                            </div>
+
+                                            <form id="editForm" method="POST">
+                                                @csrf
+                                                @method('PUT')
+
+                                                <div class="modal-body">
+
+                                                    <div class="mb-3">
+                                                        <label>Region</label>
+                                                        <select name="region_id" id="e_region_id" class="form-control">
+                                                            @foreach($regions as $region)
+                                                                <option value="{{ $region->id }}">{{ $region->region_name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label>Branch</label>
+                                                        <select name="admin_id" id="e_admin_id" class="form-control">
+                                                            @foreach($admis as $admi)
+                                                                <option value="{{ $admi->id }}">
+                                                                    {{ $admi->branch_office_name }} (ID:
+                                                                    {{ $admi->branch_id }})
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label>Employee Name</label>
+                                                        <input type="text" name="employee_name" id="e_employee_name"
+                                                            class="form-control">
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label>Designation</label>
+                                                        <input type="text" name="designation" id="e_designation"
+                                                            class="form-control">
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col"><input type="text" name="monday" id="e_monday"
+                                                                class="form-control"></div>
+                                                        <div class="col"><input type="text" name="tuesday"
+                                                                id="e_tuesday" class="form-control"></div>
+                                                        <div class="col"><input type="text" name="wednesday"
+                                                                id="e_wednesday" class="form-control"></div>
+                                                        <div class="col"><input type="text" name="thursday"
+                                                                id="e_thursday" class="form-control"></div>
+                                                        <div class="col"><input type="text" name="friday" id="e_friday"
+                                                                class="form-control"></div>
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary">Update</button>
+                                                </div>
+
+                                            </form>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                   {{-- CREATE MODAL --}}
+                                <div class="modal fade" id="createModalRegionReport" tabindex="-1"
+                                    aria-labelledby="createModalRegionReportLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="createModalRegionReportLabel">Add Region
+                                                    Report</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <form id="createFormRegionReport">
+                                                @csrf
+                                                <div class="modal-body">
+                                                    <div class="mb-3">
+                                                        <input type="hidden" name="type" id="create_type_region_report"
+                                                            value="visit_plan">
+                                                        <label class="form-label">Region</label>
+                                                        <select name="region_id" id="create_region_id_report"
+                                                            class="form-control" required>
+                                                            <option value="">-- Select Region --</option>
+                                                            @foreach($regions as $region)
+                                                                <option value="{{ $region->id }}">{{ $region->region_name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Branch (Admin)</label>
+                                                        <select name="admin_id" id="create_admin_id_report"
+                                                            class="form-control" required>
+                                                            <option value="">-- Select Branch --</option>
+                                                            @foreach($admis as $admi)
+                                                                <option value="{{ $admi->id }}">
+                                                                    {{ $admi->branch_office_name }} (ID:
+                                                                    {{ $admi->branch_id }})
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Employee Name</label>
+                                                        <input type="text" name="employee_name"
+                                                            id="create_employee_name_report" class="form-control"
+                                                            required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Designation</label>
+                                                        <input type="text" name="designation"
+                                                            id="create_designation_report" class="form-control"
+                                                            required>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <input type="text" name="monday" id="create_monday_report"
+                                                                class="form-control" placeholder="Monday">
+                                                        </div>
+                                                        <div class="col">
+                                                            <input type="text" name="tuesday" id="create_tuesday_report"
+                                                                class="form-control" placeholder="Tuesday">
+                                                        </div>
+                                                        <div class="col">
+                                                            <input type="text" name="wednesday"
+                                                                id="create_wednesday_report" class="form-control"
+                                                                placeholder="Wednesday">
+                                                        </div>
+                                                        <div class="col">
+                                                            <input type="text" name="thursday"
+                                                                id="create_thursday_report" class="form-control"
+                                                                placeholder="Thursday">
+                                                        </div>
+                                                        <div class="col">
+                                                            <input type="text" name="friday" id="create_friday_report"
+                                                                class="form-control" placeholder="Friday">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">Close</button>
+                                                    <button type="button" id="createReportBtnRegionReport"
+                                                        class="btn btn-primary">Save Report</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- EDIT MODAL --}}
+                                <div class="modal fade" id="editModalRegionReport" tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Edit Region Report</h5>
+                                                <button type="button" class="btn-close"
+                                                    data-bs-dismiss="modal"></button>
+                                            </div>
+
+                                            <form id="editFormRegionReport" method="POST">
+                                                @csrf
+                                                @method('PUT')
+
+                                                <div class="modal-body">
+
+                                                    <div class="mb-3">
+                                                        <label>Region</label>
+                                                        <select name="region_id" id="e_region_id_report"
+                                                            class="form-control">
+                                                            @foreach($regions as $region)
+                                                                <option value="{{ $region->id }}">{{ $region->region_name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label>Branch</label>
+                                                        <select name="admin_id" id="e_admin_id_report"
+                                                            class="form-control">
+                                                            @foreach($admis as $admi)
+                                                                <option value="{{ $admi->id }}">
+                                                                    {{ $admi->branch_office_name }} (ID:
+                                                                    {{ $admi->branch_id }})
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label>Employee Name</label>
+                                                        <input type="text" name="employee_name"
+                                                            id="e_employee_name_report" class="form-control">
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label>Designation</label>
+                                                        <input type="text" name="designation" id="e_designation_report"
+                                                            class="form-control">
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col"><input type="text" name="monday"
+                                                                id="e_monday_report" class="form-control"></div>
+                                                        <div class="col"><input type="text" name="tuesday"
+                                                                id="e_tuesday_report" class="form-control"></div>
+                                                        <div class="col"><input type="text" name="wednesday"
+                                                                id="e_wednesday_report" class="form-control"></div>
+                                                        <div class="col"><input type="text" name="thursday"
+                                                                id="e_thursday_report" class="form-control"></div>
+                                                        <div class="col"><input type="text" name="friday"
+                                                                id="e_friday_report" class="form-control"></div>
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary">Update</button>
+                                                </div>
+
+                                            </form>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                
+                            {{-- ================= CREATE MODAL ================= --}}
+                            <div class="modal fade" id="createPipelineModal">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+
+                                        <div class="modal-header">
+                                            <h5>Add Pipeline Report</h5>
+                                            <button class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+
+                                        <form id="createPipelineForm">
+                                            @csrf
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                        <label class="form-label">Branch (Admin)</label>
+                                                        <select name="admin_id" id="pipeline_create_admin_id"
+                                                            class="form-control" required>
+                                                            <option value="">-- Select Branch --</option>
+                                                            @foreach($admis as $admi)
+                                                                <option value="{{ $admi->id }}">
+                                                                    {{ $admi->branch_office_name }} (ID:
+                                                                    {{ $admi->branch_id }})
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                <div class="mb-3">
+                                                    <label>Region</label>
+                                                    <select id="pipeline_create_region_id" class="form-control">
+                                                        <option value="">-- Select Region --</option>
+                                                        @foreach($regions as $region)
+                                                            <option value="{{ $region->id }}">{{ $region->region_name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label>Prospect Name</label>
+                                                    <input type="text" name="prospect_name" id="pipeline_create_prospect_name"
+                                                        class="form-control">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label>Sales Perform by</label>
+                                                    <input type="text" name="sales_visit" id="pipeline_create_sales_visit"
+                                                        class="form-control">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label>Number of Technical Proposal Sent</label>
+                                                    <input type="text" name="proposal_sent" id="pipeline_create_proposal_sent"
+                                                        class="form-control">
+                                                </div>
+                                                 <div class="mb-3">
+                                                    <label>Number of Quotation Sent</label>
+                                                    <input type="text" name="quotation_sent" id="pipeline_create_quotation_sent"
+                                                        class="form-control">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label>Required Services</label>
+                                                    <input type="text" name="required_services" id="pipeline_create_required_services"
+                                                        class="form-control">
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label>Remarks</label>
+                                                    <input type="text" name="remarks" id="pipeline_create_remarks"
+                                                        class="form-control">
+                                                </div>
+
+                                            </div>
+
+                                            <div class="modal-footer">
+                                                <button type="button" id="pipelineCreateBtn"
+                                                    class="btn btn-primary">Save</button>
+                                            </div>
+
+                                        </form>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- ================= EDIT MODAL ================= --}}
+                            <div class="modal fade" id="editPipelineModal">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+
+                                        <div class="modal-header">
+                                            <h5>Edit Pipeline Report</h5>
+                                            <button class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+
+                                        <form id="editPipelineForm">
+                                            @csrf
+                                            @method('PUT')
+
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                        <label>Branch</label>
+                                                        <select name="admin_id" id="pipeline_edit_admin_id"
+                                                            class="form-control">
+                                                            @foreach($admis as $admi)
+                                                                <option value="{{ $admi->id }}">
+                                                                    {{ $admi->branch_office_name }} (ID:
+                                                                    {{ $admi->branch_id }})
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                <div class="mb-3">
+                                                    <label>Region</label>
+                                                    <select id="pipeline_edit_region_id" class="form-control">
+                                                        @foreach($regions as $region)
+                                                            <option value="{{ $region->id }}">{{ $region->region_name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label>Prospect Name</label>
+                                                    <input type="text" name="prospect_name" id="pipeline_edit_prospect_name"
+                                                        class="form-control">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label>Sales Perform by</label>
+                                                    <input type="text" name="sales_visit" id="pipeline_edit_sales_visit"
+                                                        class="form-control">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label>Number of Technical Proposal Sent</label>
+                                                    <input type="text" name="proposal_sent" id="pipeline_edit_proposal_sent"
+                                                        class="form-control">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label>Number of Quotation Sent</label>
+                                                    <input type="text" name="quotation_sent" id="pipeline_edit_quotation_sent"
+                                                        class="form-control">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label>Required Services</label>
+                                                    <input type="text" name="required_services" id="pipeline_edit_required_services"
+                                                        class="form-control">
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label>Remarks</label>
+                                                    <input type="text" name="remarks" id="pipeline_edit_remarks" class="form-control">
+                                                </div>
+
+                                            </div>
+
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn btn-primary">Update</button>
+                                            </div>
+
+                                        </form>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                              {{-- CREATE MODAL --}}
+                            <div class="modal fade" id="createVisitPipelineModal" tabindex="-1"
+                                aria-labelledby="createVisitPipelineModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="createVisitPipelineModalLabel">Add Visit
+                                                Pipeline Report</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <form id="createVisitPipelineForm">
+                                            @csrf
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Customer Name</label>
+                                                    <input type="text" name="customer_name" id="vp_create_customer_name"
+                                                        class="form-control" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Branch Name</label>
+                                                    <select name="admin_id" id="vp_create_admin_id" class="form-control"
+                                                        required>
+                                                        <option value="">-- Select Branch --</option>
+                                                        @foreach($admis as $admi)
+                                                            <option value="{{ $admi->id }}">
+                                                                {{ $admi->branch_office_name }} (ID: {{ $admi->branch_id }})
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Region Name</label>
+                                                    <select name="region_id" id="vp_create_region_id"
+                                                        class="form-control" required>
+                                                        <option value="">-- Select Region --</option>
+                                                        @foreach($regions as $region)
+                                                            <option value="{{ $region->id }}">{{ $region->region_name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Sales Perform by</label>
+                                                    <input type="text" name="sales_visit" id="vp_create_sales_visit"
+                                                        class="form-control" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Number of Technical Proposal Send</label>
+                                                    <input type="text" name="proposal_sent" id="vp_create_proposal_sent"
+                                                        class="form-control" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Number of Quotation Shared</label>
+                                                    <input type="text" name="quotation_sent"
+                                                        id="vp_create_quotation_sent" class="form-control" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Number Of Guard Deployed</label>
+                                                    <input type="text" name="guard_deployed_by_ho"
+                                                        id="vp_create_guard_deployed" class="form-control" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Contractual Value</label>
+                                                    <input type="text" name="contractual_value"
+                                                        id="vp_create_contractual_value" class="form-control" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Total Margin</label>
+                                                    <input type="text" name="total_margin"
+                                                        id="vp_create_total_margin" class="form-control" required>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">Close</button>
+                                                <button type="button" id="vp_createReportBtn"
+                                                    class="btn btn-primary">Save Report</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- EDIT MODAL --}}
+                            <div class="modal fade" id="editVisitPipelineModal" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Edit Visit Pipeline Report</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+
+                                        <form id="editVisitPipelineForm" method="POST">
+                                            @csrf
+                                            @method('PUT')
+
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <label>Customer Name</label>
+                                                    <input type="text" name="customer_name" id="vp_e_customer_name"
+                                                        class="form-control">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label>Branch Name</label>
+                                                    <select name="admin_id" id="vp_e_admin_id" class="form-control">
+                                                        @foreach($admis as $admi)
+                                                            <option value="{{ $admi->id }}">
+                                                                {{ $admi->branch_office_name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label>Region Name</label>
+                                                    <select name="region_id" id="vp_e_region_id" class="form-control">
+                                                        @foreach($regions as $region)
+                                                            <option value="{{ $region->id }}">{{ $region->region_name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label>Sales Perform by</label>
+                                                    <input type="text" name="sales_visit" id="vp_e_sales_visit"
+                                                        class="form-control">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label>Number of Technical Proposal Sent</label>
+                                                    <input type="text" name="proposal_sent" id="vp_e_proposal_sent"
+                                                        class="form-control">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label>Number of Quotation Shared</label>
+                                                    <input type="text" name="quotation_sent" id="vp_e_quotation_sent"
+                                                        class="form-control">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label>Number Of Guard Deployed</label>
+                                                    <input type="text" name="guard_deployed_by_ho"
+                                                        id="vp_e_guard_deployed" class="form-control">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label>Contractual Value</label>
+                                                    <input type="text" name="contractual_value"
+                                                        id="vp_e_contractual_value" class="form-control">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label>Total Margin</label>
+                                                    <input type="text" name="total_margin" id="vp_e_total_margin"
+                                                        class="form-control">
+                                                </div>       
+                                            </div>
+
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary">Update</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
 </body>
+
 
 </html>

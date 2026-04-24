@@ -83,25 +83,26 @@
 
         /*  */
         .report-body2 {
-            background-color: #f1d0a3;
+            background-color: #e7aa5b;
             color: #080808;
             padding: 10px;
             text-align: center;
-            border: 1px solid;
+            border: 1px solid #2f5597;
         }
 
-        .report-subtext3 {
-            font-size: 0.85rem;
-            margin-top: 5px;
-            color: #080808;
-        }
+.report-subtext3 {
+    font-size: 0.85rem;
+    margin-top: 5px;
+    color: #080808;
+    text-align: center;
+}
 
         .report-body3 {
             background-color: #e73131;
             color: #080808;
             padding: 10px;
             text-align: center;
-            border: 1px solid;
+            border: 1px solid #2f5597;
         }
 
         .report-subtext4 {
@@ -152,52 +153,6 @@
                 background-color: #4472c4 !important;
             }
         }
-        .action-buttons {
-    margin-bottom: 20px;
-    text-align: right;
-}
-
-.action-buttons form {
-    display: inline;
-}
-
-.btn {
-    padding: 8px 16px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    color: white;
-    font-size: 14px;
-    margin-left: 5px;
-    transition: all 0.2s ease-in-out;
-}
-
-/* PDF - Elegant Red */
-.btn-pdf {
-    background-color: #dc3545;
-}
-
-.btn-pdf:hover {
-    background-color: #c82333;
-}
-
-/* Excel - Clean Green */
-.btn-excel {
-    background-color: #28a745;
-}
-
-.btn-excel:hover {
-    background-color: #218838;
-}
-
-/* Print - Neutral Blue */
-.btn-print {
-    background-color: #007bff;
-}
-
-.btn-print:hover {
-    background-color: #0056b3;
-}
     </style>
 </head>
 
@@ -205,38 +160,44 @@
 
     <div class="container-fluid mt-3">
         <!-- Main Header -->
-         <div class="action-buttons">
-    <form method="POST" action="{{ route('visitsales.pdf') }}">
-        @csrf
-        <input type="hidden" name="date_range" value="{{ $date_range ?? '' }}">
-        <button type="submit" class="btn btn-pdf">📄 Download PDF</button>
-    </form>
-
-    <form method="POST" action="{{ route('visitsales.excel') }}">
-        @csrf
-        <input type="hidden" name="date_range" value="{{ $date_range ?? '' }}">
-        <button type="submit" class="btn btn-excel">📊 Download Excel</button>
-    </form>
-
-    <button onclick="window.print()" class="btn btn-print">🖨️ Print</button>
-</div>
         <div class="report-header">
             <h4 class="mb-0"><b>PIFFERS Security Services (Pvt) Ltd</b></h4>
         </div>
         <div class="report-body">
-            <p class="report-subtext1 mb-0">if You've Missed your Last 2 Months Sales Targets You're Unlikely to hit the Next One, Unless You Change Something Choose Change.</p>
+            <p class="report-subtext1 mb-0">If You've Missed your Last 2 Months Sales Targets You're Unlikely to hit the
+                Next One, Unless You Change Something Choose Change.</p>
         </div>
         <div class="report-body1">
-            <p class="report-subtext2 mb-0"><b>WEEKLY SALES VISIT PLAN</b></p>
+            <p class="report-subtext2 mb-0"><b>REGION WISE - DAILY SALES & FEEDBACK LOG REPORT</b></p>
         </div>
 
         <!-- Color Coded Legend/Status Bar -->
-        <div class="report-body2">
-            <p class="report-subtext3 mb-0">The weekly deadline for submission of this report is Friday at 5:00 PM</p>
+        <div class="status-bar">
+            <div class="status-green">90% Observation</div>
+            <div class="status-yellow">70% Explanation</div>
+            <div class="status-red">Below 50% Warning</div>
         </div>
+        <div class="report-body2">
+            <p class="report-subtext3 mb-0">GMs are required to make 5 calls per day to the Head of Security
+                (Monday–Friday) and conduct 8 site visits per week (Monday–Thursday).
+                DGMs are required to make 7 calls to Security Managers from Monday to Friday and conduct 10 site visits
+                per week (Monday to Thursday).</p>
+        </div>
+        <div class="report-body3">
+                <p class="report-subtext4 mb-0">In case of non-compliance, three (3) observations will be issued; if
+                non-compliance continues, a written explanation will be required, followed by a formal warning, and
+                persistent non-compliance thereafter will result in the imposition of penalties.</p>
+            </div>
 
-<div class="table-responsive">
-           
+            @if(!empty($date_range))
+            <div class="report-body2">
+                <p class="report-subtext3 mb-0">
+                    <b>Date Range: {{ $date_range }}</b>
+                </p>
+            </div>
+            @endif
+
+        <div class="table-responsive">
             <table class="table table-bordered table-striped mt-0">
                 <thead>
                     <tr>
@@ -253,13 +214,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @if(!empty($date_range))
-                        <div class="report-body2">
-                            <p class="report-subtext3 mb-0">
-                                <b>Date Range: {{ $date_range }}</b>
-                            </p>
-                        </div>
-                    @endif
+
                     @php $currentRegion = null; @endphp
                     @foreach($sales as $index => $sale)
                         {{-- Adds a divider row if the region changes --}}

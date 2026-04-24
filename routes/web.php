@@ -887,18 +887,27 @@ Route::put('/region-reports/update/{id}', [AdminController::class, 'updateRegion
 Route::delete('/region-reports/delete/{id}', [AdminController::class, 'deleteRegionReport']);
 Route::get('/search/region/report/export', [AdminController::class, 'export_region_report'])->name('regionwise.index');
 Route::get('/search/region/report', [AdminController::class, 'export_visit_report'])->name('visitsales.index');
+Route::post('/regionwise/pdf', [AdminController::class, 'RegionWisePdf'])->name('regionwise.pdf');
+Route::post('/regionwise/excel', [AdminController::class, 'RegionWiseExcel'])->name('regionwise.excel');
 
 Route::post('/pipeline-reports/store', [AdminController::class, 'storePipelineReport'])->name('pipelineReport.store');
 Route::get('/pipeline-reports/edit/{id}', [AdminController::class, 'editPipelineReport']);
 Route::put('/pipeline-reports/update/{id}', [AdminController::class, 'updatePipelineReport']);
 Route::delete('/pipeline-reports/delete/{id}', [AdminController::class, 'deletePipelineReport']);
 Route::get('/search/pipeline/report/export', [AdminController::class, 'export_pipeline_report'])->name('pipelinesales.index');
+Route::post('/pipelinesales/pdf', [AdminController::class, 'PipelinesalesPdf'])->name('pipelinesales.pdf');
+Route::post('/pipelinesales/excel', [AdminController::class, 'PipelinesalesExcel'])->name('pipelinesales.excel');
 
 Route::post('/visit-pipeline-reports/store', [AdminController::class, 'storeVisitReport'])->name('visitReport.store');
 Route::get('/visit-reports/edit/{id}', [AdminController::class, 'editVisitReport']);
-Route::put('/visit-reports/update/{id}', [AdminController::class, 'updateVisitReport']);
+Route::put('/visit-reports/update/{id}', [AdminController::class, 'updateVisitReport'])->name('visitpipeline.update');
 Route::delete('/visit-reports/delete/{id}', [AdminController::class, 'deleteVisitReport']);
-Route::get('/search/visit/report/export', [AdminController::class, 'export_visit_report'])->name('visitPipelinesales.index');
+Route::get('/search/visit/report/export', [AdminController::class, 'export_visit_pipeline_report'])->name('visitPipelinesales.index');
+Route::get('/search/visit/report', [AdminController::class, 'export_visit_report'])->name('visitsales.index');
+Route::post('/visit-pipelinesales/pdf', [AdminController::class, 'visitPipelinesalesPdf'])->name('visitPipelinesales.pdf');
+Route::post('/visit-pipelinesales/excel', [AdminController::class, 'visitPipelinesalesExcel'])->name('visitPipelinesales.excel');
+Route::post('/visitsales/pdf', [AdminController::class, 'visitsalesPdf'])->name('visitsales.pdf');
+Route::post('/visitsales/excel', [AdminController::class, 'visitsalesExcel'])->name('visitsales.excel');
 
 
 // Temporary Test Route for PDF Email WhatsApp Notification

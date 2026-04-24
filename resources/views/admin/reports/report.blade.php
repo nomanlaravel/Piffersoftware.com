@@ -98,7 +98,7 @@
                     <li class="nav-item" role="presentation">
                     <button class="nav-link" id="region-visitpipeline-reports-tab" data-bs-toggle="tab" data-bs-target="#region-visitpipeline-reports"
                         type="button" role="tab" aria-controls="region-visitpipeline-reports" aria-selected="false">
-                        Daily SALES VISITS/PIPELINE REPORT
+                        Region wise Daily Finalize Sales report
                     </button>
                     </li>    
         </ul>

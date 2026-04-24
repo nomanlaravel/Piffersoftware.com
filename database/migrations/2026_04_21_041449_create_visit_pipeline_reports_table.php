@@ -13,16 +13,25 @@ return new class extends Migration
     {
         Schema::create('visit_pipeline_reports', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('admin_id')->constrained('admins')->onDelete('cascade');
-    $table->foreignId('region_id')->constrained('regions')->onDelete('cascade');
+            $table->foreignId('admin_id')
+          ->constrained('admins')
+          ->cascadeOnDelete();
+
+$table->unsignedInteger('region_id');
+
+$table->foreign('region_id')
+      ->references('id')
+      ->on('regions')
+      ->onDelete('cascade');
+
     $table->string('branch_office_name')->nullable();
     $table->string('customer_name');
     $table->string('sales_visit')->nullable();
     $table->string('proposal_sent')->nullable();
     $table->string('quotation_sent')->nullable();
     $table->string('guard_deployed_by_ho')->nullable();
-    $table->string('new_client_name')->nullable();
-    $table->string('contractual_value')->nullable();
+    $table->decimal('contractual_value', 10, 2)->nullable();
+    $table->decimal('total_margin', 10, 2)->nullable();
             $table->timestamps();
         });
     }
