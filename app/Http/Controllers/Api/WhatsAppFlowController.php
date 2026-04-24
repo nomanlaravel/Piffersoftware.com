@@ -51,8 +51,8 @@ class WhatsAppFlowController extends Controller
                 $searchSuffix = substr($normalizedPhone, -10);
                 
                 $customer = Customer::where(function($query) use ($searchSuffix) {
-                    $query->where('phone', 'LIKE', '%' . $searchSuffix . '%')
-                        ->orWhere('poc_cell', 'LIKE', '%' . $searchSuffix . '%');
+                    $query->whereRaw("REPLACE(REPLACE(phone, '-', ''), ' ', '') LIKE ?", ['%' . $searchSuffix])
+                        ->orWhereRaw("REPLACE(REPLACE(poc_cell, '-', ''), ' ', '') LIKE ?", ['%' . $searchSuffix]);
                 })->first();
             }
 
