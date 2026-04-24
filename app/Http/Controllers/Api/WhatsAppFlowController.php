@@ -24,7 +24,7 @@ class WhatsAppFlowController extends Controller
      */
     public function handleFlowResponse(Request $request)
     {
-        Log::info('WhatsApp Flow Response received:', [
+        Log::info('WhatsApp Flow Response received [VERSION 2.0]:', [
             'all_data' => $request->all(),
             'body_raw' => $request->getContent(),
             'headers' => $request->headers->all(),
@@ -235,8 +235,23 @@ class WhatsAppFlowController extends Controller
             return $data;
         }
 
+        // Deep hunt: if we still don't have answers, search the whole array for 'q1'
+        if (empty($data['q1']) && empty($data['q2'])) {
+            foreach ($data as $key => $value) {
+                if (is_array($value) && (isset($value['q1']) || isset($value['q2']))) {
+                    return $value;
+                }
+                if (is_string($value)) {
+                    $decoded = json_decode($value, true);
+                    if (is_array($decoded) && (isset($decoded['q1']) || isset($decoded['q2']))) {
+                        return $decoded;
+                    }
+                }
+            }
+        }
+
         // Fallback: return everything (minus metadata keys)
-        $excludeKeys = ['phone', 'wa_id', 'from', 'contact', 'contacts', 'flow_token', 'recipient', 'type', 'timestamp'];
+        $excludeKeys = ['phone', 'wa_id', 'from', 'contact', 'contacts', 'flow_token', 'recipient', 'type', 'timestamp', 'platform', 'accountNo', 'customer', 'status', 'message', 'timeStamp'];
         return array_diff_key($data, array_flip($excludeKeys));
     }
 
