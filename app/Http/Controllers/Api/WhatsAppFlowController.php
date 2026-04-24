@@ -31,12 +31,6 @@ class WhatsAppFlowController extends Controller
         ]);
 
         try {
-            // NeuAPIx can send flow data in different structures.
-            // Common structures:
-            // 1. Direct: { "phone": "923404556573", "q1": 5, ... }
-            // 2. Nested: { "flow_token": "...", "response": { "q1": 5, ... } }
-            // 3. With contact info: { "contact": { "wa_id": "923404556573" }, "data": { ... } }
-
             $flowData = $request->all();
 
             // Extract the phone number from various possible locations
@@ -58,7 +52,6 @@ class WhatsAppFlowController extends Controller
                 
                 $customer = Customer::where(function($query) use ($searchSuffix) {
                     $query->where('phone', 'LIKE', '%' . $searchSuffix . '%')
-                        ->orWhere('whatsapp_number', 'LIKE', '%' . $searchSuffix . '%')
                         ->orWhere('poc_cell', 'LIKE', '%' . $searchSuffix . '%');
                 })->first();
             }
