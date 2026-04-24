@@ -26,6 +26,7 @@ class WhatsAppFlowController extends Controller
     {
         Log::info('WhatsApp Flow Response received:', [
             'all_data' => $request->all(),
+            'body_raw' => $request->getContent(),
             'headers' => $request->headers->all(),
         ]);
 
@@ -53,11 +54,13 @@ class WhatsAppFlowController extends Controller
             $customer = null;
             if ($phone) {
                 $normalizedPhone = $this->normalizePhone($phone);
+                $searchSuffix = substr($normalizedPhone, -10);
                 
-                $customer = Customer::where('phone', 'LIKE', '%' . substr($normalizedPhone, -10) . '%')
-                    ->orWhere('whatsapp_number', 'LIKE', '%' . substr($normalizedPhone, -10) . '%')
-                    ->orWhere('poc_cell', 'LIKE', '%' . substr($normalizedPhone, -10) . '%')
-                    ->first();
+                $customer = Customer::where(function($query) use ($searchSuffix) {
+                    $query->where('phone', 'LIKE', '%' . $searchSuffix . '%')
+                        ->orWhere('whatsapp_number', 'LIKE', '%' . $searchSuffix . '%')
+                        ->orWhere('poc_cell', 'LIKE', '%' . $searchSuffix . '%');
+                })->first();
             }
 
             if (!$customer) {
@@ -216,6 +219,18 @@ class WhatsAppFlowController extends Controller
         // NeuAPIx nfmReply body (the response JSON is often in a 'body' field)
         if (!empty($data['body']) && is_string($data['body'])) {
             $decoded = json_decode($data['body'], true);
+            if (is_array($decoded)) return $decoded;
+        }
+
+        // Sometimes it's in a 'text' field if NeuAPIx flattens it
+        if (!empty($data['text']) && is_string($data['text'])) {
+            $decoded = json_decode($data['text'], true);
+            if (is_array($decoded)) return $decoded;
+        }
+
+        // Look into messages array (standard webhook structure)
+        if (!empty($data['messages'][0]['interactive']['nfm_reply']['response_json'])) {
+            $decoded = json_decode($data['messages'][0]['interactive']['nfm_reply']['response_json'], true);
             if (is_array($decoded)) return $decoded;
         }
 
