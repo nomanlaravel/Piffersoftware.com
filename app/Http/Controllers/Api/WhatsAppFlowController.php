@@ -33,6 +33,17 @@ class WhatsAppFlowController extends Controller
         try {
             $flowData = $request->all();
 
+            // 1. Ignore STATUS updates (sent, delivered, read)
+            if (($flowData['type'] ?? '') === 'STATUS') {
+                return response()->json(['status' => 'ignored'], 200);
+            }
+
+            // 2. Log full structure for debugging (Deep Log)
+            Log::info('WhatsApp Flow Deep Log [Keys]:', ['keys' => array_keys($flowData)]);
+            if (isset($flowData['message'])) {
+                 Log::info('WhatsApp Flow Message Keys:', ['msg_keys' => array_keys($flowData['message'])]);
+            }
+
             // Extract the phone number from various possible locations
             $phone = $this->extractPhone($flowData);
 
@@ -226,6 +237,23 @@ class WhatsAppFlowController extends Controller
         // If the data itself contains q1-q10 keys, it IS the response data
         if (isset($data['q1']) || isset($data['q2'])) {
             return $data;
+        }
+
+        // Check nested interactive fields (Common in Meta Webhooks)
+        if (!empty($data['message']['interactive']['nfm_reply']['response_json'])) {
+            $decoded = json_decode($data['message']['interactive']['nfm_reply']['response_json'], true);
+            if (is_array($decoded)) return $decoded;
+        }
+
+        // Check for 'button_reply' or 'payload'
+        if (!empty($data['message']['button_reply']['payload'])) {
+            $decoded = json_decode($data['message']['button_reply']['payload'], true);
+            if (is_array($decoded)) return $decoded;
+        }
+
+        if (!empty($data['message']['payload'])) {
+            $decoded = json_decode($data['message']['payload'], true);
+            if (is_array($decoded)) return $decoded;
         }
 
         // Deep hunt: if we still don't have answers, search the whole array for 'q1'
