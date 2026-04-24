@@ -68,33 +68,11 @@ class WhatsAppFlowController extends Controller
                     'phone' => $phone,
                 ]);
 
-                // Still store the feedback with minimal info
-                $feedback = CustomerFeedback::create([
-                    'customers_id' => 0, // Unknown customer
-                    'feed_cell' => $phone,
-                    'feed_date' => now()->format('Y-m-d'),
-                    'feed_month' => now()->format('F Y'),
-                    'feed_received' => 'WhatsApp Flow',
-                    'feed_remarks' => 'Customer not found in system. Phone: ' . $phone,
-                    'q1' => $responseData['q1'] ?? null,
-                    'q2' => $responseData['q2'] ?? null,
-                    'q3' => $responseData['q3'] ?? null,
-                    'q4' => $responseData['q4'] ?? null,
-                    'q5' => $responseData['q5'] ?? null,
-                    'q6' => $responseData['q6'] ?? null,
-                    'q7' => $responseData['q7'] ?? null,
-                    'q8' => $responseData['q8'] ?? null,
-                    'q9' => $responseData['q9'] ?? null,
-                    'q10' => $responseData['q10'] ?? null,
-                    'total_score' => $this->calculateTotalScore($responseData),
-                    'feed_comment' => $responseData['comments'] ?? $responseData['feedback'] ?? $responseData['comment'] ?? null,
-                ]);
-
                 return response()->json([
-                    'status' => 'success',
-                    'message' => 'Feedback received (customer not matched).',
-                    'feedback_id' => $feedback->id,
-                ], 200);
+                    'status' => 'error',
+                    'message' => 'Feedback received but customer not found. Data not stored due to database constraints.',
+                    'phone_received' => $phone,
+                ], 404);
             }
 
             // Create feedback linked to the customer
@@ -192,6 +170,8 @@ class WhatsAppFlowController extends Controller
         // NeuAPIx specific structures
         if (!empty($data['recipient'])) return $data['recipient'];
         if (!empty($data['customer_no'])) return $data['customer_no'];
+        if (!empty($data['customer']['customerNo'])) return $data['customer']['customerNo'];
+        if (!empty($data['customer']['customer_no'])) return $data['customer']['customer_no'];
 
         return null;
     }
@@ -231,6 +211,22 @@ class WhatsAppFlowController extends Controller
         // Look into messages array (standard webhook structure)
         if (!empty($data['messages'][0]['interactive']['nfm_reply']['response_json'])) {
             $decoded = json_decode($data['messages'][0]['interactive']['nfm_reply']['response_json'], true);
+            if (is_array($decoded)) return $decoded;
+        }
+
+        // NeuAPIx nfmReply structure in 'message' object
+        if (!empty($data['message']['text']) && is_string($data['message']['text'])) {
+            $decoded = json_decode($data['message']['text'], true);
+            if (is_array($decoded)) return $decoded;
+        }
+
+        // Check for 'response' field inside message (sometimes used)
+        if (!empty($data['message']['response']) && is_array($data['message']['response'])) {
+            return $data['message']['response'];
+        }
+        
+        if (!empty($data['message']['response']) && is_string($data['message']['response'])) {
+            $decoded = json_decode($data['message']['response'], true);
             if (is_array($decoded)) return $decoded;
         }
 
