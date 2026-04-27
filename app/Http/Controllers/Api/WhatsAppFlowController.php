@@ -239,37 +239,27 @@ class WhatsAppFlowController extends Controller
             return $data;
         }
 
-        // Check nested interactive fields (Common in Meta Webhooks)
+        // 1. Check nested interactive fields (Common in Meta Webhooks)
         if (!empty($data['message']['interactive']['nfm_reply']['response_json'])) {
             $decoded = json_decode($data['message']['interactive']['nfm_reply']['response_json'], true);
             if (is_array($decoded)) return $decoded;
         }
 
-        // Check for 'button_reply' or 'payload'
-        if (!empty($data['message']['button_reply']['payload'])) {
-            $decoded = json_decode($data['message']['button_reply']['payload'], true);
+        // 2. NEW: Check for 'nfm_reply' directly inside message
+        if (!empty($data['message']['nfm_reply']['response_json'])) {
+            $decoded = json_decode($data['message']['nfm_reply']['response_json'], true);
             if (is_array($decoded)) return $decoded;
         }
 
-        if (!empty($data['message']['payload'])) {
-            $decoded = json_decode($data['message']['payload'], true);
+        // 3. NEW: Check for 'nfmReply' (CamelCase)
+        if (!empty($data['message']['nfmReply']['response_json'])) {
+            $decoded = json_decode($data['message']['nfmReply']['response_json'], true);
             if (is_array($decoded)) return $decoded;
         }
 
-        // Deep hunt: if we still don't have answers, search the whole array for 'q1'
-        if (empty($data['q1']) && empty($data['q2'])) {
-            foreach ($data as $key => $value) {
-                if (is_array($value) && (isset($value['q1']) || isset($value['q2']))) {
-                    return $value;
-                }
-                if (is_string($value)) {
-                    $decoded = json_decode($value, true);
-                    if (is_array($decoded) && (isset($decoded['q1']) || isset($decoded['q2']))) {
-                        return $decoded;
-                    }
-                }
-            }
-        }
+        // 4. NEW: Exhaustive Recursive Search
+        $found = $this->recursiveFind($data, 'q1');
+        if ($found) return $found;
 
         // Fallback: return everything (minus metadata keys)
         $excludeKeys = ['phone', 'wa_id', 'from', 'contact', 'contacts', 'flow_token', 'recipient', 'type', 'timestamp', 'platform', 'accountNo', 'customer', 'status', 'message', 'timeStamp'];
@@ -292,6 +282,29 @@ class WhatsAppFlowController extends Controller
         }
 
         return $answered > 0 ? (string) $total : null;
+    }
+
+    /**
+     * Recursively search for a key in an array and return the parent array.
+     */
+    private function recursiveFind(array $data, string $searchKey): ?array
+    {
+        if (isset($data[$searchKey])) return $data;
+
+        foreach ($data as $value) {
+            if (is_array($value)) {
+                $result = $this->recursiveFind($value, $searchKey);
+                if ($result) return $result;
+            }
+            if (is_string($value)) {
+                $decoded = json_decode($value, true);
+                if (is_array($decoded)) {
+                    $result = $this->recursiveFind($decoded, $searchKey);
+                    if ($result) return $result;
+                }
+            }
+        }
+        return null;
     }
 
     /**
