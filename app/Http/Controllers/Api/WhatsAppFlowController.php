@@ -53,6 +53,11 @@ class WhatsAppFlowController extends Controller
 
             // Extract the phone number from various possible locations
             $phone = $this->extractPhone($flowData);
+            
+            // Log flow token if present
+            if (isset($flowData['message']['context']['flow_token'])) {
+                Log::info('WhatsApp Flow Token:', ['token' => $flowData['message']['context']['flow_token']]);
+            }
 
             // Extract the response/answers data
             $responseData = $this->extractResponseData($flowData);

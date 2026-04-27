@@ -410,7 +410,14 @@ class WhatsAppNotificationManager
                 'type' => 'button',
                 'sub_type' => 'flow',
                 'index' => '0',
-                'parameters' => []
+                'parameters' => [
+                    [
+                        'type' => 'action',
+                        'action' => [
+                            'flow_token' => 'feedback_token_' . time(),
+                        ],
+                    ]
+                ]
             ]
         ];
 
