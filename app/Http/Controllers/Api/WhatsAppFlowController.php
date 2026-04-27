@@ -107,18 +107,18 @@ class WhatsAppFlowController extends Controller
                 'feed_poc_name' => $responseData['poc_name'] ?? $responseData['name'] ?? $customer->poc_name ?? null,
                 'feed_email' => $responseData['email'] ?? $customer->email ?? null,
                 'feed_telephone' => $phone,
-                'q1' => $responseData['q1'] ?? null,
-                'q2' => $responseData['q2'] ?? null,
-                'q3' => $responseData['q3'] ?? null,
-                'q4' => $responseData['q4'] ?? null,
-                'q5' => $responseData['q5'] ?? null,
-                'q6' => $responseData['q6'] ?? null,
-                'q7' => $responseData['q7'] ?? null,
-                'q8' => $responseData['q8'] ?? null,
-                'q9' => $responseData['q9'] ?? null,
-                'q10' => $responseData['q10'] ?? null,
+                'q1' => $responseData['q1'] ?? $responseData['question_1'] ?? null,
+                'q2' => $responseData['q2'] ?? $responseData['question_2'] ?? null,
+                'q3' => $responseData['q3'] ?? $responseData['question_3'] ?? null,
+                'q4' => $responseData['q4'] ?? $responseData['question_4'] ?? null,
+                'q5' => $responseData['q5'] ?? $responseData['question_5'] ?? null,
+                'q6' => $responseData['q6'] ?? $responseData['question_6'] ?? null,
+                'q7' => $responseData['q7'] ?? $responseData['question_7'] ?? null,
+                'q8' => $responseData['q8'] ?? $responseData['question_8'] ?? null,
+                'q9' => $responseData['q9'] ?? $responseData['question_9'] ?? null,
+                'q10' => $responseData['q10'] ?? $responseData['question_10'] ?? null,
                 'total_score' => $this->calculateTotalScore($responseData),
-                'feed_comment' => $responseData['comments'] ?? $responseData['feedback'] ?? $responseData['comment'] ?? null,
+                'feed_comment' => $responseData['comments'] ?? $responseData['feedback_comment'] ?? $responseData['remarks'] ?? $responseData['feedback'] ?? $responseData['comment'] ?? null,
                 'feed_remarks' => 'Submitted via WhatsApp Feedback Flow',
             ]);
 
@@ -144,11 +144,14 @@ class WhatsAppFlowController extends Controller
                 'customer_name' => $customer->customers_name,
             ]);
 
+            // Return a valid Meta Flow response (Version 3.0)
             return response()->json([
-                'status' => 'success',
-                'message' => 'Feedback stored successfully.',
-                'feedback_id' => $feedback->id,
-                'customer_id' => $customer->id,
+                'version' => '3.0',
+                'screen' => 'SUCCESS_SCREEN', // Change this to your final screen name if different
+                'data' => [
+                    'status' => 'success',
+                    'feedback_id' => $feedback->id,
+                ],
             ], 200);
 
         } catch (\Throwable $e) {
