@@ -39,9 +39,16 @@ class WhatsAppFlowController extends Controller
             }
 
             // 2. Log full structure for debugging (Deep Log)
-            Log::info('WhatsApp Flow Deep Log [Keys]:', ['keys' => array_keys($flowData)]);
+            Log::info('WhatsApp Flow Request Info:', [
+                'keys' => array_keys($flowData),
+                'query_params' => $request->query(),
+                'content_length' => $request->header('Content-Length'),
+                'content_type' => $request->header('Content-Type'),
+            ]);
+            
             if (isset($flowData['message'])) {
                  Log::info('WhatsApp Flow Message Keys:', ['msg_keys' => array_keys($flowData['message'])]);
+                 Log::info('WhatsApp Flow Message Type:', ['type' => $flowData['message']['type'] ?? 'unknown']);
             }
 
             // Extract the phone number from various possible locations
