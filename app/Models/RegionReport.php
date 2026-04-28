@@ -17,11 +17,7 @@ protected $fillable = [
     'employee_name',
     'designation',
     'type',
-    'monday',
-    'tuesday',
-    'wednesday',
-    'thursday',
-    'friday',
+    'created_at',
 ];
 
     public function admin()

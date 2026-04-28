@@ -6094,94 +6094,120 @@ class="image-preview__image42" style="height: 100%; width:100%; margin-left:-13p
   }
 </script>
 <script>
-  var inspectionRoom = {{ count($customers->customerinspections) }} + 1;
+var inspectionRoom = {{ count($customers->customerinspections) }};
 
-  function addInspectionSection() {
-    inspectionRoom++;
+function addInspectionSection() {
+
+    var index = inspectionRoom;
+
     var objTo = document.getElementById('inspectionAccordion');
     var divtest = document.createElement("div");
-    divtest.setAttribute("class", "accordion-item removeclass" + inspectionRoom);
+    divtest.setAttribute("class", "accordion-item removeclass" + index);
+    divtest.setAttribute("id", "inspectionEntry" + index);
 
     divtest.innerHTML = `
-          <h2 class="accordion-header" id="inspectionHeading${inspectionRoom}">
-              <button class="accordion-button" type="button" data-toggle="collapse" data-target="#inspectionCollapse${inspectionRoom}" aria-expanded="false" aria-controls="inspectionCollapse${inspectionRoom}">
-                  Inspection Entry ${inspectionRoom}
-              </button>
-          </h2>
-          <div id="inspectionCollapse${inspectionRoom}" class="collapse" aria-labelledby="inspectionHeading${inspectionRoom}">
-              <div class="accordion-body">
-                  <input type="hidden" name="customerinspections[${inspectionRoom - 1}][i_id]" value="">
-                  <div class="row mb-2">
-                      <div class="col-lg-4 spacing-right">
-                          Inspection Number <br> <input class="form-control" type="text" name="customerinspections[${inspectionRoom - 1}][inspection_no]" value="" placeholder="..." style="width: 100%;">
-                      </div>
-                      <div class="col-lg-4 spacing-right">
-                          Employee id <br> <input class="form-control" type="text" name="customerinspections[${inspectionRoom - 1}][inspection_emp_id]" value="" placeholder="..." style="width: 100%;">
-                      </div>
-                      <div class="col-lg-4 spacing-right">
-                          Name <br> <input class="form-control" type="text" name="customerinspections[${inspectionRoom - 1}][inspection_emp_name]" value="" placeholder="..." style="width: 100%;">
-                      </div>
-                  </div>
-                  <div class="row mb-2">
-                      <div class="col-lg-4 spacing-right">
-                          Cell Number: <br> <input class="form-control vldphone" type="text" name="customerinspections[${inspectionRoom - 1}][inspection_emp_cell]" value="" placeholder="" style="width: 100%;">
-                          <div id="phoneError" class="phoneError" style="color: red"></div>
-                      </div>
-                      <div class="col-lg-4 spacing-right">
-                          Department <br> <input class="form-control" type="text" name="customerinspections[${inspectionRoom - 1}][inspection_emp_dept]" value="" placeholder="..." style="width: 100%;">
-                      </div>
-                      <div class="col-lg-4 spacing-left" style="margin-left:8px;">
-                          Date of inspection. <br> <input class="form-control" type="date" name="customerinspections[${inspectionRoom - 1}][inspection_date]" value="" placeholder="..." style="width: 100%;">
-                      </div>
-                      <div class="col-lg-4 spacing-left">
-                          Picture of Inspection <br> <input class="form-control basic-info-attachements" id="inpFile22" type="file" name="customerinspections[${inspectionRoom - 1}][inspection_pic]" value="" placeholder="..." style="width: 100%;" multiple>
-                          <div class="col-lg-5 spacing-right">
-                              <div class="image-preview42" id="imagePreview42">
-                                  @if($inspections->inspection_pic)
-                                    <img src="{{ asset($inspections->inspection_pic) }}" alt="Image Preview42" class="image-preview__image42" style="height: 100%; width:100%; margin-left:-13px;">
-                                  @else
-                                    <img src ="{{asset('noimage.jpg')}}"  alt="no image" width="70px" height="70px">
-                                  @endif
-                              </div>
-                          </div>
-                      </div>
-                      <div class="col-lg-4 spacing-right">
-                          Remarks of Petroling Officer <br> <textarea class="form-control basic-info-attachements" id="inpFile2" type="text" name="customerinspections[${inspectionRoom - 1}][inspection_rem_petr]" placeholder="..." style="width: 100%;">{{ $inspections->inspection_rem_petr }}</textarea>
-                      </div>
-                  </div>
-                  <div class="row">
-                      <div class="col-lg-3">
-                          Notes <br> <textarea class="form-control basic-info-attachements"  type="text" name="customerinspections[${inspectionRoom - 1}][inspection_note]" placeholder="..." style="width: 100%;" >{{ $inspections->inspection_note }}</textarea>
-                      </div>
-                      <div class="col-lg-3 spacing-left">
-                          Attachments <br> <input class="form-control basic-info-attachements" id="" type="file" name="customerinspections[${inspectionRoom - 1}][inspection_attach]"  value="" placeholder="..." style="width: 100%;" multiple>
-                          <div class="col-lg-5 spacing-right">
-                              <div class="image-preview42" id="imagePreview42">
-                                  @if($inspections->inspection_attach)
-                                    <img src="{{ asset($inspections->inspection_attach) }}" alt="Image Preview42" class="image-preview__image42" style="height: 100%; width:100%; margin-left:-13px;">
-                                  @else
-                                    <img src ="{{asset('noimage.jpg')}}"  alt="no image" width="70px" height="70px">
-                                  @endif
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-          </div>
-          <div class="new_branch mt-2">
-              <button type="button" onclick="removeInspectionSection(${inspectionRoom})">
-                  Remove
-              </button>
-          </div>
-      `;
+        <h2 class="accordion-header" id="inspectionHeading${index}">
+            <button class="accordion-button" type="button" data-toggle="collapse"
+                data-target="#inspectionCollapse${index}">
+                Inspection Entry ${index + 1}
+            </button>
+        </h2>
+
+        <div id="inspectionCollapse${index}" class="collapse show">
+            <div class="accordion-body">
+
+                <input type="hidden" name="customerinspections[${index}][i_id]" value="">
+
+                <div class="row mb-2">
+                    <div class="col-lg-4">
+                        Inspection Number
+                        <input class="form-control"
+                            name="customerinspections[${index}][inspection_no]">
+                    </div>
+
+                    <div class="col-lg-4">
+                        Employee ID
+                        <input class="form-control"
+                            name="customerinspections[${index}][inspection_emp_id]">
+                    </div>
+
+                    <div class="col-lg-4">
+                        Name
+                        <input class="form-control"
+                            name="customerinspections[${index}][inspection_emp_name]">
+                    </div>
+                </div>
+
+                <div class="row mb-2">
+                    <div class="col-lg-4">
+                        Cell Number
+                        <input class="form-control"
+                            name="customerinspections[${index}][inspection_emp_cell]">
+                    </div>
+
+                    <div class="col-lg-4">
+                        Department
+                        <input class="form-control"
+                            name="customerinspections[${index}][inspection_emp_dept]">
+                    </div>
+
+                    <div class="col-lg-4">
+                        Date
+                        <input type="date" class="form-control"
+                            name="customerinspections[${index}][inspection_date]">
+                    </div>
+                </div>
+
+                <div class="row mb-2">
+                    <div class="col-lg-4">
+                        Picture
+                        <input type="file" class="form-control"
+                            name="customerinspections[${index}][inspection_pic]">
+
+                        <img src="/noimage.jpg" width="70">
+                    </div>
+
+                    <div class="col-lg-4">
+                        Remarks
+                        <textarea class="form-control"
+                            name="customerinspections[${index}][inspection_rem_petr]"></textarea>
+                    </div>
+
+                    <div class="col-lg-4">
+                        Notes
+                        <textarea class="form-control"
+                            name="customerinspections[${index}][inspection_note]"></textarea>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-4">
+                        Attachments
+                        <input type="file" class="form-control"
+                            name="customerinspections[${index}][inspection_attach]">
+
+                        <img src="/noimage.jpg" width="70">
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-danger mt-2"
+                    onclick="removeInspectionSection(${index})">
+                    Remove
+                </button>
+
+            </div>
+        </div>
+    `;
 
     objTo.appendChild(divtest);
-  }
 
-  function removeInspectionSection(rid) {
+    inspectionRoom++;
+}
+
+function removeInspectionSection(rid) {
     var element = document.querySelector('.removeclass' + rid);
-    element.parentNode.removeChild(element);
-  }
+    if (element) element.remove();
+}
 </script>
 <script>
   var feedbackRoom = {{ count($customers->customerfeedbacks) }} + 1;

@@ -132,6 +132,7 @@
                     <th>Guard Deployed</th>
                     <th>Contractual Value</th>
                     <th>Total Margin</th>
+                    <th>Date of Deployment</th>
                 </tr>
         </thead>
         <tbody>
@@ -155,6 +156,7 @@
                     <td>{{ $sale->guard_deployed_by_ho }}</td>
                     <td>{{ $sale->contractual_value }}</td>
                     <td>{{ $sale->total_margin }}</td>
+                    <td>{{ $sale->created_at }}</td>
                 </tr>
             @endforeach
         </tbody>
