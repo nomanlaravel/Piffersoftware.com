@@ -4443,7 +4443,7 @@
                                 <div class=" mb-2 mt-2 d-flex align-items-center">
                                     <div class="form-check form-check-inline spacing-left">
                                         <input class="form-check-input" type="checkbox" name="bidMoney"
-                                            id="bidMoneyCheckbox" value="negative">
+                                            id="bidMoneyCheckbox" value="1">
                                         <label class="form-check-label" for="bidMoneyCheckbox">Bid Money</label>
                                     </div>
                                     <div class="col-lg-4 spacing-right">
@@ -4458,7 +4458,7 @@
                                         <div id="crossed">
                                             <div class="form-check form-check-inline spacing-left">
                                                 <input class="form-check-input" name="cheque" type="checkbox"
-                                                    id="crossedChequeCheckbox" value="">
+                                                    id="crossedChequeCheckbox" value="1">
                                                 <label class="form-check-label" for="crossedChequeCheckbox">Crossed
                                                     Cheque</label>
                                             </div>
@@ -4466,14 +4466,14 @@
                                         <div id="pay">
                                             <div class="form-check form-check-inline spacing-left">
                                                 <input class="form-check-input" name="payOrder" type="checkbox"
-                                                    id="payOrderCheckbox" value="">
+                                                    id="payOrderCheckbox" value="1">
                                                 <label class="form-check-label" for="payOrderCheckbox">Pay Order</label>
                                             </div>
                                         </div>
                                         <div id="demand">
                                             <div class="form-check form-check-inline spacing-left">
                                                 <input class="form-check-input" name="demand" type="checkbox"
-                                                    id="demandDraftCheckbox" value="">
+                                                    id="demandDraftCheckbox" value="1">
                                                 <label class="form-check-label" for="demandDraftCheckbox">Demand
                                                     Draft</label>
                                             </div>
@@ -4481,7 +4481,7 @@
                                         <div id="bank">
                                             <div class="form-check form-check-inline spacing-left">
                                                 <input class="form-check-input" name="guarantee" type="checkbox"
-                                                    id="bankGuaranteeCheckbox" value="">
+                                                    id="bankGuaranteeCheckbox" value="1">
                                                 <label class="form-check-label" for="bankGuaranteeCheckbox">Bank
                                                     Guarantee</label>
                                             </div>
@@ -4489,7 +4489,7 @@
                                         <div id="insurrance">
                                             <div class="form-check form-check-inline spacing-left">
                                                 <input class="form-check-input" name="insGuan" type="checkbox"
-                                                    id="insuranceGuaranteeCheckbox" value="">
+                                                    id="insuranceGuaranteeCheckbox" value="1">
                                                 <label class="form-check-label"
                                                     for="insuranceGuaranteeCheckbox">Insurance
                                                     Guarantee</label>
@@ -4498,7 +4498,7 @@
                                         <div id="online">
                                             <div class="form-check form-check-inline spacing-left">
                                                 <input class="form-check-input" name="transfer" type="checkbox"
-                                                    id="insuranceGuaranteeCheckbox" value="">
+                                                    id="insuranceGuaranteeCheckbox" value="1">
                                                 <label class="form-check-label" for="insuranceGuaranteeCheckbox">Online
                                                     Transfer</label>
                                             </div>
@@ -4543,7 +4543,7 @@
                                 <div class="mb-2 mt-2 d-flex align-items-center">
                                     <div class="form-check form-check-inline spacing-left">
                                         <input class="form-check-input" name="byHand" id="byHandSubmittionCheckBox"
-                                            type="checkbox" value="negative">
+                                            type="checkbox" value="1">
                                         <label class="form-check-label" for="inlineCheckbox1">By Hand</label>
                                     </div>
                                     <div class="row" id="byHandSubmittion_form" style="display: none;">
@@ -4564,7 +4564,7 @@
                                 <div class=" mb-2 mt-2 d-flex align-items-center">
                                     <div class="form-check form-check-inline spacing-left">
                                         <input class="form-check-input" id="viaCourierSubmittion_checkBox"
-                                            type="checkbox" id="inlineCheckbox1" name="viaCourier" value="negative">
+                                            type="checkbox" id="inlineCheckbox1" name="viaCourier" value="1">
                                         <label class="form-check-label" for="inlineCheckbox1">Via Courier</label>
                                     </div>
                                     <div class="row" id="viaCourierSubmittion_form" style="display: none;">
@@ -4582,7 +4582,7 @@
                                 <div class=" mb-2 mt-2 d-flex align-items-center">
                                     <div class="form-check form-check-inline spacing-left">
                                         <input class="form-check-input" name="viaEmail" id="viaEmailSubmittion_checkBox"
-                                            type="checkbox" id="inlineCheckbox1" value="negative">
+                                            type="checkbox" id="inlineCheckbox1" value="1">
                                         <label class="form-check-label" for="inlineCheckbox1">Via Email</label>
                                     </div>
                                     <div class="col-lg-4 spacing-right" id="viaEmailSubmittion_form"
@@ -4622,7 +4622,7 @@
                             <div class=" mb-2 mt-2 d-flex align-items-center">
                                 <div class="form-check form-check-inline spacing-left">
                                     <input class="form-check-input" type="checkbox" id="grev"
-                                        onclick="toggleGrievanceDiv()" name="anyGrev" value="negative">
+                                        onclick="toggleGrievanceDiv()" name="anyGrev" value="1">
                                     <label class="form-check-label" for="grevCheckbox">Any Greviances</label>
                                 </div>
                             </div>

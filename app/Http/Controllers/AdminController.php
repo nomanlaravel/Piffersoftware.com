@@ -2406,11 +2406,7 @@ class AdminController extends Controller
             'region_id' => 'required|exists:regions,id',
             'employee_name' => 'required|string|max:255',
             'designation' => 'required|string|max:255',
-            'monday' => 'nullable|string|max:255',
-            'tuesday' => 'nullable|string|max:255',
-            'wednesday' => 'nullable|string|max:255',
-            'thursday' => 'nullable|string|max:255',
-            'friday' => 'nullable|string|max:255',
+            'created_at' => 'required|date',
         ]);
 
         $admin = Admin::findOrFail($request->admin_id);
@@ -2423,11 +2419,7 @@ class AdminController extends Controller
             'employee_name' => $request->employee_name,
             'designation' => $request->designation,
             'type' => $request->type,
-            'monday' => $request->monday,
-            'tuesday' => $request->tuesday,
-            'wednesday' => $request->wednesday,
-            'thursday' => $request->thursday,
-            'friday' => $request->friday,
+            'created_at' => $request->created_at,
         ]);
 
         return response()->json([
@@ -2452,11 +2444,7 @@ class AdminController extends Controller
             'branch_id' => 'nullable|unsignedBigInteger',
             'employee_name' => 'required|string|max:255',
             'designation' => 'required|string|max:255',
-            'monday' => 'nullable|string|max:255',
-            'tuesday' => 'nullable|string|max:255',
-            'wednesday' => 'nullable|string|max:255',
-            'thursday' => 'nullable|string|max:255',
-            'friday' => 'nullable|string|max:255',
+            'created_at' => 'required|date',
         ]);
 
         $report = RegionReport::findOrFail($id);
@@ -2469,11 +2457,7 @@ class AdminController extends Controller
             'branch_id' => $admin->branch_id,
             'employee_name' => $request->employee_name,
             'designation' => $request->designation,
-            'monday' => $request->monday,
-            'tuesday' => $request->tuesday,
-            'wednesday' => $request->wednesday,
-            'thursday' => $request->thursday,
-            'friday' => $request->friday,
+            'created_at' => $request->created_at,
         ]);
 
         return back()->with('success', 'Report updated successfully');
@@ -2711,6 +2695,7 @@ class AdminController extends Controller
             'guard_deployed_by_ho' => 'nullable|string|max:255',
             'contractual_value' => 'nullable|string|max:255',
             'total_margin' => 'nullable|string|max:255',
+            'created_at' => 'required|date',
         ]);
 
         $admin = Admin::findOrFail($request->admin_id);
@@ -2726,6 +2711,7 @@ class AdminController extends Controller
             'guard_deployed_by_ho' => $request->guard_deployed_by_ho,
             'total_margin' => $request->total_margin,
             'contractual_value' => $request->contractual_value,
+            'created_at' => $request->created_at,
         ]);
 
         return response()->json([
@@ -2753,7 +2739,8 @@ class AdminController extends Controller
             'quotation_sent' => 'nullable|string|max:255',
             'guard_deployed_by_ho' => 'nullable|string|max:255',
             'total_margin' => 'nullable|string|max:255',
-            'contractual_value' => 'nullable|string|max:255',   
+            'contractual_value' => 'nullable|string|max:255',  
+            'created_at' => 'required|date', 
         ]);
 
         $report = VisitPipelineReport::findOrFail($id);
@@ -2770,6 +2757,7 @@ class AdminController extends Controller
             'guard_deployed_by_ho' => $request->guard_deployed_by_ho,
             'total_margin' => $request->total_margin,
             'contractual_value' => $request->contractual_value,
+            'created_at' => $request->created_at,
         ]);
 
         return back()->with('success', 'Report updated successfully');
@@ -2892,7 +2880,7 @@ class AdminController extends Controller
         
         $callback = function() use ($sales) {
             $file = fopen('php://output', 'w');
-            fputcsv($file, ['Sr#', 'Region', 'Customer Name', 'Branch', 'Sales Visit', 'Proposal Sent', 'Quotation Sent', 'Guards Deployed', 'Contract Value', 'Total Margin']);
+            fputcsv($file, ['Sr#', 'Region', 'Customer Name', 'Branch', 'Sales Visit', 'Proposal Sent', 'Quotation Sent', 'Guards Deployed', 'Contract Value', 'Total Margin','Date of Deployment']);
             
             foreach ($sales as $index => $sale) {
                 fputcsv($file, [
@@ -2905,7 +2893,8 @@ class AdminController extends Controller
                     $sale->quotation_sent ?? '',
                     $sale->guard_deployed_by_ho ?? '',
                     $sale->contractual_value ?? '',
-                    $sale->total_margin ?? ''
+                    $sale->total_margin ?? '',
+                    $sale->created_at ?? ''
                 ]);
             }
             
@@ -2981,7 +2970,7 @@ class AdminController extends Controller
         
         $callback = function() use ($sales) {
             $file = fopen('php://output', 'w');
-            fputcsv($file, ['Sr#', 'Region', 'Branch Name', 'Branch ID', 'Employee', 'Designation', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri']);
+            fputcsv($file, ['Sr#', 'Region', 'Branch Name', 'Branch ID', 'Employee', 'Designation', 'Date']);
             
             foreach ($sales as $index => $sale) {
                 fputcsv($file, [
@@ -2991,11 +2980,7 @@ class AdminController extends Controller
                     $sale->branch_id ?? '',
                     $sale->employee_name ?? '',
                     $sale->designation ?? '',
-                    $sale->monday ?? '',
-                    $sale->tuesday ?? '',
-                    $sale->wednesday ?? '',
-                    $sale->thursday ?? '',
-                    $sale->friday ?? ''
+                    $sale->created_at ?? '',
                 ]);
             }
             
@@ -3158,7 +3143,7 @@ class AdminController extends Controller
         
         $callback = function() use ($sales) {
             $file = fopen('php://output', 'w');
-            fputcsv($file, ['Sr#', 'Region', 'Branch Name', 'Branch ID', 'Employee', 'Designation', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri']);
+            fputcsv($file, ['Sr#', 'Region', 'Branch Name', 'Branch ID', 'Employee', 'Designation', 'Date']);
             
             foreach ($sales as $index => $sale) {
                 fputcsv($file, [
@@ -3168,11 +3153,7 @@ class AdminController extends Controller
                     $sale->branch_id ?? '',
                     $sale->employee_name ?? '',
                     $sale->designation ?? '',
-                    $sale->monday ?? '',
-                    $sale->tuesday ?? '',
-                    $sale->wednesday ?? '',
-                    $sale->thursday ?? '',
-                    $sale->friday ?? ''
+                    $sale->created_at ?? ''
                 ]);
             }
             

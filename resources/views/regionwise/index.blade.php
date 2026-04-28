@@ -259,11 +259,7 @@
                         <th>Branch Id</th>
                         <th>Employee Name</th>
                         <th>Designation</th>
-                        <th>Mon</th>
-                        <th>Tue</th>
-                        <th>Wed</th>
-                        <th>Thu</th>
-                        <th>Fri</th>
+                        <th>Date</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -289,11 +285,7 @@
                             <td>{{ $sale->branch_id }}</td>
                             <td>{{ $sale->employee_name }}</td>
                             <td>{{ $sale->designation }}</td>
-                            <td>{{ $sale->monday }}</td>
-                            <td>{{ $sale->tuesday }}</td>
-                            <td>{{ $sale->wednesday }}</td>
-                            <td>{{ $sale->thursday }}</td>
-                            <td>{{ $sale->friday }}</td>
+                            <td>{{ $sale->created_at }}</td>
                         </tr>
                     @endforeach
                 </tbody>

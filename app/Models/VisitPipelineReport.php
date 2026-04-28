@@ -20,6 +20,7 @@ class VisitPipelineReport extends Model
         'guard_deployed_by_ho',
         'contractual_value',
         'total_margin',
+        'created_at',
     ];
     protected $guarded = [];
 
