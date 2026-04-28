@@ -16,7 +16,7 @@
     <a href="{{ url('logout') }}"> <i class="bi bi-box-arrow-right mr-2"></i> Logout</a>
 </div>
 
-<h3 style="font-weight: 700; margin-left: 205px;">PIFFERS SECURITY SERVICES PVT.LTD</h3>
+<h3 style="font-weight: 700; margin-left: 580px;">Piffers Security Services (PVT) LTD.</h3>
 
 
 <div class="row head-heading" style="margin-top: 5%; margin-bottom: 5%; color: rgb(112, 0, 193);">

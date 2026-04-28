@@ -46,14 +46,7 @@ class RequirementController extends Controller
 
         try {
 
-            $requirementData = $request->except('_token');
-            foreach ($requirementData as $key => $value) {
-                    if (is_array($value)) {
-                        // convert only if non-empty
-                        $filtered = array_filter($value, fn($item) => $item !== null && $item !== '');
-                        $requirementData[$key] = $filtered ? implode(', ', $filtered) : null;
-                    }
-                }
+            $requirementData = $this->normalizeRequirementPayload($request->except('_token'));
 
             // Handle file uploads
             $requirementImageFields = [
@@ -83,7 +76,7 @@ class RequirementController extends Controller
             ]);
 
             $requirementPocDataArray = [];
-            foreach ($requirementPocData['req_poc_name'] as $index => $reqPocName) {
+            foreach ($this->iterableInput($requirementPocData['req_poc_name'] ?? null) as $index => $reqPocName) {
                 $requirementPocDataRow = [
                     'req_poc_name' => $reqPocName,
                     'req_poc_num' => $requirementPocData['req_poc_num'][$index],
@@ -126,7 +119,7 @@ class RequirementController extends Controller
             ]);
 
             $requirementAddressDataArray = [];
-            foreach ($requirementAddressData['office_no'] as $index => $officeNo) {
+            foreach ($this->iterableInput($requirementAddressData['office_no'] ?? null) as $index => $officeNo) {
                 $requirementAddressDataRow = [
                     'office_no' => $officeNo,
                     'floor' => $requirementAddressData['floor'][$index],
@@ -169,7 +162,7 @@ class RequirementController extends Controller
             ]);
 
             $requirementGuardDataArray = [];
-            foreach ($requirementGuardData['guard_category'] as $index => $guardCategory) {
+            foreach ($this->iterableInput($requirementGuardData['guard_category'] ?? null) as $index => $guardCategory) {
                 $requirementGuardDataRow = [
                     'guard_category' => $guardCategory,
                     'guard_quantity' => $requirementGuardData['guard_quantity'][$index],
@@ -217,7 +210,7 @@ class RequirementController extends Controller
             ]);
 
             $requirementVehicleDataArray = [];
-            foreach ($requirementVehicleData['vehicle_ownership'] as $index => $vehicleOwnership) {
+            foreach ($this->iterableInput($requirementVehicleData['vehicle_ownership'] ?? null) as $index => $vehicleOwnership) {
                 $requirementVehicleDataRow = [
                     'vehicle_ownership' => $vehicleOwnership,
                     'vehicle_type' => $requirementVehicleData['vehicle_type'][$index],
@@ -291,7 +284,7 @@ class RequirementController extends Controller
             ]);
 
             $requirementCanineDataArray = [];
-            foreach ($requirementCanineData['canine_req_for'] as $index => $canineReqfor) {
+            foreach ($this->iterableInput($requirementCanineData['canine_req_for'] ?? null) as $index => $canineReqfor) {
                 $requirementCanineDataRow = [
                     'canine_req_for' => $canineReqfor,
                     'canine_category' => $requirementCanineData['canine_category'][$index],
@@ -345,7 +338,7 @@ class RequirementController extends Controller
             ]);
 
             $requirementFacilitationDataArray = [];
-            foreach ($requirementFacilitationData['guest_arrival_time'] as $index => $guestArrivaltime) {
+            foreach ($this->iterableInput($requirementFacilitationData['guest_arrival_time'] ?? null) as $index => $guestArrivaltime) {
                 $requirementFacilitationDataRow = [
                     'guest_arrival_time' => $guestArrivaltime,
                     'security_reporting_time' => $requirementFacilitationData['security_reporting_time'][$index],
@@ -410,7 +403,7 @@ class RequirementController extends Controller
             ]);
 
             $requirementJetDataArray = [];
-            foreach ($requirementJetData['no_of_days_private_jet'] as $index => $noOfaysPrivatejet) {
+            foreach ($this->iterableInput($requirementJetData['no_of_days_private_jet'] ?? null) as $index => $noOfaysPrivatejet) {
                 $requirementJetDataRow = [
                     'no_of_days_private_jet' => $noOfaysPrivatejet,
                     'fuel_for_private_jet' => $requirementJetData['fuel_for_private_jet'][$index],
@@ -431,7 +424,7 @@ class RequirementController extends Controller
             ]);
 
             $requirementEventDataArray = [];
-            foreach ($requirementEventData['ownership_status'] as $index => $ownershipStatus) {
+            foreach ($this->iterableInput($requirementEventData['ownership_status'] ?? null) as $index => $ownershipStatus) {
                 $requirementEventDataRow = [
                     'ownership_status' => $ownershipStatus,
                     'event_req_for' => $requirementEventData['event_req_for'][$index],
@@ -486,7 +479,7 @@ class RequirementController extends Controller
             ]);
 
             $requirementConsultancyDataArray = [];
-            foreach ($requirementConsultancyData['consultancy_category'] as $index => $consultancyCategory) {
+            foreach ($this->iterableInput($requirementConsultancyData['consultancy_category'] ?? null) as $index => $consultancyCategory) {
                 $requirementConsultancyDataRow = [
                     'consultancy_category' => $consultancyCategory,
                     'internal_deadline' => $requirementConsultancyData['internal_deadline'][$index],
@@ -522,7 +515,7 @@ class RequirementController extends Controller
             ]);
 
             $requirementFireDataArray = [];
-            foreach ($requirementFireData['fireClass'] as $index => $fireClass) {
+            foreach ($this->iterableInput($requirementFireData['fireClass'] ?? null) as $index => $fireClass) {
                 $requirementFireDataRow = [
                     'fireClass' => $fireClass,
                     'fire_equipment_name' => $requirementFireData['fire_equipment_name'][$index],
@@ -574,7 +567,7 @@ class RequirementController extends Controller
             ]);
 
             $requirementOtherDataArray = [];
-            foreach ($requirementOtherData['other_fire_category'] as $index => $otherfireCategory) {
+            foreach ($this->iterableInput($requirementOtherData['other_fire_category'] ?? null) as $index => $otherfireCategory) {
                 $requirementOtherDataRow = [
                     'other_fire_category' => $otherfireCategory,
                     'other_equip_name' => $requirementOtherData['other_equip_name'][$index],
@@ -623,7 +616,7 @@ class RequirementController extends Controller
             ]);
 
             $requirementPassiveDataArray = [];
-            foreach ($requirementPassiveData['passive_category'] as $index => $passiveCategory) {
+            foreach ($this->iterableInput($requirementPassiveData['passive_category'] ?? null) as $index => $passiveCategory) {
                 $requirementPassiveDataRow = [
                     'passive_category' => $passiveCategory,
                     'passive_dimension' => $requirementPassiveData['passive_dimension'][$index],
@@ -679,7 +672,7 @@ class RequirementController extends Controller
             ]);
 
             $requirementSecurityDataArray = [];
-            foreach ($requirementSecurityData['equipment_category'] as $index => $equipmentCategory) {
+            foreach ($this->iterableInput($requirementSecurityData['equipment_category'] ?? null) as $index => $equipmentCategory) {
                 $requirementSecurityDataRow = [
                     'equipment_category' => $equipmentCategory,
                     'equipment_ownership' => $requirementSecurityData['equipment_ownership'][$index],
@@ -751,7 +744,7 @@ class RequirementController extends Controller
             ]);
 
             $requirementBarrierDataArray = [];
-            foreach ($requirementBarrierData['barrier_ownership'] as $index => $barrierOwnership) {
+            foreach ($this->iterableInput($requirementBarrierData['barrier_ownership'] ?? null) as $index => $barrierOwnership) {
                 $requirementBarrierDataRow = [
                     'barrier_ownership' => $barrierOwnership,
                     'barrier_rental' => $requirementBarrierData['barrier_rental'][$index],
@@ -862,7 +855,7 @@ class RequirementController extends Controller
             ]);
 
             $requirementCctvDataArray = [];
-            foreach ($requirementCctvData['cctv_category'] as $index => $cctvCategory) {
+            foreach ($this->iterableInput($requirementCctvData['cctv_category'] ?? null) as $index => $cctvCategory) {
                 $requirementCctvDataRow = [
                     'cctv_category' => $cctvCategory,
                     'cctv_brand' => $requirementCctvData['cctv_brand'][$index],
@@ -929,7 +922,7 @@ class RequirementController extends Controller
             ]);
 
             $requirementAttendanceDataArray = [];
-            foreach ($requirementAttendanceData['attendance_category'] as $index => $attendanceCategory) {
+            foreach ($this->iterableInput($requirementAttendanceData['attendance_category'] ?? null) as $index => $attendanceCategory) {
                 $requirementAttendanceDataRow = [
                     'attendance_category' => $attendanceCategory,
                     'attendance_rate' => $requirementAttendanceData['attendance_rate'][$index],
@@ -963,7 +956,7 @@ class RequirementController extends Controller
             ]);
 
             $requirementWebDataArray = [];
-            foreach ($requirementWebData['web_category'] as $index => $webCategory) {
+            foreach ($this->iterableInput($requirementWebData['web_category'] ?? null) as $index => $webCategory) {
                 $requirementWebDataRow = [
                     'web_category' => $webCategory,
                     'web_date' => $requirementWebData['web_date'][$index],
@@ -1003,7 +996,7 @@ class RequirementController extends Controller
             ]);
 
             $requirementAlarmDataArray = [];
-            foreach ($requirementAlarmData['alarm_category'] as $index => $alarmCategory) {
+            foreach ($this->iterableInput($requirementAlarmData['alarm_category'] ?? null) as $index => $alarmCategory) {
                 $requirementAlarmDataRow = [
                     'alarm_category' => $alarmCategory,
                     'alarm_equipment' => $requirementAlarmData['alarm_equipment'][$index],
@@ -1068,7 +1061,7 @@ class RequirementController extends Controller
             ]);
 
             $requirementCshownDataArray = [];
-            foreach ($requirementCshownData['wc_sw_category'] as $index => $wcSwCategory) {
+            foreach ($this->iterableInput($requirementCshownData['wc_sw_category'] ?? null) as $index => $wcSwCategory) {
                 $requirementCshownDataRow = [
                     'wc_sw_category' => $wcSwCategory,
                     'wc_sw_social_check' => $requirementCshownData['wc_sw_social_check'][$index],
@@ -1108,7 +1101,7 @@ class RequirementController extends Controller
             ]);
 
             $requirementCohiddenDataArray = [];
-            foreach ($requirementCohiddenData['wc_hw_category'] as $index => $wcHwCategory) {
+            foreach ($this->iterableInput($requirementCohiddenData['wc_hw_category'] ?? null) as $index => $wcHwCategory) {
                 $requirementCohiddenDataRow = [
                     'wc_hw_category' => $wcHwCategory,
                     'wc_hw_social' => $requirementCohiddenData['wc_hw_social'][$index],
@@ -1151,7 +1144,7 @@ class RequirementController extends Controller
             ]);
 
             $requirementLshownDataArray = [];
-            foreach ($requirementLshownData['ls_sw_category'] as $index => $lsSwCategory) {
+            foreach ($this->iterableInput($requirementLshownData['ls_sw_category'] ?? null) as $index => $lsSwCategory) {
                 $requirementLshownDataRow = [
                     'ls_sw_category' => $lsSwCategory,
                     'ls_sw_social' => $requirementLshownData['ls_sw_social'][$index],
@@ -1191,7 +1184,7 @@ class RequirementController extends Controller
             ]);
 
             $requirementLhiddenDataArray = [];
-            foreach ($requirementLhiddenData['ls_hw_category'] as $index => $lsHwCategory) {
+            foreach ($this->iterableInput($requirementLhiddenData['ls_hw_category'] ?? null) as $index => $lsHwCategory) {
                 $requirementLhiddenDataRow = [
                     'ls_hw_category' => $lsHwCategory,
                     'ls_hw_uni_cost' => $requirementLhiddenData['ls_hw_uni_cost'][$index],
@@ -1227,7 +1220,7 @@ class RequirementController extends Controller
             ]);
 
             $requirementreverseworkingDataArray = [];
-            foreach ($requirementreverseworkingData['reverseCategory'] as $index => $reverseworkingCategory) {
+            foreach ($this->iterableInput($requirementreverseworkingData['reverseCategory'] ?? null) as $index => $reverseworkingCategory) {
                 $requirementreverseworkingDataRow = [
                     'reverseCategory' => $reverseworkingCategory,
                     'reverseapplicablepercentageGst' => $requirementreverseworkingData['reverseapplicablepercentageGst'][$index],
@@ -1288,14 +1281,7 @@ class RequirementController extends Controller
 
     try {
         $requirement = Requirement::findOrFail($id);
-         $requirementData = $request->except('_token');
-            foreach ($requirementData as $key => $value) {
-                    if (is_array($value)) {
-                        // convert only if non-empty
-                        $filtered = array_filter($value, fn($item) => $item !== null && $item !== '');
-                        $requirementData[$key] = $filtered ? implode(', ', $filtered) : null;
-                    }
-                }
+         $requirementData = $this->normalizeRequirementPayload($request->except('_token'));
 
             // Handle file uploads
             $requirementImageFields = [
@@ -1325,7 +1311,7 @@ class RequirementController extends Controller
             ]);
 
             $requirementPocDataArray = [];
-            foreach ($requirementPocData['req_poc_name'] as $index => $reqPocName) {
+            foreach ($this->iterableInput($requirementPocData['req_poc_name'] ?? null) as $index => $reqPocName) {
                 $requirementPocDataRow = [
                     'req_poc_name' => $reqPocName?? null,
                     'req_poc_num' => $requirementPocData['req_poc_num'][$index]?? null,
@@ -1367,7 +1353,7 @@ class RequirementController extends Controller
     'company', 'email', 'website', 'notes'
 ]);
 $requirementAddressDataArray = [];
-foreach ($requirementAddressData['office_no'] as $index => $officeNo) {
+foreach ($this->iterableInput($requirementAddressData['office_no'] ?? null) as $index => $officeNo) {
     $requirementAddressDataRow = [
         'office_no' => $officeNo ?? null,
         'floor' => $requirementAddressData['floor'][$index] ?? null,
@@ -1411,7 +1397,7 @@ foreach ($requirementAddressData['office_no'] as $index => $officeNo) {
                 'no_of_days_guard_required','guard_notes'
             ]);
             $requirementGuardDataArray = [];
-            foreach ($requirementGuardData['guard_category'] as $index => $guardCategory) {
+            foreach ($this->iterableInput($requirementGuardData['guard_category'] ?? null) as $index => $guardCategory) {
                 $requirementGuardDataRow = [
                     'guard_category' => $guardCategory?? null,
                     'guard_quantity' => $requirementGuardData['guard_quantity'][$index]?? null,
@@ -1458,7 +1444,7 @@ foreach ($requirementAddressData['office_no'] as $index => $officeNo) {
             ]);
 
             $requirementVehicleDataArray = [];
-            foreach ($requirementVehicleData['vehicle_ownership'] as $index => $vehicleOwnership) {
+            foreach ($this->iterableInput($requirementVehicleData['vehicle_ownership'] ?? null) as $index => $vehicleOwnership) {
                 $requirementVehicleDataRow = [
                     'vehicle_ownership' => $vehicleOwnership?? null,
                     'vehicle_type' => $requirementVehicleData['vehicle_type'][$index]?? null,
@@ -1532,7 +1518,7 @@ foreach ($requirementAddressData['office_no'] as $index => $officeNo) {
             ]);
 
             $requirementCanineDataArray = [];
-            foreach ($requirementCanineData['canine_req_for'] as $index => $canineReqfor) {
+            foreach ($this->iterableInput($requirementCanineData['canine_req_for'] ?? null) as $index => $canineReqfor) {
                 $requirementCanineDataRow = [
                     'canine_req_for' => $canineReqfor?? null,
                     'canine_category' => $requirementCanineData['canine_category'][$index]?? null,
@@ -1586,7 +1572,7 @@ foreach ($requirementAddressData['office_no'] as $index => $officeNo) {
             ]);
 
             $requirementFacilitationDataArray = [];
-            foreach ($requirementFacilitationData['guest_arrival_time'] as $index => $guestArrivaltime) {
+            foreach ($this->iterableInput($requirementFacilitationData['guest_arrival_time'] ?? null) as $index => $guestArrivaltime) {
                 $requirementFacilitationDataRow = [
                     'guest_arrival_time' => $guestArrivaltime?? null,
                     'security_reporting_time' => $requirementFacilitationData['security_reporting_time'][$index]?? null,
@@ -1651,7 +1637,7 @@ foreach ($requirementAddressData['office_no'] as $index => $officeNo) {
             ]);
 
             $requirementJetDataArray = [];
-            foreach ($requirementJetData['no_of_days_private_jet'] as $index => $noOfaysPrivatejet) {
+            foreach ($this->iterableInput($requirementJetData['no_of_days_private_jet'] ?? null) as $index => $noOfaysPrivatejet) {
                 $requirementJetDataRow = [
                     'no_of_days_private_jet' => $noOfaysPrivatejet,
                     'fuel_for_private_jet' => $requirementJetData['fuel_for_private_jet'][$index]?? null,
@@ -1672,7 +1658,7 @@ foreach ($requirementAddressData['office_no'] as $index => $officeNo) {
             ]);
 
             $requirementEventDataArray = [];
-            foreach ($requirementEventData['ownership_status'] as $index => $ownershipStatus) {
+            foreach ($this->iterableInput($requirementEventData['ownership_status'] ?? null) as $index => $ownershipStatus) {
                 $requirementEventDataRow = [
                     'ownership_status' => $ownershipStatus?? null,
                     'event_req_for' => $requirementEventData['event_req_for'][$index]?? null,
@@ -1727,7 +1713,7 @@ foreach ($requirementAddressData['office_no'] as $index => $officeNo) {
             ]);
 
             $requirementConsultancyDataArray = [];
-            foreach ($requirementConsultancyData['consultancy_category'] as $index => $consultancyCategory) {
+            foreach ($this->iterableInput($requirementConsultancyData['consultancy_category'] ?? null) as $index => $consultancyCategory) {
                 $requirementConsultancyDataRow = [
                     'consultancy_category' => $consultancyCategory?? null,
                     'internal_deadline' => $requirementConsultancyData['internal_deadline'][$index]?? null,
@@ -1763,7 +1749,7 @@ foreach ($requirementAddressData['office_no'] as $index => $officeNo) {
             ]);
 
             $requirementFireDataArray = [];
-            foreach ($requirementFireData['fireClass'] as $index => $fireClass) {
+            foreach ($this->iterableInput($requirementFireData['fireClass'] ?? null) as $index => $fireClass) {
                 $requirementFireDataRow = [
                     'fireClass' => $fireClass?? null,
                     'fire_equipment_name' => $requirementFireData['fire_equipment_name'][$index]?? null,
@@ -1815,7 +1801,7 @@ foreach ($requirementAddressData['office_no'] as $index => $officeNo) {
             ]);
 
             $requirementOtherDataArray = [];
-            foreach ($requirementOtherData['other_fire_category'] as $index => $otherfireCategory) {
+            foreach ($this->iterableInput($requirementOtherData['other_fire_category'] ?? null) as $index => $otherfireCategory) {
                 $requirementOtherDataRow = [
                     'other_fire_category' => $otherfireCategory?? null,
                     'other_equip_name' => $requirementOtherData['other_equip_name'][$index]?? null,
@@ -1864,7 +1850,7 @@ foreach ($requirementAddressData['office_no'] as $index => $officeNo) {
             ]);
 
             $requirementPassiveDataArray = [];
-            foreach ($requirementPassiveData['passive_category'] as $index => $passiveCategory) {
+            foreach ($this->iterableInput($requirementPassiveData['passive_category'] ?? null) as $index => $passiveCategory) {
                 $requirementPassiveDataRow = [
                     'passive_category' => $passiveCategory?? null,
                     'passive_dimension' => $requirementPassiveData['passive_dimension'][$index]?? null,
@@ -1920,7 +1906,7 @@ foreach ($requirementAddressData['office_no'] as $index => $officeNo) {
             ]);
 
             $requirementSecurityDataArray = [];
-            foreach ($requirementSecurityData['equipment_category'] as $index => $equipmentCategory) {
+            foreach ($this->iterableInput($requirementSecurityData['equipment_category'] ?? null) as $index => $equipmentCategory) {
                 $requirementSecurityDataRow = [
                     'equipment_category' => $equipmentCategory?? null,
                     'equipment_ownership' => $requirementSecurityData['equipment_ownership'][$index]?? null,
@@ -1992,7 +1978,7 @@ foreach ($requirementAddressData['office_no'] as $index => $officeNo) {
             ]);
 
             $requirementBarrierDataArray = [];
-            foreach ($requirementBarrierData['barrier_ownership'] as $index => $barrierOwnership) {
+            foreach ($this->iterableInput($requirementBarrierData['barrier_ownership'] ?? null) as $index => $barrierOwnership) {
                 $requirementBarrierDataRow = [
                     'barrier_ownership' => $barrierOwnership?? null,
                     'barrier_rental' => $requirementBarrierData['barrier_rental'][$index]?? null,
@@ -2103,7 +2089,7 @@ foreach ($requirementAddressData['office_no'] as $index => $officeNo) {
             ]);
 
             $requirementCctvDataArray = [];
-            foreach ($requirementCctvData['cctv_category'] as $index => $cctvCategory) {
+            foreach ($this->iterableInput($requirementCctvData['cctv_category'] ?? null) as $index => $cctvCategory) {
                 $requirementCctvDataRow = [
                     'cctv_category' => $cctvCategory?? null,
                     'cctv_brand' => $requirementCctvData['cctv_brand'][$index]?? null,
@@ -2170,7 +2156,7 @@ foreach ($requirementAddressData['office_no'] as $index => $officeNo) {
             ]);
 
             $requirementAttendanceDataArray = [];
-            foreach ($requirementAttendanceData['attendance_category'] as $index => $attendanceCategory) {
+            foreach ($this->iterableInput($requirementAttendanceData['attendance_category'] ?? null) as $index => $attendanceCategory) {
                 $requirementAttendanceDataRow = [
                     'attendance_category' => $attendanceCategory?? null,
                     'attendance_rate' => $requirementAttendanceData['attendance_rate'][$index]?? null,
@@ -2204,7 +2190,7 @@ foreach ($requirementAddressData['office_no'] as $index => $officeNo) {
             ]);
 
             $requirementWebDataArray = [];
-            foreach ($requirementWebData['web_category'] as $index => $webCategory) {
+            foreach ($this->iterableInput($requirementWebData['web_category'] ?? null) as $index => $webCategory) {
                 $requirementWebDataRow = [
                     'web_category' => $webCategory?? null,
                     'web_date' => $requirementWebData['web_date'][$index]?? null,
@@ -2244,7 +2230,7 @@ foreach ($requirementAddressData['office_no'] as $index => $officeNo) {
             ]);
 
             $requirementAlarmDataArray = [];
-            foreach ($requirementAlarmData['alarm_category'] as $index => $alarmCategory) {
+            foreach ($this->iterableInput($requirementAlarmData['alarm_category'] ?? null) as $index => $alarmCategory) {
                 $requirementAlarmDataRow = [
                     'alarm_category' => $alarmCategory?? null,
                     'alarm_equipment' => $requirementAlarmData['alarm_equipment'][$index]?? null,
@@ -2309,7 +2295,7 @@ foreach ($requirementAddressData['office_no'] as $index => $officeNo) {
             ]);
 
             $requirementCshownDataArray = [];
-            foreach ($requirementCshownData['wc_sw_category'] as $index => $wcSwCategory) {
+            foreach ($this->iterableInput($requirementCshownData['wc_sw_category'] ?? null) as $index => $wcSwCategory) {
                 $requirementCshownDataRow = [
                     'wc_sw_category' => $wcSwCategory?? null,
                     'wc_sw_social_check' => $requirementCshownData['wc_sw_social_check'][$index]?? null,
@@ -2349,7 +2335,7 @@ foreach ($requirementAddressData['office_no'] as $index => $officeNo) {
             ]);
 
             $requirementCohiddenDataArray = [];
-            foreach ($requirementCohiddenData['wc_hw_category'] as $index => $wcHwCategory) {
+            foreach ($this->iterableInput($requirementCohiddenData['wc_hw_category'] ?? null) as $index => $wcHwCategory) {
                 $requirementCohiddenDataRow = [
                     'wc_hw_category' => $wcHwCategory?? null,
                     'wc_hw_social' => $requirementCohiddenData['wc_hw_social'][$index]?? null,
@@ -2392,7 +2378,7 @@ foreach ($requirementAddressData['office_no'] as $index => $officeNo) {
             ]);
 
             $requirementLshownDataArray = [];
-            foreach ($requirementLshownData['ls_sw_category'] as $index => $lsSwCategory) {
+            foreach ($this->iterableInput($requirementLshownData['ls_sw_category'] ?? null) as $index => $lsSwCategory) {
                 $requirementLshownDataRow = [
                     'ls_sw_category' => $lsSwCategory?? null,
                     'ls_sw_social' => $requirementLshownData['ls_sw_social'][$index]?? null,
@@ -2432,7 +2418,7 @@ foreach ($requirementAddressData['office_no'] as $index => $officeNo) {
             ]);
 
             $requirementLhiddenDataArray = [];
-            foreach ($requirementLhiddenData['ls_hw_category'] as $index => $lsHwCategory) {
+            foreach ($this->iterableInput($requirementLhiddenData['ls_hw_category'] ?? null) as $index => $lsHwCategory) {
                 $requirementLhiddenDataRow = [
                     'ls_hw_category' => $lsHwCategory?? null,
                     'ls_hw_uni_cost' => $requirementLhiddenData['ls_hw_uni_cost'][$index]?? null,
@@ -2468,7 +2454,7 @@ foreach ($requirementAddressData['office_no'] as $index => $officeNo) {
             ]);
 
             $requirementreverseworkingDataArray = [];
-            foreach ($requirementreverseworkingData['reverseCategory'] as $index => $reverseworkingCategory) {
+            foreach ($this->iterableInput($requirementreverseworkingData['reverseCategory'] ?? null) as $index => $reverseworkingCategory) {
                 $requirementreverseworkingDataRow = [
                     'reverseCategory' => $reverseworkingCategory?? null,
                     'reverseapplicablepercentageGst' => $requirementreverseworkingData['reverseapplicablepercentageGst'][$index]?? null,
@@ -2491,7 +2477,7 @@ foreach ($requirementAddressData['office_no'] as $index => $officeNo) {
 
             DB::commit();
 
-            return redirect()->back()->with('success', 'Requirement saved successfully.');
+            return redirect()->back()->with('success', 'Requirement Update successfully.');
         } catch (\Exception $e) {
             DB::rollback();
 
@@ -2869,6 +2855,37 @@ foreach ($requirementAddressData['office_no'] as $index => $officeNo) {
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to send email.'], 500);
         }
+    }
+
+    private function normalizeRequirementPayload(array $payload): array
+    {
+        foreach ($payload as $key => $value) {
+            $payload[$key] = $this->normalizeRequirementValue($value);
+        }
+
+        return $payload;
+    }
+
+    private function normalizeRequirementValue($value)
+    {
+        if (!is_array($value)) {
+            return $value;
+        }
+
+        $flattened = [];
+
+        array_walk_recursive($value, function ($item) use (&$flattened) {
+            if ($item !== null && $item !== '') {
+                $flattened[] = $item;
+            }
+        });
+
+        return $flattened ? implode(', ', $flattened) : null;
+    }
+
+    private function iterableInput($value): array
+    {
+        return is_array($value) ? $value : [];
     }
 
 
