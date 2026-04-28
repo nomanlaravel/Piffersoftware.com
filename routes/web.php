@@ -1006,7 +1006,13 @@ Route::get('/test-edit-report-notification', function () {
 });
 
 // Test Route for Feedback Flow Template
+
+// WhatsApp Flow Response Endpoint (NeuAPIx Webhook)
+Route::post('/whatsapp/flow-response', [\App\Http\Controllers\Api\WhatsAppFlowController::class, 'handleFlowResponse']);
+
+
 Route::get('/test-feedback-flow', function () {
+
     $customer = \App\Models\Customer::first();
     if (!$customer)
         return "Error: No customer found.";

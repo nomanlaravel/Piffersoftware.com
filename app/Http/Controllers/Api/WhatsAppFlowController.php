@@ -24,22 +24,40 @@ class WhatsAppFlowController extends Controller
      */
     public function handleFlowResponse(Request $request)
     {
-        Log::info('WhatsApp Flow Response received:', [
+        Log::info('WhatsApp Flow Response received [VERSION 2.0]:', [
             'all_data' => $request->all(),
+            'body_raw' => $request->getContent(),
             'headers' => $request->headers->all(),
         ]);
 
         try {
-            // NeuAPIx can send flow data in different structures.
-            // Common structures:
-            // 1. Direct: { "phone": "923404556573", "q1": 5, ... }
-            // 2. Nested: { "flow_token": "...", "response": { "q1": 5, ... } }
-            // 3. With contact info: { "contact": { "wa_id": "923404556573" }, "data": { ... } }
-
             $flowData = $request->all();
+
+            // 1. Ignore STATUS updates (sent, delivered, read)
+            if (($flowData['type'] ?? '') === 'STATUS') {
+                return response()->json(['status' => 'ignored'], 200);
+            }
+
+            // 2. Log full structure for debugging (Deep Log)
+            Log::info('WhatsApp Flow Request Info:', [
+                'keys' => array_keys($flowData),
+                'query_params' => $request->query(),
+                'content_length' => $request->header('Content-Length'),
+                'content_type' => $request->header('Content-Type'),
+            ]);
+            
+            if (isset($flowData['message'])) {
+                 Log::info('WhatsApp Flow Message Keys:', ['msg_keys' => array_keys($flowData['message'])]);
+                 Log::info('WhatsApp Flow Message Type:', ['type' => $flowData['message']['type'] ?? 'unknown']);
+            }
 
             // Extract the phone number from various possible locations
             $phone = $this->extractPhone($flowData);
+            
+            // Log flow token if present
+            if (isset($flowData['message']['context']['flow_token'])) {
+                Log::info('WhatsApp Flow Token:', ['token' => $flowData['message']['context']['flow_token']]);
+            }
 
             // Extract the response/answers data
             $responseData = $this->extractResponseData($flowData);
@@ -53,11 +71,12 @@ class WhatsAppFlowController extends Controller
             $customer = null;
             if ($phone) {
                 $normalizedPhone = $this->normalizePhone($phone);
+                $searchSuffix = substr($normalizedPhone, -10);
                 
-                $customer = Customer::where('phone', 'LIKE', '%' . substr($normalizedPhone, -10) . '%')
-                    ->orWhere('whatsapp_number', 'LIKE', '%' . substr($normalizedPhone, -10) . '%')
-                    ->orWhere('poc_cell', 'LIKE', '%' . substr($normalizedPhone, -10) . '%')
-                    ->first();
+                $customer = Customer::where(function($query) use ($searchSuffix) {
+                    $query->whereRaw("REPLACE(REPLACE(phone, '-', ''), ' ', '') LIKE ?", ['%' . $searchSuffix])
+                        ->orWhereRaw("REPLACE(REPLACE(poc_cell, '-', ''), ' ', '') LIKE ?", ['%' . $searchSuffix]);
+                })->first();
             }
 
             if (!$customer) {
@@ -65,33 +84,11 @@ class WhatsAppFlowController extends Controller
                     'phone' => $phone,
                 ]);
 
-                // Still store the feedback with minimal info
-                $feedback = CustomerFeedback::create([
-                    'customers_id' => 0, // Unknown customer
-                    'feed_cell' => $phone,
-                    'feed_date' => now()->format('Y-m-d'),
-                    'feed_month' => now()->format('F Y'),
-                    'feed_received' => 'WhatsApp Flow',
-                    'feed_remarks' => 'Customer not found in system. Phone: ' . $phone,
-                    'q1' => $responseData['q1'] ?? null,
-                    'q2' => $responseData['q2'] ?? null,
-                    'q3' => $responseData['q3'] ?? null,
-                    'q4' => $responseData['q4'] ?? null,
-                    'q5' => $responseData['q5'] ?? null,
-                    'q6' => $responseData['q6'] ?? null,
-                    'q7' => $responseData['q7'] ?? null,
-                    'q8' => $responseData['q8'] ?? null,
-                    'q9' => $responseData['q9'] ?? null,
-                    'q10' => $responseData['q10'] ?? null,
-                    'total_score' => $this->calculateTotalScore($responseData),
-                    'feed_comment' => $responseData['comments'] ?? $responseData['feedback'] ?? $responseData['comment'] ?? null,
-                ]);
-
                 return response()->json([
-                    'status' => 'success',
-                    'message' => 'Feedback received (customer not matched).',
-                    'feedback_id' => $feedback->id,
-                ], 200);
+                    'status' => 'error',
+                    'message' => 'Feedback received but customer not found. Data not stored due to database constraints.',
+                    'phone_received' => $phone,
+                ], 404);
             }
 
             // Create feedback linked to the customer
@@ -110,18 +107,18 @@ class WhatsAppFlowController extends Controller
                 'feed_poc_name' => $responseData['poc_name'] ?? $responseData['name'] ?? $customer->poc_name ?? null,
                 'feed_email' => $responseData['email'] ?? $customer->email ?? null,
                 'feed_telephone' => $phone,
-                'q1' => $responseData['q1'] ?? null,
-                'q2' => $responseData['q2'] ?? null,
-                'q3' => $responseData['q3'] ?? null,
-                'q4' => $responseData['q4'] ?? null,
-                'q5' => $responseData['q5'] ?? null,
-                'q6' => $responseData['q6'] ?? null,
-                'q7' => $responseData['q7'] ?? null,
-                'q8' => $responseData['q8'] ?? null,
-                'q9' => $responseData['q9'] ?? null,
-                'q10' => $responseData['q10'] ?? null,
+                'q1' => $responseData['q1'] ?? $responseData['question_1'] ?? null,
+                'q2' => $responseData['q2'] ?? $responseData['question_2'] ?? null,
+                'q3' => $responseData['q3'] ?? $responseData['question_3'] ?? null,
+                'q4' => $responseData['q4'] ?? $responseData['question_4'] ?? null,
+                'q5' => $responseData['q5'] ?? $responseData['question_5'] ?? null,
+                'q6' => $responseData['q6'] ?? $responseData['question_6'] ?? null,
+                'q7' => $responseData['q7'] ?? $responseData['question_7'] ?? null,
+                'q8' => $responseData['q8'] ?? $responseData['question_8'] ?? null,
+                'q9' => $responseData['q9'] ?? $responseData['question_9'] ?? null,
+                'q10' => $responseData['q10'] ?? $responseData['question_10'] ?? null,
                 'total_score' => $this->calculateTotalScore($responseData),
-                'feed_comment' => $responseData['comments'] ?? $responseData['feedback'] ?? $responseData['comment'] ?? null,
+                'feed_comment' => $responseData['comments'] ?? $responseData['feedback_comment'] ?? $responseData['remarks'] ?? $responseData['feedback'] ?? $responseData['comment'] ?? null,
                 'feed_remarks' => 'Submitted via WhatsApp Feedback Flow',
             ]);
 
@@ -147,11 +144,14 @@ class WhatsAppFlowController extends Controller
                 'customer_name' => $customer->customers_name,
             ]);
 
+            // Return a valid Meta Flow response (Version 3.0)
             return response()->json([
-                'status' => 'success',
-                'message' => 'Feedback stored successfully.',
-                'feedback_id' => $feedback->id,
-                'customer_id' => $customer->id,
+                'version' => '3.0',
+                'screen' => 'SUCCESS_SCREEN', // Change this to your final screen name if different
+                'data' => [
+                    'status' => 'success',
+                    'feedback_id' => $feedback->id,
+                ],
             ], 200);
 
         } catch (\Throwable $e) {
@@ -189,6 +189,8 @@ class WhatsAppFlowController extends Controller
         // NeuAPIx specific structures
         if (!empty($data['recipient'])) return $data['recipient'];
         if (!empty($data['customer_no'])) return $data['customer_no'];
+        if (!empty($data['customer']['customerNo'])) return $data['customer']['customerNo'];
+        if (!empty($data['customer']['customer_no'])) return $data['customer']['customer_no'];
 
         return null;
     }
@@ -219,13 +221,63 @@ class WhatsAppFlowController extends Controller
             if (is_array($decoded)) return $decoded;
         }
 
+        // Sometimes it's in a 'text' field if NeuAPIx flattens it
+        if (!empty($data['text']) && is_string($data['text'])) {
+            $decoded = json_decode($data['text'], true);
+            if (is_array($decoded)) return $decoded;
+        }
+
+        // Look into messages array (standard webhook structure)
+        if (!empty($data['messages'][0]['interactive']['nfm_reply']['response_json'])) {
+            $decoded = json_decode($data['messages'][0]['interactive']['nfm_reply']['response_json'], true);
+            if (is_array($decoded)) return $decoded;
+        }
+
+        // NeuAPIx nfmReply structure in 'message' object
+        if (!empty($data['message']['text']) && is_string($data['message']['text'])) {
+            $decoded = json_decode($data['message']['text'], true);
+            if (is_array($decoded)) return $decoded;
+        }
+
+        // Check for 'response' field inside message (sometimes used)
+        if (!empty($data['message']['response']) && is_array($data['message']['response'])) {
+            return $data['message']['response'];
+        }
+        
+        if (!empty($data['message']['response']) && is_string($data['message']['response'])) {
+            $decoded = json_decode($data['message']['response'], true);
+            if (is_array($decoded)) return $decoded;
+        }
+
         // If the data itself contains q1-q10 keys, it IS the response data
         if (isset($data['q1']) || isset($data['q2'])) {
             return $data;
         }
 
+        // 1. Check nested interactive fields (Common in Meta Webhooks)
+        if (!empty($data['message']['interactive']['nfm_reply']['response_json'])) {
+            $decoded = json_decode($data['message']['interactive']['nfm_reply']['response_json'], true);
+            if (is_array($decoded)) return $decoded;
+        }
+
+        // 2. NEW: Check for 'nfm_reply' directly inside message
+        if (!empty($data['message']['nfm_reply']['response_json'])) {
+            $decoded = json_decode($data['message']['nfm_reply']['response_json'], true);
+            if (is_array($decoded)) return $decoded;
+        }
+
+        // 3. NEW: Check for 'nfmReply' (CamelCase)
+        if (!empty($data['message']['nfmReply']['response_json'])) {
+            $decoded = json_decode($data['message']['nfmReply']['response_json'], true);
+            if (is_array($decoded)) return $decoded;
+        }
+
+        // 4. NEW: Exhaustive Recursive Search
+        $found = $this->recursiveFind($data, 'q1');
+        if ($found) return $found;
+
         // Fallback: return everything (minus metadata keys)
-        $excludeKeys = ['phone', 'wa_id', 'from', 'contact', 'contacts', 'flow_token', 'recipient', 'type', 'timestamp'];
+        $excludeKeys = ['phone', 'wa_id', 'from', 'contact', 'contacts', 'flow_token', 'recipient', 'type', 'timestamp', 'platform', 'accountNo', 'customer', 'status', 'message', 'timeStamp'];
         return array_diff_key($data, array_flip($excludeKeys));
     }
 
@@ -245,6 +297,29 @@ class WhatsAppFlowController extends Controller
         }
 
         return $answered > 0 ? (string) $total : null;
+    }
+
+    /**
+     * Recursively search for a key in an array and return the parent array.
+     */
+    private function recursiveFind(array $data, string $searchKey): ?array
+    {
+        if (isset($data[$searchKey])) return $data;
+
+        foreach ($data as $value) {
+            if (is_array($value)) {
+                $result = $this->recursiveFind($value, $searchKey);
+                if ($result) return $result;
+            }
+            if (is_string($value)) {
+                $decoded = json_decode($value, true);
+                if (is_array($decoded)) {
+                    $result = $this->recursiveFind($decoded, $searchKey);
+                    if ($result) return $result;
+                }
+            }
+        }
+        return null;
     }
 
     /**

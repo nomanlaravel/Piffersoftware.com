@@ -37,18 +37,18 @@ class WhatsAppNotificationManager
         $customerNameFallback = !empty($customerName) ? $customerName : 'N/A';
         $usernameFallback = !empty($username) ? $username : 'N/A';
 
-        $message = "Welcome to Piffers Security System!\n\n" .
-            "Dear *{$customerNameFallback}*,\n\n" .
-            "We are pleased to inform you that your account has been successfully created on our portal.\n\n" .
-            "You can now access your dashboard using the following details:\n\n" .
-            "🔗 ERP Link: {$erpLink}\n" .
-            "👤 Username: {$usernameFallback}\n\n" .
-            "To set your password securely, please use the \"Forgot Password\" option on the login page.\n\n" .
-            "Through this portal, you will be able to manage your services, view reports, and stay updated with all activities related to your account.\n\n" .
-            "If you face any issues while logging in or require assistance, feel free to contact our support team.\n\n" .
-            "Thank you for choosing Piffers Security System. We look forward to serving you.\n\n" .
-            "Best Regards,\n" .
-            "Piffers Security System";
+        $message = "Welcome to Piffers Security System!\n\n"
+            . "Dear *{$customerNameFallback}*,\n\n"
+            . "We are pleased to inform you that your account has been successfully created on our portal.\n\n"
+            . "You can now access your dashboard using the following details:\n\n"
+            . "🔗 ERP Link: {$erpLink}\n"
+            . "👤 Username: {$usernameFallback}\n\n"
+            . "To set your password securely, please use the \"Forgot Password\" option on the login page.\n\n"
+            . "Through this portal, you will be able to manage your services, view reports, and stay updated with all activities related to your account.\n\n"
+            . "If you face any issues while logging in or require assistance, feel free to contact our support team.\n\n"
+            . "Thank you for choosing Piffers Security System. We look forward to serving you.\n\n"
+            . "Best Regards,\n"
+            . 'Piffers Security System';
 
         $params = [
             ['type' => 'text', 'text' => $customerNameFallback],
@@ -188,7 +188,6 @@ class WhatsAppNotificationManager
         $message = "Subject: Look Back Reminder *{$countFallback}*
         Dear *{$hrmNameFallback}*, Reminder *{$countFallback}* triggered. Notes: *{$notesFallback}* content.";
 
-
         $params = [
             ['type' => 'text', 'text' => (string) $hrmNameFallback],
             ['type' => 'text', 'text' => (string) $countFallback],
@@ -205,6 +204,7 @@ class WhatsAppNotificationManager
             category: 'UTILITY'
         );
     }
+
     public function sendInspectionFollowUpReminder($to, $hrmName, $inspection_date = null, $userModel = null): array
     {
         $erpLink = config('app.url');
@@ -267,7 +267,7 @@ class WhatsAppNotificationManager
         // 1. Fallbacks to prevent API errors
         $nameFallback = !empty($recipientName) ? $recipientName : 'Customer';
         $dateFallback = !empty($date) ? $date : 'N/A';
-        
+
         // If this was not you, please contact support immediately.
         $message = "
         Dear *{$nameFallback}*, your notification preferences were updated on *{$dateFallback}*.
@@ -276,8 +276,8 @@ class WhatsAppNotificationManager
 
         // 3. Parameters in EXACT order of {{1}}, {{2}}, {{3}}
         $params = [
-            ['type' => 'text', 'text' => $nameFallback],    // {{1}}
-            ['type' => 'text', 'text' => $dateFallback], // {{2}}
+            ['type' => 'text', 'text' => $nameFallback],  // {{1}}
+            ['type' => 'text', 'text' => $dateFallback],  // {{2}}
         ];
 
         return $this->send(
@@ -285,7 +285,7 @@ class WhatsAppNotificationManager
             message: $message,
             eventType: 'customer_notification_settings_updated',
             user: $userModel,
-            templateName: 'customer_notification_settings_updated', // Must match Meta Dashboard name
+            templateName: 'customer_notification_settings_updated',  // Must match Meta Dashboard name
             templateParameters: $params,
             category: 'UTILITY'
         );
@@ -301,9 +301,9 @@ class WhatsAppNotificationManager
         $message = "Hello *{$nameFallback}*, your profile has been updated.\nID: {$idFallback}\nDepartment: {$deptFallback}\nLink: {$urlFallback}\n\nThank you.";
 
         $params = [
-            ['type' => 'text', 'text' => $nameFallback], // {{1}}
-            ['type' => 'text', 'text' => $idFallback],   // {{2}}
-            ['type' => 'text', 'text' => $deptFallback], // {{3}}
+            ['type' => 'text', 'text' => $nameFallback],  // {{1}}
+            ['type' => 'text', 'text' => $idFallback],  // {{2}}
+            ['type' => 'text', 'text' => $deptFallback],  // {{3}}
             ['type' => 'text', 'text' => $urlFallback],  // {{4}}
         ];
 
@@ -328,16 +328,16 @@ class WhatsAppNotificationManager
         $roleTypeFallback = !empty($roleType) ? $roleType : 'N/A';
         $usernameFallback = !empty($username) ? $username : 'N/A';
 
-        $message = "Dear {$employeeNameFallback},\n\n" .
-            "You have been successfully added to the Piffers Security System as {$roleTypeFallback}.\n\n" .
-            "You can now access your profile and relevant system features using the link below:\n\n" .
-            "Portal Link: {$erpLink}\n" .
-            "Username: {$usernameFallback}\n\n" .
-            "To set your password securely, please visit the login page and use the \"Forgot Password\" option.\n" .
-            "If you face any issues while accessing your account, feel free to contact the admin team.\n\n" .
-            "Welcome aboard and thank you for being part of Piffers Security System.\n\n" .
-            "Best Regards,\n" .
-            "Piffers Security System";
+        $message = "Dear {$employeeNameFallback},\n\n"
+            . "You have been successfully added to the Piffers Security System as {$roleTypeFallback}.\n\n"
+            . "You can now access your profile and relevant system features using the link below:\n\n"
+            . "Portal Link: {$erpLink}\n"
+            . "Username: {$usernameFallback}\n\n"
+            . "To set your password securely, please visit the login page and use the \"Forgot Password\" option.\n"
+            . "If you face any issues while accessing your account, feel free to contact the admin team.\n\n"
+            . "Welcome aboard and thank you for being part of Piffers Security System.\n\n"
+            . "Best Regards,\n"
+            . 'Piffers Security System';
 
         $params = [
             ['type' => 'text', 'text' => $employeeNameFallback],
@@ -365,11 +365,11 @@ class WhatsAppNotificationManager
         $hrmNameFallback = !empty($hrmName) ? $hrmName : 'N/A';
         $hrmCategoryFallback = !empty($hrmCategory) ? $hrmCategory : 'Staff Member';
 
-        $message = "Dear *{$customerNameFallback}*,\n\n" .
-            "A new staff member has been assigned to your service.\n\n" .
-            "Employee Name: *{$hrmNameFallback}*\n" .
-            "Designation: *{$hrmCategoryFallback}*\n\n" .
-            "For any questions, please contact Piffers Security System.";
+        $message = "Dear *{$customerNameFallback}*,\n\n"
+            . "A new staff member has been assigned to your service.\n\n"
+            . "Employee Name: *{$hrmNameFallback}*\n"
+            . "Designation: *{$hrmCategoryFallback}*\n\n"
+            . 'For any questions, please contact Piffers Security System.';
 
         $params = [
             ['type' => 'text', 'text' => $customerNameFallback],
@@ -395,22 +395,29 @@ class WhatsAppNotificationManager
     {
         $nameFallback = !empty($recipientName) ? $recipientName : 'Customer';
 
-        $message = "Hello {$nameFallback}, \n" .
-"we value your feedback. Please click the button below to start our short feedback survey.";
+        $message = "Hello {$nameFallback}, \n"
+            . 'we value your feedback. Please click the button below to start our short feedback survey.';
 
         // For templates with FLOW buttons, we must provide the button component structure
         $fullComponents = [
             [
                 'type' => 'body',
                 'parameters' => [
-                    ['type' => 'text', 'text' => $nameFallback], // {{1}}
+                    ['type' => 'text', 'text' => $nameFallback],  // {{1}}
                 ],
             ],
             [
                 'type' => 'button',
                 'sub_type' => 'flow',
                 'index' => '0',
-                'parameters' => [] 
+                'parameters' => [
+                    [
+                        'type' => 'action',
+                        'action' => [
+                            'flow_token' => 'feedback_token_' . time(),
+                        ],
+                    ]
+                ]
             ]
         ];
 
