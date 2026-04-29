@@ -18,6 +18,7 @@ protected $fillable = [
     'designation',
     'type',
     'created_at',
+    'monday',
 ];
 
     public function admin()

@@ -731,6 +731,22 @@
                         <input type="text" id="dateRangeInputRegion" name="date_range" class="form-control"
                             placeholder="Select date range" readonly value="{{ request('date_range') }}">
                     </div>
+                     <div class="col-md-3">
+    <label class="form-label">Employee</label>
+    <select name="employee_name" class="form-control">
+        <option value="">Select Employee</option>
+        <option value="all" {{ request('employee_name') == 'all' ? 'selected' : '' }}>
+            All Employees
+        </option>
+
+        @foreach (App\Models\RegionReport::select('employee_name')->distinct()->get() as $report)
+            <option value="{{ $report->employee_name }}"
+                {{ request('employee_name') == $report->employee_name ? 'selected' : '' }}>
+                {{ $report->employee_name }}
+            </option>
+        @endforeach
+    </select>
+</div>
                     <!-- Button -->
                     <div class="col-md-1">
                         <button type="submit" class="btn btn-outline-light mt-4">
@@ -764,6 +780,23 @@
                         <label class="form-label">Date Range</label>
                         <input type="text" id="datePipelineInputRegion" name="date_range" class="form-control"
                             placeholder="Select date range" readonly value="{{ request('date_range') }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Prospect</label>
+                        <select name="prospect_name" class="form-control">
+                            <option value="">Select Prospect</option>
+
+                            <option value="all" {{ request('prospect_name') == 'all' ? 'selected' : '' }}>
+                                All Prospects
+                            </option>
+
+                            @foreach (App\Models\PipelineReport::select('prospect_name')->distinct()->get() as $report)
+                                <option value="{{ $report->prospect_name }}"
+                                    {{ request('prospect_name') == $report->prospect_name ? 'selected' : '' }}>
+                                    {{ $report->prospect_name }}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
                     <!-- Button -->
                     <div class="col-md-1">
@@ -799,6 +832,22 @@
                         <input type="text" id="dateVisitInputRegion" name="date_range" class="form-control"
                             placeholder="Select date range" readonly value="{{ request('date_range') }}">
                     </div>
+                     <div class="col-md-3">
+                        <label class="form-label">Employee</label>
+                        <select name="employee_name" class="form-control">
+                            <option value="">Select Employee</option>
+                            <option value="all" {{ request('employee_name') == 'all' ? 'selected' : '' }}>
+                                All Employees
+                            </option>
+
+                            @foreach (App\Models\RegionReport::select('employee_name')->distinct()->get() as $report)
+                                <option value="{{ $report->employee_name }}"
+                                    {{ request('employee_name') == $report->employee_name ? 'selected' : '' }}>
+                                    {{ $report->employee_name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
                     <!-- Button -->
                     <div class="col-md-1">
                         <button type="submit" class="btn btn-outline-light mt-4">
@@ -832,6 +881,23 @@
                         <label class="form-label">Date Range</label>
                         <input type="text" id="dateVisitPipelineInputRegion" name="date_range" class="form-control"
                             placeholder="Select date range" readonly value="{{ request('date_range') }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Customer</label>
+                        <select name="customer_name" class="form-control">
+                            <option value="">Select Customer</option>
+
+                            <option value="all" {{ request('customer_name') == 'all' ? 'selected' : '' }}>
+                                All Customers
+                            </option>
+
+                            @foreach (App\Models\VisitPipelineReport::select('customer_name')->distinct()->get() as $report)
+                                <option value="{{ $report->customer_name }}"
+                                    {{ request('customer_name') == $report->customer_name ? 'selected' : '' }}>
+                                    {{ $report->customer_name }}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
                     <!-- Button -->
                     <div class="col-md-1">

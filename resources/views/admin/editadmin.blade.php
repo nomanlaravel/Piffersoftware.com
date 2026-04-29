@@ -2858,7 +2858,9 @@
                                             <th>Branch ID</th>
                                             <th>Employee Name</th>
                                             <th>Designation</th>
+                                            <th>No Of Sales</th>
                                             <th>Date</th>
+                                            <th>Day</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
@@ -2872,7 +2874,9 @@
                                                 <td>{{ $report->branch_id ?? 'N/A' }}</td>
                                                 <td>{{ $report->employee_name }}</td>
                                                 <td>{{ $report->designation }}</td>
+                                                <td>{{ $report->monday }}</td>           
                                                 <td>{{ $report->created_at }}</td>
+                                                <td>{{ \Carbon\Carbon::parse($report->created_at)->format('l') }}</td>
                                                 <td>
                                                     <button type="button" class="btn btn-sm btn-info editBtn"
                                                         data-id="{{ $report->id }}">
@@ -2892,92 +2896,191 @@
                                         @endforelse
                                     </tbody>
                                 </table>
-                                <script>
-                                    $(document).ready(function () {
-                                        // Edit functionality (existing)
-                                        $('.editBtn').click(function () {
-                                            let id = $(this).data('id');
-                                            $.ajax({
-                                                url: "/region-reports/edit/" + id,
-                                                type: "GET",
-                                                success: function (data) {
-                                                    $('#e_region_id').val(data.region_id);
-                                                    $('#e_admin_id').val(data.admin_id);
-                                                    $('#e_employee_name').val(data.employee_name);
-                                                    $('#e_designation').val(data.designation);
-                                                    let date = data.created_at.split('T')[0];
-                                                    $('#e_created_at').val(date); 
-                                                    $('#editForm').attr('action', "/region-reports/update/" + id);
-                                                    $('#editModal').modal('show');
-                                                },
-                                                error: function () {
-                                                    alert('Error loading data');
-                                                }
-                                            });
-                                        });
+                     
+<script>
+$(document).ready(function () {
 
-                                        // Create Report AJAX - Fixed syntax and toast timing
-                                        $('#createReportBtn').click(function (e) {
-                                            e.preventDefault();
-                                            let formData = new FormData();
-                                            formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
-                                            formData.append('region_id', $('#create_region_id').val());
-                                            formData.append('admin_id', $('#create_admin_id').val());
-                                            formData.append('employee_name', $('#create_employee_name').val());
-                                            formData.append('designation', $('#create_designation').val());
-                                            formData.append('type', $('#create_type').val());
-                                            formData.append('created_at', $('#create_created_at').val());
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
 
-                                            $.ajax({
-                                                url: "{{ route('regionReport.store') }}",
-                                                type: 'POST',
-                                                data: formData,
-                                                processData: false,
-                                                contentType: false,
-                                                success: function (response) {
-                                                    toastr.success('Report created successfully!');
-                                                    $('#createModal').modal('hide');
-                                                    location.reload(); // Reload last to ensure toast shows before page refresh
-                                                },
-                                                error: function (xhr) {
-                                                    toastr.error('Error: ' + (xhr.responseJSON?.message || 'Failed to create report'));
-                                                }
-                                            });
-                                        });
+    // Limit updates to this specific table (avoid affecting other tables on the page).
+    const $dailyFeedbackTbody = $('#pills-southregionalesreport table tbody');
 
-                                        // Delete Report AJAX - Fixed dynamic removal
-                                        $('.deleteBtn').click(function () {
-                                            if (confirm('Are you sure you want to delete this report?')) {
-                                                let $btn = $(this);
-                                                let id = $btn.data('id');
+    const formatDayFromDate = function (dateStr) {
+        if (!dateStr) return 'N/A';
 
-                                                // Find correct accordion item - use data-id or closest with hidden input
-                                                let $reportContainer = $btn.closest('.accordion-body').parent().parent(); // h2 -> accordion-item
-                                                let $accordionItem = $reportContainer.closest('.accordion-item');
+        // Backend returns "Y-m-d" (or sometimes ISO). Convert safely.
+        let dateOnly = dateStr.toString().split('T')[0];
+        dateOnly = dateOnly.split(' ')[0];
 
-                                                $.ajaxSetup({
-                                                    headers: {
-                                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                                                    }
-                                                });
-                                                $.ajax({
-                                                    url: "/region-reports/delete/" + id,
-                                                    type: 'DELETE',
-                                                    success: function (response) {
-                                                        location.reload();
-                                                        toastr.success('Report deleted successfully!');
-                                                        $accordionItem.slideUp(300, function () {
-                                                            $(this).remove();
-                                                        });
-                                                    },
-                                                    error: function (xhr, status, error) {
-                                                        toastr.error('Delete failed: ' + (xhr.responseJSON?.message || error));
-                                                    }
-                                                });
-                                            }
-                                        });
-                                    });
-                                </script>
+        // Use local midnight to avoid timezone shifting the weekday.
+        const d = new Date(dateOnly + 'T00:00:00');
+        if (isNaN(d.getTime())) return 'N/A';
+
+        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        return days[d.getDay()] ?? 'N/A';
+    };
+
+    const removeEmptyRow = function () {
+        $dailyFeedbackTbody.find('tr').filter(function () {
+            return $(this).text().trim().includes('No reports found');
+        }).remove();
+    };
+
+    const resequenceRows = function () {
+        $dailyFeedbackTbody.find('tr').each(function (i) {
+            $(this).find('td:first').text(i + 1);
+        });
+    };
+
+    // CREATE REPORT
+    $('#createReportBtn').click(function (e) {
+        e.preventDefault();
+
+        let formData = {
+            region_id: $('#create_region_id').val(),
+            admin_id: $('#create_admin_id').val(),
+            employee_name: $('#create_employee_name').val(),
+            designation: $('#create_designation').val(),
+            type: $('#create_type').val(),
+            created_at: $('#create_created_at').val(),
+            monday: $('#create_monday').val(),
+        };
+
+        $.ajax({
+            url: "{{ route('regionReport.store') }}",
+            type: 'POST',
+            data: formData,
+
+            success: function (response) {
+                toastr.success('Report created successfully!');
+                $('#createModal').modal('hide');
+
+                removeEmptyRow();
+
+                let newRow = `
+                    <tr>
+                        <td>${$dailyFeedbackTbody.children('tr').length + 1}</td>
+                        <td>${response.region_name ?? 'N/A'}</td>
+                        <td>${response.branch_name ?? 'N/A'}</td>
+                        <td>${response.branch_id ?? 'N/A'}</td>
+                        <td>${response.employee_name ?? ''}</td>
+                        <td>${response.designation ?? ''}</td>
+                        <td>${response.monday}</td>
+                        <td>${response.created_at}</td>
+                        <td>${formatDayFromDate(response.created_at)}</td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-info editBtn" data-id="${response.id}">Edit</button>
+                            <button type="button" class="btn btn-sm btn-danger deleteBtn" data-id="${response.id}">Delete</button>
+                        </td>
+                    </tr>
+                `;
+
+                $dailyFeedbackTbody.prepend(newRow);
+                resequenceRows();
+                $('#createForm')[0].reset();
+            },
+
+            error: function (xhr) {
+                toastr.error(xhr.responseJSON?.message || 'Create failed');
+            }
+        });
+    });
+
+    // EDIT BUTTON
+    $(document).on('click', '.editBtn', function () {
+        let id = $(this).data('id');
+
+        $.ajax({
+            url: "/region-reports/edit/" + id,
+            type: "GET",
+
+            success: function (data) {
+
+                $('#e_region_id').val(data.region_id);
+                $('#e_admin_id').val(data.admin_id);
+                $('#e_employee_name').val(data.employee_name);
+                $('#e_designation').val(data.designation);
+                $('#e_monday').val(data.monday);
+                let date = data.created_at.split('T')[0];
+                $('#e_created_at').val(date);
+
+                $('#editForm').attr('action', "/region-reports/update/" + id);
+                $('#editModal').modal('show');
+            },
+
+            error: function () {
+                toastr.error('Error loading data');
+            }
+        });
+    });
+
+    // UPDATE REPORT
+    $('#editForm').submit(function (e) {
+        e.preventDefault();
+
+        let actionUrl = $(this).attr('action');
+        let formData = $(this).serialize();
+
+        $.ajax({
+            url: actionUrl,
+            type: 'POST',
+            data: formData,
+
+            success: function (response) {
+                toastr.success('Updated successfully!');
+                $('#editModal').modal('hide');
+
+                let row = $(`button[data-id="${response.id}"]`).closest('tr');
+
+                row.find('td:eq(1)').text(response.region_name ?? 'N/A');
+                row.find('td:eq(2)').text(response.branch_name ?? 'N/A');
+                row.find('td:eq(3)').text(response.branch_id ?? 'N/A');
+                row.find('td:eq(4)').text(response.employee_name);
+                row.find('td:eq(5)').text(response.designation);
+                row.find('td:eq(6)').text(response.monday);
+                row.find('td:eq(7)').text(response.created_at);
+                row.find('td:eq(8)').text(formatDayFromDate(response.created_at)); // 👈 DAY UPDATE
+            },
+
+            error: function (xhr) {
+                toastr.error(xhr.responseJSON?.message || 'Update failed');
+            }
+        });
+    });
+
+    // DELETE REPORT
+    $(document).on('click', '.deleteBtn', function () {
+
+        if (!confirm('Are you sure you want to delete this report?')) return;
+
+        let btn = $(this);
+        let id = btn.data('id');
+
+        $.ajax({
+            url: "/region-reports/delete/" + id,
+            type: 'DELETE',
+
+            success: function () {
+                toastr.success('Deleted successfully!');
+
+                btn.closest('tr').fadeOut(300, function () {
+                    $(this).remove();
+                    resequenceRows();
+                });
+            },
+
+            error: function (xhr) {
+                toastr.error(xhr.responseJSON?.message || 'Delete failed');
+            }
+        });
+    });
+
+});
+</script>
                             </div>
 
                         </div>
@@ -3041,84 +3144,194 @@
                                     </tbody>
                                 </table>
 
-                                <script>
-                                    $(document).ready(function () {
-                                        // Edit functionality (existing)
-                                        $(document).on('click', '.regionReportEditBtn', function () {
-                                            let id = $(this).data('id');
-                                            $.ajax({
-                                                url: "/region-reports/edit/" + id,
-                                                type: "GET",
-                                                success: function (data) {
-                                                    $('#e_region_id_report').val(data.region_id);
-                                                    $('#e_admin_id_report').val(data.admin_id);
-                                                    $('#e_employee_name_report').val(data.employee_name);
-                                                    $('#e_designation_report').val(data.designation);
-                                                    let date = data.created_at.split('T')[0];
-                                                    $('#e_created_at_report').val(date);                               
-                                                    $('#editFormRegionReport').attr('action', "/region-reports/update/" + id);
-                                                    $('#editModalRegionReport').modal('show');
-                                                },
-                                                error: function () {
-                                                    alert('Error loading data');
-                                                }
-                                            });
-                                        });
+                               <script>
+$(document).ready(function () {
 
-                                        // Create Report AJAX - Fixed syntax and
-                                        $('#createReportBtnRegionReport').click(function (e) {
-                                            e.preventDefault();
-                                            let formData = new FormData();
-                                            formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
-                                            formData.append('region_id', $('#create_region_id_report').val());
-                                            formData.append('admin_id', $('#create_admin_id_report').val());
-                                            formData.append('employee_name', $('#create_employee_name_report').val());
-                                            formData.append('designation', $('#create_designation_report').val());
-                                            formData.append('type', $('#create_type_region_report').val());
-                                            formData.append('created_at', $('#create_created_at_report').val());
+    // =========================
+    // CSRF SETUP
+    // =========================
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
 
-                                            $.ajax({
-                                                url: "{{ route('regionReport.store') }}",
-                                                type: 'POST',
-                                                data: formData,
-                                                processData: false,
-                                                contentType: false,
-                                                success: function (response) {
-                                                    toastr.success('Report created successfully!');
-                                                    $('#createModalRegionReport').modal('hide');
-                                                    location.reload();
-                                                },
-                                                error: function (xhr) {
-                                                    toastr.error('Error: ' + (xhr.responseJSON?.message || 'Failed to create report'));
-                                                }
-                                            });
-                                        });
+    // Scope DOM operations to this specific table/tab
+    const $visitPlanTbody = $('#pills-southvisitsalesreport table tbody');
 
-                                        // Delete Report AJAX - Fixed dynamic removal
-                                        $(document).on('click', '.regionReportDeleteBtn', function () {
-                                            if (confirm('Are you sure you want to delete this report?')) {
-                                                let id = $(this).data('id');
+    const removeEmptyRow = function () {
+        $visitPlanTbody.find('tr').filter(function () {
+            return $(this).text().trim().includes('No reports found');
+        }).remove();
+    };
 
-                                                $.ajaxSetup({
-                                                    headers: {
-                                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                                                    }
-                                                });
-                                                $.ajax({
-                                                    url: "/region-reports/delete/" + id,
-                                                    type: 'DELETE',
-                                                    success: function (response) {
-                                                        toastr.success('Report deleted successfully!');
-                                                        location.reload();
-                                                    },
-                                                    error: function (xhr, status, error) {
-                                                        toastr.error('Delete failed: ' + (xhr.responseJSON?.message || error));
-                                                    }
-                                                });
-                                            }
-                                        });
-                                    });
-                                </script>
+    const resequenceRows = function () {
+        $visitPlanTbody.find('tr').each(function (i) {
+            // first td is "#"
+            $(this).find('td:first').text(i + 1);
+        });
+    };
+
+    // =========================
+    // EDIT (LOAD DATA)
+    // =========================
+    $(document).on('click', '.regionReportEditBtn', function () {
+
+        let id = $(this).data('id');
+
+        $.ajax({
+            url: "/region-reports/edit/" + id,
+            type: "GET",
+
+            success: function (data) {
+
+                $('#e_region_id_report').val(data.region_id);
+                $('#e_admin_id_report').val(data.admin_id);
+                $('#e_employee_name_report').val(data.employee_name);
+                $('#e_designation_report').val(data.designation);
+
+                let date = data.created_at.split('T')[0];
+                $('#e_created_at_report').val(date);
+
+                $('#editFormRegionReport').attr('action', "/region-reports/update/" + id);
+
+                $('#editModalRegionReport').modal('show');
+            },
+
+            error: function () {
+                toastr.error('Error loading data');
+            }
+        });
+    });
+
+    // =========================
+    // CREATE REPORT (NO RELOAD)
+    // =========================
+    $('#createReportBtnRegionReport').click(function (e) {
+        e.preventDefault();
+
+        let formData = new FormData();
+        formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
+        formData.append('region_id', $('#create_region_id_report').val());
+        formData.append('admin_id', $('#create_admin_id_report').val());
+        formData.append('employee_name', $('#create_employee_name_report').val());
+        formData.append('designation', $('#create_designation_report').val());
+        formData.append('type', $('#create_type_region_report').val());
+        formData.append('created_at', $('#create_created_at_report').val());
+
+        $.ajax({
+            url: "{{ route('regionReport.store') }}",
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+
+            success: function (response) {
+
+                toastr.success('Report created successfully!');
+                $('#createModalRegionReport').modal('hide');
+
+                // ADD NEW ROW WITHOUT RELOAD
+                let newRow = `
+                    <tr>
+                        <td>${$visitPlanTbody.children('tr').length + 1}</td>
+                        <td>${response.region_name ?? 'N/A'}</td>
+                        <td>${response.branch_name ?? 'N/A'}</td>
+                        <td>${response.branch_id ?? 'N/A'}</td>
+                        <td>${response.employee_name ?? ''}</td>
+                        <td>${response.designation ?? ''}</td>
+                        <td>${response.created_at ?? ''}</td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-info regionReportEditBtn" data-id="${response.id}">
+                                Edit
+                            </button>
+
+                            <button type="button" class="btn btn-sm btn-danger regionReportDeleteBtn" data-id="${response.id}">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                `;
+
+                removeEmptyRow();
+                $visitPlanTbody.prepend(newRow);
+                resequenceRows();
+
+                // reset form
+                $('#createReportFormRegion')[0]?.reset();
+            },
+
+            error: function (xhr) {
+                toastr.error(xhr.responseJSON?.message || 'Failed to create report');
+            }
+        });
+    });
+    // UPDATE REPORT
+    $('#editFormRegionReport').submit(function (e) {
+        e.preventDefault();
+
+        let url = $(this).attr('action');
+        let formData = $(this).serialize();
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: formData,
+
+            success: function (response) {
+
+                toastr.success('Report updated successfully!');
+                $('#editModalRegionReport').modal('hide');
+
+                // UPDATE EXISTING ROW
+                let row = $(`button[data-id="${response.id}"]`).closest('tr');
+
+                row.find('td:eq(1)').text(response.region_name ?? 'N/A');
+                row.find('td:eq(2)').text(response.branch_name ?? 'N/A');
+                row.find('td:eq(3)').text(response.branch_id ?? 'N/A');
+                row.find('td:eq(4)').text(response.employee_name);
+                row.find('td:eq(5)').text(response.designation);
+                row.find('td:eq(6)').text(response.created_at ?? '');
+            },
+
+            error: function (xhr) {
+                toastr.error(xhr.responseJSON?.message || 'Update failed');
+            }
+        });
+    });
+
+    // DELETE REPORT 
+
+    $(document).on('click', '.regionReportDeleteBtn', function () {
+
+        if (!confirm('Are you sure you want to delete this report?')) return;
+
+        let btn = $(this);
+        let id = btn.data('id');
+
+        $.ajax({
+            url: "/region-reports/delete/" + id,
+            type: 'DELETE',
+
+            success: function () {
+
+                toastr.success('Report deleted successfully!');
+
+                // REMOVE ROW ONLY
+                btn.closest('tr').fadeOut(300, function () {
+                    $(this).remove();
+                    resequenceRows();
+                });
+            },
+
+            error: function (xhr) {
+                toastr.error(xhr.responseJSON?.message || 'Delete failed');
+            }
+        });
+    });
+
+});
+</script>
                             </div>
 
                         </div>
@@ -3188,6 +3401,15 @@
                             <script>
                                 $(document).ready(function () {
 
+                                    const $tab = $('#pills-regionpipelinereport');
+                                    const $tbody = () => $tab.find('table tbody');
+
+                                    const removeEmptyRow = function () {
+                                        $tbody().find('tr').filter(function () {
+                                            return $(this).text().trim().includes('No pipelines reports found');
+                                        }).remove();
+                                    };
+
                                     // CREATE
                                     $('#pipelineCreateBtn').click(function () {
                                         $.ajax({
@@ -3204,15 +3426,46 @@
                                                 required_services: $('#pipeline_create_required_services').val(),
                                                 remarks: $('#pipeline_create_remarks').val(),
                                             },
-                                            success: function () {
-                                                toastr.success('Created Successfully');
-                                                location.reload();
+                                            success: function (response) {
+                                                toastr.success(response.message ?? 'Created Successfully');
+                                                $('#createPipelineModal').modal('hide');
+
+                                                const pipeline = response.data ?? {};
+
+                                                removeEmptyRow();
+
+                                                let srNo = $tbody().children('tr').length + 1;
+
+                                                const newRow = `
+                                                    <tr>
+                                                        <td>${srNo}</td>
+                                                        <td>${pipeline.admin?.branch_office_name ?? 'N/A'}</td>
+                                                        <td>${pipeline.region?.region_name ?? 'N/A'}</td>
+                                                        <td>${pipeline.prospect_name ?? 'N/A'}</td>
+                                                        <td>${pipeline.sales_visit ?? ''}</td>
+                                                        <td>${pipeline.proposal_sent ?? ''}</td>
+                                                        <td>${pipeline.quotation_sent ?? ''}</td>
+                                                        <td>${pipeline.required_services ?? ''}</td>
+                                                        <td>${pipeline.remarks ?? ''}</td>
+                                                        <td>
+                                                            <button type="button" class="btn btn-sm btn-info pipelineEditBtn"
+                                                                data-id="${pipeline.id}">Edit</button>
+                                                            <button type="button" class="btn btn-sm btn-danger pipelineDeleteBtn"
+                                                                data-id="${pipeline.id}">Delete</button>
+                                                        </td>
+                                                    </tr>
+                                                `;
+
+                                                $tbody().prepend(newRow);
+                                            },
+                                            error: function (xhr) {
+                                                toastr.error(xhr.responseJSON?.message || 'Create failed');
                                             }
                                         });
                                     });
 
-                                    // EDIT LOAD
-                                    $('.pipelineEditBtn').click(function () {
+                                    // EDIT LOAD (delegated for dynamically added rows)
+                                    $(document).on('click', '.pipelineEditBtn', function () {
                                         let id = $(this).data('id');
 
                                         $.get("/pipeline-reports/edit/" + id, function (data) {
@@ -3251,31 +3504,53 @@
                                                 required_services: $('#pipeline_edit_required_services').val(),
                                                 remarks: $('#pipeline_edit_remarks').val(),
                                             },
-                                            success: function () {
-                                                toastr.success('Updated Successfully');
-                                                location.reload();
+                                            success: function (response) {
+                                                toastr.success(response.message ?? 'Updated Successfully');
+                                                $('#editPipelineModal').modal('hide');
+
+                                                const pipeline = response.data ?? {};
+                                                const row = $(`button.pipelineEditBtn[data-id="${pipeline.id}"]`).closest('tr');
+
+                                                // Column indexes: 0 Sr# | 1 Branch | 2 Region | 3 Prospect | 4 Sales | 5 Proposal | 6 Quotation | 7 Required | 8 Remarks
+                                                row.find('td:eq(1)').text(pipeline.admin?.branch_office_name ?? 'N/A');
+                                                row.find('td:eq(2)').text(pipeline.region?.region_name ?? 'N/A');
+                                                row.find('td:eq(3)').text(pipeline.prospect_name ?? 'N/A');
+                                                row.find('td:eq(4)').text(pipeline.sales_visit ?? '');
+                                                row.find('td:eq(5)').text(pipeline.proposal_sent ?? '');
+                                                row.find('td:eq(6)').text(pipeline.quotation_sent ?? '');
+                                                row.find('td:eq(7)').text(pipeline.required_services ?? '');
+                                                row.find('td:eq(8)').text(pipeline.remarks ?? '');
+                                            },
+                                            error: function (xhr) {
+                                                toastr.error(xhr.responseJSON?.message || 'Update failed');
                                             }
                                         });
                                     });
 
-                                    // DELETE
-                                    $('.pipelineDeleteBtn').click(function () {
-                                        if (confirm('Delete this record?')) {
-                                            let id = $(this).data('id');
+                                    // DELETE (delegated for dynamically added rows)
+                                    $(document).on('click', '.pipelineDeleteBtn', function () {
+                                        if (!confirm('Delete this record?')) return;
 
-                                            $.ajax({
-                                                url: "/pipeline-reports/delete/" + id,
-                                                type: "POST",
-                                                data: {
-                                                    _token: "{{ csrf_token() }}",
-                                                    _method: "DELETE"
-                                                },
-                                                success: function () {
-                                                    toastr.success('Deleted Successfully');
-                                                    location.reload();
-                                                }
-                                            });
-                                        }
+                                        let id = $(this).data('id');
+                                        let $btn = $(this);
+
+                                        $.ajax({
+                                            url: "/pipeline-reports/delete/" + id,
+                                            type: "POST",
+                                            data: {
+                                                _token: "{{ csrf_token() }}",
+                                                _method: "DELETE"
+                                            },
+                                            success: function (response) {
+                                                toastr.success(response.message ?? 'Deleted Successfully');
+                                                $btn.closest('tr').fadeOut(300, function () {
+                                                    $(this).remove();
+                                                });
+                                            },
+                                            error: function (xhr) {
+                                                toastr.error(xhr.responseJSON?.message || 'Delete failed');
+                                            }
+                                        });
                                     });
 
                                 });
@@ -3350,6 +3625,21 @@
 
                             <script>
                                 $(document).ready(function () {
+                                    const $tab = $('#pills-regionvisitpipelinereport');
+                                    const $tbody = () => $tab.find('table tbody');
+
+                                    const formatDate = function (value) {
+                                        if (!value) return '';
+                                        // Laravel/Eloquent may send ISO strings like "2026-04-29T00:00:00.000000Z"
+                                        return value.toString().split('T')[0];
+                                    };
+
+                                    const removeEmptyRow = function () {
+                                        $tbody().find('tr').filter(function () {
+                                            return $(this).text().trim().includes('No pipelines reports found');
+                                        }).remove();
+                                    };
+
                                     // Edit functionality
                                     $(document).on('click', '.visitPipelineEditBtn', function () {
                                         let id = $(this).data('id');
@@ -3399,12 +3689,78 @@
                                             processData: false,
                                             contentType: false,
                                             success: function (response) {
-                                                toastr.success('Report created successfully!');
+                                                toastr.success(response.message ?? 'Report created successfully!');
                                                 $('#createVisitPipelineModal').modal('hide');
-                                                location.reload();
+
+                                                const report = response.data ?? {};
+                                                removeEmptyRow();
+
+                                                let srNo = $tbody().children('tr').length + 1;
+
+                                                const newRow = `
+                                                    <tr>
+                                                        <td>${srNo}</td>
+                                                        <td>${report.customer_name ?? 'N/A'}</td>
+                                                        <td>${report.branch_office_name ?? 'N/A'}</td>
+                                                        <td>${report.region?.region_name ?? 'N/A'}</td>
+                                                        <td>${report.sales_visit ?? ''}</td>
+                                                        <td>${report.proposal_sent ?? ''}</td>
+                                                        <td>${report.quotation_sent ?? ''}</td>
+                                                        <td>${report.guard_deployed_by_ho ?? ''}</td>
+                                                        <td>${report.contractual_value ?? ''}</td>
+                                                        <td>${report.total_margin ?? ''}</td>
+                                                        <td>${formatDate(report.created_at)}</td>
+                                                        <td>
+                                                            <button type="button" class="btn btn-sm btn-info visitPipelineEditBtn"
+                                                                data-id="${report.id}">Edit</button>
+                                                            <button type="button" class="btn btn-sm btn-danger visitPipelineDeleteBtn"
+                                                                data-id="${report.id}">Delete</button>
+                                                        </td>
+                                                    </tr>
+                                                `;
+
+                                                $tbody().prepend(newRow);
                                             },
                                             error: function (xhr) {
                                                 toastr.error('Error: ' + (xhr.responseJSON?.message || 'Failed to create report'));
+                                            }
+                                        });
+                                    });
+
+                                    // UPDATE (prevent full page refresh)
+                                    $('#editVisitPipelineForm').submit(function (e) {
+                                        e.preventDefault();
+
+                                        let url = $(this).attr('action');
+                                        let formData = $(this).serialize();
+
+                                        $.ajax({
+                                            url: url,
+                                            type: 'POST',
+                                            data: formData,
+                                            success: function (response) {
+                                                toastr.success(response.message ?? 'Report updated successfully!');
+                                                $('#editVisitPipelineModal').modal('hide');
+
+                                                const report = response.data ?? {};
+                                                const row = $(`button.visitPipelineEditBtn[data-id="${report.id}"]`).closest('tr');
+
+                                                // Column indexes:
+                                                // 0 Sr# | 1 Customer | 2 Branch | 3 Region | 4 Sales | 5 Proposal | 6 Quotation | 7 Guard |
+                                                // 8 Contractual | 9 Total Margin | 10 Date | 11 Actions
+                                                row.find('td:eq(1)').text(report.customer_name ?? 'N/A');
+                                                row.find('td:eq(2)').text(report.branch_office_name ?? 'N/A');
+                                                row.find('td:eq(3)').text(report.region?.region_name ?? 'N/A');
+                                                row.find('td:eq(4)').text(report.sales_visit ?? '');
+                                                row.find('td:eq(5)').text(report.proposal_sent ?? '');
+                                                row.find('td:eq(6)').text(report.quotation_sent ?? '');
+                                                row.find('td:eq(7)').text(report.guard_deployed_by_ho ?? '');
+                                                row.find('td:eq(8)').text(report.contractual_value ?? '');
+                                                row.find('td:eq(9)').text(report.total_margin ?? '');
+                                                row.find('td:eq(10)').text(formatDate(report.created_at));
+                                            },
+                                            error: function (xhr) {
+                                                toastr.error(xhr.responseJSON?.message || 'Update failed');
                                             }
                                         });
                                     });
@@ -3413,6 +3769,7 @@
                                     $(document).on('click', '.visitPipelineDeleteBtn', function () {
                                         if (confirm('Are you sure you want to delete this report?')) {
                                             let id = $(this).data('id');
+                                            let $btn = $(this);
 
                                             $.ajaxSetup({
                                                 headers: {
@@ -3423,8 +3780,10 @@
                                                 url: "/visit-reports/delete/" + id,
                                                 type: 'DELETE',
                                                 success: function (response) {
-                                                    toastr.success('Report deleted successfully!');
-                                                    location.reload();
+                                                    toastr.success(response.message ?? 'Report deleted successfully!');
+                                                    $btn.closest('tr').fadeOut(300, function () {
+                                                        $(this).remove();
+                                                    });
                                                 },
                                                 error: function (xhr, status, error) {
                                                     toastr.error('Delete failed: ' + (xhr.responseJSON?.message || error));
@@ -5712,6 +6071,10 @@
                         <input type="text" name="designation" id="create_designation" class="form-control" required>
                     </div>
                     <div class="mb-3">
+                        <label class="form-label">No Of Sales</label>
+                        <input type="text" name="monday" id="create_monday" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
                         <label class="form-label">Date</label>
                         <input type="date" name="created_at" id="create_created_at" class="form-control" required>
                     </div>
@@ -5771,6 +6134,10 @@
                     <div class="mb-3">
                         <label>Designation</label>
                         <input type="text" name="designation" id="e_designation" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label>No Of Sales</label>
+                        <input type="text" name="monday" id="e_monday" class="form-control">
                     </div>
                     <div class="mb-3">
                         <label>Date</label>

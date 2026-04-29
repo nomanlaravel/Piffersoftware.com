@@ -2399,6 +2399,7 @@ class AdminController extends Controller
         return redirect()->back();
     }
 
+    // STORE (CREATE)
     public function storeRegionReport(Request $request)
     {
         $request->validate([
@@ -2407,11 +2408,12 @@ class AdminController extends Controller
             'employee_name' => 'required|string|max:255',
             'designation' => 'required|string|max:255',
             'created_at' => 'required|date',
+            'monday' => 'nullable|string|max:255',
         ]);
 
         $admin = Admin::findOrFail($request->admin_id);
 
-        RegionReport::create([
+        $report = RegionReport::create([
             'admin_id' => $request->admin_id,
             'region_id' => $request->region_id,
             'branch_office_name' => $admin->branch_office_name,
@@ -2420,31 +2422,46 @@ class AdminController extends Controller
             'designation' => $request->designation,
             'type' => $request->type,
             'created_at' => $request->created_at,
+            'monday' => $request->monday,
         ]);
 
         return response()->json([
             'success' => true,
-            'message' => 'Report created successfully'
+            'id' => $report->id,
+            'region_name' => $report->region->region_name ?? 'N/A',
+            'branch_name' => $report->branch_office_name ?? 'N/A',
+            'branch_id' => $report->branch_id,
+            'employee_name' => $report->employee_name,
+            'designation' => $report->designation,
+            'created_at' => $report->created_at->format('Y-m-d'),
+            'monday' => $report->monday,
         ]);
     }
-
+    // EDIT (GET SINGLE RECORD)
     public function editRegionReport($id)
     {
         $report = RegionReport::findOrFail($id);
-        return response()->json($report);
-    }
 
+        return response()->json([
+            'id' => $report->id,
+            'region_id' => $report->region_id,
+            'admin_id' => $report->admin_id,
+            'employee_name' => $report->employee_name,
+            'designation' => $report->designation,
+            'created_at' => $report->created_at->format('Y-m-d'),
+            'monday' => $report->monday,
+        ]);
+    }
+    // UPDATE
     public function updateRegionReport(Request $request, $id)
     {
-
         $request->validate([
             'region_id' => 'required|exists:regions,id',
             'admin_id' => 'required|exists:admins,id',
-            'branch_office_name' => 'nullable|string|max:255',
-            'branch_id' => 'nullable|unsignedBigInteger',
             'employee_name' => 'required|string|max:255',
             'designation' => 'required|string|max:255',
             'created_at' => 'required|date',
+            'monday' => 'nullable|string|max:255',
         ]);
 
         $report = RegionReport::findOrFail($id);
@@ -2458,19 +2475,31 @@ class AdminController extends Controller
             'employee_name' => $request->employee_name,
             'designation' => $request->designation,
             'created_at' => $request->created_at,
+            'monday' => $request->monday,
         ]);
 
-        return back()->with('success', 'Report updated successfully');
+        return response()->json([
+            'success' => true,
+            'id' => $report->id,
+            'region_name' => $report->region->region_name ?? 'N/A',
+            'branch_name' => $report->branch_office_name ?? 'N/A',
+            'branch_id' => $report->branch_id,
+            'employee_name' => $report->employee_name,
+            'designation' => $report->designation,
+            'created_at' => $report->created_at->format('Y-m-d'),
+            'monday' => $request->monday,
+        ]);
     }
-
-    public function deleteRegionReport(Request $request, $id)
+    // DELETE
+ 
+    public function deleteRegionReport($id)
     {
         $report = RegionReport::findOrFail($id);
         $report->delete();
 
         return response()->json([
             'success' => true,
-            'message' => 'Report deleted successfully'
+            'message' => 'Report deleted successfully',
         ]);
     }
     public function export_region_report(Request $request)
@@ -2581,10 +2610,12 @@ class AdminController extends Controller
         'remarks' => $request->remarks
     ]);
 
+    $pipeline = PipelineReport::with(['region', 'admin'])->findOrFail($pipeline->id);
+
     return response()->json([
         'success' => true,
         'message' => 'Report created successfully',
-        'data' => $pipeline
+        'data' => $pipeline,
     ]);
 }
 
@@ -2624,9 +2655,12 @@ class AdminController extends Controller
             'remarks' => $request->remarks
         ]);
 
+        $updatedPipeline = PipelineReport::with(['region', 'admin'])->findOrFail($id);
+
         return response()->json([
             'success' => true,
-            'message' => 'Updated successfully'
+            'message' => 'Updated successfully',
+            'data' => $updatedPipeline,
         ]);
     }
 
@@ -2700,7 +2734,7 @@ class AdminController extends Controller
 
         $admin = Admin::findOrFail($request->admin_id);
 
-        VisitPipelineReport::create([
+        $report = VisitPipelineReport::create([
             'customer_name' => $request->customer_name,
             'admin_id' => $request->admin_id,
             'region_id' => $request->region_id,
@@ -2714,9 +2748,12 @@ class AdminController extends Controller
             'created_at' => $request->created_at,
         ]);
 
+        $report = VisitPipelineReport::with(['region', 'admin'])->findOrFail($report->id);
+
         return response()->json([
             'success' => true,
-            'message' => 'Report created successfully'
+            'message' => 'Report created successfully',
+            'data' => $report,
         ]);
     }
 
@@ -2759,6 +2796,16 @@ class AdminController extends Controller
             'contractual_value' => $request->contractual_value,
             'created_at' => $request->created_at,
         ]);
+
+        $updated = VisitPipelineReport::with(['region', 'admin'])->findOrFail($id);
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Report updated successfully',
+                'data' => $updated,
+            ]);
+        }
 
         return back()->with('success', 'Report updated successfully');
     }
@@ -3143,7 +3190,7 @@ class AdminController extends Controller
         
         $callback = function() use ($sales) {
             $file = fopen('php://output', 'w');
-            fputcsv($file, ['Sr#', 'Region', 'Branch Name', 'Branch ID', 'Employee', 'Designation', 'Date']);
+            fputcsv($file, ['Sr#', 'Region', 'Branch Name', 'Branch ID', 'Employee', 'Designation', 'monday', 'Date']);
             
             foreach ($sales as $index => $sale) {
                 fputcsv($file, [
