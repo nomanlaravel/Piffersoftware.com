@@ -259,7 +259,7 @@
                         <th>Branch Id</th>
                         <th>Employee Name</th>
                         <th>Designation</th>
-                        <th>No Of Sales</th>
+                        <th>No Of Visit</th>
                         <th>Date</th>
                         <th>Day</th>
                     </tr>

@@ -2514,6 +2514,11 @@ class AdminController extends Controller
             });
         }
 
+          // EMPLOYEE FILTER
+    if ($request->filled('employee_name') && $request->employee_name != 'all') {
+        $query->where('employee_name', $request->employee_name);
+    }
+
         // DATE RANGE FILTER
         if ($request->filled('date_range')) {
             try {
@@ -2553,6 +2558,11 @@ class AdminController extends Controller
                 $q->where('region_name', $request->region);
             });
         }
+
+              // EMPLOYEE FILTER
+    if ($request->filled('employee_name') && $request->employee_name != 'all') {
+        $query->where('employee_name', $request->employee_name);
+    }
 
         // DATE RANGE FILTER
         if ($request->filled('date_range')) {
@@ -2687,6 +2697,11 @@ class AdminController extends Controller
                 $q->where('region_name', $request->region);
             });
         }
+
+              //Prospect FILTER
+    if ($request->filled('prospect_name') && $request->prospect_name != 'all') {
+        $query->where('prospect_name', $request->prospect_name);
+    }
 
         // DATE RANGE FILTER
         if ($request->filled('date_range')) {
@@ -2832,6 +2847,11 @@ class AdminController extends Controller
                 $q->where('region_name', $request->region);
             });
         }
+
+                  //Customer FILTER
+    if ($request->filled('customer_name') && $request->customer_name != 'all') {
+        $query->where('customer_name', $request->customer_name);
+    }
 
         // DATE RANGE FILTER
         if ($request->filled('date_range')) {
