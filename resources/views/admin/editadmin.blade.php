@@ -2858,7 +2858,7 @@
                                             <th>Branch ID</th>
                                             <th>Employee Name</th>
                                             <th>Designation</th>
-                                            <th>No Of Sales</th>
+                                            <th>No Of Visit</th>
                                             <th>Date</th>
                                             <th>Day</th>
                                             <th>Actions</th>
@@ -6071,7 +6071,7 @@ $(document).ready(function () {
                         <input type="text" name="designation" id="create_designation" class="form-control" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">No Of Sales</label>
+                        <label class="form-label">No Of Visit</label>
                         <input type="text" name="monday" id="create_monday" class="form-control" required>
                     </div>
                     <div class="mb-3">
@@ -6136,7 +6136,7 @@ $(document).ready(function () {
                         <input type="text" name="designation" id="e_designation" class="form-control">
                     </div>
                     <div class="mb-3">
-                        <label>No Of Sales</label>
+                        <label>No Of Visit</label>
                         <input type="text" name="monday" id="e_monday" class="form-control">
                     </div>
                     <div class="mb-3">
