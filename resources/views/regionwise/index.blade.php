@@ -259,7 +259,9 @@
                         <th>Branch Id</th>
                         <th>Employee Name</th>
                         <th>Designation</th>
+                        <th>No Of Sales</th>
                         <th>Date</th>
+                        <th>Day</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -285,7 +287,9 @@
                             <td>{{ $sale->branch_id }}</td>
                             <td>{{ $sale->employee_name }}</td>
                             <td>{{ $sale->designation }}</td>
+                            <td>{{ $sale->monday }}</td>
                             <td>{{ $sale->created_at }}</td>
+                            <td>{{ \Carbon\Carbon::parse($sale->created_at)->format('l') }}</td>
                         </tr>
                     @endforeach
                 </tbody>
