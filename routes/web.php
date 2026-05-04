@@ -1005,11 +1005,8 @@ Route::get('/test-edit-report-notification', function () {
     }
 });
 
-// Test Route for Feedback Flow Template
-
-// WhatsApp Flow Response Endpoint (NeuAPIx Webhook)
+Route::post('/admin/whatsapp/send-batch', [\App\Http\Controllers\Api\WhatsAppFlowController::class, 'sendBatch'])->name('admin.whatsapp.send_batch');
 Route::post('/whatsapp/flow-response', [\App\Http\Controllers\Api\WhatsAppFlowController::class, 'handleFlowResponse']);
-
 
 Route::get('/test-feedback-flow', function () {
 

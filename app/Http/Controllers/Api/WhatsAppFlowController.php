@@ -322,6 +322,48 @@ class WhatsAppFlowController extends Controller
         return null;
     }
 
+
+    /**
+     * Send WhatsApp flows in batches (AJAX compatible).
+     */
+    public function sendBatch(Request $request)
+    {
+        $limit = 50; // Batch size as requested
+        $offset = $request->input('offset', 0);
+        
+        $customers = Customer::orderBy('id')->offset($offset)->limit($limit)->get();
+        $totalCustomers = Customer::count();
+        
+        $results = [];
+        $manager = app(\App\Services\WhatsApp\WhatsAppNotificationManager::class);
+
+        foreach ($customers as $customer) {
+            try {
+                $phone = $customer->phone ?? $customer->poc_cell;
+                if ($phone) {
+                    $manager->sendFeedbackFlow(
+                        $phone,
+                        $customer->customers_name,
+                        $customer
+                    );
+                    $results[] = ['id' => $customer->id, 'status' => 'success'];
+                } else {
+                    $results[] = ['id' => $customer->id, 'status' => 'skipped', 'reason' => 'No phone'];
+                }
+            } catch (\Exception $e) {
+                $results[] = ['id' => $customer->id, 'status' => 'error', 'message' => $e->getMessage()];
+            }
+        }
+
+        return response()->json([
+            'processed' => count($results),
+            'next_offset' => $offset + count($customers),
+            'total' => $totalCustomers,
+            'is_finished' => ($offset + count($customers)) >= $totalCustomers,
+            'batch_results' => $results
+        ]);
+    }
+
     /**
      * Normalize phone number (strip non-digits, handle Pakistan format).
      */
