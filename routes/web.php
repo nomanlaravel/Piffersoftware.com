@@ -1006,6 +1006,9 @@ Route::get('/test-edit-report-notification', function () {
 });
 
 Route::post('/admin/whatsapp/send-batch', [\App\Http\Controllers\Api\WhatsAppFlowController::class, 'sendBatch'])->name('admin.whatsapp.send_batch');
+Route::get('/admin/whatsapp/templates', [\App\Http\Controllers\Api\WhatsAppFlowController::class, 'getApprovedTemplates'])->name('admin.whatsapp.templates');
+Route::post('/admin/whatsapp/templates/store', [\App\Http\Controllers\Api\WhatsAppFlowController::class, 'storeTemplate'])->name('admin.whatsapp.templates.store');
+Route::delete('/admin/whatsapp/templates/{id}', [\App\Http\Controllers\Api\WhatsAppFlowController::class, 'deleteTemplate'])->name('admin.whatsapp.templates.delete');
 Route::post('/whatsapp/flow-response', [\App\Http\Controllers\Api\WhatsAppFlowController::class, 'handleFlowResponse']);
 
 Route::get('/test-feedback-flow', function () {

@@ -324,6 +324,59 @@ class WhatsAppFlowController extends Controller
 
 
     /**
+     * Fetch approved templates from the database.
+     */
+    public function getApprovedTemplates(Request $request)
+    {
+        $templates = \App\Models\WhatsappTemplate::approved()
+            ->orderBy('label')
+            ->get(['id', 'name', 'label', 'description']);
+
+        return response()->json([
+            'status' => 'success',
+            'templates' => $templates
+        ]);
+    }
+
+    /**
+     * Store a new template.
+     */
+    public function storeTemplate(Request $request)
+    {
+        $request->validate([
+            'name'  => 'required|string|unique:whatsapp_templates,name',
+            'label' => 'required|string',
+        ]);
+
+        $template = \App\Models\WhatsappTemplate::create([
+            'name'        => trim($request->name),
+            'label'       => trim($request->label),
+            'description' => $request->description ?? null,
+            'status'      => 'approved',
+        ]);
+
+        return response()->json([
+            'status'   => 'success',
+            'message'  => 'Template added successfully.',
+            'template' => $template
+        ]);
+    }
+
+    /**
+     * Delete a template.
+     */
+    public function deleteTemplate(Request $request, $id)
+    {
+        $template = \App\Models\WhatsappTemplate::findOrFail($id);
+        $template->delete();
+
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'Template deleted.'
+        ]);
+    }
+
+    /**
      * Send WhatsApp flows in batches (AJAX compatible).
      */
     public function sendBatch(Request $request)
@@ -331,8 +384,43 @@ class WhatsAppFlowController extends Controller
         $limit = 50; // Batch size as requested
         $offset = $request->input('offset', 0);
         
-        $customers = Customer::orderBy('id')->offset($offset)->limit($limit)->get();
-        $totalCustomers = Customer::count();
+        $sendToAll = $request->input('send_to_all', 1);
+        $customersInput = $request->input('customers', []);
+        $excludedCustomers = $request->input('excluded_customers', []);
+        
+        $whatsappMessage = $request->input('whatsapp_message', '');
+        $templateName = $request->input('template_name', '');
+
+        \Illuminate\Support\Facades\Log::info("sendBatch Triggered", [
+            'send_to_all' => $sendToAll,
+            'customers_input' => $customersInput,
+            'excluded_customers' => $excludedCustomers,
+            'offset' => $offset,
+            'whatsapp_message' => $whatsappMessage,
+            'template_name' => $templateName
+        ]);
+
+        $query = Customer::query();
+
+        if ($sendToAll == 0) {
+            if (empty($customersInput)) {
+                return response()->json([
+                    'processed' => 0,
+                    'next_offset' => 0,
+                    'total' => 0,
+                    'is_finished' => true,
+                    'batch_results' => []
+                ]);
+            }
+            $query->whereIn('id', $customersInput);
+        } else {
+            if (!empty($excludedCustomers)) {
+                $query->whereNotIn('id', $excludedCustomers);
+            }
+        }
+
+        $totalCustomers = $query->count();
+        $customers = $query->orderBy('id')->offset($offset)->limit($limit)->get();
         
         $results = [];
         $manager = app(\App\Services\WhatsApp\WhatsAppNotificationManager::class);
@@ -341,12 +429,60 @@ class WhatsAppFlowController extends Controller
             try {
                 $phone = $customer->phone ?? $customer->poc_cell;
                 if ($phone) {
-                    $manager->sendFeedbackFlow(
-                        $phone,
-                        $customer->customers_name,
-                        $customer
-                    );
-                    $results[] = ['id' => $customer->id, 'status' => 'success'];
+                    if (empty($templateName) || $templateName === 'none') {
+                        // Send free text only
+                        if (!empty($whatsappMessage)) {
+                            $manager->send(
+                                phone: $phone,
+                                message: $whatsappMessage,
+                                eventType: 'custom_bulk_message',
+                                user: $customer
+                            );
+                        }
+                    } elseif ($templateName === 'trigger_feedbacks_flow') {
+                        // Send optional custom message before the flow
+                        if (!empty($whatsappMessage)) {
+                            $manager->send(
+                                phone: $phone,
+                                message: $whatsappMessage,
+                                eventType: 'custom_bulk_message',
+                                user: $customer
+                            );
+                        }
+                        // Standard flow
+                        $manager->sendFeedbackFlow(
+                            $phone,
+                            $customer->customers_name,
+                            $customer
+                        );
+                    } elseif ($templateName === 'customerwelcome') {
+                        if (!empty($whatsappMessage)) {
+                            $manager->send(phone: $phone, message: $whatsappMessage, eventType: 'custom_bulk_message', user: $customer);
+                        }
+                        $manager->sendWelcome($phone, $customer->customers_name, null, null, $customer);
+                    } elseif ($templateName === 'welcome_message_new') {
+                        if (!empty($whatsappMessage)) {
+                            $manager->send(phone: $phone, message: $whatsappMessage, eventType: 'custom_bulk_message', user: $customer);
+                        }
+                        $manager->send(phone: $phone, message: 'Welcome', eventType: 'welcome', user: $customer, templateName: 'welcome_message_new', templateParameters: [['type' => 'text', 'text' => $customer->customers_name]]);
+                    } else {
+                        // Send custom template
+                        $params = !empty($whatsappMessage) 
+                            ? [['type' => 'text', 'text' => $whatsappMessage]]
+                            : [['type' => 'text', 'text' => $customer->customers_name]];
+                            
+                        $manager->send(
+                            phone: $phone,
+                            message: $whatsappMessage ?: 'Custom Template Message',
+                            eventType: 'custom_template',
+                            user: $customer,
+                            templateName: $templateName,
+                            templateParameters: $params,
+                            category: 'UTILITY'
+                        );
+                    }
+                    
+                    $results[] = ['id' => $customer->id, 'phone' => $phone, 'status' => 'success'];
                 } else {
                     $results[] = ['id' => $customer->id, 'status' => 'skipped', 'reason' => 'No phone'];
                 }
@@ -354,6 +490,8 @@ class WhatsAppFlowController extends Controller
                 $results[] = ['id' => $customer->id, 'status' => 'error', 'message' => $e->getMessage()];
             }
         }
+
+        \Illuminate\Support\Facades\Log::info("sendBatch Results", ['results' => $results]);
 
         return response()->json([
             'processed' => count($results),
