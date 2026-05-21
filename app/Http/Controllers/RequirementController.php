@@ -45,6 +45,9 @@ class RequirementController extends Controller
         DB::beginTransaction();
 
         try {
+            // #region agent log
+            $this->debugLog('RequirementController.php:storeRequirement:entry', 'storeRequirement started', ['hypothesisId' => 'A', 'has_tec_pro_attach' => $request->hasFile('tec_pro_attach'), 'has_tec_Pro_Attach' => $request->hasFile('tec_Pro_Attach')]);
+            // #endregion
 
             $requirementData = $this->normalizeRequirementPayload($request->except('_token'));
 
@@ -53,6 +56,7 @@ class RequirementController extends Controller
                 'visitingCardFront', 'visitingCardBack', 'supportingRfqAttach',
                 'rfqDocAttach', 'finPro', 'email_attachment', 'listComAttach', 'scanRecAttach',
                 'grevAttach', 'bidAttach', 'competitorAttach',
+                'tec_pro_attach',
             ];
 
             foreach ($requirementImageFields as $field) {
@@ -63,6 +67,17 @@ class RequirementController extends Controller
                     $requirementData[$field] = 'uploads/requirements/' . $file_name;
                 }
             }
+
+            // #region agent log
+            $arrayKeys = array_keys(array_filter($requirementData, 'is_array'));
+            $this->debugLog('RequirementController.php:storeRequirement:before_create', 'payload keys before create', [
+                'hypothesisId' => 'G',
+                'runId' => 'post-fix',
+                'keyCount' => count($requirementData),
+                'arrayKeys' => $arrayKeys,
+                'has_tec_pro_attach' => array_key_exists('tec_pro_attach', $requirementData),
+            ]);
+            // #endregion
 
             // Create the requirement
             $requirement = Requirement::create($requirementData);
@@ -135,7 +150,7 @@ class RequirementController extends Controller
                 ];
 
                 $requirementAddressFields = [
-                    'builidng_attach', 'attachments'
+                    'building_attach', 'attachments'
                 ];
 
                 foreach ($requirementAddressFields as $field) {
@@ -160,21 +175,28 @@ class RequirementController extends Controller
                 'guard_required_monthly','guard_required_dialy',
                 'no_of_days_guard_required','guard_notes'
             ]);
+$requirementGuardDataArray = [];
 
-            $requirementGuardDataArray = [];
-            foreach ($this->iterableInput($requirementGuardData['guard_category'] ?? null) as $index => $guardCategory) {
-                $requirementGuardDataRow = [
-                    'guard_category' => $guardCategory,
-                    'guard_quantity' => $requirementGuardData['guard_quantity'][$index],
-                    'guard_shift_timing' => $requirementGuardData['guard_shift_timing'][$index],
-                    'guard_food' => $requirementGuardData['guard_food'][$index],
-                    'guard_accomodation' => $requirementGuardData['guard_accomodation'][$index],
-                    'guard_transportation' => $requirementGuardData['guard_transportation'][$index],
-                    'guard_required_monthly' => $requirementGuardData['guard_required_monthly'][$index],
-                    'guard_required_dialy' => $requirementGuardData['guard_required_dialy'][$index] ?? null,
-                    'no_of_days_guard_required' => $requirementGuardData['no_of_days_guard_required'][$index],
-                    'guard_notes' => $requirementGuardData['guard_notes'][$index],
-                ];
+// Indexed array ko reindex karo gaps ke liye
+$guardCategories = array_values(
+    is_array($requirementGuardData['guard_category'] ?? null)
+        ? $requirementGuardData['guard_category']
+        : []
+);
+
+foreach ($guardCategories as $index => $guardCategory) {
+    $requirementGuardDataRow = [
+        'guard_category' => $guardCategory ?? null,
+        'guard_quantity' => $requirementGuardData['guard_quantity'][$index] ?? null,
+        'guard_shift_timing' => $requirementGuardData['guard_shift_timing'][$index] ?? null,
+        'guard_food' => $requirementGuardData['guard_food'][$index] ?? null,
+        'guard_accomodation' => $requirementGuardData['guard_accomodation'][$index] ?? null,
+        'guard_transportation' => $requirementGuardData['guard_transportation'][$index] ?? null,
+        'guard_required_monthly' => $requirementGuardData['guard_required_monthly'][$index] ?? null,
+        'guard_required_dialy' => $requirementGuardData['guard_required_dialy'][$index] ?? null,
+        'no_of_days_guard_required' => $requirementGuardData['no_of_days_guard_required'][$index] ?? null,
+        'guard_notes' => $requirementGuardData['guard_notes'][$index] ?? null,
+    ];
 
                 $requirementGuardFields = [
                     'financial_working_excel_attach', 'financial_working_word_attach' ,
@@ -215,6 +237,7 @@ class RequirementController extends Controller
                     'vehicle_ownership' => $vehicleOwnership,
                     'vehicle_type' => $requirementVehicleData['vehicle_type'][$index],
                     'vehicle_category' => $requirementVehicleData['vehicle_category'][$index],
+                    'vehicle_required' => $requirementVehicleData['vehicle_required'][$index] ?? null,
                     'vehicle_mantenance' => $requirementVehicleData['vehicle_mantenance'][$index],
                     'vehicle_fuel' => $requirementVehicleData['vehicle_fuel'][$index],
                     'vehicle_rate_per_km' => $requirementVehicleData['vehicle_rate_per_km'][$index],
@@ -233,6 +256,7 @@ class RequirementController extends Controller
                     'vehicle_duty_end_date' => $requirementVehicleData['vehicle_duty_end_date'][$index],
                     'vehicle_duty_start_time' => $requirementVehicleData['vehicle_duty_start_time'][$index],
                     'vehicle_duty_end_time' => $requirementVehicleData['vehicle_duty_end_time'][$index],
+                    'vehicle_shift_duration' => $requirementVehicleData['vehicle_shift_duration'][$index] ?? null,
                     'vehicle_no_of_shifts' => $requirementVehicleData['vehicle_no_of_shifts'][$index],
                     'vehicle_food_by_client' => $requirementVehicleData['vehicle_food_by_client'][$index],
                     'vehicle_guard_category' => $requirementVehicleData['vehicle_guard_category'][$index],
@@ -1209,7 +1233,7 @@ class RequirementController extends Controller
                 ];
 
 
-                $requirementLhiddenDataArray[] = $requirementLshownDataRow;
+                $requirementLhiddenDataArray[] = $requirementLhiddenDataRow; // ✅ hidden ka apna row
             }
 
             $requirement->lumpsumhiddenwht()->createMany($requirementLhiddenDataArray);
@@ -1236,16 +1260,25 @@ class RequirementController extends Controller
                     'reverseQuantity' => $requirementreverseworkingData['reverseQuantity'][$index],
                 ];
 
-
                 $requirementreverseworkingDataArray[] = $requirementreverseworkingDataRow;
             }
+
             $requirement->complainwithreverseworking()->createMany($requirementreverseworkingDataArray);
 
             DB::commit();
 
+            // #region agent log
+            $this->debugLog('RequirementController.php:storeRequirement:success', 'storeRequirement committed', ['hypothesisId' => 'A', 'requirementId' => $requirement->id]);
+            // #endregion
+
             return redirect()->back()->with('success', 'Requirement saved successfully.');
+
         } catch (\Exception $e) {
             DB::rollback();
+
+            // #region agent log
+            $this->debugLog('RequirementController.php:storeRequirement:catch', 'storeRequirement failed', ['hypothesisId' => 'A', 'error' => $e->getMessage(), 'line' => $e->getLine()]);
+            // #endregion
 
             Log::error('An error occurred while saving Requirements data: ' . $e->getMessage());
 
@@ -1280,6 +1313,10 @@ class RequirementController extends Controller
     DB::beginTransaction();
 
     try {
+        // #region agent log
+        $this->debugLog('RequirementController.php:updateRequirements:entry', 'updateRequirements started', ['hypothesisId' => 'D', 'id' => $id, 'has_tec_pro_attach' => $request->hasFile('tec_pro_attach')]);
+        // #endregion
+
         $requirement = Requirement::findOrFail($id);
          $requirementData = $this->normalizeRequirementPayload($request->except('_token'));
 
@@ -1288,6 +1325,8 @@ class RequirementController extends Controller
                 'visitingCardFront', 'visitingCardBack', 'supportingRfqAttach',
                 'rfqDocAttach', 'finPro', 'email_attachment', 'listComAttach', 'scanRecAttach',
                 'grevAttach', 'bidAttach', 'competitorAttach',
+                'tec_pro_attach',
+
             ];
 
             foreach ($requirementImageFields as $field) {
@@ -1299,8 +1338,7 @@ class RequirementController extends Controller
                 }
             }
 
-            // Create the requirement
-            $requirement = Requirement::create($requirementData);
+            $requirement->update($requirementData); 
 
             //Requirements Addresses
             $requirementPocData = $request->only([
@@ -1344,7 +1382,7 @@ class RequirementController extends Controller
 
                 $requirementPocDataArray[] = $requirementPocDataRow;
             }
-
+            $requirement->requirementpocs()->delete();
             $requirement->requirementpocs()->createMany($requirementPocDataArray);
 
             //Requirements Addresses
@@ -1371,7 +1409,7 @@ foreach ($this->iterableInput($requirementAddressData['office_no'] ?? null) as $
 
 
                 $requirementAddressFields = [
-                    'builidng_attach', 'attachments'
+                    'building_attach', 'attachments'
                 ];
 
                 foreach ($requirementAddressFields as $field) {
@@ -1386,7 +1424,7 @@ foreach ($this->iterableInput($requirementAddressData['office_no'] ?? null) as $
 
                 $requirementAddressDataArray[] = $requirementAddressDataRow;
             }
-
+            $requirement->requirementaddress()->delete();
             $requirement->requirementaddress()->createMany($requirementAddressDataArray);
 
             //Men Guarding Services
@@ -1427,7 +1465,7 @@ foreach ($this->iterableInput($requirementAddressData['office_no'] ?? null) as $
 
                 $requirementGuardDataArray[] = $requirementGuardDataRow;
             }
-
+            $requirement->requirementguard()->delete();
             $requirement->requirementguard()->createMany($requirementGuardDataArray);
 
 
@@ -1443,43 +1481,44 @@ foreach ($this->iterableInput($requirementAddressData['office_no'] ?? null) as $
                 'vehicle_guard_req_monthly','vehicle_guard_req_dialy','vehicle_guard_no','vehicle_guard_notes'
             ]);
 
-            $requirementVehicleDataArray = [];
-            foreach ($this->iterableInput($requirementVehicleData['vehicle_ownership'] ?? null) as $index => $vehicleOwnership) {
-                $requirementVehicleDataRow = [
-                    'vehicle_ownership' => $vehicleOwnership?? null,
-                    'vehicle_type' => $requirementVehicleData['vehicle_type'][$index]?? null,
-                    'vehicle_category' => $requirementVehicleData['vehicle_category'][$index]?? null,
-                    'vehicle_mantenance' => $requirementVehicleData['vehicle_mantenance'][$index]?? null,
-                    'vehicle_fuel' => $requirementVehicleData['vehicle_fuel'][$index]?? null,
-                    'vehicle_rate_per_km' => $requirementVehicleData['vehicle_rate_per_km'][$index]?? null,
-                    'vehicle_km_required' => $requirementVehicleData['vehicle_km_required'][$index]?? null,
-                    'vehicle_toll' => $requirementVehicleData['vehicle_toll'][$index]?? null,
-                    'vehicle_tol' => $requirementVehicleData['vehicle_tol'][$index]?? null,
-                    'vehicle_reporting_time' => $requirementVehicleData['vehicle_reporting_time'][$index]?? null,
-                    'vehicle_rep_office_no' => $requirementVehicleData['vehicle_rep_office_no'][$index]?? null,
-                    'vehicle_rep_floor' => $requirementVehicleData['vehicle_rep_floor'][$index]?? null,
-                    'vehicle_rep_building' => $requirementVehicleData['vehicle_rep_building'][$index]?? null,
-                    'vehicle_rep_block' => $requirementVehicleData['vehicle_rep_block'][$index]?? null,
-                    'vehicle_rep_area' => $requirementVehicleData['vehicle_rep_area'][$index]?? null,
-                    'vehicle_rep_city' => $requirementVehicleData['vehicle_rep_city'][$index]?? null,
-                    'vehicle_rep_location' => $requirementVehicleData['vehicle_rep_location'][$index]?? null,
-                    'vehicle_duty_start_date' => $requirementVehicleData['vehicle_duty_start_date'][$index]?? null,
-                    'vehicle_duty_end_date' => $requirementVehicleData['vehicle_duty_end_date'][$index]?? null,
-                    'vehicle_duty_start_time' => $requirementVehicleData['vehicle_duty_start_time'][$index]?? null,
-                    'vehicle_duty_end_time' => $requirementVehicleData['vehicle_duty_end_time'][$index]?? null,
-                    'vehicle_no_of_shifts' => $requirementVehicleData['vehicle_no_of_shifts'][$index]?? null,
-                    'vehicle_food_by_client' => $requirementVehicleData['vehicle_food_by_client'][$index]?? null,
-                    'vehicle_guard_category' => $requirementVehicleData['vehicle_guard_category'][$index]?? null,
-                    'vehicle_guard_quantity' => $requirementVehicleData['vehicle_guard_quantity'][$index]?? null,
-                    'vehicle_guard_shift_timing' => $requirementVehicleData['vehicle_guard_shift_timing'][$index]?? null,
-                    'vehicle_guard_food_by_client' => $requirementVehicleData['vehicle_guard_food_by_client'][$index]?? null,
-                    'vehicle_guard_accomodation' => $requirementVehicleData['vehicle_guard_accomodation'][$index]?? null,
-                    'vehicle_guard_transportation' => $requirementVehicleData['vehicle_guard_transportation'][$index]?? null,
-                    'vehicle_guard_req_monthly' => $requirementVehicleData['vehicle_guard_req_monthly'][$index]?? null,
-                    'vehicle_guard_req_dialy' => $requirementVehicleData['vehicle_guard_req_dialy'][$index]?? null,
-                    'vehicle_guard_no' => $requirementVehicleData['vehicle_guard_no'][$index]?? null,
-                    'vehicle_guard_notes' => $requirementVehicleData['vehicle_guard_notes'][$index]?? null,
-                ];
+          $requirementVehicleDataArray = [];
+foreach ($this->iterableInput($requirementVehicleData['vehicle_ownership'] ?? null) as $index => $vehicleOwnership) {
+    $requirementVehicleDataRow = [
+        'vehicle_ownership' => $vehicleOwnership ?? null,
+        'vehicle_type' => $requirementVehicleData['vehicle_type'][$index] ?? null,
+        'vehicle_category' => $requirementVehicleData['vehicle_category'][$index] ?? null,
+        'vehicle_mantenance' => $requirementVehicleData['vehicle_mantenance'][$index] ?? null,
+        'vehicle_fuel' => $requirementVehicleData['vehicle_fuel'][$index] ?? null,
+        'vehicle_rate_per_km' => $requirementVehicleData['vehicle_rate_per_km'][$index] ?? null,
+        'vehicle_km_required' => $requirementVehicleData['vehicle_km_required'][$index] ?? null,
+        'vehicle_toll' => $requirementVehicleData['vehicle_toll'][$index] ?? null,
+        'vehicle_tol' => $requirementVehicleData['vehicle_tol'][$index] ?? null,
+        'vehicle_reporting_time' => $requirementVehicleData['vehicle_reporting_time'][$index] ?? null,
+        'vehicle_rep_office_no' => $requirementVehicleData['vehicle_rep_office_no'][$index] ?? null,
+        'vehicle_rep_floor' => $requirementVehicleData['vehicle_rep_floor'][$index] ?? null,
+        'vehicle_rep_building' => $requirementVehicleData['vehicle_rep_building'][$index] ?? null,
+        'vehicle_rep_block' => $requirementVehicleData['vehicle_rep_block'][$index] ?? null,
+        'vehicle_rep_area' => $requirementVehicleData['vehicle_rep_area'][$index] ?? null,
+        'vehicle_rep_city' => $requirementVehicleData['vehicle_rep_city'][$index] ?? null,
+        'vehicle_rep_location' => $requirementVehicleData['vehicle_rep_location'][$index] ?? null,
+        'vehicle_duty_start_date' => $requirementVehicleData['vehicle_duty_start_date'][$index] ?? null,
+        'vehicle_duty_end_date' => $requirementVehicleData['vehicle_duty_end_date'][$index] ?? null,
+        'vehicle_duty_start_time' => $requirementVehicleData['vehicle_duty_start_time'][$index] ?? null,
+        'vehicle_duty_end_time' => $requirementVehicleData['vehicle_duty_end_time'][$index] ?? null,
+        'vehicle_shift_duration' => $requirementVehicleData['vehicle_shift_duration'][$index] ?? null,
+        'vehicle_no_of_shifts' => $requirementVehicleData['vehicle_no_of_shifts'][$index] ?? null,
+        'vehicle_food_by_client' => $requirementVehicleData['vehicle_food_by_client'][$index] ?? null,
+        'vehicle_guard_category' => $requirementVehicleData['vehicle_guard_category'][$index] ?? null,
+        'vehicle_guard_quantity' => $requirementVehicleData['vehicle_guard_quantity'][$index] ?? null,
+        'vehicle_guard_shift_timing' => $requirementVehicleData['vehicle_guard_shift_timing'][$index] ?? null,
+        'vehicle_guard_food_by_client' => $requirementVehicleData['vehicle_guard_food_by_client'][$index] ?? null,
+        'vehicle_guard_accomodation' => $requirementVehicleData['vehicle_guard_accomodation'][$index] ?? null,
+        'vehicle_guard_transportation' => $requirementVehicleData['vehicle_guard_transportation'][$index] ?? null,
+        'vehicle_guard_req_monthly' => $requirementVehicleData['vehicle_guard_req_monthly'][$index] ?? null,
+        'vehicle_guard_req_dialy' => $requirementVehicleData['vehicle_guard_req_dialy'][$index] ?? null,
+        'vehicle_guard_no' => $requirementVehicleData['vehicle_guard_no'][$index] ?? null,
+        'vehicle_guard_notes' => $requirementVehicleData['vehicle_guard_notes'][$index] ?? null,
+    ];
 
                 $requirementVehiclecheckboxFields = ['vehicle_reporting_address', 'vehicle_req_with_driver',
                                                     'vehicle_req_with_security'];
@@ -1505,7 +1544,7 @@ foreach ($this->iterableInput($requirementAddressData['office_no'] ?? null) as $
 
                 $requirementVehicleDataArray[] = $requirementVehicleDataRow;
             }
-
+            $requirement->requirementvehicle()->delete();
             $requirement->requirementvehicle()->createMany($requirementVehicleDataArray);
 
             //Canine Services
@@ -1557,7 +1596,7 @@ foreach ($this->iterableInput($requirementAddressData['office_no'] ?? null) as $
 
                 $requirementCanineDataArray[] = $requirementCanineDataRow;
             }
-
+            $requirement->requirementcanine()->delete();
             $requirement->requirementcanine()->createMany($requirementCanineDataArray);
 
 
@@ -1628,7 +1667,7 @@ foreach ($this->iterableInput($requirementAddressData['office_no'] ?? null) as $
 
                 $requirementFacilitationDataArray[] = $requirementFacilitationDataRow;
             }
-
+            $requirement->requirementfacilitation()->delete();
             $requirement->requirementfacilitation()->createMany($requirementFacilitationDataArray);
 
              //Private Jet Services
@@ -1646,7 +1685,7 @@ foreach ($this->iterableInput($requirementAddressData['office_no'] ?? null) as $
 
                 $requirementJetDataArray[] = $requirementJetDataRow;
             }
-
+$requirement->requirementjet()->delete();
             $requirement->requirementjet()->createMany($requirementJetDataArray);
 
             //Event Security Services
@@ -1703,7 +1742,7 @@ foreach ($this->iterableInput($requirementAddressData['office_no'] ?? null) as $
 
                 $requirementEventDataArray[] = $requirementEventDataRow;
             }
-
+$requirement->requirementevent()->delete();
             $requirement->requirementevent()->createMany($requirementEventDataArray);
 
             //Security Consultancy
@@ -1737,7 +1776,7 @@ foreach ($this->iterableInput($requirementAddressData['office_no'] ?? null) as $
 
                 $requirementConsultancyDataArray[] = $requirementConsultancyDataRow;
             }
-
+$requirement->requirementconsultancy()->delete();
             $requirement->requirementconsultancy()->createMany($requirementConsultancyDataArray);
 
 
@@ -1789,7 +1828,7 @@ foreach ($this->iterableInput($requirementAddressData['office_no'] ?? null) as $
 
                 $requirementFireDataArray[] = $requirementFireDataRow;
             }
-
+$requirement->requirementfire()->delete();
             $requirement->requirementfire()->createMany($requirementFireDataArray);
 
             //Other Fire
@@ -1836,7 +1875,7 @@ foreach ($this->iterableInput($requirementAddressData['office_no'] ?? null) as $
 
                 $requirementOtherDataArray[] = $requirementOtherDataRow;
             }
-
+$requirement->requirementotherfire()->delete();
             $requirement->requirementotherfire()->createMany($requirementOtherDataArray);
 
 
@@ -1891,7 +1930,7 @@ foreach ($this->iterableInput($requirementAddressData['office_no'] ?? null) as $
 
                 $requirementPassiveDataArray[] = $requirementPassiveDataRow;
             }
-
+$requirement->requirementpassive()->delete();
             $requirement->requirementpassive()->createMany($requirementPassiveDataArray);
 
             //Security Equipment Services
@@ -1922,9 +1961,10 @@ foreach ($this->iterableInput($requirementAddressData['office_no'] ?? null) as $
                     'equipment_del_area' => $requirementSecurityData['equipment_del_area'][$index]?? null,
                     'equipment_del_city' => $requirementSecurityData['equipment_del_city'][$index]?? null,
                     'equipment_del_pin_loc' => $requirementSecurityData['equipment_del_pin_loc'][$index]?? null,
-                    'equipment_installation_req' => $requirementSecurityData['equipment_installation_req'][$index]?? null,
-                    'equipment_ins_office_no' => $requirementSecurityData['equipment_ins_office_no'][$index]?? null,
-                    'equipment_ins_building' => $requirementSecurityData['equipment_ins_building'][$index]?? null,
+                    'equipment_installation_req' => $requirementSecurityData['equipment_installation_req'][$index] ?? null,
+'equipment_ins_office_no' => $requirementSecurityData['equipment_ins_office_no'][$index] ?? null,
+'equipment_ins_floor' => $requirementSecurityData['equipment_ins_floor'][$index] ?? null, // ✅ FIX
+'equipment_ins_building' => $requirementSecurityData['equipment_ins_building'][$index] ?? null,
                     'equipment_ins_block' => $requirementSecurityData['equipment_ins_block'][$index]?? null,
                     'equipment_ins_area' => $requirementSecurityData['equipment_ins_area'][$index]?? null,
                     'equipment_ins_city' => $requirementSecurityData['equipment_ins_city'][$index]?? null,
@@ -1932,11 +1972,11 @@ foreach ($this->iterableInput($requirementAddressData['office_no'] ?? null) as $
                     'equipment_notes' => $requirementSecurityData['equipment_notes'][$index]?? null,
                 ];
 
-                $requirementSecuritycheckboxFields = ['equipment_dilevery_loc', 'equipment_ins_loc'];
+              $requirementSecuritycheckboxFields = ['equipment_dilevery_loc', 'equipment_ins_loc'];
 
-                foreach ($requirementSecuritycheckboxFields as $field) {
-                    $requirementFireData[$field] = $request->has($field) ? true : false;
-                }
+foreach ($requirementSecuritycheckboxFields as $field) {
+    $requirementSecurityData[$field] = $request->has($field) ? true : false;
+}
 
                 $requirementSecurityFields = [
                     'equipment_del_photo_building', 'equipment_ins_photo_building' , 'equipment_attachment'
@@ -1954,7 +1994,7 @@ foreach ($this->iterableInput($requirementAddressData['office_no'] ?? null) as $
 
                 $requirementSecurityDataArray[] = $requirementSecurityDataRow;
             }
-
+$requirement->requirementequipment()->delete();
             $requirement->requirementequipment()->createMany($requirementSecurityDataArray);
 
             //Traffic Barrier
@@ -2037,16 +2077,16 @@ foreach ($this->iterableInput($requirementAddressData['office_no'] ?? null) as $
                     'barrier_office_no' => $requirementBarrierData['barrier_office_no'][$index]?? null,
                     'barrier_floor' => $requirementBarrierData['barrier_floor'][$index]?? null,
                     'barrier_building' => $requirementBarrierData['barrier_building'][$index]?? null,
-                    'barrier_block' => $requirementBarrierData['barrier_block'][$index]?? null,
                     'barrier_area' => $requirementBarrierData['barrier_area'][$index]?? null,
                     'barrier_city' => $requirementBarrierData['barrier_city'][$index]?? null,
                     'barrier_pin_loc' => $requirementBarrierData['barrier_pin_loc'][$index]?? null,
-                    'barrier_ins_office' => $requirementBarrierData['barrier_ins_office'][$index]?? null,
-                    'barrier_ins_floor' => $requirementBarrierData['barrier_ins_floor'][$index]?? null,
-                    'barrier_ins_building' => $requirementBarrierData['barrier_ins_building'][$index]?? null,
-                    'barrier_ins_area' => $requirementBarrierData['barrier_ins_area'][$index]?? null,
-                    'barrier_ins_city' => $requirementBarrierData['barrier_ins_city'][$index]?? null,
-                    'barrier_ins_pin_loc' => $requirementBarrierData['barrier_ins_pin_loc'][$index]?? null,
+                     'barrier_ins_office' => $requirementBarrierData['barrier_ins_office'][$index] ?? null,
+'barrier_ins_floor' => $requirementBarrierData['barrier_ins_floor'][$index] ?? null,
+'barrier_ins_building' => $requirementBarrierData['barrier_ins_building'][$index] ?? null,
+'barrier_ins_block' => $requirementBarrierData['barrier_ins_block'][$index] ?? null, // ✅ FIX
+'barrier_ins_area' => $requirementBarrierData['barrier_ins_area'][$index] ?? null,
+'barrier_ins_city' => $requirementBarrierData['barrier_ins_city'][$index] ?? null,
+'barrier_ins_pin_loc' => $requirementBarrierData['barrier_ins_pin_loc'][$index] ?? null,
                     'barrier_notes' => $requirementBarrierData['barrier_notes'][$index]?? null,
                 ];
 
@@ -2073,7 +2113,7 @@ foreach ($this->iterableInput($requirementAddressData['office_no'] ?? null) as $
 
                 $requirementBarrierDataArray[] = $requirementBarrierDataRow;
             }
-
+$requirement->requirementbarrier()->delete();
             $requirement->requirementbarrier()->createMany($requirementBarrierDataArray);
 
             //CCTV Services
@@ -2146,7 +2186,7 @@ foreach ($this->iterableInput($requirementAddressData['office_no'] ?? null) as $
 
                 $requirementCctvDataArray[] = $requirementCctvDataRow;
             }
-
+$requirement->requirementcctv()->delete();
             $requirement->requirementcctv()->createMany($requirementCctvDataArray);
 
             //Attendance Machine
@@ -2180,7 +2220,7 @@ foreach ($this->iterableInput($requirementAddressData['office_no'] ?? null) as $
 
                 $requirementAttendanceDataArray[] = $requirementAttendanceDataRow;
             }
-
+$requirement->requirementattendance()->delete();
             $requirement->requirementattendance()->createMany($requirementAttendanceDataArray);
 
             //Web Survillence
@@ -2214,7 +2254,7 @@ foreach ($this->iterableInput($requirementAddressData['office_no'] ?? null) as $
 
                 $requirementWebDataArray[] = $requirementWebDataRow;
             }
-
+$requirement->requirementweb()->delete();
             $requirement->requirementweb()->createMany($requirementWebDataArray);
 
             //Alarm System
@@ -2285,7 +2325,7 @@ foreach ($this->iterableInput($requirementAddressData['office_no'] ?? null) as $
 
                 $requirementAlarmDataArray[] = $requirementAlarmDataRow;
             }
-
+$requirement->requirementalarm()->delete();
             $requirement->requirementalarm()->createMany($requirementAlarmDataArray);
 
             //With Complaines- Shown WHT
@@ -2322,7 +2362,7 @@ foreach ($this->iterableInput($requirementAddressData['office_no'] ?? null) as $
                 ];
                 $requirementCshownDataArray[] = $requirementCshownDataRow;
             }
-
+$requirement->complainesshownwht()->delete();
             $requirement->complainesshownwht()->createMany($requirementCshownDataArray);
 
             //With Complaines- Hidden WHT
@@ -2365,7 +2405,7 @@ foreach ($this->iterableInput($requirementAddressData['office_no'] ?? null) as $
 
                 $requirementCohiddenDataArray[] = $requirementCohiddenDataRow;
             }
-
+$requirement->complaineshiddenwht()->delete();
             $requirement->complaineshiddenwht()->createMany($requirementCohiddenDataArray);
 
 
@@ -2405,7 +2445,7 @@ foreach ($this->iterableInput($requirementAddressData['office_no'] ?? null) as $
 
                 $requirementLshownDataArray[] = $requirementLshownDataRow;
             }
-
+$requirement->lumpsumshownwht()->delete();
             $requirement->lumpsumshownwht()->createMany($requirementLshownDataArray);
 
             //Lump Sum- Hidden WHT
@@ -2429,7 +2469,7 @@ foreach ($this->iterableInput($requirementAddressData['office_no'] ?? null) as $
                     'ls_hw_social' => $requirementLhiddenData['ls_hw_social'][$index]?? null,
                     'ls_hw_training_cost' => $requirementLhiddenData['ls_hw_training_cost'][$index]?? null,
                     'ls_hw_app_gst' => $requirementLhiddenData['ls_hw_app_gst'][$index]?? null,
-                    'ls_hw_gst' => $requirementLhiddenData['ls_hw_gst'][$index],
+                    'ls_hw_gst' => $requirementLhiddenData['ls_hw_gst'][$index] ?? null, // ✅ FIX
                     'ls_hw_admin_cost' => $requirementLhiddenData['ls_hw_admin_cost'][$index]?? null,
                     'ls_hw_eobi' => $requirementLhiddenData['ls_hw_eobi'][$index]?? null,
                     'ls_hw_group_life' => $requirementLhiddenData['ls_hw_group_life'][$index]?? null,
@@ -2445,7 +2485,7 @@ foreach ($this->iterableInput($requirementAddressData['office_no'] ?? null) as $
 
                 $requirementLhiddenDataArray[] = $requirementLhiddenDataRow;
             }
-
+$requirement->lumpsumhiddenwht()->delete();
             $requirement->lumpsumhiddenwht()->createMany($requirementLhiddenDataArray);
 
             $requirementreverseworkingData = $request->only([
@@ -2473,13 +2513,22 @@ foreach ($this->iterableInput($requirementAddressData['office_no'] ?? null) as $
 
                 $requirementreverseworkingDataArray[] = $requirementreverseworkingDataRow;
             }
+            $requirement->complainwithreverseworking()->delete();
             $requirement->complainwithreverseworking()->createMany($requirementreverseworkingDataArray);
 
             DB::commit();
 
+            // #region agent log
+            $this->debugLog('RequirementController.php:updateRequirements:success', 'updateRequirements committed', ['hypothesisId' => 'D', 'id' => $id]);
+            // #endregion
+
             return redirect()->back()->with('success', 'Requirement Update successfully.');
         } catch (\Exception $e) {
             DB::rollback();
+
+            // #region agent log
+            $this->debugLog('RequirementController.php:updateRequirements:catch', 'updateRequirements failed', ['hypothesisId' => 'D', 'id' => $id, 'error' => $e->getMessage(), 'line' => $e->getLine()]);
+            // #endregion
 
             Log::error('An error occurred while saving Requirements data: ' . $e->getMessage());
 
@@ -2857,13 +2906,77 @@ foreach ($this->iterableInput($requirementAddressData['office_no'] ?? null) as $
         }
     }
 
-    private function normalizeRequirementPayload(array $payload): array
-    {
-        foreach ($payload as $key => $value) {
-            $payload[$key] = $this->normalizeRequirementValue($value);
+   private function normalizeRequirementPayload(array $payload): array
+{
+    // Yeh keys nested arrays hain - inhe skip karo
+    $skipKeys = [
+        'requirementpocs',
+        'requirementaddress',
+        'guard_category',
+        'guard_quantity',
+        'guard_shift_timing',
+        'guard_food',
+        'guard_accomodation',
+        'guard_transportation',
+        'guard_required_monthly',
+        'guard_required_dialy',
+        'no_of_days_guard_required',
+        'guard_notes',
+        'vehicle_ownership',
+        'vehicle_type',
+        'vehicle_category',
+        'canine_req_for',
+        'wc_sw_category',
+        'wc_hw_category',
+        'ls_sw_category',
+        'ls_hw_category',
+    ];
+
+    $booleanFields = [
+        'bidMoney', 'cheque', 'payOrder', 'demand', 'guarantee', 'insGuan', 'transfer',
+        'byHand', 'viaCourier', 'viaEmail', 'anyGrev',
+    ];
+
+    foreach ($payload as $key => $value) {
+        // Nested/repeater fields belong on child tables — remove from main requirements insert
+        if (in_array($key, $skipKeys, true) || is_array($value)) {
+            unset($payload[$key]);
+            continue;
         }
 
-        return $payload;
+        if (in_array($key, $booleanFields, true)) {
+            $before = $value;
+            $payload[$key] = $this->normalizeRequirementBoolean($value);
+            // #region agent log
+            if ($before !== $payload[$key]) {
+                $this->debugLog('RequirementController.php:normalizeRequirementPayload', 'boolean coerced', [
+                    'hypothesisId' => 'F',
+                    'field' => $key,
+                    'before' => $before,
+                    'after' => $payload[$key],
+                ]);
+            }
+            // #endregion
+            continue;
+        }
+
+        $payload[$key] = $this->normalizeRequirementValue($value);
+    }
+
+    return $payload;
+}
+
+    private function normalizeRequirementBoolean($value): int
+    {
+        if ($value === null || $value === '' || $value === false || $value === 0 || $value === '0') {
+            return 0;
+        }
+
+        if (in_array($value, ['false', 'off', 'no'], true)) {
+            return 0;
+        }
+
+        return 1;
     }
 
     private function normalizeRequirementValue($value)
@@ -2886,6 +2999,22 @@ foreach ($this->iterableInput($requirementAddressData['office_no'] ?? null) as $
     private function iterableInput($value): array
     {
         return is_array($value) ? $value : [];
+    }
+
+    private function debugLog(string $location, string $message, array $data = []): void
+    {
+        // #region agent log
+        $payload = array_merge([
+            'sessionId' => 'c14ed5',
+            'timestamp' => (int) round(microtime(true) * 1000),
+            'location' => $location,
+            'message' => $message,
+            'data' => $data,
+            'runId' => $data['runId'] ?? 'pre-fix',
+        ], []);
+        unset($payload['data']['runId']);
+        @file_put_contents(base_path('debug-c14ed5.log'), json_encode($payload) . PHP_EOL, FILE_APPEND);
+        // #endregion
     }
 
 

@@ -148,7 +148,7 @@
                                             <select class="form-control select2" id="sub_customer" name="sub_customer" style="width: 100%;">
                                                 <option value="">Select a customer</option>
                                                 @foreach ($customers as $customer)
-                                                    <option value="{{ $customer->id }}">{{ $customer->id }} - {{ $customer->customers_name }}</option>
+                                                    <option value="{{ $customer->customers_id }}">{{ $customer->customers_id }} - {{ $customer->customers_name }}</option>
                                                 @endforeach
                                             </select>
 

@@ -3,6 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\RegionReport;
+use App\Models\Register;
+use App\Models\RegisterTask;
+// use App\Models\RegisterTaskGroup;
+use App\Models\RegisterGroup;
+use App\Models\RegisterTaskAssignment;
 use Carbon\Carbon;
 use App\Models\Hrm;
 use App\Models\Admin;
@@ -1943,9 +1948,6 @@ class AdminController extends Controller
         $task->save();
         return redirect()->back()->with('success', 'Tasks Group updated successfully');
     }
-
-
-
     public function all_cros_tasks()
     {
         $taskgroups = TaskGroup::all();
@@ -2408,6 +2410,7 @@ class AdminController extends Controller
             'employee_name' => 'required|string|max:255',
             'designation' => 'required|string|max:255',
             'created_at' => 'required|date',
+            'week_plan' => 'nullable|string|max:255',
             'monday' => 'nullable|string|max:255',
         ]);
 
@@ -2422,6 +2425,7 @@ class AdminController extends Controller
             'designation' => $request->designation,
             'type' => $request->type,
             'created_at' => $request->created_at,
+            'week_plan' => $request->week_plan,
             'monday' => $request->monday,
         ]);
 
@@ -2434,6 +2438,7 @@ class AdminController extends Controller
             'employee_name' => $report->employee_name,
             'designation' => $report->designation,
             'created_at' => $report->created_at->format('Y-m-d'),
+            'week_plan' => $request->week_plan,
             'monday' => $report->monday,
         ]);
     }
@@ -2449,6 +2454,7 @@ class AdminController extends Controller
             'employee_name' => $report->employee_name,
             'designation' => $report->designation,
             'created_at' => $report->created_at->format('Y-m-d'),
+            'week_plan' => $report->week_plan,
             'monday' => $report->monday,
         ]);
     }
@@ -2461,6 +2467,7 @@ class AdminController extends Controller
             'employee_name' => 'required|string|max:255',
             'designation' => 'required|string|max:255',
             'created_at' => 'required|date',
+            'week_plan' => 'nullable|string|max:255',
             'monday' => 'nullable|string|max:255',
         ]);
 
@@ -2475,6 +2482,7 @@ class AdminController extends Controller
             'employee_name' => $request->employee_name,
             'designation' => $request->designation,
             'created_at' => $request->created_at,
+            'week_plan' => $request->week_plan,
             'monday' => $request->monday,
         ]);
 
@@ -2487,6 +2495,7 @@ class AdminController extends Controller
             'employee_name' => $report->employee_name,
             'designation' => $report->designation,
             'created_at' => $report->created_at->format('Y-m-d'),
+            'week_plan' => $request->week_plan,
             'monday' => $request->monday,
         ]);
     }
@@ -3229,4 +3238,203 @@ class AdminController extends Controller
         
         return response()->stream($callback, 200, $headers);
     }
+
+    public function adminregister($id)
+{
+    $taskgroups = TaskGroup::all();
+    $registers  = Register::all();
+    return view('admin.register.register', compact('taskgroups', 'registers', 'id'));
+}
+
+// 2. Naya register save karna
+public function storeRegister(Request $request, $id)
+{
+    Register::create([
+        'register_name' => $request->register_name,
+    ]);
+ 
+    return redirect()->route('admin.register.register', $id)
+                     ->with('success', 'Register added successfully!');
+}
+
+// // 3. View page
+// public function viewRegister($id)
+// {
+//     $register = Register::findOrFail($id);
+//     return view('view_register', compact('register'));
+// }
+
+// 4. Update karna
+public function updateRegister(Request $request, $id)
+{
+    $register = Register::findOrFail($id);
+    $register->update([
+        'register_name' => $request->register_name,
+    ]);
+ 
+    return back()->with('success', 'Register updated successfully!');
+}
+
+// 5. Delete karna
+public function deleteRegister($id)
+{
+    Register::findOrFail($id)->delete();
+    return back()->with('success', 'Register deleted successfully!');
+}
+
+// 6. AJAX - Next number fetch karna
+public function getNextRegisterNumber($taskGroupId)
+{
+    $lastRegister = Register::where('task_group_id', $taskGroupId)
+                            ->orderBy('task_number', 'desc')
+                            ->first();
+ 
+    $nextNumber = $lastRegister ? $lastRegister->task_number + 1 : 1;
+ 
+    return response()->json(['nextTaskNumber' => $nextNumber]);
+}
+
+
+// ✅ Update View Page
+public function viewRegister($id)
+{
+    $register    = Register::findOrFail($id);
+    $month       = request('month') ?? now()->format('Y-m');
+    $daysInMonth = \Carbon\Carbon::parse($month)->daysInMonth;
+
+    $groups = RegisterGroup::with([
+        'registerTasks' => function($query) use ($id) {
+            $query->where('register_id', $id);
+        },
+        'registerTasks.assignments' => function($query) use ($month) {
+            $query->whereYear('assigned_date', substr($month, 0, 4))
+                  ->whereMonth('assigned_date', substr($month, 5, 2));
+        }
+    ])->where('register_id', $id)->get();
+
+    $groups = $groups->filter(function($group) {
+        return $group->registerTasks->count() > 0;
+    });
+
+    return view('admin.register.view_register',
+        compact('register', 'groups', 'daysInMonth', 'month'));
+}
+
+// Save checkboxes
+public function storeRegisterTasks(Request $request, $id)
+{
+    $register = Register::findOrFail($id);
+    $tasks    = $request->input('tasks', []);
+
+    foreach ($tasks as $taskId => $dates) {
+        foreach ($dates as $date => $value) {
+            \App\Models\RegisterTaskAssignment::updateOrCreate(
+                [
+                    'register_task_id' => $taskId,
+                    'assigned_date'    => $date,
+                ],
+                [
+                    'register_task_id' => $taskId,
+                    'assigned_date'    => $date,
+                ]
+            );
+        }
+    }
+
+    return redirect()->route('view.register', $register->id)
+                     ->with('success', 'Saved successfully!');
+}
+
+// Add Task Form + existing tasks dikhao
+public function showAddTaskForm($id)
+{
+    $register      = Register::findOrFail($id);
+    $taskgroups    = RegisterGroup::where('register_id', $id)->get(); // sirf is register ke groups
+    $registerTasks = RegisterTask::where('register_id', $id)
+                                 ->with('group')
+                                 ->get();
+
+    return view('admin.register.add_task',
+        compact('register', 'taskgroups', 'registerTasks'));
+}
+// Task Update
+public function updateRegisterTask(Request $request, $id)
+{
+    $task = RegisterTask::findOrFail($id);
+    $task->update([
+        'task_group_id'    => $request->task_group_id,
+        'task_number'      => $request->task_number,
+        'task_description' => $request->task_description,
+    ]);
+
+    return redirect()->back()->with('success', 'Task updated successfully!');
+}
+
+// Task Delete
+public function deleteRegisterTask($id)
+{
+    RegisterTask::findOrFail($id)->delete();
+    return redirect()->back()->with('success', 'Task deleted successfully!');
+}
+
+
+public function showAddGroupForm($id)
+{
+    $register       = Register::findOrFail($id);
+    $registerGroups = RegisterGroup::where('register_id', $id)->get();
+    return view('admin.register.add_group', compact('register', 'registerGroups'));
+}
+
+public function storeRegisterGroup(Request $request, $id)
+{
+    $request->validate([
+        'title'          => 'required|string|max:255',
+        'section_number' => 'required|string|max:50',
+    ]);
+
+    RegisterGroup::create([
+        'register_id'    => $id,
+        'title'          => $request->title,
+        'section_number' => $request->section_number,
+    ]);
+
+    return redirect()->route('register.add.group.form', $id)
+                     ->with('success', 'Group added successfully!');
+}
+
+public function deleteRegisterGroup($id)
+{
+    RegisterGroup::findOrFail($id)->delete();
+    return redirect()->back()->with('success', 'Group deleted!');
+}
+
+public function updateRegisterGroup(Request $request, $id)
+{
+    $group = RegisterGroup::findOrFail($id);
+    $group->update([
+        'section_number' => $request->section_number,
+        'title'          => $request->title,
+    ]);
+
+    return redirect()->back()->with('success', 'Group updated successfully!');
+}
+
+public function storeRegisterTask(Request $request, $id)
+{
+    $request->validate([
+        'task_group_id'    => 'required',
+        'task_number'      => 'required|string|max:50',
+        'task_description' => 'required|string|max:500',
+    ]);
+
+    RegisterTask::create([
+        'register_id'      => $id,
+        'group_id'         => $request->task_group_id,
+        'task_number'      => $request->task_number,
+        'task_description' => $request->task_description,
+    ]);
+
+    return redirect()->route('register.add.task.form', $id)
+                     ->with('success', 'Task added successfully!');
+}
 }

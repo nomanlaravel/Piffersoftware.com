@@ -3109,6 +3109,7 @@ $(document).ready(function () {
                                             <th>Employee Name</th>
                                             <th>Designation</th>
                                             <th>Date</th>
+                                            <th>Week Plan</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
@@ -3123,6 +3124,7 @@ $(document).ready(function () {
                                                 <td>{{ $visitReport->employee_name }}</td>
                                                 <td>{{ $visitReport->designation }}</td>
                                                 <td>{{ $visitReport->created_at }}</td>
+                                                <td>{{ $visitReport->week_plan ?? 'N/A' }}</td>
                                                 <td>
                                                     <button type="button" class="btn btn-sm btn-info regionReportEditBtn"
                                                         data-id="{{ $visitReport->id }}">
@@ -3192,6 +3194,7 @@ $(document).ready(function () {
 
                 let date = data.created_at.split('T')[0];
                 $('#e_created_at_report').val(date);
+                $('#e_week_plan_report').val(data.week_plan ?? '');
 
                 $('#editFormRegionReport').attr('action', "/region-reports/update/" + id);
 
@@ -3218,6 +3221,7 @@ $(document).ready(function () {
         formData.append('designation', $('#create_designation_report').val());
         formData.append('type', $('#create_type_region_report').val());
         formData.append('created_at', $('#create_created_at_report').val());
+        formData.append('week_plan', $('#create_week_plan_report').val());
 
         $.ajax({
             url: "{{ route('regionReport.store') }}",
@@ -3241,6 +3245,7 @@ $(document).ready(function () {
                         <td>${response.employee_name ?? ''}</td>
                         <td>${response.designation ?? ''}</td>
                         <td>${response.created_at ?? ''}</td>
+                        <td>${response.week_plan ?? ''}</td>
                         <td>
                             <button type="button" class="btn btn-sm btn-info regionReportEditBtn" data-id="${response.id}">
                                 Edit
@@ -3292,6 +3297,7 @@ $(document).ready(function () {
                 row.find('td:eq(4)').text(response.employee_name);
                 row.find('td:eq(5)').text(response.designation);
                 row.find('td:eq(6)').text(response.created_at ?? '');
+                row.find('td:eq(7)').text(response.week_plan ?? '');
             },
 
             error: function (xhr) {
@@ -6205,9 +6211,16 @@ $(document).ready(function () {
                     </div>
                     <div class="row">
                         <div class="col">
+                            <label class="form-label">Date</label>
                             <input type="date" name="created_at" id="create_created_at_report" class="form-control"
                                 placeholder="date">
                         </div>
+                    </div>
+
+                     <div class="mb-3 mt-3">
+                        <label class="form-label">Week Plan</label>
+                        <textarea name="week_plan" id="create_week_plan_report" class="form-control" 
+                                  rows="4" placeholder="Enter week plan details..."></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -6270,6 +6283,12 @@ $(document).ready(function () {
                     <div class="mb-3">
                         <label>Date</label>
                         <input type="date" name="created_at" id="e_created_at_report" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Week Plan</label>
+                        <textarea name="week_plan" id="e_week_plan_report" class="form-control" 
+                                rows="4" placeholder="Enter week plan details..."></textarea>
                     </div>
 
                 </div>

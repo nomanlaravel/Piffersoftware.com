@@ -119,57 +119,140 @@ class SalesPlanningController extends Controller
         return view('quotationreport.index', compact('cros', 'quotationreport', 'regions', 'branches'));
     }
 
-    public function feedback_register_report(Request $request)
-    {
-        $cros = Cro::whereNotIn('region', ['Central-2', 'Central-3'])->orderBy('id')->get();
-        $query = Allreport::with(['cro', 'branch'])->where('report_name', 'feedback_register_report');
-        $branches = Admin::orderBy('branch_office_name')->get();
+   public function feedback_register_report(Request $request)
+{
+    $query = \App\Models\CustomerFeedback::with('customer');
 
-        // Branch Filter - FIXED
-        if ($request->filled('branch') && $request->branch !== 'all') {
-            $branch = Admin::where('branch_office_name', $request->branch)->first();
-            if ($branch) {
-                $query->where('branch_id', $branch->id);
-            }
-        }
-        // Region Filter
-        if ($request->filled('region') && $request->region !== 'all') {
-            $query->whereHas('cro', function ($q) use ($request) {
-                $q->where('region', $request->region);
-            });
-        }
-        // Customer Name Filter (client_name)
-        if ($request->filled('client_name') && $request->client_name !== 'all') {
-            $query->whereHas('cro', function ($q) use ($request) {
-                $q->where('name', $request->client_name);
-            });
-        }
-        // Filtering logic
-        if ($request->filled('month')) {
-            try {
-                $date = Carbon::createFromFormat('Y-m', $request->month);
-                $startDate = $date->startOfMonth()->toDateString();
-                $endDate = $date->endOfMonth()->toDateString();
-
-                $query->whereDate('start_date', '>=', $startDate)
-                    ->whereDate('end_date', '<=', $endDate);
-            } catch (\Exception $e) {
-                return back()->with('error', 'Invalid month format.');
-            }
-        } elseif ($request->filled('start_date') && $request->filled('end_date')) {
-            $query->whereDate('start_date', '>=', $request->start_date)
-                ->whereDate('end_date', '<=', $request->end_date);
-        }
-
-        $feedbackreport = $query
-            ->orderBy('start_date', 'asc')
-            ->get()
-            ->groupBy(function ($report) {
-                return Carbon::parse($report->start_date)->format('Y-m-d');
-            });
-
-        return view('feedbackreport.index', compact('cros', 'feedbackreport', 'branches'));
+    // Date range filter
+    if ($request->filled('start_date') && $request->filled('end_date')) {
+        $query->whereDate('feed_date', '>=', $request->start_date)
+              ->whereDate('feed_date', '<=', $request->end_date);
     }
+
+    // Month filter
+    if ($request->filled('month')) {
+        try {
+            $date = \Carbon\Carbon::createFromFormat('Y-m', $request->month);
+
+            $query->whereDate('feed_date', '>=', $date->startOfMonth()->toDateString())
+                  ->whereDate('feed_date', '<=', $date->endOfMonth()->toDateString());
+        } catch (\Exception $e) {
+            return back()->with('error', 'Invalid month format.');
+        }
+    }
+
+    // Region filter (via customer relation)
+    if ($request->filled('region') && $request->region !== 'all') {
+        $query->whereHas('customer', function ($q) use ($request) {
+            $q->where('customers_region', $request->region);
+        });
+    }
+
+    // Branch filter (via customer relation)
+    if ($request->filled('branch') && $request->branch !== 'all') {
+        $query->whereHas('customer', function ($q) use ($request) {
+            $q->where('branch_name', $request->branch);
+        });
+    }
+
+    // ✅ Customer Name filter (FIXED correctly)
+    if ($request->filled('feed_client_name') && $request->feed_client_name !== 'all') {
+        $query->where('feed_client_name', $request->feed_client_name);
+    }
+
+    // Client ID filter
+    // if ($request->filled('client_id')) {
+    //     $query->where('feed_client_id', $request->client_id);
+    // }
+    if ($request->filled('client_id') && $request->client_id !== 'all') {
+    $query->where('feed_client_id', $request->client_id);
+}
+
+    $feedbacks = $query->orderBy('feed_date', 'desc')->get();
+
+    // Dropdown data
+    $branches = \App\Models\Admin::orderBy('branch_office_name')->get();
+
+    $regions = \App\Models\Customer::whereNotNull('customers_region')
+        ->where('customers_region', '!=', '')
+        ->distinct()
+        ->pluck('customers_region');
+
+    $customers = \App\Models\Customer::orderBy('customers_name')->get();
+
+    return view('feedbackreport.index', compact(
+        'feedbacks',
+        'branches',
+        'regions',
+        'customers'
+    ));
+
+    $query = \App\Models\CustomerFeedback::with('customer');
+
+    // Start Date & End Date Filter
+    if ($request->filled('start_date') && $request->filled('end_date')) {
+        $query->whereDate('feed_date', '>=', $request->start_date)
+              ->whereDate('feed_date', '<=', $request->end_date);
+    }
+
+    // OR Month Filter
+    if ($request->filled('month')) {
+        try {
+            $date      = \Carbon\Carbon::createFromFormat('Y-m', $request->month);
+            $startDate = $date->copy()->startOfMonth()->toDateString();
+            $endDate   = $date->copy()->endOfMonth()->toDateString();
+
+            $query->whereDate('feed_date', '>=', $startDate)
+                  ->whereDate('feed_date', '<=', $endDate);
+        } catch (\Exception $e) {
+            return back()->with('error', 'Invalid month format.');
+        }
+    }
+
+    // Region Filter - customer ki region se
+    if ($request->filled('region') && $request->region !== 'all') {
+        $query->whereHas('customer', function ($q) use ($request) {
+            $q->where('customers_region', $request->region);
+        });
+    }
+
+    // Branch Filter - customer ki branch se
+    if ($request->filled('branch') && $request->branch !== 'all') {
+        $query->whereHas('customer', function ($q) use ($request) {
+            $q->where('branch_name', $request->branch);
+        });
+    }
+
+    // Customer Name Filter
+   if ($request->filled('client_name') && $request->client_name !== 'all') {
+    $query->whereHas('customer', function ($q) use ($request) {
+        $q->where('feed_client_name', $request->client_name);
+    });
+}
+
+    // Client ID Filter
+    if ($request->filled('client_id')) {
+        $query->where('feed_client_id', $request->client_id);
+    }
+
+    $feedbacks = $query->orderBy('feed_date', 'desc')->get();
+
+    // Dropdowns ke liye data
+    $branches  = \App\Models\Admin::orderBy('branch_office_name')->get();
+    $regions   = \App\Models\Customer::whereNotNull('customers_region')
+                    ->where('customers_region', '!=', '')
+                    ->distinct()
+                    ->pluck('customers_region');
+    $customers = \App\Models\Customer::orderBy('customers_name')->get();
+
+    return view('feedbackreport.index', compact(
+        'feedbacks',
+        'branches',
+        'regions',
+        'customers'
+    ));
+}
+
 
     public function nationwide_report(Request $request)
     {
