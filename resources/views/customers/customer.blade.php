@@ -216,7 +216,8 @@
             <table id="customersTable" class="table table-bordered table-striped table-fixed mt-3">
                 <thead>
                     <tr>
-                        <th>Customer ID</th>
+                        <th>Serial No.</th>
+                        <th>Customers ID</th>
                         <th>Customer Legal Name</th>
                         <th>Phone Number</th>
                         <th>Customers Region</th>
@@ -231,6 +232,7 @@
                             $notificationCount = App\Models\ReminderNotification::where('user_id', $customer->id)->where('is_read', 0)->where('entity_type', 'customer')->count();
                         @endphp
                         <tr>
+                            <td>{{ $loop->iteration }}</td>
                             <td>{{ $customer->customers_id }}</td>
                             <td>{{ $customer->customers_name }}</td>
                             <td>{{ $customer->phone }}</td>

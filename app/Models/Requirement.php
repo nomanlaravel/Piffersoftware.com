@@ -196,6 +196,8 @@ class Requirement extends Model
         'competitorAttach',
         'competitorNotes',
         'type',
+        'tec_pro_attach',
+
     ];
 
     public function requirementpocs()

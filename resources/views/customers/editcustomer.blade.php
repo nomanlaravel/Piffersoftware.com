@@ -3763,7 +3763,7 @@
                   }
                 });
               </script>
-              <div class="feedback">
+           <div class="feedback">
                 <div id="feedbackAccordion">
                   @foreach ($customers->customerfeedbacks as $index => $feedbacks)
                     <div class="accordion-item" id="feedbackEntry{{ $index + 1 }}">
@@ -3863,127 +3863,104 @@
                                       <th width="5%">
                                         <img src="{{asset('emogi/smili.png')}}" width="30px" height="30px"
                                           alt="Entirely Satisfied">
-                                        <!--Entirely Satisfied-->
                                       </th>
                                       <th width="5%">
                                         <img src="{{asset('emogi/facemode.png')}}" width="30px" height="30px"
                                           alt="Satisfied">
-                                        <!--Satisfied-->
                                       </th>
                                       <th width="5%">
                                         <img src="{{asset('emogi/normal.png')}}" width="30px" height="30px" alt="Neutral">
-                                        <!--Neutral-->
                                       </th>
                                       <th width="5%">
                                         <img src="{{asset('emogi/crying.png')}}" width="30px" height="30px"
                                           alt="Unsatisfied">
-                                        <!--Unsatisfied-->
                                       </th>
                                       <th width="5%">
                                         <img src="{{asset('emogi/angry.png')}}" width="30px" height="30px"
-                                          alt=" Entirely Unsatisfied">
-                                        <!--Entirely Unsatisfied-->
+                                          alt="Entirely Unsatisfied">
                                       </th>
                                     </tr>
                                   </thead>
                                   <tbody>
                                     <tr width="100%">
-                                      <td width="75%">1. Punctuality and Attendance of
-                                        Guards
-                                      </td>
-                                      <td width="5%"><input type="radio" name="q1[" {{ $feedbacks->q1 == '10' ? 'checked' : '' }} value="10"></td>
-                                      <td width="5%"><input type="radio" name="q1" {{ $feedbacks->q1 == '8' ? 'checked' : '' }} value="8"></td>
-                                      <td width="5%"><input type="radio" name="q1" {{ $feedbacks->q1 == '6' ? 'checked' : '' }} value="6"></td>
-                                      <td width="5%"><input type="radio" name="q1" {{ $feedbacks->q1 == '2' ? 'checked' : '' }} value="2"></td>
-                                      <td width="5%"><input type="radio" name="q1" {{ $feedbacks->q1 == '0' ? 'checked' : '' }} value="0"></td>
+                                      <td width="75%">1. Punctuality and Attendance of Guards</td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q1]" {{ $feedbacks->q1 == '10' ? 'checked' : '' }} value="10"></td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q1]" {{ $feedbacks->q1 == '8' ? 'checked' : '' }} value="8"></td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q1]" {{ $feedbacks->q1 == '6' ? 'checked' : '' }} value="6"></td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q1]" {{ $feedbacks->q1 == '2' ? 'checked' : '' }} value="2"></td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q1]" {{ $feedbacks->q1 == '0' ? 'checked' : '' }} value="0"></td>
                                     </tr>
                                     <tr width="100%">
-                                      <td width="75%">2.Discipline, Behavior & Character
-                                        of Guards
-                                      </td>
-                                      <td width="5%"><input type="radio" name="q2" {{ $feedbacks->q2 == '10' ? 'checked' : '' }} value="10"></td>
-                                      <td width="5%"><input type="radio" name="q2" {{ $feedbacks->q2 == '8' ? 'checked' : '' }} value="8"></td>
-                                      <td width="5%"><input type="radio" name="q2" {{ $feedbacks->q2 == '6' ? 'checked' : '' }} value="6"></td>
-                                      <td width="5%"><input type="radio" name="q2" {{ $feedbacks->q2 == '2' ? 'checked' : '' }} value="2"></td>
-                                      <td width="5%"><input type="radio" name="q2" {{ $feedbacks->q2 == '0' ? 'checked' : '' }} value="0"></td>
+                                      <td width="75%">2. Discipline, Behavior & Character of Guards</td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q2]" {{ $feedbacks->q2 == '10' ? 'checked' : '' }} value="10"></td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q2]" {{ $feedbacks->q2 == '8' ? 'checked' : '' }} value="8"></td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q2]" {{ $feedbacks->q2 == '6' ? 'checked' : '' }} value="6"></td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q2]" {{ $feedbacks->q2 == '2' ? 'checked' : '' }} value="2"></td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q2]" {{ $feedbacks->q2 == '0' ? 'checked' : '' }} value="0"></td>
                                     </tr>
                                     <tr width="100%">
-                                      <td width="75%">3. Smart Turnout of the Guards
-                                        (Uniform)
-                                      </td>
-                                      <td width="5%"><input type="radio" name="q3" {{ $feedbacks->q3 == '10' ? 'checked' : '' }} value="10"></td>
-                                      <td width="5%"><input type="radio" name="q3" {{ $feedbacks->q3 == '8' ? 'checked' : '' }} value="8"></td>
-                                      <td width="5%"><input type="radio" name="q3" {{ $feedbacks->q3 == '6' ? 'checked' : '' }} value="6"></td>
-                                      <td width="5%"><input type="radio" name="q3" {{ $feedbacks->q3 == '2' ? 'checked' : '' }} value="2"></td>
-                                      <td width="5%"><input type="radio" name="q3" {{ $feedbacks->q3 == '0' ? 'checked' : '' }} value="0"></td>
+                                      <td width="75%">3. Smart Turnout of the Guards (Uniform)</td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q3]" {{ $feedbacks->q3 == '10' ? 'checked' : '' }} value="10"></td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q3]" {{ $feedbacks->q3 == '8' ? 'checked' : '' }} value="8"></td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q3]" {{ $feedbacks->q3 == '6' ? 'checked' : '' }} value="6"></td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q3]" {{ $feedbacks->q3 == '2' ? 'checked' : '' }} value="2"></td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q3]" {{ $feedbacks->q3 == '0' ? 'checked' : '' }} value="0"></td>
                                     </tr>
                                     <tr width="100%">
-                                      <td width="75%">4.Working Condition of Weapons &
-                                        Security Equipments
-                                      </td>
-                                      <td width="5%"><input type="radio" name="q4" {{ $feedbacks->q4 == '10' ? 'checked' : '' }} value="10"></td>
-                                      <td width="5%"><input type="radio" name="q4" {{ $feedbacks->q4 == '8' ? 'checked' : '' }} value="8"></td>
-                                      <td width="5%"><input type="radio" name="q4" {{ $feedbacks->q4 == '6' ? 'checked' : '' }} value="6"></td>
-                                      <td width="5%"><input type="radio" name="q4" {{ $feedbacks->q4 == '2' ? 'checked' : '' }} value="2"></td>
-                                      <td width="5%"><input type="radio" name="q4" {{ $feedbacks->q4 == '0' ? 'checked' : '' }} value="0"></td>
+                                      <td width="75%">4. Working Condition of Weapons & Security Equipments</td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q4]" {{ $feedbacks->q4 == '10' ? 'checked' : '' }} value="10"></td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q4]" {{ $feedbacks->q4 == '8' ? 'checked' : '' }} value="8"></td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q4]" {{ $feedbacks->q4 == '6' ? 'checked' : '' }} value="6"></td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q4]" {{ $feedbacks->q4 == '2' ? 'checked' : '' }} value="2"></td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q4]" {{ $feedbacks->q4 == '0' ? 'checked' : '' }} value="0"></td>
                                     </tr>
                                     <tr width="100%">
-                                      <td width="75%">5. Our Abidance regarding Taxes
-                                        (Income Tax & Sales Tax)
-                                      </td>
-                                      <td width="5%"><input type="radio" name="q5" {{ $feedbacks->q5 == '10' ? 'checked' : '' }} value="10"></td>
-                                      <td width="5%"><input type="radio" name="q5" {{ $feedbacks->q5 == '8' ? 'checked' : '' }} value="8"></td>
-                                      <td width="5%"><input type="radio" name="q5" {{ $feedbacks->q5 == '6' ? 'checked' : '' }} value="6"></td>
-                                      <td width="5%"><input type="radio" name="q5" {{ $feedbacks->q5 == '2' ? 'checked' : '' }} value="2"></td>
-                                      <td width="5%"><input type="radio" name="q5" {{ $feedbacks->q5 == '0' ? 'checked' : '' }} value="0"></td>
+                                      <td width="75%">5. Our Abidance regarding Taxes (Income Tax & Sales Tax)</td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q5]" {{ $feedbacks->q5 == '10' ? 'checked' : '' }} value="10"></td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q5]" {{ $feedbacks->q5 == '8' ? 'checked' : '' }} value="8"></td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q5]" {{ $feedbacks->q5 == '6' ? 'checked' : '' }} value="6"></td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q5]" {{ $feedbacks->q5 == '2' ? 'checked' : '' }} value="2"></td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q5]" {{ $feedbacks->q5 == '0' ? 'checked' : '' }} value="0"></td>
                                     </tr>
                                     <tr width="100%">
-                                      <td width="75%">6. Our Compliance wrt EOBI, Social
-                                        Security & GLI of Guards
-                                      </td>
-                                      <td width="5%"><input type="radio" name="q6" {{ $feedbacks->q6 == '10' ? 'checked' : '' }} value="10"></td>
-                                      <td width="5%"><input type="radio" name="q6" {{ $feedbacks->q6 == '8' ? 'checked' : '' }} value="8"></td>
-                                      <td width="5%"><input type="radio" name="q6" {{ $feedbacks->q6 == '6' ? 'checked' : '' }} value="6"></td>
-                                      <td width="5%"><input type="radio" name="q6" {{ $feedbacks->q6 == '2' ? 'checked' : '' }} value="2"></td>
-                                      <td width="5%"><input type="radio" name="q6" {{ $feedbacks->q6 == '0' ? 'checked' : '' }} value="0"></td>
+                                      <td width="75%">6. Our Compliance wrt EOBI, Social Security & GLI of Guards</td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q6]" {{ $feedbacks->q6 == '10' ? 'checked' : '' }} value="10"></td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q6]" {{ $feedbacks->q6 == '8' ? 'checked' : '' }} value="8"></td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q6]" {{ $feedbacks->q6 == '6' ? 'checked' : '' }} value="6"></td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q6]" {{ $feedbacks->q6 == '2' ? 'checked' : '' }} value="2"></td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q6]" {{ $feedbacks->q6 == '0' ? 'checked' : '' }} value="0"></td>
                                     </tr>
                                     <tr width="100%">
-                                      <td width="75%">7. Timely Provision of Invoices &
-                                        Guards Payroll Management
-                                      </td>
-                                      <td width="5%"><input type="radio" name="q7" {{ $feedbacks->q7 == '10' ? 'checked' : '' }} value="10"></td>
-                                      <td width="5%"><input type="radio" name="q7" {{ $feedbacks->q7 == '8' ? 'checked' : '' }} value="8"></td>
-                                      <td width="5%"><input type="radio" name="q7" {{ $feedbacks->q7 == '6' ? 'checked' : '' }} value="6"></td>
-                                      <td width="5%"><input type="radio" name="q7" {{ $feedbacks->q7 == '2' ? 'checked' : '' }} value="2"></td>
-                                      <td width="5%"><input type="radio" name="q7" {{ $feedbacks->q7 == '0' ? 'checked' : '' }} value="0"></td>
+                                      <td width="75%">7. Timely Provision of Invoices & Guards Payroll Management</td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q7]" {{ $feedbacks->q7 == '10' ? 'checked' : '' }} value="10"></td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q7]" {{ $feedbacks->q7 == '8' ? 'checked' : '' }} value="8"></td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q7]" {{ $feedbacks->q7 == '6' ? 'checked' : '' }} value="6"></td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q7]" {{ $feedbacks->q7 == '2' ? 'checked' : '' }} value="2"></td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q7]" {{ $feedbacks->q7 == '0' ? 'checked' : '' }} value="0"></td>
                                     </tr>
                                     <tr width="100%">
                                       <td width="75%">8. Level of Training of Guards</td>
-                                      <td width="5%"><input type="radio" name="q8" {{ $feedbacks->q8 == '10' ? 'checked' : '' }} value="10"></td>
-                                      <td width="5%"><input type="radio" name="q8" {{ $feedbacks->q8 == '8' ? 'checked' : '' }} value="8"></td>
-                                      <td width="5%"><input type="radio" name="q8" {{ $feedbacks->q8 == '6' ? 'checked' : '' }} value="6"></td>
-                                      <td width="5%"><input type="radio" name="q8" {{ $feedbacks->q8 == '2' ? 'checked' : '' }} value="2"></td>
-                                      <td width="5%"><input type="radio" name="q8" {{ $feedbacks->q8 == '0' ? 'checked' : '' }} value="0"></td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q8]" {{ $feedbacks->q8 == '10' ? 'checked' : '' }} value="10"></td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q8]" {{ $feedbacks->q8 == '8' ? 'checked' : '' }} value="8"></td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q8]" {{ $feedbacks->q8 == '6' ? 'checked' : '' }} value="6"></td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q8]" {{ $feedbacks->q8 == '2' ? 'checked' : '' }} value="2"></td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q8]" {{ $feedbacks->q8 == '0' ? 'checked' : '' }} value="0"></td>
                                     </tr>
                                     <tr width="100%">
-                                      <td width="75%">9. Level of Supervisory Staff
-                                        Visiting the Guards
-                                      </td>
-                                      <td width="5%"><input type="radio" name="q9" {{ $feedbacks->q9 == '10' ? 'checked' : '' }} value="10"></td>
-                                      <td width="5%"><input type="radio" name="q9" {{ $feedbacks->q9 == '8' ? 'checked' : '' }} value="8"></td>
-                                      <td width="5%"><input type="radio" name="q9" {{ $feedbacks->q9 == '6' ? 'checked' : '' }} value="6"></td>
-                                      <td width="5%"><input type="radio" name="q9" {{ $feedbacks->q9 == '2' ? 'checked' : '' }} value="2"></td>
-                                      <td width="5%"><input type="radio" name="q9" {{ $feedbacks->q9 == '0' ? 'checked' : '' }} value="0"></td>
+                                      <td width="75%">9. Level of Supervisory Staff Visiting the Guards</td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q9]" {{ $feedbacks->q9 == '10' ? 'checked' : '' }} value="10"></td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q9]" {{ $feedbacks->q9 == '8' ? 'checked' : '' }} value="8"></td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q9]" {{ $feedbacks->q9 == '6' ? 'checked' : '' }} value="6"></td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q9]" {{ $feedbacks->q9 == '2' ? 'checked' : '' }} value="2"></td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q9]" {{ $feedbacks->q9 == '0' ? 'checked' : '' }} value="0"></td>
                                     </tr>
                                     <tr width="100%">
-                                      <td width="75%">10. PIFFERS Mgmt Approach &
-                                        Behavior towards Customer Service
-                                      </td>
-                                      <td width="5%"><input type="radio" name="q10" {{ $feedbacks->q10 == '10' ? 'checked' : '' }} value="10"></td>
-                                      <td width="5%"><input type="radio" name="q10" {{ $feedbacks->q10 == '8' ? 'checked' : '' }} value="8"></td>
-                                      <td width="5%"><input type="radio" name="q10" {{ $feedbacks->q10 == '6' ? 'checked' : '' }} value="6"></td>
-                                      <td width="5%"><input type="radio" name="q10" {{ $feedbacks->q10 == '2' ? 'checked' : '' }} value="2"></td>
-                                      <td width="5%"><input type="radio" name="q10" {{ $feedbacks->q10 == '0' ? 'checked' : '' }} value="0"></td>
+                                      <td width="75%">10. PIFFERS Mgmt Approach & Behavior towards Customer Service</td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q10]" {{ $feedbacks->q10 == '10' ? 'checked' : '' }} value="10"></td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q10]" {{ $feedbacks->q10 == '8' ? 'checked' : '' }} value="8"></td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q10]" {{ $feedbacks->q10 == '6' ? 'checked' : '' }} value="6"></td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q10]" {{ $feedbacks->q10 == '2' ? 'checked' : '' }} value="2"></td>
+                                      <td width="5%"><input type="radio" name="customerfeedbacks[{{ $index }}][q10]" {{ $feedbacks->q10 == '0' ? 'checked' : '' }} value="0"></td>
                                     </tr>
                                   </tbody>
                                 </table>
@@ -3996,9 +3973,7 @@
                               </div>
                             </div>
                             <div class="row">
-                              <p><b></b>B: Would you please, like to refer us any other Company /
-                                Organization?</b>
-                              </p>
+                              <p><b>B: Would you please, like to refer us any other Company / Organization?</b></p>
                               <div class="col-lg-7">
                                 <div class="row mb-2">
                                   <div class="col-lg-11 spacing-right">
@@ -4067,7 +4042,7 @@
                               <div class="col-lg-11 spacing-right">
                                 Attachments: <br> <input id="" class="form-control"
                                   name="customerfeedbacks[{{ $index }}][feed_attach]"
-                                  value="{{ $feedbacks->feed_attach }}" type="file" placeholder="..."
+                                  type="file" placeholder="..."
                                   style="width: 100%;">
                                 <div class="col-lg-5 spacing-right">
                                   <div class="image-preview42" id="imagePreview42">
@@ -4089,10 +4064,16 @@
                   <div class=" mt-2 d-flex justify-content-between align-items-center">
                     <button type="button" class="add-more-btn" style="width:30%" onclick="feedback_add_more()">Add
                       More</button>
-                    {{-- <button type="button" style="width:30%" class="add-more-btn">Save</button> --}}
                   </div>
                 </div>
               </div>
+
+
+
+
+
+
+
               <h5 class="mt-4"><u><b>Complaints Management</b></u></h5>
               <div>
                 <div id="complaintAccordion">

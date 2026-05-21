@@ -425,6 +425,12 @@
                                     <td>{{ $branch->branch_category }}</td>
                                     <td>{{ $branch->branch_ptcl }}</td>
                                     <td style="display:flex; gap: 10px; align-items: center;">
+
+                                       <a class="btn btn-primary btn-sm"
+                                          href="{{ route('admin.register.register', ['id' => $branch->id]) }}">
+                                          <i class="fa-solid fa-book-open"></i>
+                                       </a>
+
                                         <a class="btn btn-primary btn-sm"
                                             href="{{ route('crotask', ['id' => $branch->id]) }}"><i
                                                 class="fa-solid fa-bars-progress"></i></a>

@@ -4341,8 +4341,15 @@
                                         style="width: 100%;">
                                 </div>
                                 <div class="col-lg-4 spacing-right">
-                                    Technical Proposal : <br> <input class="form-control" name="tecPro" type="text" placeholder="..."
-                                        style="width: 100%;">
+                                    Technical Proposal : <br> <input class="form-control" name="tecPro" type="text"
+                                        value="{{ $requirements->tecPro }}" placeholder="..." style="width: 100%;">
+                                </div>
+                                <div class="col-lg-4 spacing-right">
+                                    Technical Proposal Attachment : <br>
+                                    @include('Sales.includes.file-attachment-preview', [
+                                        'path' => $requirements->tec_pro_attach,
+                                        'showPathInput' => true,
+                                    ])
                                 </div>
                                 <div class="col-lg-4 spacing-right">
                                     Financial Proposal : <br> <input class="form-control" name="finPro" type="file" placeholder="..."
@@ -12855,7 +12862,43 @@ function sendPDFViaEmail() {
     });
     </script> -->
 
+    <div class="modal fade" id="requirementFileModal" tabindex="-1" role="dialog" aria-labelledby="requirementFileModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="requirementFileModalLabel">File Preview</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center" id="requirementFileModalBody"></div>
+                <div class="modal-footer">
+                    <a href="#" id="requirementFileDownloadLink" target="_blank" rel="noopener" class="btn btn-primary">Open / Download</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function openRequirementFileModal(element) {
+            const filePath = element.getAttribute('data-file');
+            const fileExtension = (element.getAttribute('data-extension') || '').toLowerCase();
+            const modalBody = document.getElementById('requirementFileModalBody');
+            const downloadLink = document.getElementById('requirementFileDownloadLink');
+            let previewHtml = '';
 
+            if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'].includes(fileExtension)) {
+                previewHtml = `<img src="${filePath}" alt="Image Preview" style="max-width: 100%; max-height: 70vh;">`;
+            } else if (fileExtension === 'pdf') {
+                previewHtml = `<iframe src="${filePath}" width="100%" height="500px" title="PDF Preview"></iframe>`;
+            } else {
+                previewHtml = `<p class="text-muted">Preview not available for this file type. Use Open / Download.</p>`;
+            }
+
+            modalBody.innerHTML = previewHtml;
+            downloadLink.href = filePath;
+            $('#requirementFileModal').modal('show');
+        }
+    </script>
 
     </body>
 

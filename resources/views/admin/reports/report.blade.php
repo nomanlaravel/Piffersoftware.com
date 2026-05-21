@@ -454,6 +454,7 @@
                 </div>
             </form>
         </div>
+
         <div class="tab-pane fade " id="Feedback" role="tabpanel" aria-labelledby="files-tab">
 
             <form method="GET" action="{{ route('search.feedback.register.report') }}">
@@ -466,52 +467,36 @@
                         <label>End Date</label>
                         <input type="date" name="end_date" class="form-control" value="{{ request('end_date') }}">
                     </div>
-                    <div class="col-md-2">
-                        <label>OR Select Month</label>
-                        <input type="month" name="month" class="form-control" value="{{ request('month') }}">
-                    </div>
-                    <div class="col-md-2">
-                        <label>Region</label>
-                        <select name="region" class="form-control" value="{{ request('region') }}">
-                            <option value="">Select a region</option>
-                            <option value="all" {{ request('region') == 'all' ? 'selected' : '' }}>All
-                                Regions</option>
-                            @foreach (App\Models\Cro::all() as $region)
-                                <option value="{{ $region->region }}">{{ $region->region }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <label>Branch</label>
-                        <select name="branch" class="form-control">
-                            <option value="">Select a branch</option>
-                            <option value="all" {{ request('branch') == 'all' ? 'selected' : '' }}>All Branches
-                            </option>
-                            @foreach (App\Models\Admin::all() as $branch)
-                                <option value="{{ $branch->branch_office_name }}" {{ request('branch') == $branch->branch_office_name ? 'selected' : '' }}>
-                                    {{ $branch->branch_office_name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <label>Customer Name</label>
-                        <select name="client_name" class="form-control">
-                            <option value="">Select Customer</option>
-                            <option value="all" {{ request('name') == 'all' ? 'selected' : '' }}>All Customers</option>
-                            @foreach(\App\Models\Cro::select('name')->distinct()->get() as $customer)
-                                <option value="{{ $customer->name }}" {{ request('name') == $customer->name ? 'selected' : '' }}>
-                                    {{ $customer->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-1 mt-4">
-                        <label>Client ID</label>
-                        <select  class="form-control">
-                        </select>
-                    </div>
-                    <div class="col-md-1 mt-4">
+                   <div class="col-md-2">
+    <label>Select Month</label>
+    <input type="{{ request('month') ? 'month' : 'text' }}" 
+           name="month" 
+           class="form-control" 
+           placeholder="Select Month"
+           value="{{ request('month') }}"
+           onfocus="this.type='month'"
+           onblur="if(!this.value) this.type='text'">
+</div>
+                   
+                   
+                 <div class="col-md-2">
+    <label>Client ID</label>
+    <input type="text" 
+           name="client_id" 
+           class="form-control" 
+           placeholder="Select Client ID"
+           list="client_id_list"
+           value="{{ request('client_id') }}">
+
+    <datalist id="client_id_list">
+        <option value="all">All Client IDs</option>
+        @foreach(\App\Models\CustomerFeedback::select('feed_client_id')->distinct()->get() as $client)
+            <option value="{{ $client->feed_client_id }}">{{ $client->feed_client_id }}</option>
+        @endforeach
+    </datalist>
+</div>
+                 
+                 <div class="col-md-1 mt-4">
                         <button type="submit" class="btn btn-outline-light mt-2">
                             <img src="https://cdn-icons-png.flaticon.com/128/18444/18444736.png" alt="Search"
                                 width="30px" height="30px">
@@ -520,6 +505,7 @@
                 </div>
             </form>
         </div>
+
         <div class="tab-pane fade " id="Nationwide" role="tabpanel" aria-labelledby="files-tab">
             {{-- <h4>Files Reports Nationwide</h4> --}}
             <form method="GET" action="{{ route('search.nationwide.report') }}">

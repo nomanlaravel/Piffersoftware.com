@@ -147,6 +147,67 @@ Route::delete('/delete/cro/{id}', [AdminController::class, 'delete_cro'])->name(
 Route::get('/reports/cro/{id}', [AdminController::class, 'cro_reports'])->name('reports.cro');
 Route::get('/dispatches/cro/{id}', [AdminController::class, 'cro_dispatches'])->name('dispatches.cro');
 
+Route::get('adminregister/{id}', [AdminController::class, 'adminregister'])->name('admin.register.register');
+  
+// POST - Naya register save karna
+Route::post('adminregister/{id}/store', [AdminController::class, 'storeRegister'])
+    ->name('post.register');
+    
+// GET - Specific register view karna
+Route::get('register/view/{id}', [AdminController::class, 'viewRegister'])
+    ->name('view.register');
+
+    // PUT - Register update karna
+Route::put('register/update/{id}', [AdminController::class, 'updateRegister'])
+    ->name('update.register');
+
+    // DELETE - Register delete karna
+Route::delete('register/delete/{id}', [AdminController::class, 'deleteRegister'])
+    ->name('delete.register');
+
+    // GET - AJAX: Next register number fetch karna
+Route::get('/get-next-register-number/{taskGroupId}', [AdminController::class, 'getNextRegisterNumber']);
+
+
+
+// View register page
+Route::get('register/view/{id}', [AdminController::class, 'viewRegister'])
+    ->name('view.register');
+
+    // Save checkboxes
+Route::post('register/view/{id}/save', [AdminController::class, 'storeRegisterTasks'])
+    ->name('store.register.tasks');
+
+    Route::put('register/task/update/{id}', [AdminController::class, 'updateRegisterTask'])
+    ->name('register.task.update');
+
+Route::delete('register/task/delete/{id}', [AdminController::class, 'deleteRegisterTask'])
+    ->name('register.task.delete');
+
+    Route::get('register/{id}/add-task', [AdminController::class, 'showAddTaskForm'])
+    ->name('register.add.task.form');
+
+Route::post('register/{id}/add-task', [AdminController::class, 'storeRegisterTask'])
+    ->name('register.add.task.store');
+
+Route::put('register/task/update/{id}', [AdminController::class, 'updateRegisterTask'])
+    ->name('register.task.update');
+
+Route::delete('register/task/delete/{id}', [AdminController::class, 'deleteRegisterTask'])
+    ->name('register.task.delete');
+
+    Route::get('register/{id}/add-group', [AdminController::class, 'showAddGroupForm'])
+    ->name('register.add.group.form');
+
+Route::post('register/{id}/add-group', [AdminController::class, 'storeRegisterGroup'])
+    ->name('register.add.group.store');
+
+Route::delete('register/group/delete/{id}', [AdminController::class, 'deleteRegisterGroup'])
+    ->name('register.group.delete');
+
+    Route::put('register/group/update/{id}', [AdminController::class, 'updateRegisterGroup'])
+    ->name('register.group.update');
+    
 Route::get('task/group', [AdminController::class, 'task_group'])->name('taskgroup');
 Route::post('posttask_group', [AdminController::class, 'posttask_group'])->name('posttask_group');
 Route::delete('/task_group/{id}', [AdminController::class, 'deletetask_group'])->name('deletetask_group');

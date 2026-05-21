@@ -10550,6 +10550,10 @@
                                     placeholder="..." style="width: 100%;">
                               </div>
                               <div class="col-lg-4 spacing-right">
+                               Technical Proposal Attachment : <br> <input class="form-control" name="tec_pro_attach" type="file"
+                                placeholder="..." style="width: 100%;">
+                              </div>
+                              <div class="col-lg-4 spacing-right">
                                  Financial Proposal : <br> <input class="form-control" name="finPro" type="file"
                                     placeholder="..." style="width: 100%;">
                               </div>
@@ -11438,7 +11442,36 @@
             </div>
 
          </div>
-         <button type="submit">Submit</button>
+         <!-- <button type="submit">Submit</button> -->
+        <div class="footer"
+    style="position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 60%; background-color: #320056; padding: 10px; display: flex; justify-content: space-between; align-items: center; border-radius: 10px 10px 0 0;">
+
+    <div style="display: flex; align-items: center; padding-left: 15px;">
+      <img src="{{ asset('logo.png') }}" alt="Logo" style="height: 30px; margin-right: 10px;">
+        <h4 style="color: #fff; margin: 0; font-size: 14px;"><i>PIFFERS SECURITY SERVICES</i></h4>
+    </div>
+
+    <div class="dropdown" style="position: relative; display: inline-block;">
+        <button type="button" class="btn btn-primary"
+            style="background-color: #007bff; color: #fff; border: none; border-radius: 5px; cursor: pointer; width: 150px;"><i
+                style="margin-right:30px;">Submission &#8594;</i></button>
+        <div class="dropdown-content"
+            style="display: none; position: absolute; background-color: #f9f9f9; min-width: 130px; box-shadow: 0px -8px 16px 0px rgba(0,0,0,0.2); z-index: 1; bottom: 100%;">
+            <button type="submit" name="save_and_email"
+                style="padding: 8px 12px; display: inline-block; background-color: #007bff; color: #fff; border: none; width: 100%; text-align: left; font-size: 14px;"><i>Save
+                    & Email/Whatsapp</i></button>
+            <button type="submit" name="save_and_share"
+                style="padding: 8px 12px; display: inline-block; background-color: #007bff; color: #fff; border: none; width: 100%; text-align: left; font-size: 14px;"><i>Save
+                    & share link</i></button>
+            <button type="submit" name="save_and_new"
+                style="padding: 8px 12px; display: inline-block; background-color: #007bff; color: #fff; border: none; width: 100%; text-align: left; font-size: 14px;"><i>Save
+                    & New</i></button>
+            <button type="submit"
+                style="padding: 8px 12px; display: inline-block; background-color: #007bff; color: #fff; border: none; width: 100%; text-align: left; font-size: 14px;"><i>Save
+                    & Close</i></button>
+        </div>
+    </div>
+         </div>
       </div>
    </form>
    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

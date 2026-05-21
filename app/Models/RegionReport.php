@@ -19,6 +19,7 @@ protected $fillable = [
     'type',
     'created_at',
     'monday',
+    'week_plan',
 ];
 
     public function admin()

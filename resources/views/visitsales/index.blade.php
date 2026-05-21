@@ -246,6 +246,7 @@
                         <th>Employee Name</th>
                         <th>Designation</th>
                         <th>Date</th>
+                        <th>week plan</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -272,6 +273,7 @@
                             <td>{{ $sale->employee_name }}</td>
                             <td>{{ $sale->designation }}</td>
                             <td>{{ $sale->created_at }}</td>
+                            <td>{{ $sale->week_plan }}</td>
                         </tr>
                     @endforeach
                 </tbody>
