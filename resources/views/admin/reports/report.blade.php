@@ -100,7 +100,13 @@
                         type="button" role="tab" aria-controls="region-visitpipeline-reports" aria-selected="false">
                         Region wise Daily Finalize Sales report
                     </button>
-                    </li>    
+                    </li>  
+                    <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="report-scored-cards-tab" data-bs-toggle="tab" data-bs-target="#report-scored-cards"
+                        type="button" role="tab" aria-controls="report-scored-cards" aria-selected="false">
+                        Report Scored Cards
+                    </button>
+                    </li> 
         </ul>
 
         <!-- Tab Content -->
@@ -908,6 +914,46 @@
                         </button>
                     </div>
 
+                </div>
+            </form>
+        </div>
+     <div class="tab-pane fade " id="report-scored-cards" role="tabpanel" aria-labelledby="report-scored-cards-tab">
+            <form method="GET" action="{{ route('admin.score_card') }}" target="_blank" class="mb-3">
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <label class="form-label">Start Date</label>
+                        <input type="date" name="start_date" class="form-control" value="{{ request('start_date') }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">End Date</label>
+                        <input type="date" name="end_date" class="form-control" value="{{ request('end_date') }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Month</label>
+                        <input type="month" name="month" class="form-control" value="{{ request('month') }}">
+                    </div>
+                  <div class="col-md-2">
+    <label class="form-label">Client ID</label>
+
+    <select name="client_id" class="form-control">
+        <option value="">Select Client</option>
+
+        @foreach(App\Models\Customer::all() as $customer)
+            <option value="{{ $customer->id }}"
+                {{ request('client_id') == $customer->id ? 'selected' : '' }}>
+
+                {{ $customer->customers_id ?? $customer->id }}
+
+            </option>
+        @endforeach
+
+    </select>
+</div>
+                    <div class="col-md-1">
+                        <button type="submit" class="btn btn-outline-light mt-4">
+                            <img src="https://cdn-icons-png.flaticon.com/128/18444/18444736.png" width="25">
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>

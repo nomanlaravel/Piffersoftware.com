@@ -848,6 +848,7 @@ Route::post('/weekly/sales/record', [UniformRecordController::class, 'weekly_sal
 Route::get('/search/weekly/sales/record', [UniformRecordController::class, 'search_weekly_sales_record'])->name('search.weeklly.sales.reports');
 
 Route::get('admin/reports', [ReportController::class, 'admin_reports'])->name('admin_reports');
+Route::get('admin/reports/score-card', [ReportController::class, 'score_card'])->name('admin.score_card');
 
 Route::prefix('attendance')->group(function () {
     // guest admin

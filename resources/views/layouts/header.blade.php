@@ -525,29 +525,64 @@
             </li>
 
             {{-- Regulatory Affairs --}}
-            @canany(['view_regulator', 'add_regulator', 'update_regulator', 'delete_regulator', 'view_corporate', 'add_corporate', 'update_corporate', 'delete_corporate', 'view_chamber', 'add_chamber', 'update_chamber', 'delete_chamber'])
-              <li class="nav-item">
-                <a class="nav-link" data-toggle="collapse" href="#regulatorySubMenu" aria-expanded="false"
-                  aria-controls="regulatorySubMenu">
-                  <span class="menu-title">Regulatory Affairs</span>
-                  <i class="mdi mdi-home menu-icon"></i>
-                </a>
-                <div class="collapse" id="regulatorySubMenu">
-                  <ul class="nav flex-column sub-menu">
-                    @can('view_regulator')
-                      <li class="nav-item"><a class="nav-link" href="{{ url('regulator') }}">Regulator</a></li>
-                    @endcan
-                    @can('view_corporate')
-                      <li class="nav-item"><a class="nav-link" href="{{ url('corporate') }}">Corporate</a></li>
-                    @endcan
-                    @can('view_chamber')
-                      <li class="nav-item"><a class="nav-link" href="{{ url('chamber') }}">Chamber</a></li>
-                    @endcan
-                  </ul>
-                </div>
-              </li>
-            @endcanany
+        @php
+    $isCustomer = auth()->check() && auth()->user()->role === 'customer';
+@endphp
 
+@if(
+    $isCustomer ||
+    auth()->user()->can('view_regulator') ||
+    auth()->user()->can('view_corporate') ||
+    auth()->user()->can('view_chamber') ||
+    auth()->user()->can('add_regulator') ||
+    auth()->user()->can('add_corporate') ||
+    auth()->user()->can('add_chamber') ||
+    auth()->user()->can('update_regulator') ||
+    auth()->user()->can('update_corporate') ||
+    auth()->user()->can('update_chamber') ||
+    auth()->user()->can('delete_regulator') ||
+    auth()->user()->can('delete_corporate') ||
+    auth()->user()->can('delete_chamber')
+)
+<li class="nav-item">
+
+  <a class="nav-link" data-toggle="collapse" href="#regulatorySubMenu"
+     aria-expanded="false" aria-controls="regulatorySubMenu">
+
+    <span class="menu-title">Regulatory Affairs</span>
+    <i class="mdi mdi-home menu-icon"></i>
+
+  </a>
+
+  <div class="collapse" id="regulatorySubMenu">
+    <ul class="nav flex-column sub-menu">
+
+      {{-- Regulator --}}
+      @if($isCustomer || auth()->user()->can('view_regulator'))
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url('regulator') }}">Regulator</a>
+        </li>
+      @endif
+
+      {{-- Corporate --}}
+      @if($isCustomer || auth()->user()->can('view_corporate'))
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url('corporate') }}">Corporate</a>
+        </li>
+      @endif
+
+      {{-- Chamber --}}
+      @if($isCustomer || auth()->user()->can('view_chamber'))
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url('chamber') }}">Chamber</a>
+        </li>
+      @endif
+
+    </ul>
+  </div>
+
+</li>
+@endif
             {{-- Admin --}}
             @canany(['view_branche', 'add_branche', 'update_branche', 'delete_branche','view_region', 'add_region', 'update_region', 'delete_region', 'view_rental', 'add_rental', 'update_rental', 'delete_rental'])
               <li class="nav-item">

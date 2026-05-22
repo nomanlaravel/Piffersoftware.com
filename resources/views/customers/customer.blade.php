@@ -70,143 +70,247 @@
                         @endif
 
 
+@if(auth()->user()->hasAnyRole('Super Admin', 'Admin'))
 
-                        @if (Auth::user()->role != 'customer' && Auth::user()->role != 'client')
-                            <div class="new_branch mt-2">
-                                <a href="{{ url('postcustomer') }}"><button>+ New Customer</button></a>
-                            </div>
-                        @endif
-                        @if ($customers->isEmpty())
-                            <p>No customers found.</p>
-                        @else
-                                            <ul class="nav nav-tabs" id="myTab" role="tablist">
-                                                <li class="nav-item" role="presentation">
-                                                    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home"
-                                                        type="button" role="tab" aria-controls="home" aria-selected="true">Site Id
-                                                        Report</button>
-                                                </li>
-                                                <li class="nav-item" role="presentation">
-                                                    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile"
-                                                        type="button" role="tab" aria-controls="profile" aria-selected="false">List Of Site
-                                                        ID</button>
-                                                </li>
-                                                <li class="nav-item" role="presentation">
-                                                    <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact"
-                                                        type="button" role="tab" aria-controls="contact" aria-selected="false">Monthly Site ID
-                                                        Report
-                                                    </button>
-                                                </li>
-                                            </ul>
-                                            <div class="tab-content mt-4" id="myTabContent">
-                                                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                                                    <form method="GET" action="{{ route('search_customer') }}">
-                                                        <div class="row mb-4">
-                                                            <div class="col-md-3">
-                                                                <label>Customer Name</label>
-                                                                <input type="text" name="customers_name" class="form-control"
-                                                                    value="{{ request('customers_name') }}">
-                                                            </div>
+    <div class="new_branch mt-2">
+        <a href="{{ url('postcustomer') }}">
+            <button>+ New Customer</button>
+        </a>
+    </div>
 
-                                                            <div class="col-md-3">
-                                                                <label>Customer Region</label>
-                                                                <input type="text" name="customers_region" class="form-control"
-                                                                    value="{{ request('customers_region') }}">
-                                                            </div>
+    @if ($customers->isEmpty())
+        <p>No customers found.</p>
+    @else
 
-                                                            <div class="col-md-3">
-                                                                <label>Customer ID</label>
-                                                                <input type="text" name="customers_id" class="form-control"
-                                                                    value="{{ request('customers_id') }}">
-                                                            </div>
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
 
-                                                            <div class="col-md-3">
-                                                                <label for="payment">Payment Type</label>
-                                                                <select name="payment" id="payment" class="form-control">
-                                                                    <option value="">-- Select Payment Type --</option>
-                                                                    <option value="1" {{ request('payment') == '1' ? 'selected' : '' }}>Cash
-                                                                    </option>
-                                                                    <option value="2" {{ request('payment') == '2' ? 'selected' : '' }}>Cheque
-                                                                    </option>
-                                                                    <option value="0" {{ request('payment') == '0' ? 'selected' : '' }}>Others
-                                                                    </option>
-                                                                </select>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <label for="customers_activation_check">Activation Status</label>
-                                                                <select name="customers_activation_check" id="customers_activation_check"
-                                                                    class="form-control">
-                                                                    <option value="">-- Select Status --</option>
-                                                                    <option value="1" {{ request('customers_activation_check') == '1' ? 'selected' : '' }}>Active
-                                                                    </option>
-                                                                    <option value="0" {{ request('customers_activation_check') == '0' ? 'selected' : '' }}>
-                                                                        Inactive</option>
-                                                                </select>
-                                                            </div>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="home-tab" data-bs-toggle="tab"
+                    data-bs-target="#home" type="button" role="tab"
+                    aria-controls="home" aria-selected="true">
+                    Site Id Report
+                </button>
+            </li>
 
-                                                            <div class="col-md-3">
-                                                                <label>Date of Entry</label>
-                                                                <input type="date" name="date_of_entry" class="form-control"
-                                                                    value="{{ request('date_of_entry') }}">
-                                                            </div>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="profile-tab" data-bs-toggle="tab"
+                    data-bs-target="#profile" type="button" role="tab"
+                    aria-controls="profile" aria-selected="false">
+                    List Of Site ID
+                </button>
+            </li>
 
-                                                            <div class="col-md-2 mt-4">
-                                                                <button type="submit" class="btn btn-outline-light">
-                                                                    <img src="https://cdn-icons-png.flaticon.com/128/18444/18444736.png" alt=""
-                                                                        width="30px" height="30px">
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                                                    <form method="GET" action="{{ route('search_customer_id') }}">
-                                                        <div class="row mb-4">
-                                                            <div class="col-md-3">
-                                                                <label>Customer ID</label>
-                                                                <input type="text" name="customers_id" class="form-control"
-                                                                    value="{{ request('customers_id') }}">
-                                                            </div>
-                                                            <div class="col-md-2 mt-4">
-                                                                <button type="submit" class="btn btn-outline-light">
-                                                                    <img src="https://cdn-icons-png.flaticon.com/128/18444/18444736.png" alt=""
-                                                                        width="30px" height="30px">
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                                <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-                                                    <form method="GET" action="{{ route('search_customer_yearly') }}">
-                                                        <div class="row mb-3">
-                                                            <div class="col-md-3">
-                                                                <label for="year">Select Year</label>
-                                                                <select name="year" id="year" class="form-control">
-                                                                    <option value="">-- Select Year --</option>
-                                                                    @foreach(range(now()->year, now()->year - 5) as $year)
-                                                                        <option value="{{ $year }}" {{ request('year') == $year ? 'selected' : '' }}>
-                                                                            {{ $year }}
-                                                                        </option>
-                                                                    @endforeach
-                                                                </select>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <label for="customers_id">Customer ID</label>
-                                                                <input type="text" name="customers_id" class="form-control"
-                                                                    value="{{ request('customers_id') }}">
-                                                            </div>
-                                                            <div class="col-md-2 align-self-end">
-                                                                <button type="submit" class="btn btn-dark">Search</button>
-                                                            </div>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="contact-tab" data-bs-toggle="tab"
+                    data-bs-target="#contact" type="button" role="tab"
+                    aria-controls="contact" aria-selected="false">
+                    Monthly Site ID Report
+                </button>
+            </li>
 
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
+        </ul>
+
+        <div class="tab-content mt-4" id="myTabContent">
+
+            <div class="tab-pane fade show active" id="home" role="tabpanel"
+                aria-labelledby="home-tab">
+
+                <form method="GET" action="{{ route('search_customer') }}">
+
+                    <div class="row mb-4">
+
+                        <div class="col-md-3">
+                            <label>Customer Name</label>
+                            <input type="text" name="customers_name"
+                                class="form-control"
+                                value="{{ request('customers_name') }}">
+                        </div>
+
+                        <div class="col-md-3">
+                            <label>Customer Region</label>
+                            <input type="text" name="customers_region"
+                                class="form-control"
+                                value="{{ request('customers_region') }}">
+                        </div>
+
+                        <div class="col-md-3">
+                            <label>Customer ID</label>
+                            <input type="text" name="customers_id"
+                                class="form-control"
+                                value="{{ request('customers_id') }}">
+                        </div>
+
+                        <div class="col-md-3">
+                            <label for="payment">Payment Type</label>
+
+                            <select name="payment" id="payment"
+                                class="form-control">
+
+                                <option value="">-- Select Payment Type --</option>
+
+                                <option value="1"
+                                    {{ request('payment') == '1' ? 'selected' : '' }}>
+                                    Cash
+                                </option>
+
+                                <option value="2"
+                                    {{ request('payment') == '2' ? 'selected' : '' }}>
+                                    Cheque
+                                </option>
+
+                                <option value="0"
+                                    {{ request('payment') == '0' ? 'selected' : '' }}>
+                                    Others
+                                </option>
+
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label for="customers_activation_check">
+                                Activation Status
+                            </label>
+
+                            <select name="customers_activation_check"
+                                id="customers_activation_check"
+                                class="form-control">
+
+                                <option value="">-- Select Status --</option>
+
+                                <option value="1"
+                                    {{ request('customers_activation_check') == '1' ? 'selected' : '' }}>
+                                    Active
+                                </option>
+
+                                <option value="0"
+                                    {{ request('customers_activation_check') == '0' ? 'selected' : '' }}>
+                                    Inactive
+                                </option>
+
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label>Date of Entry</label>
+
+                            <input type="date" name="date_of_entry"
+                                class="form-control"
+                                value="{{ request('date_of_entry') }}">
+                        </div>
+
+                        <div class="col-md-2 mt-4">
+                            <button type="submit"
+                                class="btn btn-outline-light">
+
+                                <img src="https://cdn-icons-png.flaticon.com/128/18444/18444736.png"
+                                    alt="" width="30px" height="30px">
+
+                            </button>
+                        </div>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+            <div class="tab-pane fade" id="profile"
+                role="tabpanel"
+                aria-labelledby="profile-tab">
+
+                <form method="GET"
+                    action="{{ route('search_customer_id') }}">
+
+                    <div class="row mb-4">
+
+                        <div class="col-md-3">
+                            <label>Customer ID</label>
+
+                            <input type="text"
+                                name="customers_id"
+                                class="form-control"
+                                value="{{ request('customers_id') }}">
+                        </div>
+
+                        <div class="col-md-2 mt-4">
+                            <button type="submit"
+                                class="btn btn-outline-light">
+
+                                <img src="https://cdn-icons-png.flaticon.com/128/18444/18444736.png"
+                                    alt="" width="30px" height="30px">
+
+                            </button>
+                        </div>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+            <div class="tab-pane fade" id="contact"
+                role="tabpanel"
+                aria-labelledby="contact-tab">
+
+                <form method="GET"
+                    action="{{ route('search_customer_yearly') }}">
+
+                    <div class="row mb-3">
+
+                        <div class="col-md-3">
+                            <label for="year">Select Year</label>
+
+                            <select name="year"
+                                id="year"
+                                class="form-control">
+
+                                <option value="">
+                                    -- Select Year --
+                                </option>
+
+                                @foreach(range(now()->year, now()->year - 5) as $year)
+
+                                    <option value="{{ $year }}"
+                                        {{ request('year') == $year ? 'selected' : '' }}>
+
+                                        {{ $year }}
+
+                                    </option>
+
+                                @endforeach
+
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label for="customers_id">
+                                Customer ID
+                            </label>
+
+                            <input type="text"
+                                name="customers_id"
+                                class="form-control"
+                                value="{{ request('customers_id') }}">
+                        </div>
+
+                        <div class="col-md-2 align-self-end">
+                            <button type="submit"
+                                class="btn btn-dark">
+                                Search
+                            </button>
+                        </div>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    @endif
+
+@endif
 
 
 
@@ -216,8 +320,7 @@
             <table id="customersTable" class="table table-bordered table-striped table-fixed mt-3">
                 <thead>
                     <tr>
-                        <th>Serial No.</th>
-                        <th>Customers ID</th>
+                        <th>Customer ID</th>
                         <th>Customer Legal Name</th>
                         <th>Phone Number</th>
                         <th>Customers Region</th>
@@ -232,7 +335,6 @@
                             $notificationCount = App\Models\ReminderNotification::where('user_id', $customer->id)->where('is_read', 0)->where('entity_type', 'customer')->count();
                         @endphp
                         <tr>
-                            <td>{{ $loop->iteration }}</td>
                             <td>{{ $customer->customers_id }}</td>
                             <td>{{ $customer->customers_name }}</td>
                             <td>{{ $customer->phone }}</td>
@@ -345,43 +447,9 @@
 </div>
 </div>
 @include('layouts.footer')
-//
+
 <script>
-    //     $(document).ready(function () {
-    //         // Search functionality
-    //         $('#search-button').click(function () {
-    //             var searchText = $('#customer-search').val().toLowerCase();
-
-    //             $('#customer-table-body tr').each(function () {
-    //                 var currentName = $(this).find('td:nth-child(2)').text().toLowerCase();
-    //                 if (currentName.includes(searchText)) {
-    //                     $(this).show();
-    //                 } else {
-    //                     $(this).hide();
-    //                 }
-    //             });
-    //         });
-
-    //         // Reset search on input change
-    //         $('#customer-search').on('input', function () {
-    //             var searchText = $(this).val().toLowerCase();
-
-    //             $('#customer-table-body tr').each(function () {
-    //                 var currentName = $(this).find('td:nth-child(2)').text().toLowerCase();
-    //                 if (currentName.includes(searchText)) {
-    //                     $(this).show();
-    //                 } else {
-    //                     $(this).hide();
-    //                 }
-    //             });
-    //         });
-    //         // Handle delete button click
-    //         $('.deletebtn').on('click', function () {
-    //             var deleteUrl = $(this).data('delete-url');
-    //             $('#deleteForm').attr('action', deleteUrl);
-    //         });
-    //     });
-    // </script>
+     </script>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
