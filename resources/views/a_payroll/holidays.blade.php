@@ -10,7 +10,8 @@
 
 <div class="customer_form">
     @include('headerlogout')
-
+ 
+    
     {{-- Breadcrumb with Add Button --}}
     <x-bread-crumb-component :modal="true" modalId="add_holiday" modalType="Holiday" :showClock="'false'" />
 
